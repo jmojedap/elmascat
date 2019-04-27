@@ -1,0 +1,183 @@
+div.div1{
+    margin: 0 0 10px 0;
+}
+
+div.div2{
+    margin: 10px 0 10px 0;
+}
+
+div.div3{
+    margin: 10px 0px 10px 0px;
+}
+
+div.casilla{
+    float: left;
+    padding-right: 10px;
+}
+
+div.div4{
+    margin: 10px 15px 10px 0px;
+}
+
+div.div5{
+    border-top: 1px solid #f1f1f1;
+    padding: 5px;
+}
+
+div.div5.actual{
+    background: #ffffd6;
+}
+
+div.sep1{
+    width: 100%;
+    border-bottom: 1px solid #eee;
+}
+
+div.filtro_busqueda{
+    width: 100%;
+    //border: 1px solid #bce8f1;
+    padding: 2px 5px 2px 5px;
+    margin-bottom: 5px;
+    background: #FFF2D5;
+}
+
+.f_derecha{
+    float: right;
+}
+
+hr.hr1{
+    border-bottom: 1px solid #eee;
+    border-top: 0px;
+    margin-top: 5px;
+}
+
+/* ANCHO de OBJETOS
+----------------------------------------------------------------------------------------------------*/
+
+.w1{
+    width: 25px;
+}
+
+.w2{
+    width: 50px;
+}
+
+.w3{
+    width: 100px;
+}
+
+.w4{
+    width: 150px;
+}
+
+.w5{
+    width: 200px;
+}
+
+
+
+/* LISTAS
+----------------------------------------------------------------------------------------------------*/
+
+ul.ul1{
+    padding-left: 16px;
+    list-style: none;
+    //list-style-image: url(../media/images/app/ui-button-navigation.png);
+}
+
+ul.ul1 li{
+    margin-bottom: 1px;
+}
+
+/* VÍNCULOS
+----------------------------------------------------------------------------------------------------*/
+
+.cambiar_cantidad {
+    cursor: pointer;
+    background:#F0F0E9;
+    color: #696763;
+    display: inline-block;
+    font-size: 16px;
+    height: 28px;
+    overflow: hidden;
+    text-align: center;
+    width: 35px;
+    float: left;
+}
+
+
+/* TEXTO
+----------------------------------------------------------------------------------------------------*/
+
+
+.resaltar{
+    color: #fe980f;
+}
+
+.correcto{
+    font-weight: bold;
+    color: #89cb4f;
+}
+
+span.suave{
+    color: #aaa;
+}
+
+.rojo{
+    color: #D74A38;
+    /*color: #FF8100;*/
+}
+
+/* ETIQUETAS
+----------------------------------------------------------------------------------------------------*/
+
+.etiqueta {
+    padding: 0 5px 0 5px;
+    margin: 0 3px 0 3px;
+    color: white;
+}
+
+.color-neutro{
+    background: #666;
+}
+
+.color-resaltar{
+    background: #fe980f;
+}
+
+/* MENSAJES
+----------------------------------------------------------------------------------------------------*/
+
+.removible{
+    display: inline-block;
+    padding: 0px 5px 0px 5px;
+    text-align: center;
+    border-radius: 2px;
+    background: #d2e3f2;
+    border: 1px solid #428bca;
+    margin-top: 2px;
+}
+
+/* FORMULARIOS
+----------------------------------------------------------------------------------------------------*/
+
+.form1 input{
+    background:#F0F0E9;
+    border:0 none;
+    font-weight:300;
+    margin-bottom:10px;
+    padding:10px;
+    width:100%;
+}
+
+.form1 select{
+    padding:10px 5px;
+    margin-bottom: 10px;
+}
+
+/* ADAPTACIÓN BOOTSTRAP
+----------------------------------------------------------------------------------------------------*/
+
+.flexigrid .form-control{
+    box-sizing: content-box;  //pcrn-mod 2015-02-23
+}
