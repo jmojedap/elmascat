@@ -129,6 +129,18 @@
             </div>
             
             <div class="form-group row">
+                <label for="address" class="col-md-4 control-label">Dirección residencia</label>
+                <div class="col-md-8">
+                    <input
+                        id="field-address"
+                        name="address"
+                        class="form-control"
+                        placeholder="Dirección de residencia"
+                        >
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label for="fecha_nacimiento" class="col-md-4 control-label">Fecha de nacimiento *</label>
                 <div class="col-md-8">
                     <input

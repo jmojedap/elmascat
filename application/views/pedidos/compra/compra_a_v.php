@@ -36,7 +36,7 @@
             'id'     => 'apellidos',
             'name'   => 'apellidos',
             'class'   => 'form-control',
-            'placeholder'   => 'Apellidos *',
+            'placeholder'   => 'Apellidos',
             'required' => TRUE,
             'value' =>  $valores['apellidos'],
             'title' => 'Escriba sus apellidos'
@@ -46,7 +46,7 @@
             'id'     => 'no_documento',
             'name'   => 'no_documento',
             'class'   => 'form-control',
-            'placeholder'   => 'Cédula *',
+            'placeholder'   => 'Cédula',
             'required' => TRUE,
             'value' =>  $valores['no_documento'],
             'title' => 'Digite su número de cédula o documento'
@@ -57,18 +57,9 @@
             'name'   => 'direccion',
             'class'   => 'form-control',
             'required' => TRUE,
-            'placeholder'   => 'Dirección *',
+            'placeholder'   => 'Dirección',
             'value' =>  $valores['direccion'],
             'title' => 'Digite la dirección donde se entregará el pedido'
-        );
-        
-        $att_direccion_detalle = array(
-            'id'     => 'direccion_detalle',
-            'name'   => 'direccion_detalle',
-            'class'   => 'form-control',
-            'placeholder'   => 'Barrio, sector, etc.',
-            'value' =>  $valores['direccion_detalle'],
-            'title' => 'Agregue información adicional sobre la dirección, barrio, sector, etc'
         );
         
         $att_email = array(
@@ -77,7 +68,7 @@
             'class'   => 'form-control',
             'type'   => 'email',
             'required' => TRUE,
-            'placeholder'   => 'Correo electrónico *',
+            'placeholder'   => 'Correo electrónico',
             'value' =>  $valores['email'],
             'title' => 'Escriba su correo electrónico'
         );
@@ -86,7 +77,7 @@
             'id'     => 'celular',
             'name'   => 'celular',
             'class'   => 'form-control',
-            'placeholder'   => 'Celular *',
+            'placeholder'   => 'Celular',
             'required' => TRUE,
             'value' =>  $valores['celular'],
             'title' => 'Escriba su número de celular, sin espacios ni guiones',
@@ -121,11 +112,6 @@
         
     //Opciones lugares
         $opciones_ciudad = $this->App_model->opciones_lugar("tipo_id = 4 AND activo = 1", 'CRP', 'Ciudad');
-        
-    //Mostrar direcciones
-        $mostrar_direcciones = TRUE;
-        if ( ! $this->session->userdata('logged') ) { $mostrar_direcciones = FALSE; }
-        if ( $direcciones->num_rows() == 0 ) { $mostrar_direcciones = FALSE; }
         
 ?>
 
@@ -168,85 +154,20 @@
 
 <div class="row">
     <div class="col col-md-8">
-        <div class="div2">
-            <div class="row">
-                <div class="col-md-12">
-                    <?php if ( $this->session->userdata('logged') ){ ?>
-                        <?php if ( $direcciones->num_rows() > 0 ){ ?>
-                            
-
-                            
-                        <?php } else { ?>
-                            <?= anchor("usuarios/direcciones/{$this->session->userdata('usuario_id')}", '<i class="fa fa-map-marker"></i> Agregar direcciones', 'class="btn btn-flat btn-primary" title="Agregar mis direcciones a mi perfil"') ?>
-                        <?php } ?>
-                    <?php } else { ?>
-                        <div class="alert alert-info" role="alert">
-                            <i class="fa fa-info-circle"></i>
-                            Regístrese en DistriCatolicas.com para guardar sus direcciones, seguir sus compras, obtener promociones y más.
-                        </div>
-                        <?= anchor('app/registro', '<i class="fa fa-plus"></i> Registrarme', 'class="btn btn-flat btn-primary" title=""') ?>
-                        <?= anchor('app/login', '<i class="fa fa-user"></i> Ingresar', 'class="btn btn-flat btn-primary" title=""') ?>
-                    <?php } ?>
-                </div>
-            </div>      
-        </div>
-        
-        <hr/>
 
         <?php echo validation_errors(); ?>
-        
+
+        <?php if ( ! ($row->ciudad > 0) ) { ?>
         <div class="form-horizontal">
-            <?php if ( $mostrar_direcciones ) { ?>
-                <div class="form-group">
-                    <label for="opciones" class="col-sm-3 control-label">Mis direcciones</label>
-                    <div class="col-sm-9">
-                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                            Cargar datos desde mis direcciones <i class="fa fa-caret-down"></i><i class="fa fa-"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="collapse" id="collapseExample">
-                <hr/>
-                <?php foreach ($direcciones->result() as $row_direccion) : ?>
-
-                    <div class="row div2">
-                        <div class="col-md-3">
-                            <?= $row_direccion->nombre_direccion ?>
-                        </div>
-
-                        <div class="col-md-6">
-                            <?= $this->App_model->nombre_lugar($row_direccion->lugar_id, 'CR') ?><br/>
-                            <?= $row_direccion->direccion ?><br/>
-                            <?= $row_direccion->direccion_detalle ?> <br/>
-                            Tel <?= $row_direccion->telefono ?>
-                        </div>
-
-                        <div class="col-md-3">
-                            <?= anchor("pedidos/set_direccion/{$row->cod_pedido}/{$row_direccion->id}", 'Enviar a esta dirección', 'class="btn btn-warning" title="Enviar pedido a esta dirección"') ?>
-                        </div>
-                    </div>
-                    <hr/>
-                <?php endforeach ?>
-            </div>
-            <?php } ?>
-        </div>
-        
-        <div class="form-horizontal">       
             <div class="form-group">
-                <label for="opciones" class="col-sm-3 control-label">Ciudad de entrega</label>
+                <label for="ciudad_id" class="col-sm-3 control-label">Ciudad de entrega</label>
                 <div class="col-sm-9">
                     <?= form_dropdown('ciudad_id', $opciones_ciudad, $row->ciudad_id, 'id="ciudad_id" class="form-control chosen-select"') ?>
                 </div>
             </div>
+            <hr>
         </div>
-        
-        <div class="shopper-informations">
-            <?php if ( $row->ciudad_id < 0 ){ ?>
-                <h3 class="alert alert-info" role="alert">Seleccione la ciudad de entrega</h3>
-            <?php } ?>
-        </div>
-
-        <hr/>
+        <?php } ?>
 
         <?php if ( $row->ciudad_id > 0 ){ ?>
 
@@ -260,43 +181,32 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="apellidos" class="col-sm-3 control-label">Apellidos *</label>
+                    <label for="apellidos" class="col-sm-3 control-label">Apellidos</label>
                     <div class="col-sm-9">
                         <?= form_input($att_apellidos); ?>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="no_documento" class="col-sm-3 control-label">No. Documento * </label>
+                    <label for="no_documento" class="col-sm-3 control-label">No. Documento </label>
                     <div class="col-sm-9">
                         <?= form_input($att_no_documento); ?>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="email" class="col-sm-3 control-label">Correo electrónico *</label>
+                    <label for="email" class="col-sm-3 control-label">Correo electrónico</label>
                     <div class="col-sm-9">
                         <?= form_input($att_email); ?>
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="direccion" class="col-sm-3 control-label">Dirección *</label>
+                    <label for="direccion" class="col-sm-3 control-label">Dirección entrega</label>
                     <div class="col-sm-9">
                         <?= form_input($att_direccion); ?>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="detalle_direccion" class="col-sm-3 control-label">Detalle dirección</label>
-                    <div class="col-sm-9">
-                        <?= form_input($att_direccion_detalle); ?>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="att_telefono" class="col-sm-3 control-label">Teléfono</label>
-                    <div class="col-sm-9">
-                        <?= form_input($att_telefono); ?>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="celular" class="col-sm-3 control-label">Celular *</label>
+                    <label for="celular" class="col-sm-3 control-label">Celular</label>
                     <div class="col-sm-9">
                         <?= form_input($att_celular); ?>
                     </div>

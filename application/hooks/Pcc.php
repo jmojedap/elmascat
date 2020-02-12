@@ -116,6 +116,11 @@ class Pcc {
         $funciones_publicas[] = 'sincro/json_estado_tablas';
         $funciones_publicas[] = 'sincro/test_ajax';
         $funciones_publicas[] = 'sincro/cant_registros';
+
+        $funciones_publicas[] = 'accounts/signup';
+        $funciones_publicas[] = 'accounts/validate_signup';
+        $funciones_publicas[] = 'accounts/register';
+        $funciones_publicas[] = 'accounts/registered';
         
         return $funciones_publicas;
     }

@@ -34,7 +34,7 @@
                         <b>Perfil</b>
                         <span class="pull-right"><?= $this->Item_model->nombre(58, $row->rol_id) ?></span>
                     </li>
-                    
+
                     <li class="list-group-item">
                         <b>Teléfono</b>
                         <span class="pull-right"><?= $row->telefono ?></span>
@@ -57,65 +57,61 @@
                         <tr>
                             <td class="der" width="25%"><span class="suave">Nombre</span></td>
                             <td width="25%"><?= $row->nombre ?></td>
-                            <td width="50%"><span class="suave">Nombre o nombres de la persona</span></td>
                         </tr>
                         <tr>
                             <td class="der"><span class="suave">Apellidos</span></td>
                             <td><?= $row->apellidos ?></td>
-                            <td></td>
+                            
                         </tr>
 
                         <tr>
                             <td class="der"><span class="suave">Nombre de usuario</span></td>
                             <td><?= $row->username ?></td>
-                            <td></td>
+                            
                         </tr>
 
                         <tr>
                             <td class="der"><span class="suave">Correo electrónico</span></td>
                             <td><?= $row->email ?></td>
-                            <td></td>
+                            
                         </tr>
 
                         <tr>
                             <td class="der"><span class="suave">Sexo</span></td>
                             <td><?= $this->Item_model->nombre(59, $row->sexo) ?></td>
-                            <td width="50%"><span class="suave"></span></td>
+                            
                         </tr>
 
                         <tr>
                             <td class="der"><span class="suave">Tipo de usuario</span></td>
                             <td><?= $this->Item_model->nombre(58, $row->rol_id) ?></td>
-                            <td width="50%"><span class="suave">Tipo de cuenta de usuario</span></td>
                         </tr>
 
                         <tr>
                             <td class="der"><span class="suave">Fecha de nacimiento</span></td>
                             <td><?= $this->Pcrn->fecha_formato($row->fecha_nacimiento, 'Y-M-d') ?></td>
-                            <td width="50%"><span class="suave"></span></td>
                         </tr>
 
                         <tr>
                             <td class="der"><span class="suave">Dirección</span></td>
-                            <td><?= $row->direccion ?></td>
-                            <td width="50%"><span class="suave">Será usada como dirección por defecto para sus pedidos</span></td>
+                            <td><?php echo $row->address ?></td>
                         </tr>
+
                         <tr>
                             <td class="der"><span class="suave">Teléfono</span></td>
                             <td><?= $row->telefono ?></td>
-                            <td width="50%"><span class="suave"></span></td>
+                            
                         </tr>
                         <tr>
                             <td class="der"><span class="suave">Celular</span></td>
                             <td><?= $row->celular ?></td>
-                            <td width="50%"><span class="suave"></span></td>
                         </tr>
                         <tr>
                             <td class="der"><span class="suave">Página Web</span></td>
                             <td>
                                 <?= anchor($this->Pcrn->preparar_url($row->url), $this->Pcrn->texto_url($row->url), 'target="_blank"') ?>
                             </td>
-                            <td width="50%"><span class="suave"></span></td>
+                            
                         </tr>
                     </tbody>
                 </table>

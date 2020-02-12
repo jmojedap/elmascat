@@ -433,10 +433,6 @@ class Pedidos extends CI_Controller{
             $arr_extras['dto_distribuidor'] = $this->Pedido_model->valor_extras($pedido_id, 'producto_id = 3');
             $data['arr_extras'] = $arr_extras;
         
-        //Direcciones
-            $usuario_id = $this->session->userdata('usuario_id');
-            $data['direcciones'] = $this->Usuario_model->direcciones($usuario_id);
-        
         //Solicitar vista
             $data['titulo_pagina'] = 'Districatólicas';
             $data['vista_a'] = 'pedidos/compra/compra_v';

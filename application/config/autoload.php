@@ -137,4 +137,4 @@ $autoload['language'] = array();
 |	$autoload['model'] = array('first_model' => 'first');
 */
 
-$autoload['model'] = array('Pcrn', 'App_model', 'Item_model');
+$autoload['model'] = array('Pcrn', 'App_model', 'Item_model', 'Db_model');

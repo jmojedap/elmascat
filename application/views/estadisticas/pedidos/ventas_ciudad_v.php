@@ -14,8 +14,6 @@
         $clases_col['avg_valor'] = 'hidden-xs hidden-sm';
 ?>
 
-<?php $this->load->view('estadisticas/pedidos/submenu_estadisticas_v'); ?>
-
 <div class="bs-caja">
     <div class="sep2">
         <p>
@@ -28,7 +26,9 @@
     
     <table class="table">
         <thead>
+            <th width="100px">ID</th>
             <th width="100px">Ciudad</th>
+            <th width="100px">Departamento</th>
             <th class="info text-center"><?= $this->Pcrn->moneda($sum_sum_valor_total); ?></th>
             <th class="<?= $clases_col['cant_pedidos'] ?>" width="100px">Pedidos</th>
             <th class="<?= $clases_col['avg_valor'] ?>">$ Promedio</th>
@@ -42,9 +42,13 @@
                 $porcentaje = $this->Pcrn->int_percent($row_ciudad->sum_valor_total, 15000000);
                 $avg_valor = $this->Pcrn->dividir($row_ciudad->sum_valor_total, $row_ciudad->cant_pedidos);
                 $ventas_miles = number_format($this->Pcrn->dividir($row_ciudad->sum_valor_total, 1000), 0);
+
+                $row_lugar = $this->Pcrn->registro_id('lugar', $row_ciudad->ciudad_id);
             ?>
             <tr>
+                <td><?= $row_ciudad->ciudad_id ?></td>
                 <td><?= $this->App_model->nombre_lugar($row_ciudad->ciudad_id) ?></td>
+                <td><?= $row_lugar->region ?></td>
                 <td class="text-right">
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-valuenow="<?= $porcentaje ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $porcentaje ?>%;">

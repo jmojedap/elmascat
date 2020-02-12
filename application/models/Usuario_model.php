@@ -165,7 +165,8 @@ class Usuario_model extends CI_Model{
             $crud->display_as('no_documento', 'CC o NIT');
             $crud->display_as('tipo_documento_id', 'Tipo documento');
             $crud->display_as('dv', 'DV (Dígito verificación)');
-            $crud->display_as('direccion', 'Dirección');
+            $crud->display_as('telefono', 'Teléfono');
+            $crud->display_as('address', 'Dirección');
             $crud->display_as('url', 'Página Web');
             $crud->display_as('ciudad_id', 'Ciudad Residencia');
         
@@ -183,7 +184,7 @@ class Usuario_model extends CI_Model{
                     'sexo',
                     'fecha_nacimiento',
                     'ciudad_id',
-                    'telefono',
+                    'address',
                     'celular',
                     'url',
                     'creado'
@@ -202,7 +203,7 @@ class Usuario_model extends CI_Model{
                     'sexo',
                     'fecha_nacimiento',
                     'ciudad_id',
-                    'telefono',
+                    'address',
                     'celular',
                     'url',
                     'creado'
@@ -263,7 +264,8 @@ class Usuario_model extends CI_Model{
             $crud->display_as('no_documento', 'CC o NIT');
             $crud->display_as('tipo_documento_id', 'Tipo documento');
             $crud->display_as('dv', 'DV (Dígito verificación)');
-            $crud->display_as('direccion', 'Dirección');
+            $crud->display_as('address', 'Dirección');
+            $crud->display_as('telefono', 'Teléfono');
             $crud->display_as('url', 'Página Web');
             $crud->display_as('ciudad_id', 'Ciudad Residencia');
         
@@ -282,7 +284,7 @@ class Usuario_model extends CI_Model{
                     'sexo',
                     'fecha_nacimiento',
                     'ciudad_id',
-                    'telefono',
+                    'address',
                     'celular',
                     'url'
                 );
@@ -301,7 +303,7 @@ class Usuario_model extends CI_Model{
                     'sexo',
                     'fecha_nacimiento',
                     'ciudad_id',
-                    'telefono',
+                    'address',
                     'celular',
                     'url'
                 );
@@ -951,28 +953,24 @@ class Usuario_model extends CI_Model{
      * Devuelve un array con los datos de una dirección de un usuario
      * Los índices del array corresponden a los nombres de los campos de la tabla pedido
      * para ser utilizados y guardados en esa tabla
-     * 
-     * @param type $post_id
-     * @return type
+     * 2020-02-12
      */
-    function arr_direccion($post_id = NULL)
+    function arr_direccion()
     {
         //Variables iniciales
             $arr_direccion['ciudad_id'] = '';
         
         //Calcular valores si se identifica usuario y dirección (post)
             $usuario_id = $this->session->userdata('usuario_id');
-            $direcciones = $this->direcciones($usuario_id, $post_id);
+            $row_user = $this->Db_model->row_id('usuario', $usuario_id);
 
-            if ( $direcciones->num_rows() > 0 ) 
+            if ( strlen($row_user->address) > 0 ) 
             {
-                $row_direccion = $direcciones->row();
-                $row_lugar = $this->Pcrn->registro_id('lugar', $row_direccion->lugar_id);
+                $row_lugar = $this->Pcrn->registro_id('lugar', $row_user->ciudad_id);
 
-                $arr_direccion['ciudad_id'] = $row_direccion->lugar_id;
-                $arr_direccion['direccion'] = $row_direccion->direccion;
-                $arr_direccion['direccion_detalle'] = $row_direccion->direccion_detalle;
-                $arr_direccion['telefono'] = $row_direccion->telefono;
+                $arr_direccion['ciudad_id'] = $row_user->ciudad_id;
+                $arr_direccion['direccion'] = $row_user->address;
+                $arr_direccion['telefono'] = $row_user->telefono;
                 
                 $arr_direccion['pais_id'] = $row_lugar->pais_id;
                 $arr_direccion['region_id'] = $row_lugar->region_id;

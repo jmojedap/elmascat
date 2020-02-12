@@ -159,10 +159,11 @@ class App extends CI_Controller{
      */
     function registro()
     {
-        $data['destino_form'] = 'app/registrar';
-        $data['titulo_pagina'] = 'Crear nueva cuenta';
-        $data['vista_a'] = 'plantillas/polo/registro_v';
-        $this->load->view(PTL_FRONT, $data);
+        $data['head_title'] = 'Crear nueva cuenta';
+        $data['view_a'] = 'templates/polo/signup_v';
+        $data['recaptcha_sitekey'] = K_RCSK;    //config/constants.php
+        
+        $this->load->view('templates/polo/main_v', $data);
     }
     
     /**
@@ -170,7 +171,7 @@ class App extends CI_Controller{
      * datos, se registra el usuario. Si no se valida se redirige a app/registro
      * con mensajes del resultado del proceso.
      */
-    function registrar()
+    /*function registrar()
     {
         $this->load->model('Esp');
         $res_validacion = $this->Esp->validar_registro();
@@ -201,7 +202,7 @@ class App extends CI_Controller{
             $this->session->set_flashdata('mensajes', $res_validacion['mensajes']);
             redirect('app/registro');
         }
-    }
+    }*/
     
     /**
      * Se llega aquí mediante el formulario de registro (app/registro)
@@ -375,5 +376,34 @@ class App extends CI_Controller{
         $data['subtitulo_pagina'] = 'Template';
         $data['vista_a'] = "plantillas/polo/ejemplos/{$vista}";
         $this->load->view(PTL_FRONT, $data);
+    }
+
+    function update_address()
+    {
+        $this->db->select('referente_1_id AS city_id, texto_1, texto_2, usuario_id');
+        $this->db->where('tipo_id', 1001);
+        $this->db->order_by('referente_2_id', 'ASC');
+        $direcciones = $this->db->get('post');
+
+        $data = array();
+
+        foreach ($direcciones->result() as $row_direccion)
+        {
+            $row_user = $this->Db_model->row_id('usuario', $row_direccion->usuario_id);
+            
+            $arr_row['ciudad_id'] = $row_direccion->city_id;
+            $arr_row['address'] = $row_direccion->texto_1 . ' - ' . $row_direccion->texto_2;
+
+            $this->db->where('id', $row_direccion->usuario_id);
+            $this->db->update('usuario', $arr_row);
+
+            $data[$row_direccion->usuario_id] = $arr_row['address'];
+        }
+
+        //$data['direcciones'] = $direcciones->result();
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        
     }
 }

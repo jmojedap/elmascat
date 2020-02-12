@@ -147,12 +147,12 @@
                         <i class="fa fa-map-marker fa-2x"></i>
                     </td>
                     <td>
-                        <?= $row->ciudad ?><br/>
-                        <?= $row->direccion ?>, <?= $row->direccion_detalle ?><br/>
+                        <?php echo $row->direccion ?><br>
                         <span class="suave">
-                            Teléfonos:
+                            Celular
                         </span>
-                        <?= $row->celular ?> - <?= $row->telefono ?>
+                        <?php echo $row->celular ?><br/>
+                        <?php echo $row->ciudad ?>
                     </td>
                 </tr>
                 <tr>

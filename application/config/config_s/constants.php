@@ -102,3 +102,7 @@ define('PTL_FRONT', 'plantillas/polo/plantilla_v');          //Vista plantilla d
 define('VER_LOCAL', FALSE);                         //Es una versión local
 define('MAX_REG_EXPORT', 5000);                     //Número máximo de registros para exportar en archivo MS-Excel
 define('NOMBRE_APP', 'DistriCatólicas');            //Nombre de la aplicación
+define('APP_NAME', 'DistriCatólicas');            //Nombre de la aplicación
+
+define('K_RCSK', '6LfwTtgUAAAAAFQYAKdRfPMsTYWHw5SAgX2gwUda');   //ReCaptcha V3 SiteKey
+define('K_RCSC', '6LfwTtgUAAAAAJjKiRm-UTwhA_MnDXpAY_Zm4089');   //ReCaptcha V3 Clave Secreta
