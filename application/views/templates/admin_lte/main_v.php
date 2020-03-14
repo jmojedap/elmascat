@@ -4,18 +4,18 @@
         ini_set('error_reporting', E_ERROR);
         
     //Sidebar, según el rol del usuario
-        $sidebar = 'plantillas/admin_lte/menus/sidebar_' . $this->session->userdata('rol_id');
+        $sidebar = 'templates/admin_lte/parts/menus/sidebar_' . $this->session->userdata('rol_id');
 ?>
 <!DOCTYPE html>
 <html>
     <head>
-        <?php $this->load->view('plantillas/admin_lte/head') ?>
-        <?php $this->load->view('plantillas/admin_lte/foot_scripts') ?>
+        <?php $this->load->view('templates/admin_lte/parts/head') ?>
+        <?php $this->load->view('templates/admin_lte/parts/foot_scripts') ?>
     </head>
     <body class="skin-blue">
         <div class="wrapper">
 
-            <?php $this->load->view('plantillas/admin_lte/header'); ?>
+            <?php $this->load->view('templates/admin_lte/parts/header'); ?>
             <?php $this->load->view($sidebar); ?>
 
             <!-- Content Wrapper. Contains page content -->

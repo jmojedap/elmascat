@@ -65,24 +65,17 @@
                         <ul>
                             <li class="">
                                 <a href="https://www.facebook.com/districatolicas/" target="_blank">
-                                    <?php
-                                        $att_facebook = array(
-                                            'src' => RUTA_IMG . 'app/facebook.png',
-                                            'width' => '32px'
-                                        );
-                                    ?>
-                                    <?= img($att_facebook) ?>
+                                    <img src="<?php echo URL_IMG ?>app/facebook.png" alt="Logo Facebook" class="logo_social">
                                 </a>
                             </li>
                             <li class="">
                                 <a href="https://www.instagram.com/districatolicas/" target="_blank">
-                                    <?php
-                                        $att_instagram = array(
-                                            'src' => RUTA_IMG . 'app/instagram.png',
-                                            'width' => '32px'
-                                        );
-                                    ?>
-                                    <?= img($att_instagram) ?>
+                                    <img src="<?php echo URL_IMG ?>app/instagram.png" alt="Logo Instagram" class="logo_social">
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="https://wa.me/573013054053" target="_blank">
+                                    <img src="<?php echo URL_IMG ?>app/whatsapp_logo.png" alt="Logo WhatsApp" class="logo_social">
                                 </a>
                             </li>
                         </ul>

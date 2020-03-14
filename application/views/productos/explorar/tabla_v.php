@@ -105,7 +105,7 @@
                 <td class="<?= $clases_col['puntajes'] ?>"><?= $row_resultado->puntaje ?> - <?= $row_resultado->puntaje_auto ?></td>
                 
                 <td class="<?= $clases_col['botones'] ?>">                    
-                    <?= anchor("productos/editar/{$row_resultado->id}", '<i class="fa fa-pencil"></i>', 'class="a4" title=""') ?>
+                    <?= anchor("productos/editar/{$row_resultado->id}", '<i class="fa fa-edit"></i>', 'class="btn btn-sm" title=""') ?>
                 </td>
             </tr>
         <?php } //foreach ?>

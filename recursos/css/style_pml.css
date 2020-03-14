@@ -1,0 +1,22 @@
+/* Elementos fijos */
+
+.center_box{
+    margin: 0 auto;
+}
+.center_box_450{
+    max-width: 450px; 
+    margin: 0 auto;
+}
+.center_box_750{
+    max-width: 750px; margin: 0 auto;
+}
+
+/* Ahchos en Pixeles */
+.w27p { width: 27px; }
+.w30p { width: 30px; }
+.w33p { width: 33px; }
+.w50p { width: 50px; }
+.w100p { width: 100px; }
+.w120p { width: 120px; }
+
+.mw750p { max-width: 750px; }

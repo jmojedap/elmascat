@@ -28,13 +28,6 @@
             'atributos' => 'title="Pedidos del cliente"'
         );
             
-        $arr_menus['direcciones'] = array(
-            'icono' => '<i class="fa fa-map-marker"></i>',
-            'texto' => 'Direcciones',
-            'link' => "usuarios/direcciones/{$row->id}",
-            'atributos' => 'title="Mis direcciones de entrega"'
-        );
-            
         $arr_menus['contrasena'] = array(
             'icono' => '<i class="fa fa-lock"></i>',
             'texto' => 'Contraseña',
@@ -50,7 +43,7 @@
         );
             
         $arr_menus['editarme'] = array(
-            'icono' => '<i class="fa fa-pencil"></i>',
+            'icono' => '<i class="fa fa-edit"></i>',
             'texto' => 'Editar',
             'link' => "usuarios/editarme/edit/{$row->id}",
             'atributos' => 'title="Editar datos del cliente"'

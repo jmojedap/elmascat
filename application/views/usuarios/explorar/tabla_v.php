@@ -91,7 +91,7 @@
                 <td class="warning"><span class="etiqueta primario w1"><?= $row_resultado->id ?></span></td>
                 
                 <td class="<?= $clases_col['ml'] ?>">
-                    <?= anchor("admin/ml/{$row_resultado->id}", '<i class="fa fa-sign-in"></i>', 'class="btn btn-default btn-xs" title="Ingresar con la cuenta de este usuario"') ?>
+                    <?= anchor("admin/ml/{$row_resultado->id}", '<i class="fa fa-sign-in-alt"></i>', 'class="btn btn-default btn-xs" title="Ingresar con la cuenta de este usuario"') ?>
                 </td>
                 
                 <td>

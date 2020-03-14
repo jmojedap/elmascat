@@ -36,14 +36,14 @@
     $opciones_estado = $this->Item_model->opciones('categoria_id = 7');
     
     $att_submit = array(
-        'class' => 'btn btn-primary',
+        'class' => 'btn btn-primary w120p',
         'value' => 'Guardar'
     );
 ?>
 
 <?php $this->load->view('comunes/resultado_proceso_v'); ?>
 
-<div class="panel panel-default">
+<div class="panel panel-default center_box_750">
     <div class="panel-body">
         <?= form_open($destino_form, $att_form) ?>
             <div class="form-group">

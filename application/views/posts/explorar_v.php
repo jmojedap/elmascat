@@ -132,12 +132,12 @@
             <div class="btn-toolbar" role="toolbar" aria-label="...">
                 <div class="btn-group" role="group" aria-label="...">
                     <a class="btn btn-warning" title="Eliminar los elementos seleccionados" data-toggle="modal" data-target="#modal_eliminar">
-                        <i class="fa fa-trash-o"></i>
+                        <i class="fa fa-trash"></i>
                     </a>            
                 </div>
 
                 <div class="btn-group hidden-xs" role="group">
-                    <?= anchor("{$controlador}/exportar/?{$busqueda_str}", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-success" title="Exportar los ' . $cant_resultados . ' registros a archivo de MS Excel"') ?>
+                    <?= anchor("{$controlador}/exportar/?{$busqueda_str}", '<i class="fa fa-download"></i> Exportar', 'class="btn btn-success" title="Exportar los ' . $cant_resultados . ' registros a archivo de MS Excel"') ?>
                 </div>
             </div>
         </div>
@@ -188,7 +188,7 @@
 
                     <td class="hidden-xs">
                         <?php if ( $editable ){ ?>
-                            <?= anchor("{$controlador}/editar/{$row_resultado->id}", '<i class="fa fa-pencil"></i>', 'class="a4" title=""') ?>
+                            <?= anchor("{$controlador}/editar/{$row_resultado->id}", '<i class="fa fa-edit"></i>', 'class="btn btn-sm btn-light" title=""') ?>
                         <?php } ?>
                     </td>
                 </tr>

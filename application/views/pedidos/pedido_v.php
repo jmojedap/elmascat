@@ -49,6 +49,13 @@
             'link' => "pedidos/ver/{$row->id}",
             'atributos' => 'title="Información del pedido"'
         );
+
+        $arr_menus['extras'] = array(
+            'icono' => '<i class="fas fa-dollar-sign"></i>',
+            'texto' => 'Extras',
+            'link' => "pedidos/extras/{$row->id}",
+            'atributos' => 'title="Cobros extras y descuentos"'
+        );
             
         $arr_menus['pol'] = array(
             'icono' => '<i class="fa fa-credit-card"></i>',
@@ -58,16 +65,14 @@
         );
             
         $arr_menus['editar'] = array(
-            'icono' => '<i class="fa fa-pencil"></i>',
+            'icono' => '<i class="fa fa-edit"></i>',
             'texto' => 'Editar',
             'link' => "pedidos/editar/edit/{$row->id}",
             'atributos' => 'title="Editar pedido"'
         );
         
-        
-        
     //Elementos de menú según el rol del visitante
-        $elementos_rol[0] = array('explorar', 'ver', 'pol', 'editar');
+        $elementos_rol[0] = array('explorar', 'ver', 'pol', 'extras', 'editar');
         $elementos_rol[1] = array('explorar', 'ver', 'pol', 'editar');
         $elementos_rol[2] = array('explorar', 'ver', 'pol', 'editar');
         $elementos_rol[6] = array('explorar', 'ver', 'pol', 'editar');

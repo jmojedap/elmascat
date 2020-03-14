@@ -126,9 +126,9 @@
 
             <div class="col-md-3">
                 <a class="btn btn-warning" title="Eliminar los elementos seleccionados" data-toggle="modal" data-target="#modal_eliminar">
-                    <i class="fa fa-trash-o"></i>
+                    <i class="fa fa-trash"></i>
                 </a>
-                <?= anchor("{$this->uri->segment(1)}/exportar/?{$busqueda_str}", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-success" title="Exportar resultados a archivo de MS Excel"') ?>
+                <?= anchor("{$this->uri->segment(1)}/exportar/?{$busqueda_str}", '<i class="fa fa-download"></i> Exportar', 'class="btn btn-success" title="Exportar resultados a archivo de MS Excel"') ?>
             </div>
 
             <div class="col-md-3">
@@ -194,7 +194,7 @@
 
                     <td>
                         <?php if ( $editable ){ ?>
-                            <?= anchor("fletes/editar/edit/{$row_resultado->flete_id}", '<i class="fa fa-pencil"></i>', 'class="a4" title=""') ?>
+                            <?= anchor("fletes/editar/edit/{$row_resultado->flete_id}", '<i class="fa fa-pencil-alt"></i>', 'class="btn btn-light btn-sm" title=""') ?>
                         <?php } ?>
                     </td>
                 </tr>

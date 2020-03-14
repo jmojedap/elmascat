@@ -237,5 +237,5 @@ span.suave{
 ----------------------------------------------------------------------------------------------------*/
 
 .flexigrid .form-control{
-    box-sizing: content-box;  //pcrn-mod 2015-02-23
+    box-sizing: content-box;  /*pcrn-mod 2015-02-23*/
 }

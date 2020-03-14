@@ -21,14 +21,14 @@
         );
         
         $arr_menus['importar'] = array(
-            'icono' => '<i class="fa fa-file-excel-o"></i>',
+            'icono' => '<i class="fa fa-upload"></i>',
             'texto' => 'Importar',
             'link' => "productos/actualizar_datos",
             'atributos' => 'title="Importar y actualizar datos de productos"'
         );
         
         $arr_menus['procesos'] = array(
-            'icono' => '<i class="fa fa-gear"></i>',
+            'icono' => '<i class="fa fa-cog"></i>',
             'texto' => 'Procesos',
             'link' => "productos/procesos/",
             'atributos' => 'title="Procesos de productos"'

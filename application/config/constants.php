@@ -95,7 +95,7 @@ define('RUTA_UPLOADS', 'uploads/');
 define('URL_IMG', 'http://localhost/dc/recursos/imagenes/');
 define('URL_ASSETS', 'http://localhost/dc/assets/');
 define('URL_RECURSOS', 'http://localhost/dc/recursos/');
-define('URL_UPLOADS', 'http://localhost/dc/uploads/');
+define('URL_UPLOADS', 'http://www.districatolicas.com/tienda/uploads/');
 define('PTL_ADMIN', 'plantillas/admin_lte/plantilla_v');       //Vista plantilla de administración
 define('PTL_ADMIN_F', 'plantillas/admin_lte/');                //Folder de la carpeta de la plantilla de administración
 define('PTL_FRONT', 'plantillas/polo/plantilla_v');          //Vista plantilla del front

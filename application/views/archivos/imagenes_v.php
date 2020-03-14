@@ -120,9 +120,9 @@
         <div class="col-md-3 sep2">
             <?php if ( $this->session->userdata('usuario_id') <= 1 ) { ?>
                 <a class="btn btn-warning" title="Eliminar los elementos seleccionados" data-toggle="modal" data-target="#modal_eliminar">
-                    <i class="fa fa-trash-o"></i>
+                    <i class="fa fa-trash"></i>
                 </a>
-                <?= anchor("{$this->uri->segment(1)}/exportar/?{$busqueda_str}", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-success hidden-sm hidden-xs" title="Exportar resultados a archivo de MS Excel"') ?>
+                <?= anchor("{$this->uri->segment(1)}/exportar/?{$busqueda_str}", '<i class="fa fa-download"></i> Exportar', 'class="btn btn-success hidden-sm hidden-xs" title="Exportar resultados a archivo de MS Excel"') ?>
             <?php } ?>
         </div>
 
@@ -190,7 +190,7 @@
                     <td class="<?= $clases_col['carpeta'] ?>"><?= word_limiter($row_archivo->carpeta, 10) ?></td>
                     <td class="<?= $clases_col['botones'] ?>">
                         <?php if ( $editable ){ ?>
-                            <?= anchor("archivos/editar/{$row_archivo->id}", '<i class="fa fa-pencil"></i>', 'class="a4" title=""') ?>
+                            <?= anchor("archivos/editar/{$row_archivo->id}", '<i class="fa fa-edit"></i>', 'class="btn btn-sm btn-light" title=""') ?>
                         <?php } ?>
                     </td>
                 </tr>

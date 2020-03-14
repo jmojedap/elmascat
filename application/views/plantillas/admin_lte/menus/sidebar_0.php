@@ -141,13 +141,13 @@
             
             <li class="<?= $clases_m0['usuarios'] ?>">
                 <a href="<?= base_url() ?>usuarios/explorar">
-                    <i class="fa fa-users"></i> <span>Usuarios</span>
+                    <i class="fa fa-user"></i> <span>Usuarios</span>
                 </a>
             </li>
             
             <li class="treeview <?= $clases_m0['estadisticas'] ?>">
                 <a href="#">
-                    <i class="fa fa-bar-chart"></i> <span>Estadísticas</span> <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-chart-line"></i> <span>Estadísticas</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['estadisticas-pedidos'] ?>">
@@ -158,8 +158,8 @@
             
             <li class="treeview <?= $clases_m0['recursos'] ?>">
                 <a href="#">
-                    <i class="fa fa-folder-o"></i>
-                    <span>Recursos</span>
+                    <i class="fa fa-table"></i>
+                    <span>Datos</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
@@ -167,7 +167,7 @@
                         <?= anchor('archivos/imagenes', '<i class="fa fa-file"></i> Archivos') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-posts'] ?>">
-                        <?= anchor('posts/explorar', '<i class="fa fa-newspaper-o"></i> Posts') ?>
+                        <?= anchor('posts/explorar', '<i class="fa fa-newspaper"></i> Posts') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-eventos'] ?>">
                         <?= anchor('eventos/explorar', '<i class="fa fa-calendar"></i> Eventos') ?>
@@ -177,11 +177,11 @@
             
             <li class="treeview <?= $clases_m0['ajustes'] ?>">
                 <a href="#">
-                    <i class="fa fa-sliders"></i> <span>Ajustes</span> <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-sliders-h"></i> <span>Ajustes</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['ajustes-parametros'] ?>">
-                        <?= anchor('admin/sis_opcion', '<i class="fa fa-gear"></i> Parámetros') ?>
+                        <?= anchor('admin/sis_opcion', '<i class="fa fa-cog"></i> Parámetros') ?>
                     </li>
                     <li class="<?= $clases_m1['ajustes-lugares'] ?>">
                         <?= anchor("lugares/sublugares/51", '<i class="fa fa-map-marker"></i> Ciudades y lugares') ?>

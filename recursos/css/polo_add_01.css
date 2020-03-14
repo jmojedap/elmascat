@@ -62,11 +62,24 @@ input.input1{
     height: 36px;
 }
 
+
 .btn-polo:hover{
     background: #37a4d9;
     color: #fff;
     border: 1px solid #37a4d9;
     
+}
+
+.btn-wa{
+    background-color: #01e675;
+    border-color: #01e675;
+    color: white;
+}
+
+.btn-wa:hover{
+    background-color: #03ca67;
+    border-color: #03ca67;
+    color: white;
 }
 
 .input-polo{
@@ -154,9 +167,16 @@ span.suave{
     /*color: #FF8100;*/
 }
 
+img.logo_social{
+    width: 32px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
 /* ADAPTACIÓN BOOTSTRAP
 ----------------------------------------------------------------------------------------------------*/
 
 .flexigrid .form-control{
-    box-sizing: content-box;  //pcrn-mod 2015-02-23
+    box-sizing: content-box;  /*pcrn-mod 2015-02-23*/
 }

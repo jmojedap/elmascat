@@ -70,14 +70,14 @@
         );
         
         $arr_menus['variaciones'] = array(
-            'icono' => '<i class="fa fa-code-fork"></i>',
+            'icono' => '<i class="fa fa-code-branch"></i>',
             'texto' => 'Variaciones',
             'link' => "productos/variaciones/{$row->id}/",
             'atributos' => ''
         );
         
         $arr_menus['editar'] = array(
-            'icono' => '<i class="fa fa-pencil"></i>',
+            'icono' => '<i class="fa fa-edit"></i>',
             'texto' => 'Editar',
             'link' => "productos/editar/{$row->id}",
             'atributos' => ''

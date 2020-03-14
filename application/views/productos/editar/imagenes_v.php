@@ -77,7 +77,7 @@
                 </td>
                 <td>
                     <button class="btn btn-sm btn-warning eliminar_img pull-right" data-meta_id="<?= $row_imagen->meta_id ?>">
-                        <i class="fa fa-trash-o"></i>
+                        <i class="fa fa-trash"></i>
                     </button>
                 </td>
             </tr>

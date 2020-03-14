@@ -302,11 +302,13 @@
         <table class="table table-bordered">
             <thead>
                 <th>Concepto</th>
+                <th>Nota</th>
                 <th>Valor</th>
             </thead>
             <tbody>
                 <tr class="info">
                     <td>Total</td>
+                    <td></td>
                     <td>
                         <b>
                             <?= $this->Pcrn->moneda($row->total_extras); ?>
@@ -316,6 +318,7 @@
                 <?php foreach ($extras->result() as $row_extra) : ?>
                 <tr>
                     <td><?= $this->App_model->nombre_item($row_extra->producto_id, 1, 6) ?></td>
+                    <td><?php echo $row_extra->nota; ?></td>
                     <td>
                         <span>
                             <?= $this->Pcrn->moneda($row_extra->precio) ?>

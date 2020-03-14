@@ -8,8 +8,9 @@ class Estadistica_Model extends CI_Model{
     {
         $this->db->select('LEFT(creado, (7)) AS periodo, COUNT(id) AS cant_pedidos, SUM(total_productos) AS sum_total_productos, SUM(total_extras) AS sum_total_extras, SUM(peso_total) as sum_peso_total, SUM(valor_total) AS sum_valor_total');
         if ( ! is_null($cod_rta_pol) ) { $this->db->where('codigo_respuesta_pol', $cod_rta_pol); }
+        $this->db->where('creado >=', '2017-01-01 00:00:00');
         $this->db->group_by('LEFT(creado, (7))');
-        $this->db->order_by('LEFT(creado, (7)) DESC');
+        $this->db->order_by('LEFT(creado, (7)) ASC');
         $query = $this->db->get('pedido');
         
         return $query;

@@ -19,7 +19,7 @@
     
     <?php foreach ($resultados->result() as $row_producto) : ?>
         <?php
-            $src = RUTA_UPLOADS . $row_producto->carpeta . '500px_' . $row_producto->nombre_archivo;
+            $src = URL_UPLOADS . $row_producto->carpeta . '500px_' . $row_producto->nombre_archivo;
             list($tamano_img['ancho'], $tamano_img['alto'], $tamano_img['tipo'], $tamano_img['atributos']) = getimagesize($src);
         
             $att_img['src'] = $src;

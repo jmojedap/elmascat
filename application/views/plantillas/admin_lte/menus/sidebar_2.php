@@ -105,8 +105,8 @@
             
             <li class="treeview <?= $clases_m0['recursos'] ?>">
                 <a href="#">
-                    <i class="fa fa-folder-o"></i>
-                    <span>Recursos</span>
+                    <i class="fa fa-table"></i>
+                    <span>Datos</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
@@ -114,7 +114,7 @@
                         <?= anchor('archivos/imagenes', '<i class="fa fa-file"></i> Archivos') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-posts'] ?>">
-                        <?= anchor('posts/explorar', '<i class="fa fa-newspaper-o"></i> Posts') ?>
+                        <?= anchor('posts/explorar', '<i class="fa fa-newspaper"></i> Posts') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-eventos'] ?>">
                         <?= anchor('eventos/explorar', '<i class="fa fa-calendar"></i> Eventos') ?>

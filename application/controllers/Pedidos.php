@@ -246,6 +246,50 @@ class Pedidos extends CI_Controller{
             $data['vista_b'] = 'pedidos/pol_v';
             $this->load->view(PTL_ADMIN, $data);
     }
+
+// GESTIÓN DE EXTRAS PEDIDO
+//-----------------------------------------------------------------------------
+
+    /**
+     * Cobros o descuentos extra de un pedido
+     * 2020-03-13
+     */
+    function extras($pedido_id)
+    {
+        $data = $this->Pedido_model->basico($pedido_id);
+
+        $data['extras'] = $this->Pedido_model->extras($pedido_id);
+        $data['options_extra'] = $this->Item_model->opciones('categoria_id = 6', 'Extra Tipo');
+        $data['arr_extra_types'] = $this->Item_model->arr_item(6, 'id_interno_num');
+        $data['editable'] = ( $data['row']->estado_pedido == 1) ? 1 : 0 ; //Se pueden editar extras sí estado iniciado (1)
+
+        $data['subtitulo_pagina'] = 'Extras';
+        $data['vista_a'] = 'pedidos/pedido_v';
+        $data['vista_b'] = 'pedidos/extras/extras_v';
+        $this->load->view(PTL_ADMIN, $data);
+    }
+
+    function extras_get($pedido_id)
+    {
+        $extras = $this->Pedido_model->extras($pedido_id);
+        $data['list'] = $extras->result();
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    function extras_save()
+    {
+        $data = $this->Pedido_model->extras_save();
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    function extras_delete($pedido_id, $pd_id)
+    {
+        $data = $this->Pedido_model->extras_delete($pedido_id, $pd_id);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
 
 //ESTADÍSTICAS
@@ -805,9 +849,7 @@ class Pedidos extends CI_Controller{
             $pd_id = $this->Pedido_model->guardar_detalle($registro);
 
         //Salida
-            $this->output
-                ->set_content_type('application/json')
-                ->set_output($pd_id);
+            $this->output->set_content_type('application/json')->set_output($pd_id);
     }
     
     /**

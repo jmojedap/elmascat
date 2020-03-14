@@ -28,7 +28,7 @@
         
         <?php $this->load->view('plantillas/polo/partes/head'); ?>
 
-        <link rel="stylesheet" href="<?php echo base_url('recursos/css/polo_add.css') ?>" type="text/css">
+        <link rel="stylesheet" href="<?php echo base_url('recursos/css/polo_add_01.css') ?>" type="text/css">
         
         <?php $this->load->view('app/google_analytics'); ?>
     </head>

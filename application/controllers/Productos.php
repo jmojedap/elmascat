@@ -278,7 +278,6 @@ class Productos extends CI_Controller{
      */
     function catalogo()
     {
-        //$this->output->enable_profiler(TRUE);
         //Cargue inicial
             $this->load->helper('text');
             $this->load->model('Archivo_model');

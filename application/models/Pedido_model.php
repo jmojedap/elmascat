@@ -715,7 +715,7 @@ class Pedido_Model extends CI_Model{
         {
             //Construir registro
                 $registro['pedido_id'] = $pedido_id;
-                $registro['producto_id'] = 3;   //COD 2, corresponde a descuento para distribuidores, ver Ajustes > Parámetros > Extras pedidos
+                $registro['producto_id'] = 3;   //COD 3, corresponde a descuento para distribuidores, ver Ajustes > Parámetros > Extras pedidos
                 $registro['tipo_id'] = 2;       //No es un producto (1), es un elemento extra (2)
                 $registro['precio'] = $this->valor_desc_distribuidor($pedido_id);
                 $registro['cantidad'] = 1;      //Un descuento
@@ -1086,7 +1086,7 @@ class Pedido_Model extends CI_Model{
                 $this->Pcrn->guardar('pedido_detalle', $condicion, $registro);
     }
     
-// Título Separador
+// 
 //-----------------------------------------------------------------------------
     
     /**
@@ -1326,6 +1326,55 @@ class Pedido_Model extends CI_Model{
             $this->db->query($sql);
         }
     }
-    
-}
 
+// GESTIÓN DE EXTRAS
+//-----------------------------------------------------------------------------
+
+    function extras_save()
+    {
+        $data = array('status' => 0, 'saved_id' => '0');    //Valores iniciales
+
+        //Construyendo registro
+            $arr_row = $this->input->post();
+            $arr_row['tipo_id'] = 2;    //Extra, no producto
+            $arr_row['promocion_id'] = 0;
+            $arr_row['precio_nominal'] = $arr_row['precio'];
+            $arr_row['costo'] = 0;
+            $arr_row['iva'] = 0;
+            $arr_row['cantidad'] = 1;
+
+        //Guardar
+            $condition = "pedido_id = {$arr_row['pedido_id']} AND producto_id = {$arr_row['producto_id']} AND tipo_id = {$arr_row['tipo_id']}";
+            $data['saved_id'] = $this->Pcrn->guardar('pedido_detalle', $condition, $arr_row);
+
+        //Actualizar totales pedido
+            $this->act_totales_2($arr_row['pedido_id']);           //Valor total extras
+            $this->act_totales_3($arr_row['pedido_id']);           //Valor total
+
+        //Preparar resultado
+            if ( $data['saved_id'] > 0 ) { $data['status'] = 1;}
+
+        return $data;
+    }
+
+    function extras_delete($pedido_id, $pd_id)
+    {
+        $data = array('status' => 0, 'qty_deleted' => '0');
+        
+        $this->db->where('id', $pd_id);
+        $this->db->where('pedido_id', $pedido_id);
+        $this->db->delete('pedido_detalle');
+
+        $data['qty_deleted'] = $this->db->affected_rows();
+        if ( $data['qty_deleted'] > 0 )
+        {
+            $data['status'] = 1;
+
+            //Actualizar totales pedido
+            $this->act_totales_2($pedido_id);           //Valor total extras
+            $this->act_totales_3($pedido_id);           //Valor total
+        }
+
+        return $data;
+    }
+}

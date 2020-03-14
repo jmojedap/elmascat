@@ -21,11 +21,11 @@
 
     <div class="col-md-3">
         <a class="btn btn-warning <?= $clases_btn['eliminar_seleccionados'] ?>" title="Eliminar los <?= $elemento_p ?> seleccionados" data-toggle="modal" data-target="#modal_eliminar">
-            <i class="fa fa-trash-o"></i>
+            <i class="fa fa-trash"></i>
         </a>
         
         <div class="btn-group hidden-xs <?= $clases_btn['exportar'] ?>" role="group">
-            <?= anchor("{$controlador}/exportar/?{$busqueda_str}", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-success" title="Exportar los ' . $cant_resultados . ' registros a archivo de MS Excel"') ?>
+            <?= anchor("{$controlador}/exportar/?{$busqueda_str}", '<i class="fa fa-download"></i> Exportar', 'class="btn btn-success" title="Exportar los ' . $cant_resultados . ' registros a archivo de MS Excel"') ?>
         </div>
     </div>
     

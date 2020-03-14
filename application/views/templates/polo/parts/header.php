@@ -21,10 +21,10 @@
                     <div class="welcome-msg hidden-xs"> ¡Bienvenidos a DistriCatólicas! </div>
                 </div>
                 <div class="col-xs-6">
-                    <div class="welcome-msg hidden-xs pull-right">
-                        WhatsApp 301 305 4053 
+                    <a class="welcome-msg hidden-xs pull-right" href="https://wa.me/573013054053" target="_blank">
                         <?php echo img(RUTA_IMG . 'app/whatsapp-logo-vector_16x16.png') ?>
-                    </div>
+                        WhatsApp 301 305 4053
+                    </a>
                 </div>
                         
                 <div class="col-xs-3">
@@ -72,7 +72,7 @@
                 </a> 
                 <!-- End Header Logo --> 
             </div>
-            <div class="col-lg-8 col-sm-6 col-md-8"> 
+            <div class="col-lg-6 col-sm-6 col-md-8"> 
                 <!-- Search-col -->
                 <div class="search-box">
                     <?php echo form_open("productos/catalogo_redirect/") ?>
@@ -84,11 +84,22 @@
                 </div>
                 <!-- End Search-col --> 
             </div>
+
             <!-- Top Cart -->
             <div class="col-lg-2 col-sm-3 col-md-2">
                 <?php $this->load->view('plantillas/polo/partes/header_top_cart'); ?>
             </div>
             <!-- End Top Cart --> 
+            
+            <div class="col-lg-2 col-sm-3 col-md-2">
+                <div class="top-cart-contain">
+                    <a class="btn btn-success" style="background-color: #01e675; border-color: #01e675" href="https://wa.me/573013054053" target="_blank">
+                        <i class="fa fa-whatsapp"></i>
+                        ENVIAR MENSAJE
+                    </a>
+                </div>
+            </div>
+
         </div>
     </div>
 </header>
