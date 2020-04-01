@@ -1,25 +1,10 @@
 <?php
-    //Campos del pedido
-        $att_form = array(
-            'class' =>  'form1'
-        );
-        
-        $att_submit = array(
-            'class'  => 'btn-polo-lg',
-            'value'  => 'Ir a pagar'
-        );
-        
-    //Form envío
-    
     //Verificar si puede ir a pagar
-        $datos_faltantes = 0;
-        if ( strlen($row->no_documento) == 0 ) { $datos_faltantes++; }
-        if ( strlen($row->email) == 0 ) { $datos_faltantes++; }
-        if ( strlen($row->direccion) == 0 ) { $datos_faltantes++; }
-        if ( strlen($row->celular) == 0 ) { $datos_faltantes++; }
-        
-        $att_submit['class'] = 'btn-polo-lg';
-        if ( $datos_faltantes > 0 ) { $att_submit['class'] .= ' hidden'; }
+        $datos_faltantes = array();
+        if ( strlen($row->no_documento) == 0 ) { $datos_faltantes[] = 'Número de documento'; }
+        if ( strlen($row->email) == 0 ) { $datos_faltantes[] = 'Correo electrónico'; }
+        if ( strlen($row->direccion) == 0 ) { $datos_faltantes[] = 'Dirección de entrega'; }
+        if ( strlen($row->celular) == 0 ) { $datos_faltantes[] = 'Número de celular'; }
 ?>
 
 <div style="margin-bottom: 20px;">
@@ -42,14 +27,6 @@
                                         
                                     </tr>
                                 </thead>
-                                
-                                <tfoot>
-                                    <tr class="first last">
-                                        <td class="a-right last">
-                                            <?= anchor("pedidos/carrito/", '<i class="fa fa-shopping-cart"></i><span><span> Editar</span></span>', 'class="btn btn-polo w3" title="Editar datos de entrega"') ?>
-                                        </td>
-                                    </tr>
-                                </tfoot>
                                 
                                 <tbody>
                                     <?php foreach ($detalle->result() as $row_detalle) : ?>
@@ -120,13 +97,17 @@
                     </tr>
                 </thead>
                 
-                <tfoot>
-                    <tr class="first last">
-                        <td class="a-right last" colspan="2">
-                            <?= anchor("pedidos/compra_a/{$row->cod_pedido}", '<i class="fa fa-edit"></i><span><span> Editar</span></span>', 'class="btn btn-polo w3" title="Editar productos del carrito"') ?>
-                        </td>
-                    </tr>
-                </tfoot>
+                <?php if ( $this->session->userdata('rol') <= 1 ) { ?>
+                    <tfoot>
+                        <tr class="first last">
+                            <td class="a-right last" colspan="2">
+                                <a href="<?php echo base_url("pedidos/editar/edit/{$row->id}") ?>" class="btn btn-polo w3" title="Editar pedido">
+                                    <i class="fa fa-edit"></i><span><span> Editar</span></span>
+                                </a>
+                            </td>
+                        </tr>
+                    </tfoot>
+                <?php } ?>
 
                 <tbody>
                     <tr>
@@ -167,20 +148,34 @@
         </div>
         
         <div class="col col-md-4">
-            
+            <div class="page-title">
+                <h2>Valores</h2>
+            </div>
             <?php $this->load->view('pedidos/compra/totales_v'); ?>
             <ul class="checkout">
-                <?= form_open($destino_form, $att_form) ?>
+                <?php echo form_open($destino_form) ?>
 
                     <?php foreach ($form_data as $key => $valor) : ?>
                         <?= form_hidden($key, $valor) ?>
                     <?php endforeach ?>
 
                     <li>
-                        <?= form_submit($att_submit) ?>
+                        <?php if ( count($datos_faltantes) == 0 ) { ?>
+                            <button class="btn-polo-lg" type="submit">
+                                IR A PAGAR
+                            </button>
+                        <?php } else { ?>
+                            <div class="alert alert-warning">
+                                <p> 
+                                    <i class="fa fa-info-circle fa-2x"></i>
+                                </p>
+                                <p>
+                                    <?php echo count($datos_faltantes) ?> datos faltantes: <?php echo implode(', ', $datos_faltantes); ?>.
+                                </p>
+                            </div>
+                        <?php } ?>
                     </li>
-                <?= form_close('') ?>
-
+                <?php echo form_close('') ?>
             </ul>
             
             <?php if ( $row->pais_id != 51 ) { ?>
@@ -188,7 +183,6 @@
                     Pagar en Dólares (USD)
                 </a>
             <?php } ?>
-            
             
         </div>
     </div>

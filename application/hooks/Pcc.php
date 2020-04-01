@@ -92,6 +92,7 @@ class Pcc {
         $funciones_publicas[] = 'pedidos/compra_a';
         $funciones_publicas[] = 'pedidos/compra_b';
         $funciones_publicas[] = 'pedidos/compra_b_usd';
+        $funciones_publicas[] = 'pedidos/link_pago';
         $funciones_publicas[] = 'pedidos/abandonar';
         $funciones_publicas[] = 'pedidos/respuesta';          //Pagos on line, para usuario
         $funciones_publicas[] = 'pedidos/respuesta_print';    //Pagos on line, para usuario
@@ -121,6 +122,12 @@ class Pcc {
         $funciones_publicas[] = 'accounts/validate_signup';
         $funciones_publicas[] = 'accounts/register';
         $funciones_publicas[] = 'accounts/registered';
+        $funciones_publicas[] = 'accounts/fb_login';
+
+        $funciones_publicas[] = 'books/read';
+
+        $funciones_publicas[] = 'info/distribuidores_disponibles';
+        
         
         return $funciones_publicas;
     }

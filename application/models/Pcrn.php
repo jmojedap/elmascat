@@ -703,7 +703,6 @@ class Pcrn extends CI_Model{
     
     function sin_acentos($s)
     {
-
         //Caracteres de ISO
             $s = str_replace('Ã¡','a',$s);
             $s = str_replace('Ã©','e',$s);
@@ -746,7 +745,7 @@ class Pcrn extends CI_Model{
     
     function moneda($numero, $decimales = 0)
     {
-        $moneda = "$" .  number_format($numero, $decimales , ',', '.');
+        $moneda = '<span class="currency_symbol">$</span> ' .  number_format($numero, $decimales , ',', '.');
         return $moneda;
     }
     

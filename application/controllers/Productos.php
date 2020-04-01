@@ -283,9 +283,6 @@ class Productos extends CI_Controller{
             $this->load->model('Archivo_model');
             $this->load->model('Busqueda_model');
         
-        //Cargando datos básicos (basico)
-            
-        
         //Datos de consulta, construyendo array de búsqueda
             $busqueda = $this->Busqueda_model->busqueda_array();
             $busqueda_str = $this->Busqueda_model->busqueda_str();

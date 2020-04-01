@@ -23,19 +23,28 @@
 ?>
 
 <script>
-//Variables
+// Variables
+//-----------------------------------------------------------------------------
         var base_url = '<?= base_url() ?>';
         var pedido_id = <?= $row->id ?>;
+        var cod_pedido = '<?php echo $row->cod_pedido ?>';
         var estado_pedido = <?= $row->estado_pedido ?>;
-//Docready
+
+// Document Ready
+//-----------------------------------------------------------------------------
     $(document).ready(function(){
         $('.boton_estado').click(function(){
             estado_pedido = $(this).data('estado');
             //act_estado(); 
         });
+
+        $('#btn_reiniciar_pedido').click(function(){
+            reiniciar_pedido();
+        });
     });
 
-//Functions
+// Functions
+//-----------------------------------------------------------------------------
 
     //Ajax
     function act_estado(){
@@ -47,10 +56,50 @@
             }
         });
     }
+
+    function reiniciar_pedido(){
+        $.ajax({        
+            type: 'POST',
+            url: base_url + 'pedidos/reiniciar/' + cod_pedido,
+            success: function(response){
+                if (response.qty_affected > 0) {
+                    toastr['success']('Pedido reiniciado');
+                    $('#btn_reiniciar_pedido').removeClass('btn-default');
+                    $('#btn_reiniciar_pedido').addClass('btn-success');
+                    $('#btn_reiniciar_pedido').html('<i class="fa fa-check"></i> Reiniciado');
+                    setTimeout(function(){ 
+                        window.location = base_url + 'pedidos/ver/' + pedido_id;
+                    }, 3000);
+                } else {
+                    toastr['error']('No se pudo reiniciar el pedido');
+                }
+            }
+        });
+    }
 </script>
 
-<div class="sep2">
-    <?= anchor("pedidos/reporte/{$row->id}", '<i class="fa fa-print"></i> Resumen', 'class="btn btn-default" target="_blank" title="Imprimir reporte resumen"') ?>
+<div class="mb-2">
+    <a href="<?php echo base_url("pedidos/reporte/{$row->id}") ?>" class="btn btn-default w3" target="_blank" title="Imprimir reporte resumen">
+        <i class="fa fa-print"></i> Resumen
+    </a>
+    <?php if ( $row->estado_pedido == 1 ) { ?>
+        <a href="<?php echo base_url("pedidos/link_pago/{$row->cod_pedido}") ?>" class="btn btn-success" target="_blank" title="Link para iniciar proceso de pago">
+            <i class="fa fa-link"></i>
+            Link de pago
+        </a>
+    <?php } ?>
+    <?php if ( $row->estado_pedido < 3 && $this->session->userdata('rol_id') <= 1 ) { ?>
+        <button class="btn btn-default w120p" title="Reiniciar el pedido para intentar nuevamente el pago" id="btn_reiniciar_pedido">
+            <i class="fa fa-sync-alt"></i>
+            Reiniciar
+        </button>
+    <?php } ?>
+    <?php if ( $this->session->userdata('rol_id') == 0 ) { ?>
+        <a href="<?php echo base_url("admin/tablas/pedido/edit/{$row->id}") ?>" class="btn btn-default w120p" title="Edición del registro en la base de datos" target="_blank">
+            <i class="fa fa-edit"></i>
+            Editar Row
+        </a>
+    <?php } ?>
 </div>
 
 <div class="row">

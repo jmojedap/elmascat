@@ -1,0 +1,221 @@
+div.div1{
+    margin: 0 0 10px 0;
+}
+
+div.div2{
+    margin: 10px 0 10px 0;
+}
+
+div.div3{
+    margin: 10px 0px 10px 0px;
+}
+
+div.casilla{
+    float: left;
+    padding-right: 10px;
+}
+
+div.div4{
+    margin: 10px 15px 10px 0px;
+}
+
+div.div5{
+    border-top: 1px solid #f1f1f1;
+    padding: 5px;
+}
+
+div.div5.actual{
+    background: #ffffd6;
+}
+
+div.sep1{
+    width: 100%;
+    border-bottom: 1px solid #eee;
+}
+
+div.caja1{
+    background: #f7f7f7;
+    border: 1px solid #eaeaea;
+    padding: 45px;
+}
+
+hr.hr1{
+    border-bottom: 1px solid #eee;
+    border-top: 0px;
+    margin-top: 5px;
+}
+
+input.input1{
+    border: 1px solid #eaeaea;
+    border-radius: 0px;
+}
+
+.btn-polo {
+    border: 1px solid #ddd;
+    padding: 10px 7px;
+    background: #fff;
+    border-radius: 0px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+    transition: color 300ms ease-in-out 0s, background-color 300ms ease-in-out 0s, background-position 300ms ease-in-out 0s;
+    height: 36px;
+}
+
+.btn-polo:hover{
+    background: #37a4d9;
+    color: #fff;
+    border: 1px solid #37a4d9;
+    
+}
+
+.btn-wa{
+    background-color: #01e675;
+    border-color: #01e675;
+    color: white;
+}
+
+.btn-wa:hover{
+    background-color: #03ca67;
+    border-color: #03ca67;
+    color: white;
+}
+
+.input-polo{
+    height: 36px;
+    margin-top: 10px;
+    border: 1px solid #eaeaea;
+    text-align: center;
+}
+
+.input-polo-2{
+    background: #f7f7f7;
+    width: 100%;
+    border: 1px solid #f0f0f0;
+    padding: 10px;
+    border-radius: 0px;
+    margin-bottom: 10px;
+}
+
+.input-polo-2:focus{
+    background: #ffffff;
+}
+
+.btn-polo-lg{
+    background: #fdd922;
+    border: none;
+    padding: 12px 5px;
+    color: #000;
+    width: 100%;
+    margin-bottom: 10px;
+    font-family: 'Open Sans', sans-serif;
+    text-transform: uppercase;
+    font-size: 18px;
+    transition: color 300ms ease-in-out 0s, background-color 300ms ease-in-out 0s, background-position 300ms ease-in-out 0s;
+}
+
+.btn-polo-lg:hover{
+    background: #37a4d9;
+    color: #fff;
+}
+
+
+/* ANCHO de OBJETOS
+----------------------------------------------------------------------------------------------------*/
+
+.w1{
+    width: 25px;
+}
+
+.w2{
+    width: 50px;
+}
+
+.w3{
+    width: 100px;
+}
+
+.w4{
+    width: 150px;
+}
+
+.w5{
+    width: 200px;
+}
+
+/* TEXTO
+----------------------------------------------------------------------------------------------------*/
+
+
+.resaltar{
+    font-weight: bold;
+    color: #da4631;
+}
+
+.correcto{
+    font-weight: bold;
+    color: #89cb4f;
+}
+
+span.suave{
+    color: #aaa;
+}
+
+.rojo{
+    color: #D74A38;
+    /*color: #FF8100;*/
+}
+
+img.logo_social{
+    width: 32px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+/* ADAPTACIÓN BOOTSTRAP
+----------------------------------------------------------------------------------------------------*/
+
+.money {
+    color: #444;
+    font-family: 'Open Sans';
+    font-size: 1.0em;
+    font-weight: 700;
+}
+
+.currency_symbol{
+    font-weight: 400;
+    color: #999;
+}
+
+.money_total{
+    font-size: 1.5em;
+    color: #b71c1c;
+}
+
+.money_total .currency_symbol {
+    color:#b71c1c;
+}
+
+.flexigrid .form-control{
+    box-sizing: content-box;  /*pcrn-mod 2015-02-23*/
+}
+
+.checkout_steps {
+    font-family: 'Open Sans';
+}
+
+.checkout_steps {
+    border: 1px solid #FFFFFF;
+}
+
+.checkout_steps .step{
+    color: #333333;
+    background-color: #FAFAFA;
+}
+
+.checkout_steps .step.active{
+    font-size: 1.2em;
+    background-color: #fdd922;
+    color: #333333;
+}

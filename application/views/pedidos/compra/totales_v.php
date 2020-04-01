@@ -1,4 +1,3 @@
-<div style="height: 35px;"></div>
 <table class="data-table cart-table">
     <thead>
         <th colspan="2">Total</th>
@@ -8,8 +7,8 @@
             <td class="a-left" colspan="1"><strong>Total</strong></td>
             <td class="text-right">
                 <strong>
-                    <span class="price" style="font-size: 150%;">
-                        <?= $this->Pcrn->moneda($row->valor_total) ?>
+                    <span class="money money_total">
+                        <?php echo $this->Pcrn->moneda($row->valor_total) ?>
                     </span>
                 </strong>
             </td>
@@ -21,7 +20,7 @@
                 Subtotal productos
             </td>
             <td class="text-right">
-                <span class="price">
+                <span class="money">
                     <?= $this->Pcrn->moneda($row->total_productos) ?>
                 </span>
             </td>
@@ -33,7 +32,7 @@
                     Gastos transacción y Envío (<?= $row->peso_total ?> kg)
                 </td>
                 <td class="text-right">
-                    <span class="price">
+                    <span class="money">
                         <?= $this->Pcrn->moneda($arr_extras['gastos_envio']);  ?>
                     </span>
                 </td>

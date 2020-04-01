@@ -1,35 +1,44 @@
-<?php 
+<?php
+    $step = $this->uri->segment(2);
 
-    $clases_col['carrito'] = '';
-    $clases_col['datos'] = '';
-    $clases_col['verificacion'] = '';
-    $clases_col['resultado'] = '';
+    $cl_steps['carrito'] = '';
+    $cl_steps['datos'] = '';
+    $cl_steps['verificacion'] = '';
+    $cl_steps['resultado'] = '';
     
-    if ( $this->uri->segment(2) == 'carrito' ) { $clases_col['carrito'] = 'info'; }
-    if ( $this->uri->segment(2) == 'compra_a' ) { $clases_col['datos'] = 'info'; }
-    if ( $this->uri->segment(2) == 'compra_b' ) { $clases_col['verificacion'] = 'info'; }
-    if ( $this->uri->segment(2) == 'respuesta' ) { $clases_col['resultado'] = 'info'; }
+    if ( $step == 'carrito' ) { $cl_steps['carrito'] = 'active'; }
+    if ( $step == 'compra_a' ) { $cl_steps['datos'] = 'active'; }
+    if ( $step == 'compra_b' ) { $cl_steps['verificacion'] = 'active'; }
+    if ( $step == 'link_pago' ) { $cl_steps['verificacion'] = 'active'; }
+    if ( $step == 'respuesta' ) { $cl_steps['resultado'] = 'active'; }
+
+    $arr_pct = array(
+        'carrito' => '25',
+        'compra_a' => '50',
+        'compra_b' => '75',
+        'respuesta' => '100'
+    );
 ?>
 
-<table class="table table-bordered">
+<table class="table table-bordered checkout_steps">
     <tbody>
         <tr class="text-center">
-            <td width="25%" class="<?= $clases_col['carrito'] ?>">
-                Carrito
+            <td width="25%" class="step <?php echo $cl_steps['carrito'] ?>">
+                CARRITO
             </td>
-            <td width="25%" class="<?= $clases_col['datos'] ?>">
-                Datos de entrega
+            <td width="25%" class="step <?php echo $cl_steps['datos'] ?>">
+                DATOS DE ENTREGA
             </td>
-            <td width="25%" class="<?= $clases_col['verificacion'] ?>">
-                Verificación
+            <td width="25%" class="step <?php echo $cl_steps['verificacion'] ?>">
+                VERIFICACIÓN
             </td>
-            <td width="25%" class="<?= $clases_col['resultado'] ?>">
-                Resultado pago
+            <td width="25%" class="step <?php echo $cl_steps['resultado'] ?>">
+                RESULTADO
             </td>
         </tr>
     </tbody>
 </table>
 
-<?php $this->load->view($vista_b); ?>
-<br/>
-
+<?php if ( ! is_null($vista_b) ) { ?>
+    <?php $this->load->view($vista_b); ?>
+<?php } ?>

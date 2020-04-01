@@ -102,7 +102,11 @@ define('PTL_FRONT', 'plantillas/polo/plantilla_v');          //Vista plantilla d
 define('VER_LOCAL', FALSE);                         //Es una versión local
 define('MAX_REG_EXPORT', 5000);                     //Número máximo de registros para exportar en archivo MS-Excel
 define('NOMBRE_APP', 'DistriCatólicas');            //Nombre de la aplicación
+
 define('APP_NAME', 'DistriCatólicas');            //Nombre de la aplicación
+define('PATH_CONTENT', 'content/');                     //Carpeta de contenido de la aplicación
+define('URL_CONTENT', 'http://www.districatolicas.com/tienda/content/');  //URL de la carpeta de contenido de la aplicación
+define('TPL_FRONT', 'templates/polo/main_v');          //Vista plantilla del front
 
 define('K_RCSK', '6LfwTtgUAAAAAFQYAKdRfPMsTYWHw5SAgX2gwUda');   //ReCaptcha V3 SiteKey
 define('K_RCSC', '6LfwTtgUAAAAAJjKiRm-UTwhA_MnDXpAY_Zm4089');   //ReCaptcha V3 Clave Secreta

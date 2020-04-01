@@ -37,16 +37,16 @@
         
         <?php if ( ! is_null($nombre_categoria) ){ ?>
             <div class="category-title">
-                <h1><?= $nombre_categoria ?></h1>
+                <h1><?php echo $nombre_categoria ?></h1>
             </div>
         <?php } ?>
         
         <?php if ( ! is_null($nombre_fabricante) ){ ?>
             <div class="category-title">
                 <h1>
-                    <?= $nombre_fabricante ?>
+                    <?php echo $nombre_fabricante ?>
                     <span class="suave" style="font-size: 0.61em;">
-                        (<?= $cant_resultados ?> títulos)
+                        (<?php echo $cant_resultados ?> títulos)
                     </span>
                 </h1>
             </div>
@@ -60,25 +60,25 @@
                     <ul>
                         <li>
                             <a href="#">
-                                <?= $texto_orden ?>
+                                <?php echo $texto_orden ?>
                                 <span class="right-arrow"></span>
                             </a>
                             <ul>
                                 <li>
-                                    <?= anchor("productos/catalogo/?{$get_str_sin_o}o=slug", 'Nombre', 'class="" title=""') ?>
+                                    <?php echo anchor("productos/catalogo/?{$get_str_sin_o}o=slug", 'Nombre', 'class="" title=""') ?>
                                 </li>
                                 <li>
-                                    <?= anchor("productos/catalogo/?{$get_str_sin_o}o=precio", 'Precio', 'class="" title=""') ?>
+                                    <?php echo anchor("productos/catalogo/?{$get_str_sin_o}o=precio", 'Precio', 'class="" title=""') ?>
                                 </li>
                             </ul>
                         </li>
                     </ul>
-                    <?= anchor("productos/catalogo/?{$get_str_sin_ot}ot=asc", '<span class="glyphicon glyphicon-arrow-up"></span>', 'class="button-asc left" title="Orden ascendente"') ?>
-                    <?= anchor("productos/catalogo/?{$get_str_sin_ot}ot=desc", '<span class="glyphicon glyphicon-arrow-down"></span>', 'class="button-asc left" title="Orden descendente"') ?>
+                    <?php echo anchor("productos/catalogo/?{$get_str_sin_ot}ot=asc", '<span class="glyphicon glyphicon-arrow-up"></span>', 'class="button-asc left" title="Orden ascendente"') ?>
+                    <?php echo anchor("productos/catalogo/?{$get_str_sin_ot}ot=desc", '<span class="glyphicon glyphicon-arrow-down"></span>', 'class="button-asc left" title="Orden descendente"') ?>
                 </div>
                 <div class="pager">
                     <div class="pages">
-                        <?= $this->pagination->create_links(); ?>
+                        <?php echo $this->pagination->create_links(); ?>
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
             <div class="toolbar">
                 <div class="pager">
                     <div class="pages">
-                        <?= $this->pagination->create_links(); ?>
+                        <?php echo $this->pagination->create_links(); ?>
                     </div>
                 </div>
             </div>

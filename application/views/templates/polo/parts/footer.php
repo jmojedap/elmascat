@@ -154,14 +154,7 @@
             </div>
         </div>
     </div>
-    <div class="footer-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-5 col-xs-12 coppyright"> &copy; 2018 | Desarrollado por <a href="http://www.pacarina.com" target="_blank">Pacarina.com</a> </div>
-                <div class="col-sm-7 col-xs-12 company-links">
-                    
-                </div>
-            </div>
-        </div>
+    <div class="footer-bottom text-center">
+        <div class="coppyright"> &copy; 2020 &middot; Desarrollado por <a href="http://www.pacarina.com" target="_blank">Pacarina Media Lab</a> </div>
     </div>
 </footer>

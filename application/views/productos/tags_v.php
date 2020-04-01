@@ -133,7 +133,7 @@
                                 <i class="fa fa-check"></i>
                             </span>
                             <span id="add_<?php echo $row_tag->id ?>" class="add_categoria btn btn-default btn-xs <?php echo $clase_add ?>" data-id="<?php echo $row_tag->id ?>">
-                                <i class="fa fa-circle-o"></i>
+                                <i class="far fa-circle"></i>
                             </span>
                         </td>
                         <td>

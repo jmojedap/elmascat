@@ -7,10 +7,8 @@
         $valores['apellidos'] = $this->Pcrn->si_strlen(set_value('apellidos'), $row->apellidos);
         $valores['no_documento'] = $this->Pcrn->si_strlen(set_value('no_documento'), $row->no_documento);
         $valores['direccion'] = $this->Pcrn->si_strlen(set_value('direccion'), $row->direccion);
-        $valores['direccion_detalle'] = $this->Pcrn->si_strlen(set_value('direccion_detalle'), $row->direccion_detalle);
         $valores['email'] = $this->Pcrn->si_strlen(set_value('email'), $row->email);
         $valores['celular'] = $this->Pcrn->si_strlen(set_value('celular'), $row->celular);
-        $valores['telefono'] = $this->Pcrn->si_strlen(set_value('telefono'), $row->telefono);
         $valores['notas'] = $this->Pcrn->si_strlen(set_value('notas'), $row->notas);
 
     //Campos del pedido
@@ -26,6 +24,7 @@
         $att_nombre = array(
             'id'     => 'nombre',
             'name'   => 'nombre',
+            'required' => TRUE,
             'class'   => 'form-control',
             'autofocus'   => TRUE,
             'placeholder'   => 'Nombres',
@@ -46,7 +45,7 @@
             'id'     => 'no_documento',
             'name'   => 'no_documento',
             'class'   => 'form-control',
-            'placeholder'   => 'Cédula',
+            'placeholder'   => 'CC o NIT',
             'required' => TRUE,
             'value' =>  $valores['no_documento'],
             'title' => 'Digite su número de cédula o documento'
@@ -57,7 +56,7 @@
             'name'   => 'direccion',
             'class'   => 'form-control',
             'required' => TRUE,
-            'placeholder'   => 'Dirección',
+            'placeholder'   => '',
             'value' =>  $valores['direccion'],
             'title' => 'Digite la dirección donde se entregará el pedido'
         );
@@ -68,7 +67,7 @@
             'class'   => 'form-control',
             'type'   => 'email',
             'required' => TRUE,
-            'placeholder'   => 'Correo electrónico',
+            'placeholder'   => '',
             'value' =>  $valores['email'],
             'title' => 'Escriba su correo electrónico'
         );
@@ -77,7 +76,7 @@
             'id'     => 'celular',
             'name'   => 'celular',
             'class'   => 'form-control',
-            'placeholder'   => 'Celular',
+            'placeholder'   => '',
             'required' => TRUE,
             'value' =>  $valores['celular'],
             'title' => 'Escriba su número de celular, sin espacios ni guiones',
@@ -152,6 +151,13 @@
     }
 </script>
 
+<a href="<?php echo base_url("pedidos/carrito") ?>" class="btn btn-polo w120p">
+    <i class="fa fa-arrow-left"></i>
+    Atrás
+</a>
+
+<hr>
+
 <div class="row">
     <div class="col col-md-8">
 
@@ -160,8 +166,8 @@
         <?php if ( ! ($row->ciudad > 0) ) { ?>
         <div class="form-horizontal">
             <div class="form-group">
-                <label for="ciudad_id" class="col-sm-3 control-label">Ciudad de entrega</label>
-                <div class="col-sm-9">
+                <label for="ciudad_id" class="col-md-4 control-label">Ciudad de entrega</label>
+                <div class="col-md-8">
                     <?= form_dropdown('ciudad_id', $opciones_ciudad, $row->ciudad_id, 'id="ciudad_id" class="form-control chosen-select"') ?>
                 </div>
             </div>
@@ -175,45 +181,42 @@
                 <?= form_open($destino_form, $att_form) ?>
                 <?= form_hidden('pedido_id', $pedido_id) ?>
                 <div class="form-group">
-                    <label for="nombre" class="col-sm-3 control-label">Nombres</label>
-                    <div class="col-sm-9">
-                        <?= form_input($att_nombre); ?>
+                    <label for="nombre" class="col-sm-4 control-label">Nombres | Apellidos</label>
+                    <div class="col-sm-4">
+                        <?php echo form_input($att_nombre); ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <?php echo form_input($att_apellidos); ?>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="apellidos" class="col-sm-3 control-label">Apellidos</label>
-                    <div class="col-sm-9">
-                        <?= form_input($att_apellidos); ?>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="no_documento" class="col-sm-3 control-label">No. Documento </label>
-                    <div class="col-sm-9">
+                    <label for="no_documento" class="col-md-4 control-label">No. Documento </label>
+                    <div class="col-md-8">
                         <?= form_input($att_no_documento); ?>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="email" class="col-sm-3 control-label">Correo electrónico</label>
-                    <div class="col-sm-9">
+                    <label for="email" class="col-md-4 control-label">Correo electrónico</label>
+                    <div class="col-md-8">
                         <?= form_input($att_email); ?>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="direccion" class="col-sm-3 control-label">Dirección entrega</label>
-                    <div class="col-sm-9">
+                    <label for="direccion" class="col-md-4 control-label">Dirección entrega</label>
+                    <div class="col-md-8">
                         <?= form_input($att_direccion); ?>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="celular" class="col-sm-3 control-label">Celular</label>
-                    <div class="col-sm-9">
+                    <label for="celular" class="col-md-4 control-label">Celular</label>
+                    <div class="col-md-8">
                         <?= form_input($att_celular); ?>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="notas" class="col-sm-3 control-label">Notas sobre el pedido</label>
-                    <div class="col-sm-9">
+                    <label for="notas" class="col-md-4 control-label">Notas sobre el pedido</label>
+                    <div class="col-md-8">
                         <?= form_textarea($att_notas) ?>
                     </div>
                 </div>

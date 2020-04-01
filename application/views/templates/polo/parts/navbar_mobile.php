@@ -23,11 +23,16 @@
                         <li class="drop-menu">
                             <?php echo anchor("posts/leer/28/pagos-pse", '<span>Pagos PSE</span>') ?>
                         </li>
-                        <li class="drop-menu">
+                        <li class="drop-menu hidden">
                             <?php echo anchor("pedidos/soy_distribuidor", '<span>Soy Distribuidor</span>') ?>
                         </li>
                         <li class="level0 parent drop-menu active" title="Productos en oferta">
                             <?php echo anchor("productos/catalogo/?ofrt=1", '<span>En Oferta</span>') ?>
+                        </li>
+                        <li class="level0 parent drop-menu active" title="Información Revista Minutos de Amor Abril 2020">
+                            <a href="<?php echo base_url("info/distribuidores_disponibles") ?>">
+                                <span>Información Abril 2020</span>
+                            </a>
                         </li>
                     </ul>
                 </li>

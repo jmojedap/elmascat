@@ -3,13 +3,13 @@
     <span class="resaltar">
         <?= $row->nombre ?> <?= $row->apellidos ?>
     </span>
-    <span class="suave"> | </span>
+    <span class="suave"> &middot; </span>
     
     <span class="suave">Valor </span>
     <span class="resaltar">
         <?= $this->Pcrn->moneda($row->valor_total) ?>
     </span>
-    <span class="suave"> | </span>
+    <span class="suave"> &middot; </span>
     
     <span class="suave">Creado </span>
     <span class="resaltar">
@@ -18,7 +18,7 @@
     <span class="suave">
         Hace <?= $this->Pcrn->tiempo_hace($row->creado); ?>
     </span>
-    <span class="suave"> | </span>
+    <span class="suave"> &middot; </span>
     
     <span class="suave">
         Estado Pago 
@@ -26,7 +26,7 @@
     <span class="resaltar">
         <?= $this->App_model->nombre_item($row->codigo_respuesta_pol, 1, 10); ?>
     </span>
-    <span class="suave"> | </span>
+    <span class="suave"> &middot; </span>
 </p>
 
 <?php
@@ -73,7 +73,7 @@
         
     //Elementos de menú según el rol del visitante
         $elementos_rol[0] = array('explorar', 'ver', 'pol', 'extras', 'editar');
-        $elementos_rol[1] = array('explorar', 'ver', 'pol', 'editar');
+        $elementos_rol[1] = array('explorar', 'ver', 'pol', 'extras', 'editar');
         $elementos_rol[2] = array('explorar', 'ver', 'pol', 'editar');
         $elementos_rol[6] = array('explorar', 'ver', 'pol', 'editar');
         

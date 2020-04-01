@@ -443,4 +443,12 @@ class Accounts extends CI_Controller {
     {
         redirect('accounts/login');
     }
+
+// FACEBOOK LOGIN
+//-----------------------------------------------------------------------------
+
+    function fb_login()
+    {
+        $this->load->view('accounts/fb_login_v');
+    }
 }

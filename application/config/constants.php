@@ -96,13 +96,18 @@ define('URL_IMG', 'http://localhost/dc/recursos/imagenes/');
 define('URL_ASSETS', 'http://localhost/dc/assets/');
 define('URL_RECURSOS', 'http://localhost/dc/recursos/');
 define('URL_UPLOADS', 'http://www.districatolicas.com/tienda/uploads/');
+//define('URL_UPLOADS', 'http://localhost/dc/uploads/');
 define('PTL_ADMIN', 'plantillas/admin_lte/plantilla_v');       //Vista plantilla de administración
 define('PTL_ADMIN_F', 'plantillas/admin_lte/');                //Folder de la carpeta de la plantilla de administración
 define('PTL_FRONT', 'plantillas/polo/plantilla_v');          //Vista plantilla del front
 define('VER_LOCAL', TRUE);                          //Es una versión local
 define('MAX_REG_EXPORT', 5000);                     //Número máximo de registros para exportar en archivo MS-Excel
 define('NOMBRE_APP', 'DistriCatólicas');            //Nombre de la aplicación
-define('APP_NAME', 'DistriCatólicas');            //Nombre de la aplicación
+
+define('APP_NAME', 'DistriCatólicas');                  //Nombre de la aplicación
+define('PATH_CONTENT', 'content/');                     //Carpeta de contenido de la aplicación
+define('URL_CONTENT', 'http://localhost/dc/content/');  //URL de la carpeta de contenido de la aplicación
+define('TPL_FRONT', 'templates/polo/main_v');          //Vista plantilla del front
 
 define('K_RCSK', '6LfwTtgUAAAAAFQYAKdRfPMsTYWHw5SAgX2gwUda');   //ReCaptcha V3 SiteKey
 define('K_RCSC', '6LfwTtgUAAAAAJjKiRm-UTwhA_MnDXpAY_Zm4089');   //ReCaptcha V3 Clave Secreta

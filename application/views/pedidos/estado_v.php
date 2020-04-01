@@ -1,25 +1,3 @@
-<?php
-    $att_campo = array(
-        'id' => 'campo',
-        'name' => 'campo',
-        'class' => 'form-control',
-        'value' => 'valor',
-        'placeholder' => 'Escriba el campo'
-    );
-
-    $att_cod_pedido = array(
-        'name' => 'cod_pedido',
-        'class' => 'form-control',
-        'placeholder' => 'Código del pedido',
-        'value' => $cod_pedido
-    );
-    
-    $att_submit = array(
-        'class'  => 'btn btn-primary pull-right',
-        'value'  => 'Buscar'
-    );
-?>
-
 <div class="row">
     <div class="col-md-12">
         <div class="page-title">
@@ -27,16 +5,31 @@
         </div>
         <div class="status alert alert-success" style="display: none"></div>
         <form id="main-contact-form" class="contact-form row" name="contact-form" method="post">
-            <div class="form-group col-md-12">
-                <?= form_input($att_cod_pedido) ?>
+            <div class="col-md-2">
+                <?php if ( $this->session->userdata('logged') ){ ?>
+                    <a href="<?php echo base_url("pedidos/mis_pedidos") ?>" class="btn btn-primary btn-block">
+                        <i class="fa fa-arrow-left"></i>
+                        Mis pedidos
+                    </a>
+                <?php } ?>
+            </div>
+            <div class="form-group col-md-8">
+                <input
+                    type="text"
+                    id="field-cod_pedido"
+                    name="cod_pedido"
+                    required
+                    class="form-control"
+                    placeholder="Escribe el código de tu pedido"
+                    title="Escriba el código de su pedido"
+                    value="<?php echo $cod_pedido ?>"
+                    >
             </div>
 
-            <div class="form-group col-md-12">
-                <?= form_submit($att_submit) ?>
-                <?php if ( $this->session->userdata('logged') ){ ?>
-                    <?= anchor('pedidos/mis_pedidos', '<i class="fa fa-arrow-left"></i> Mis pedidos', 'class="btn btn-primary pull-left" title=""') ?>
-                <?php } ?>
-
+            <div class="form-group col-md-2">
+                <button class="btn btn-primary btn-block">
+                    Buscar
+                </button>
             </div>
         </form>
     </div>
@@ -46,7 +39,7 @@
     <div class="">
         <div class="alert alert-info" role="alert">
             <i class="fa fa-info-circle"></i>
-            Lo sentimos, no encontramos ningún pedido con el código <?= $cod_pedido ?>
+            Lo sentimos, no encontramos ningún pedido con el código <?php echo $cod_pedido ?>
         </div>
     </div>
 <?php } ?>
@@ -110,15 +103,13 @@
 
                 <div class="col-sm-4">
                     <div class="order-message total_area">
-                        <p>Resumen de la compra</p>
+                        <h3>Resumen de la compra</h3>
 
                         <table class="table table-condensed total-result">
                             <tr>
                                 <td>Subtotal productos</td>
-                                <td>
-                                    <span>
-                                        <?= $this->Pcrn->moneda($row->total_productos) ?>
-                                    </span>
+                                <td class="text-right">
+                                    <?= $this->Pcrn->moneda($row->total_productos) ?>
                                 </td>
                             </tr>
 
@@ -127,10 +118,8 @@
                                     <td>
                                         Gastos transacción y envío
                                     </td>
-                                    <td>
-                                        <span>
-                                            <?= $this->Pcrn->moneda($arr_extras['gastos_envio']);  ?>
-                                        </span>
+                                    <td class="text-right">
+                                        <?php echo $this->Pcrn->moneda($arr_extras['gastos_envio']);  ?>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -151,8 +140,8 @@
 
                             <tr>
                                 <td>Total</td>
-                                <td>
-                                    <span class="resaltar" style="font-size: 1.5em;">
+                                <td class="text-right">
+                                    <span class="money" style="font-size: 1.5em;">
                                         <?= $this->Pcrn->moneda($row->valor_total) ?>
                                     </span>
                                 </td>
@@ -170,8 +159,8 @@
         <table class="table table-bordered">
             <thead>
                 <tr class="cart_menu">
-                    <td class="description"></td>
-                    <td class="price">Precio</td>
+                    <td class="description">Producto</td>
+                    <td class="">Precio</td>
                     <td class="quantity">Cantidad</td>
                     <td class="total">Subtotal</td>
                 </tr>
@@ -207,9 +196,7 @@
                                     <span class="price" style="font-size: 125%; color: red; font-weight: bold;">
                                         <?= $this->Pcrn->moneda($row_detalle->precio) ?>
                                     </span>
-                                </span> 
-
-                                
+                                </span>
                             </p>
                             <?php if ( $precio_especial ) { ?>
                                 <p>
@@ -233,15 +220,11 @@
                                 </p>
                             <?php } ?>
                         </td>
-                        <td class="">
-                            <p>
-                                <?= $row_detalle->cantidad ?>
-                            </p>
+                        <td class="text-center">
+                            <?php echo $row_detalle->cantidad ?>
                         </td>
-                        <td class="">
-                            <p class="">
-                                <?= $this->Pcrn->moneda($precio_detalle) ?>
-                            </p>
+                        <td class="text-right">
+                            <?php echo $this->Pcrn->moneda($precio_detalle) ?>
                         </td>
 
                     </tr>

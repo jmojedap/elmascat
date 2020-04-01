@@ -437,6 +437,8 @@ class Pedido_Model extends CI_Model{
         
         $this->db->where('id', $pedido_id);
         $this->db->update('pedido', $registro);
+
+        return $this->db->affected_rows();
     }
     
     /**
@@ -934,6 +936,11 @@ class Pedido_Model extends CI_Model{
         //$arr_confirmacion = $this->input->post();    //Para test
         
         return $arr_confirmacion;
+    }
+
+    function delete_respuesta_pol($pedido_id)
+    {
+
     }
     
     /**

@@ -547,6 +547,55 @@ class Pedidos extends CI_Controller{
             $data['section_id'] = 'cart_items';
             $this->load->view(PTL_FRONT, $data);
     }
+
+    /**
+     * Link de pago
+     * 2020-03-31
+     */
+    function link_pago($cod_pedido)
+    {
+        $row = $this->Pedido_model->row_cod_pedido($cod_pedido);
+        $this->load->model('Producto_model');
+        $pedido_id = $row->id;
+        
+        $data = $this->Pedido_model->basico($pedido_id);
+        $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
+        $data['row_ciudad'] = $this->Pcrn->registro_id('lugar', $data['row']->ciudad_id);
+        
+        //Extras
+            $arr_extras['gastos_envio'] = $this->Pedido_model->valor_extras($pedido_id, 'producto_id IN (1,4)');
+            $data['arr_extras'] = $arr_extras;
+        
+        //Datos para el formulario que se envía a PagosOnLine
+            $data['form_data'] = $this->Pedido_model->form_data_pol($pedido_id);
+            $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Donde se envían los datos para el pago
+            
+            if ( $this->input->get('prueba') == 1 )
+            {
+                $data['form_data'] = $this->Pedido_model->form_data_pol($pedido_id, 1);
+                $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Página para transacciones de prueba
+            }
+        
+        //Solicitar vista
+            $data['head_title'] = 'Pagar pedido: ' . $row->cod_pedido;
+            $data['view_a'] = 'pedidos/compra/compra_v';
+            $data['view_b'] = 'pedidos/compra/link_pago_v';
+            $this->load->view(TPL_FRONT, $data);
+    
+    }
+
+    /**
+     * Cambia el campo pedido.codigo_pedido, para poder realizar un intento de pago nuevamente
+     * 2020-03-31
+     */
+    function reiniciar($cod_pedido)
+    {
+        $row = $this->Pedido_model->row_cod_pedido($cod_pedido);
+        $data['qty_affected'] = $this->Pedido_model->act_cod_pedido($row->id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
     /**
      * POST REDIRECT
@@ -748,10 +797,7 @@ class Pedidos extends CI_Controller{
     {
         //$this->Pedido_model->marca_confirmacion_pol();
         $confirmacion_pol = $this->Pedido_model->confirmacion_pol();
-        
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output($confirmacion_pol);
+        $this->output->set_content_type('application/json')->set_output($confirmacion_pol);
     }
     
     
@@ -800,9 +846,9 @@ class Pedidos extends CI_Controller{
             $data['sin_resultado'] = $sin_resultado;
         
         //Solicitar vista
-            $data['titulo_pagina'] = 'Estado Pedido';
-            $data['vista_a'] = 'pedidos/estado_v';
-            $this->load->view(PTL_FRONT, $data);
+            $data['head_title'] = 'Estado Pedido';
+            $data['view_a'] = 'pedidos/estado_v';
+            $this->load->view(TPL_FRONT, $data);
     }
     
     function mis_pedidos()
@@ -924,12 +970,10 @@ class Pedidos extends CI_Controller{
             $data['fabricantes'] = $this->db->get('item');
 
         //Variables generales
-            $data['titulo_pagina'] = 'Distribuidores';
-            $data['subtitulo_pagina'] = '';
-            $data['vista_a'] = 'comunes/gc_v';
-            $data['vista_menu'] = 'pedidos/info/soy_distribuidor_v';
+            $data['head_title'] = 'Distribuidores';
+            $data['view_a'] = 'pedidos/info/soy_distribuidor_v';
 
-        $this->load->view(PTL_FRONT, $data);
+        $this->load->view(TPL_FRONT, $data);
     }
     
 }

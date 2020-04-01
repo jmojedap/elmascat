@@ -14,7 +14,7 @@
             <!-- Campo para validación Google ReCaptcha V3 -->
             <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">        
             
-            <div class="div1">
+            <div class="form-group">
                 <input
                     type="text"
                     id="field-nombre"
@@ -25,7 +25,7 @@
                     title="nombre"
                     >
             </div>
-            <div class="div1">
+            <div class="form-group">
                 <input
                     type="text"
                     id="field-apellidos"
@@ -37,7 +37,7 @@
                     >
             </div>
 
-            <div class="div1" v-bind:class="{'has-error': ! validation.email_unique }">
+            <div class="form-group" v-bind:class="{'has-error': ! validation.email_unique }">
                 <input
                     type="email"
                     id="field-email"
@@ -53,7 +53,7 @@
                 </span>
             </div>
         
-            <div class="div2">
+            <div class="form-group">
                 <input
                     type="text"
                     id="field-fecha_nacimiento"
@@ -65,15 +65,17 @@
                     >
             </div>
         
-            <div class="div2">
+            <div class="form-group">
                 <input type="radio" name="sexo" value="1" required> Mujer
                 <input type="radio" name="sexo" value="2"> Hombre
             </div>
 
-            <p>
-                <input type="checkbox" name="condiciones" value="1" required style="display: inline; height: 15px; width: 15px;"/>
-                Acepto los <?= anchor('posts/leer/17/terminos-de-uso', 'Términos de uso', 'target="_blank"') ?> de Districatólicas S.A.S.
-            </p>
+            <div class="form-group">
+                <p>
+                    <input type="checkbox" name="condiciones" value="1" required style="display: inline; height: 15px; width: 15px;"/>
+                    Acepto los <?= anchor('posts/leer/17/terminos-de-uso', 'Términos de uso', 'target="_blank"') ?> de Districatólicas S.A.S.
+                </p>
+            </div>
 
             <button type="submit" class="button">
                 <span>
