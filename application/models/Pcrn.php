@@ -745,7 +745,7 @@ class Pcrn extends CI_Model{
     
     function moneda($numero, $decimales = 0)
     {
-        $moneda = '<span class="currency_symbol">$</span> ' .  number_format($numero, $decimales , ',', '.');
+        $moneda = '<span class="currency_symbol">$</span>' .  number_format($numero, $decimales , ',', '.');
         return $moneda;
     }
     

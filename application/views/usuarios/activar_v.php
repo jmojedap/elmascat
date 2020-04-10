@@ -4,68 +4,113 @@
         $textos['subtitulo'] = 'Activación de cuenta';
         $textos['boton'] = 'Activar mi cuenta';
         
-        if ( $tipo_activacion == 'restaurar' ) {
+        if ( $tipo_activacion == 'restaurar' )
+        {
             $textos['subtitulo'] = 'Restauración de contraseña';
             $textos['boton'] = 'Enviar';
-        }
-
-    $password = array(
-        'name'  =>  'password',
-        'id'    =>  'password',
-        'class' =>  'form-control',
-        'required' => 'required',
-        'placeholder' =>   'contrase&ntilde;a',
-        'autofocus' =>  TRUE,
-        'pattern' => '(?=.*\d)(?=.*[a-z]).{8,}',
-        'title' => 'Debe tener al menos un número y una letra minúscula, y al menos 8 caractéres'
-    );
-    
-    $passconf = array(
-        'name'  =>  'passconf',
-        'id'    =>  'passconf',
-        'class' =>  'form-control',
-        'required' => 'required',
-        'placeholder' =>   'confirme se contrase&ntilde;a',
-        'minlength' => 8
-    );
-    
-    $submit = array(
-        'id' => 'submit_form',
-        'value' =>  $textos['boton'],
-        'class' => 'btn btn-success btn-block'
-        
-    );
-    
+        } 
 ?>
 
+<script>
+// Variables
+//-----------------------------------------------------------------------------
+    var cod_activacion = '<?php echo $cod_activacion ?>';
+
+// Document Ready
+//-----------------------------------------------------------------------------
+    $(document).ready(function(){
+        $('#activar_form').submit(function(){
+            $("#error_not_match").hide();
+            if ( $('#field-password').val() == $("#field-passconf").val() ) {
+                activar_usuario();
+            } else {
+                $("#error_not_match").show('fast');
+            }
+            return false;
+        });
+    });
+
+// Functions
+//-----------------------------------------------------------------------------
+    function activar_usuario(){
+        $.ajax({        
+            type: 'POST',
+            url: app_url + 'usuarios/activar_e/' + cod_activacion,
+            data: $('#activar_form').serialize(),
+            success: function(response){
+                if (response.user_id > 0) {
+                    //window.location = app_url + 'usuarios/mi_perfil/';
+                    $('#card_form').hide();
+                    $('#success_activation').show('fast');
+                } else {
+                    console.log('Ocurrió un error en la activación');
+                }
+            }
+        });
+    }
+</script>
+
 <div class="row">
-    
     <div class="col-md-4 col-md-offset-4">
-        
-        <div class="" style="text-align: center; padding-top: 60px; padding-bottom: 40px;">
-            <h2 class="resaltar"><?= $row->nombre . ' ' . $row->apellidos ?></h2>
-            <h3 class="suave"><?= $textos['subtitulo'] ?></h3>
-            <p class="suave"><?= $row->username ?></p>
+        <div class="text-center">
+            <h2 class="resaltar"><?php echo $row->nombre . ' ' . $row->apellidos ?></h2>
+            <h3 class="suave"><?php echo $textos['subtitulo'] ?></h3>
+            <p class="suave"><?php echo $row->username ?></p>
             <p>Establezca su contraseña para Districatolicas.com</p>
         </div>
             
-        <div>
-            <?= form_open("usuarios/activar_e/{$this->uri->segment(3)}"); ?>
+        <div class="mb-2" id="card_form">
+            <form method="post" accept-charset="utf-8" id="activar_form">
                 <div class="form-group">
-                    <?= form_password($password); ?>
+                    <input
+                        type="password"
+                        id="field-password"
+                        name="password"
+                        required
+                        autofocus
+                        pattern="(?=.*\d)(?=.*[a-z]).{8,}"
+                        class="form-control"
+                        placeholder="contraseña"
+                        value=""
+                        title="Debe tener al menos un número y una letra minúscula, y al menos 8 caractéres"
+                        >
                 </div>
                 <div class="form-group">
-                    <?= form_password($passconf); ?>    
+                    <input
+                        type="password"
+                        id="field-passconf"
+                        name="passconf"
+                        required
+                        class="form-control"
+                        placeholder="confirme su contraseña"
+                        title="confirme su contraseña"
+                        value=""
+                        minlength="8"
+                        >
                 </div>
-                <div class="">
-                    <?= form_submit($submit) ?>    
+                <div class="form-group">
+                    <button class="btn btn-success btn-block" type="submit">
+                        <?php echo $textos['boton'] ?>
+                    </button>
                 </div>
-            <?= form_close(); ?>
+            </form>
         </div>
-        
-        <div class="div2">
-            <?= validation_errors('<div class="alert alert-danger" role="alert">', '</div>') ?>
+        <div class="alert alert-danger text-center" id="error_not_match" style="display: none;">
+            Las contraseñas no coinciden
         </div>
-        
+
+        <div id="success_activation" class="alert alert-success text-center" style="display: none;">
+            <p>
+                <i class="fa fa-check fa-2x"></i>
+            </p>
+            <p class="mb-2">
+                Su cuenta fue activada correctamente
+            </p>
+            <p>
+                <a href="<?php echo base_url("usuarios/mi_perfil") ?>" class="btn btn-success btn-block">
+                    Continuar
+                </a>
+            </p>
+        </div>
     </div>
 </div>

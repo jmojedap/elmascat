@@ -22,7 +22,7 @@
         if ( $datos_faltantes > 0 ) { $att_submit['class'] .= ' hidden'; }
 ?>
 
-<div style="margin-bottom: 20px;">
+<div>
     <div class="row wow bounceInUp animated">
         <div class="col col-md-4">
             <div class="cart ">
@@ -109,7 +109,7 @@
                 <h2>Datos de entrega</h2>
             </div>
             
-            <table class="data-table cart-table" id="shopping-cart-table">
+            <table class="data-table cart-table mb-2" id="shopping-cart-table">
                 <thead>
                     <tr class="first last">
                         <th colspan="2">
@@ -131,19 +131,20 @@
                 <tbody>
                     <tr>
                         <td width="25px">
-                            <i class="fa fa-user fa-2x"></i>
+                            <i class="fa fa-user fa-2x text-primary"></i>
                         </td>
                         <td>
                             <span class="resaltar">
                                 <?= $row->nombre ?> <?= $row->apellidos ?><br/>
                             </span>
-                            CC <?= $row->no_documento ?><br/>
-                            <?= $row->email ?>
+                            <span class="text-muted"><?php echo $this->Item_model->nombre(53, $row->tipo_documento_id) ?></span>
+                            <?php echo $row->no_documento ?><br/>
+                            <?php echo $row->email ?>
                         </td>
                     </tr>
                     <tr>
                         <td width="25px">
-                            <i class="fa fa-map-marker fa-2x"></i>
+                            <i class="fa fa-map-marker fa-2x text-primary"></i>
                         </td>
                         <td>
                             <?php echo $row->direccion ?><br>
@@ -156,7 +157,7 @@
                     </tr>
                     <tr>
                         <td width="25px">
-                            <i class="fa fa-info fa-2x"></i>
+                            <i class="fa fa-info-circle fa-2x text-primary"></i>
                         </td>
                         <td>
                             <?= $row->notas ?>
@@ -167,20 +168,22 @@
         </div>
         
         <div class="col col-md-4">
+            <div class="page-title">
+                <h2>Valores</h2>
+            </div>
             
             <?php $this->load->view('pedidos/compra/totales_v'); ?>
             <ul class="checkout">
-                <?= form_open($destino_form, $att_form) ?>
+                <?php echo form_open($destino_form, $att_form) ?>
 
                     <?php foreach ($form_data as $key => $valor) : ?>
-                        <?= form_hidden($key, $valor) ?>
+                        <?php echo form_hidden($key, $valor) ?>
                     <?php endforeach ?>
 
                     <li>
-                        <?= form_submit($att_submit) ?>
+                        <?php echo form_submit($att_submit) ?>
                     </li>
-                <?= form_close('') ?>
-
+                <?php echo form_close('') ?>
             </ul>
             
             <?php if ( $row->pais_id != 51 ) { ?>

@@ -443,15 +443,15 @@ class Pedidos extends CI_Controller{
             $data['descuentos'] = $this->Pedido_model->descuentos($pedido_id);
             
             $data['destino_form'] = "pedidos/compra_a/{$data['row']->cod_pedido}";
-            $data['vista_a'] = 'pedidos/compra/compra_v';
-            $data['vista_b'] = 'pedidos/compra/carrito_v';
+            $data['view_a'] = 'pedidos/compra/compra_v';
+            $data['view_b'] = 'pedidos/compra/carrito_v';
         } else {
-            $data['vista_a'] = 'pedidos/carrito_vacio_v';
+            $data['view_a'] = 'pedidos/carrito_vacio_v';
         }
         
         //Solicitar vista
-            $data['titulo_pagina'] = 'Carrito de compras';
-            $this->load->view(PTL_FRONT, $data);
+            $data['head_title'] = 'Carrito de compras';
+            $this->load->view(TPL_FRONT, $data);
     }
     
     /**
@@ -470,7 +470,9 @@ class Pedidos extends CI_Controller{
         $data = $this->Pedido_model->basico($pedido_id);
         
         $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
-        $data['destino_form'] = "pedidos/guardar_pedido";
+
+        $data['options_ciudad'] = $this->App_model->opciones_lugar("tipo_id = 4 AND activo = 1", 'CRP', 'Ciudad');
+        $data['options_tipo_documento'] = $this->Item_model->opciones('categoria_id = 53 AND filtro LIKE "%-cliente-%"');
         
         //Extras
             $arr_extras['gastos_envio'] = $this->Pedido_model->valor_extras($pedido_id, 'producto_id IN (1,4)');
@@ -478,11 +480,11 @@ class Pedidos extends CI_Controller{
             $data['arr_extras'] = $arr_extras;
         
         //Solicitar vista
-            $data['titulo_pagina'] = 'Districatólicas';
-            $data['vista_a'] = 'pedidos/compra/compra_v';
-            $data['vista_b'] = 'pedidos/compra/compra_a_v';
+            $data['head_title'] = 'Datos de entrega';
+            $data['view_a'] = 'pedidos/compra/compra_v';
+            $data['view_b'] = 'pedidos/compra/compra_a_v';
             $data['section_id'] = 'cart_items';
-            $this->load->view(PTL_FRONT, $data);
+            $this->load->view(TPL_FRONT, $data);
     }
     
     function compra_b()
@@ -509,11 +511,11 @@ class Pedidos extends CI_Controller{
             }
         
         //Solicitar vista
-            $data['titulo_pagina'] = 'Districatólicas';
-            $data['vista_a'] = 'pedidos/compra/compra_v';
-            $data['vista_b'] = 'pedidos/compra/compra_b_v';
+            $data['head_title'] = 'Districatólicas';
+            $data['view_a'] = 'pedidos/compra/compra_v';
+            $data['view_b'] = 'pedidos/compra/compra_b_v';
             $data['section_id'] = 'cart_items';
-            $this->load->view(PTL_FRONT, $data);
+            $this->load->view(TPL_FRONT, $data);
     }
     
     /**
@@ -598,38 +600,27 @@ class Pedidos extends CI_Controller{
     }
     
     /**
-     * POST REDIRECT
+     * AJAX JSON
      * Valida y actualiza los datos de contacto y entrega de un pedido, proviene
      * de pedidos/compra_a
-     * 
+     * 2020-04-07
      */
     function guardar_pedido()
     {
-        $valido = $this->Pedido_model->validar();
-        
         $pedido_id = $this->session->userdata('pedido_id');
         $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
+
+        $data['qty_affected'] = 0;
         
-        if ( $valido ) 
+        if ( ! is_null($row_pedido) ) 
         {
-            //Construir registro
-                $registro['nombre'] = $this->input->post('nombre');
-                $registro['apellidos'] = $this->input->post('apellidos');
-                $registro['no_documento'] = $this->input->post('no_documento');
-                $registro['email'] = $this->input->post('email');
-                $registro['direccion'] = $this->input->post('direccion');
-                $registro['direccion_detalle'] = $this->input->post('direccion_detalle');
-                $registro['telefono'] = $this->input->post('telefono');
-                $registro['celular'] = $this->input->post('celular');
-                $registro['notas'] = $this->input->post('notas');    
-            
-            $this->Pedido_model->act_pedido($pedido_id, $registro);
-            
-            redirect("pedidos/compra_b/{$row_pedido->cod_pedido}");
-        } else {
-            $this->output->enable_profiler(TRUE);
-            //$this->compra_a($row_pedido->cod_pedido);
+            //Construir registro y guardar
+            $arr_row = $this->input->post();
+            $data['qty_affected'] =  $this->Pedido_model->act_pedido($pedido_id, $arr_row);
         }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
         
     }
     
@@ -730,10 +721,10 @@ class Pedidos extends CI_Controller{
         $data['row_pedido'] = $row_pedido;
         
         //Solicitar vista
-            $data['titulo_pagina'] = 'Districatólicas';
-            $data['vista_a'] = 'pedidos/compra/compra_v';
-            $data['vista_b'] = 'pedidos/compra/respuesta_v';
-            $this->load->view(PTL_FRONT, $data);
+            $data['head_title'] = 'Resultado';
+            $data['view_a'] = 'pedidos/compra/compra_v';
+            $data['view_b'] = 'pedidos/compra/respuesta_v';
+            $this->load->view(TPL_FRONT, $data);
     }
     
     /**
@@ -846,7 +837,7 @@ class Pedidos extends CI_Controller{
             $data['sin_resultado'] = $sin_resultado;
         
         //Solicitar vista
-            $data['head_title'] = 'Estado Pedido';
+            $data['head_title'] = 'Estado de mi compra';
             $data['view_a'] = 'pedidos/estado_v';
             $this->load->view(TPL_FRONT, $data);
     }
@@ -940,7 +931,11 @@ class Pedidos extends CI_Controller{
         
         $this->Pedido_model->guardar_lugar();
         $this->Pedido_model->act_totales($pedido_id);
-        echo 'OK';
+
+        $data['status'] = 1;
+        
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
 //ADMINISTRACIÓN DEL PEDIDO

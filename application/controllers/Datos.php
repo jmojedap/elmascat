@@ -49,9 +49,7 @@ class Datos extends CI_Controller{
         $etiquetas =  $this->Datos_model->tags();
         $data['list'] = $etiquetas->result();
 
-        $this->output
-        ->set_content_type('application/json')
-        ->set_output(json_encode($data));
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     function save_tag($tag_id = 0)
@@ -65,9 +63,7 @@ class Datos extends CI_Controller{
             $data = array('status' => 1, 'message' => 'Etiqueta guardada ID: ' . $tag_id, 'tag_id' => $tag_id);
         }
 
-        $this->output
-        ->set_content_type('application/json')
-        ->set_output(json_encode($data));
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
     /**
@@ -85,9 +81,7 @@ class Datos extends CI_Controller{
             $data = array('status' => 1, 'message' => 'Etiqueta eliminada');
         }
 
-        $this->output
-        ->set_content_type('application/json')
-        ->set_output(json_encode($data));
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     /**

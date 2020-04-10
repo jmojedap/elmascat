@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="page-title">
-            <h2 class="title">Estado de su pedido</h2>
+            <h2 class="title"><?php echo $head_title ?></h2>
         </div>
         <div class="status alert alert-success" style="display: none"></div>
         <form id="main-contact-form" class="contact-form row" name="contact-form" method="post">
@@ -39,14 +39,14 @@
     <div class="">
         <div class="alert alert-info" role="alert">
             <i class="fa fa-info-circle"></i>
-            Lo sentimos, no encontramos ningún pedido con el código <?php echo $cod_pedido ?>
+            Lo sentimos, no encontramos ningún pedido con el código <b> <?php echo $cod_pedido ?></b>
         </div>
     </div>
 <?php } ?>
 
 <?php if ( $pedido_id > 0 ){ ?>
 
-    <div class="div2">
+    <div class="mb-2">
 
         <div class="shopper-informations">
             <div class="row">

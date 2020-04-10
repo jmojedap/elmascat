@@ -195,7 +195,7 @@ class Usuarios extends CI_Controller{
             $data['cod_activacion'] = $cod_activacion;
             $data['tipo_activacion'] = $tipo_activacion;
             $data['row'] = $row_usuario;
-            $data['vista_a'] = 'usuarios/activar_v';
+            $data['view_a'] = 'usuarios/activar_v';
             
         //Evaluar condiciones
             $condiciones = 0;
@@ -204,8 +204,8 @@ class Usuarios extends CI_Controller{
         
         if ( $condiciones == 2 ) 
         {
-            $data['titulo_pagina'] = "Cuenta de {$row_usuario->nombre}";
-            $this->load->view(PTL_FRONT, $data);
+            $data['head_title'] = "Cuenta de {$row_usuario->nombre}";
+            $this->load->view(TPL_FRONT, $data);
         } else {
             redirect('app/no_permitido');
         }
@@ -213,41 +213,24 @@ class Usuarios extends CI_Controller{
     
     /**
      * Activar usuario
-     * @param type $cod_activacion
      */
-    function activar_ajax($cod_activacion)
-    {
-        
-        $usuario_id = 0;
-        $row_usuario = $this->Usuario_model->row_activacion($cod_activacion);
-        
-        if ( ! is_null($row_usuario) ) 
-        {
-            $this->Usuario_model->activar($row_usuario->id);
-
-            $this->load->model('Esp');
-            $this->Esp->crear_sesion($row_usuario->username, 1);
-            $usuario_id = $row_usuario->id;
-        }
-        
-        echo $usuario_id;
-    }
-    
     function activar_e($cod_activacion)
     {
-        //$this->output->enable_profiler(TRUE);
+        $data['user_id'] = 0;
+        $row_user = $this->Usuario_model->row_activacion($cod_activacion);
         $validar_contrasenas = $this->Usuario_model->validar_contrasenas();
         
-        if ( $validar_contrasenas ) 
+        if ( ! is_null($row_user) && $validar_contrasenas ) 
         {
-            $row_usuario = $this->Usuario_model->activar($cod_activacion);
+            $this->Usuario_model->activar($cod_activacion);
 
             $this->load->model('Login_model');
-            $this->Login_model->crear_sesion($row_usuario->username, 1);
-            redirect("usuarios/mi_perfil");
-        } else {
-            $this->activar($cod_activacion);
+            $this->Login_model->crear_sesion($row_user->username, 1);
+            $data['user_id'] = $row_user->id;
         }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     function test_email($usuario_id, $tipo_activacion = 'activar')
@@ -291,10 +274,10 @@ class Usuarios extends CI_Controller{
         if ( $this->session->userdata('logged') == TRUE ){
             redirect('busquedas/productos');
         } else {
-            $data['titulo_pagina'] = 'Recuperación de cuentas';
-            $data['vista_a'] = 'usuarios/recuperar_v';
+            $data['head_title'] = 'Recuperación de cuentas';
+            $data['view_a'] = 'usuarios/recuperar_v';
             $data['resultado'] = $resultado;
-            $this->load->view(PTL_FRONT, $data);
+            $this->load->view(TPL_FRONT, $data);
         }
     }
     

@@ -24,13 +24,13 @@
     <tbody>
         <tr class="text-center">
             <td width="25%" class="step <?php echo $cl_steps['carrito'] ?>">
-                CARRITO
+                PRODUCTOS
             </td>
             <td width="25%" class="step <?php echo $cl_steps['datos'] ?>">
-                DATOS DE ENTREGA
+                ENTREGA
             </td>
             <td width="25%" class="step <?php echo $cl_steps['verificacion'] ?>">
-                VERIFICACIÓN
+                VERIFICAR
             </td>
             <td width="25%" class="step <?php echo $cl_steps['resultado'] ?>">
                 RESULTADO

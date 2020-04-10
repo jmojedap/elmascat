@@ -35,7 +35,7 @@
         <tr>
             <td width="25%"><?= $row->nombre . ' ' . $row->apellidos ?></td>
             <td>
-                    <small>Documento</small>
+                    <small><?php echo $this->Item_model->nombre(53, $row->tipo_documento_id) ?></small>
                     <strong><?= $row->no_documento ?></strong>
                     <span> | </span>
 

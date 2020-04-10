@@ -1,6 +1,6 @@
-<table class="data-table cart-table">
+<table class="data-table cart-table mb-2">
     <thead>
-        <th colspan="2">Total</th>
+        <th colspan="2">Valores</th>
     </thead>
     <tfoot>
         <tr>
@@ -40,5 +40,3 @@
         <?php } ?>
     </tbody>
 </table>
-
-<div style="height: 35px;"></div>

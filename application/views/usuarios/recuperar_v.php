@@ -14,28 +14,26 @@
     
 ?>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="page-title">
-            <h2 class="title"><i class="fa fa-user resaltar"></i> Recuperación de cuentas</h2>
-        </div>
-        <div class="login-form"><!--login form-->
-            <p>Ingrese su dirección de correo electrónico, enviaremos un mensaje para recuperar su cuenta de usuario.</p>
-            <?= form_open("usuarios/recuperar_e", $att_form) ?>
-                <div class="div1">
-                    <input name="email" type="text" class="form-control" required="required" placeholder="Correo electrónico" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
-                </div>
-                
-                <button type="submit" class="btn-polo w3">Enviar</button>
-            <?= form_close('') ?>
-        </div><!--/login form-->
+<div class="center_box_450">
+    <div class="page-title">
+        <h2 class="title"><i class="fa fa-user text-primary"></i> Recuperación de cuentas</h2>
+    </div>
+    <div class="box_1">
+        <p>Ingrese su dirección de correo electrónico, enviaremos un mensaje para recuperar su cuenta de usuario.</p>
+        <?= form_open("usuarios/recuperar_e", $att_form) ?>
+            <div class="form-group">
+                <input name="email" type="text" class="form-control" required="required" placeholder="Correo electrónico" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
+            </div>
+            
+            <button type="submit" class="btn-polo w120p">Enviar</button>
+        <?= form_close('') ?>
+    </div>
 
-        <div class="div2">
-            <?php if ( ! is_null($mensaje) ):?>
-                <div class="alert <?= $clase ?>" role="alert">
-                    <?= $mensaje ?>
-                </div>
-            <?php endif ?>
-        </div>
+    <div class="mb-2">
+        <?php if ( ! is_null($mensaje) ):?>
+            <div class="alert <?= $clase ?>" role="alert">
+                <?= $mensaje ?>
+            </div>
+        <?php endif ?>
     </div>
 </div>

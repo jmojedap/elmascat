@@ -16,7 +16,7 @@
                 Su solicitud Districatólicas Unidas S.A.S para cambiar de perfil de su cuenta de usuario fue: <span style="<?= $style['resaltar'] ?>"><?= $texto_estado ?></span>
             </p>
             
-            <a target="_blank" href="<?= base_url("app/login/") ?>" style="<?= $style['btn'] ?>">
+            <a target="_blank" href="<?= base_url("accounts/login/") ?>" style="<?= $style['btn'] ?>">
                 Ir a Districatolicas.com
             </a>
         </div>

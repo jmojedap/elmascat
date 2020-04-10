@@ -26,7 +26,7 @@
 
         <?= form_close('') ?>
     <?php } else { ?>
-        <?= anchor("app/login", 'Agregar comentario', 'class="btn btn-primary"') ?>
+        <?= anchor("accounts/login", 'Agregar comentario', 'class="btn btn-primary"') ?>
     <?php } ?>
 </div>
 

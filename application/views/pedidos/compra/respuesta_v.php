@@ -152,6 +152,6 @@
     </div>
     
     <div class="col-md-2">
-        <?= anchor($link_print, '<i class="fa fa-print"></i> Imprimir', 'class="btn btn-warning btn-block" title="Imprimir este reporte" target="_blank"') ?>
+        <?= anchor($link_print, '<i class="fa fa-print"></i> Imprimir', 'class="btn btn-polo btn-block" title="Imprimir este reporte" target="_blank"') ?>
     </div>
 </div>

@@ -45,8 +45,8 @@ class Accounts extends CI_Controller {
             } else {
                 $data['head_title'] = APP_NAME;
                 $data['view_a'] = 'accounts/login_v';
-                $data['g_client'] = $this->Account_model->g_client(); //Para botón login con Google
-                $this->load->view('templates/remark/start_v', $data);
+                //$data['g_client'] = $this->Account_model->g_client(); //Para botón login con Google
+                $this->load->view('templates/polo/main_v', $data);
             }
     }
 
@@ -132,7 +132,7 @@ class Accounts extends CI_Controller {
                 if ( $data['saved_id'] > 0 ) { $data['status'] = 1; }
             
             //Enviar email con código de activación
-                $this->Usuario_model->email_activacion($data['saved_id']);
+                //$this->Usuario_model->email_activacion($data['saved_id']);
         } else {
             $data['validation'] = $res_validation['validation'];
         }

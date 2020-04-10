@@ -514,28 +514,6 @@ class Pedido_Model extends CI_Model{
     }
     
     /**
-     * Validar los datos de contacto del formulario del pedido
-     * @return type
-     */
-    function validar()
-    {
-        $this->load->library('form_validation');   
-        $this->form_validation->set_error_delimiters('<div class="alert alert-danger" role="alert">', '</div>');
-        
-        //Reglas
-            $this->form_validation->set_rules('email', 'Correo electrónico', 'valid_email');
-            $this->form_validation->set_rules('telefono', 'Teléfono', 'min_length[6]');
-            
-        //Mensajes
-            $this->form_validation->set_message('valid_email', 'El correo electrónico no es válido');
-            $this->form_validation->set_message('min_length', 'La casilla %s debe tener al menos 6 caracteres');
-        
-        $valido =  $this->form_validation->run();
-        
-        return $valido;
-    }
-    
-    /**
      * Actualiza los datos de un pedido, tabla pedido
      * 
      * @param type $pedido_id
@@ -549,6 +527,8 @@ class Pedido_Model extends CI_Model{
         //Actualizar
             $this->db->where('id', $pedido_id);
             $this->db->update('pedido', $registro);
+            
+        return $this->db->affected_rows();
     }
     
     /**

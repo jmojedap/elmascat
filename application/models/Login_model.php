@@ -1,40 +1,36 @@
 <?php
 class Login_model extends CI_Model{
-    
+
     /**
      * Realiza la validación de login, usuario y contraseña. Valida coincidencia
      * de contraseña, y estado del usuario.
-     * 
-     * @param type $username
-     * @param type $password
-     * @return int
      */
-    function validar_login($username, $password)
+    function validate($username, $password)
     {
-        $resultado['ejecutado'] = 0;
-        $resultado['mensajes'] = array();
+        $data['status'] = 0;
+        $data['messages'] = array();
         
-        $condiciones = 0;   //Valor inicial
+        $conditions = 0;   //Valor inicial
         
         //Validación de password (Condición 1)
-            $validar_password = $this->validar_password($username, $password);
-            $resultado['mensajes'][] = $validar_password['mensaje'];
+            $validate_password = $this->validate_password($username, $password);
+            $data['messages'][] = $validate_password['message'];
 
-            if ( $validar_password['ejecutado'] ) { $condiciones++; }
+            if ( $validate_password['status'] ) { $conditions++; }
             
         //Verificar que el usuario esté activo (Condición 2)
-            $estado_usuario = $this->estado_usuario($username);
-            $resultado['mensajes'][] = $estado_usuario['mensaje'];
+            $user_status = $this->user_status($username);
+            $data['messages'][] = $user_status['message'];
             
-            if ( $estado_usuario['estado'] == 1 ) { $condiciones++; }   //Usuario activo
+            if ( $user_status['status'] == 1 ) { $conditions++; }   //Usuario activo
             
         //Se valida el login si se cumplen las condiciones
-        if ( $condiciones == 2 ) 
+        if ( $conditions == 2 ) 
         {
-            $resultado['ejecutado'] = 1;
+            $data['status'] = 1;
         }
             
-        return $resultado;
+        return $data;
     }
     
     //Verificar si tiene cookie para ser recordado en el equipo
@@ -60,23 +56,23 @@ class Login_model extends CI_Model{
      * @param type $username
      * @return string
      */
-    function estado_usuario($username)
+    function user_status($username)
     {
-        $est_usuario['estado'] = 2;     //Valor inicial, 2 => inexistente
-        $est_usuario['mensaje'] = 'El usuario "'. $username .'" no existe';
+        $user_status['status'] = 2;     //Valor inicial, 2 => inexistente
+        $user_status['message'] = 'El usuario "'. $username .'" no existe';
         
         $this->db->where("username = '{$username}' OR email = '{$username}'");
         $query = $this->db->get('usuario');
         
         if ( $query->num_rows() > 0 )
         {
-            $est_usuario['estado'] = $query->row()->estado;
-            $est_usuario['mensaje'] = NULL;
+            $user_status['status'] = $query->row()->estado;
+            $user_status['message'] = 'Usuario activo';
             
-            if ( $est_usuario['estado'] == 0 ) { $est_usuario['mensaje'] = 'El usuario está inactivo, consulte al administrador'; }
+            if ( $user_status['status'] == 0 ) { $user_status['message'] = 'El usuario está inactivo, consulte al administrador'; }
         }
         
-        return $est_usuario;
+        return $user_status;
         
     }
     
@@ -88,30 +84,30 @@ class Login_model extends CI_Model{
      * @param type $password
      * @return boolean
      */
-    function validar_password($username, $password)
+    function validate_password($username, $password)
     {
         //Valor por defecto
-            $resultado['ejecutado'] = 0;
-            $resultado['mensaje'] = 'El usuario y contraseña no coinciden';
+            $data['status'] = 0;
+            $data['message'] = 'El usuario y contraseña no coinciden';
         
         //Buscar usuario con username o correo electrónico
-            $condicion = "username = '{$username}' OR email = '{$username}'";
-            $row_usuario = $this->Pcrn->registro('usuario', $condicion);
+            $condition = "username = '{$username}' OR email = '{$username}'";
+            $row_user = $this->Pcrn->registro('usuario', $condition);
         
-        if ( ! is_null($row_usuario) )
+        if ( ! is_null($row_user) )
         {    
             //Encriptar
-                $epw = crypt($password, $row_usuario->password);
-                $pw_comparar = $row_usuario->password;
+                $epw = crypt($password, $row_user->password);
+                $pw_compare = $row_user->password;
             
-            if ( $pw_comparar == $epw )
+            if ( $pw_compare == $epw )
             {
-                $resultado['ejecutado'] = 1;    //Contraseña válida
-                $resultado['mensaje'] = 'Contraseña válida';
+                $data['status'] = 1;    //Contraseña válida
+                $data['message'] = 'Contraseña válida';
             }
         }
         
-        return $resultado;
+        return $data;
     }
     
     function crear_sesion($username, $registrar_login)
@@ -157,7 +153,7 @@ class Login_model extends CI_Model{
                 $row_evento = $this->Pcrn->registro_id('evento', $this->session->userdata('login_id'));
 
                 $registro['fin'] = date('Y-m-d H:i:s');
-                $registro['estado'] = 2;    //Cerrado
+                $registro['status'] = 2;    //Cerrado
                 $registro['segundos'] = $this->Pcrn->segundos_lapso($row_evento->creado, date('Y-m-d H:i:s'));
 
                 if ( ! is_null($row_evento) ) 

@@ -73,7 +73,7 @@ class Pcc {
         
         $funciones_publicas[] = 'app/registro';
         $funciones_publicas[] = 'app/registrar';
-        $funciones_publicas[] = 'app/validar_login';
+        $funciones_publicas[] = 'app/validate_login';
         $funciones_publicas[] = 'app/logged';
         $funciones_publicas[] = 'app/logout';
         $funciones_publicas[] = 'app/basica';
@@ -118,6 +118,11 @@ class Pcc {
         $funciones_publicas[] = 'sincro/test_ajax';
         $funciones_publicas[] = 'sincro/cant_registros';
 
+        $funciones_publicas[] = 'accounts/';
+        $funciones_publicas[] = 'accounts/index';
+        $funciones_publicas[] = 'accounts/login';
+        $funciones_publicas[] = 'accounts/validate_login';
+        $funciones_publicas[] = 'accounts/logout';
         $funciones_publicas[] = 'accounts/signup';
         $funciones_publicas[] = 'accounts/validate_signup';
         $funciones_publicas[] = 'accounts/register';

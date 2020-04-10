@@ -27,7 +27,7 @@
         <?php if ( $this->session->userdata('logged') ) { ?>
             <?= anchor("usuarios/solicitar_rol/{$this->session->userdata('usuario_id')}/22", 'Quiero ser distribuidor', 'class="btn btn-polo" title=""') ?>
         <?php } else { ?>
-            <?= anchor("app/login/distribuidor", 'Quiero ser distribuidor', 'class="btn btn-polo" title=""') ?>
+            <?= anchor("accounts/login/distribuidor", 'Quiero ser distribuidor', 'class="btn btn-polo" title=""') ?>
         <?php } ?>
     </div>
     <div class="col col-md-7">

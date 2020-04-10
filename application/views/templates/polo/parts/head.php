@@ -37,6 +37,7 @@
         <link rel="stylesheet" href="<?php echo $carpeta_tema ?>css/owl.carousel.css" type="text/css">
         <link rel="stylesheet" href="<?php echo $carpeta_tema ?>css/owl.theme.css" type="text/css">
 
+        <link rel="stylesheet" href="<?php echo base_url('recursos/css/style_pml.css') ?>" type="text/css">
         <link rel="stylesheet" href="<?php echo base_url('recursos/css/bs3_bs4.css') ?>" type="text/css">
         <link rel="stylesheet" href="<?php echo base_url('recursos/css/polo_add_12.css') ?>" type="text/css">
         
@@ -56,3 +57,7 @@
         <!-- Vue.js -->
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+
+        <script>
+            var app_url = '<?php echo base_url() ?>';
+        </script>

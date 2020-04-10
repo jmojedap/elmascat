@@ -6,86 +6,99 @@
     <h2>Registro de usuarios</h2>
 </div>
 
-<div class="row div2" id="signup_app">
+<div class="row mb-2" id="signup_app">
     
-    <div class="col-md-6 caja1">
-        
-        <form accept-charset="utf-8" method="POST" id="signup_form" @submit.prevent="register" class="form-horizontal">
-            <!-- Campo para validación Google ReCaptcha V3 -->
-            <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">        
+    <div class="col-md-5">
+        <div class="box_1 mb-2">
+            <form accept-charset="utf-8" method="POST" id="signup_form" @submit.prevent="register">
+                <!-- Campo para validación Google ReCaptcha V3 -->
+                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">        
+                
+                <div class="form-group">
+                    <input
+                        type="text"
+                        id="field-nombre"
+                        name="nombre"
+                        required
+                        class="form-control"
+                        placeholder="nombre"
+                        title="nombre"
+                        >
+                </div>
+                <div class="form-group">
+                    <input
+                        type="text"
+                        id="field-apellidos"
+                        name="apellidos"
+                        required
+                        class="form-control"
+                        placeholder="apellidos"
+                        title="apellidos"
+                        >
+                </div>
+
+                <div class="form-group" v-bind:class="{'has-error': ! validation.email_unique }">
+                    <input
+                        type="email"
+                        id="field-email"
+                        name="email"
+                        required
+                        class="form-control"
+                        placeholder="correo electrónico"
+                        title="correo electrónico"
+                        v-on:change="validate_form"
+                        >
+                    <span class="help-block" v-show="! validation.email_unique">
+                        El correo electrónico ya está registrado, por favor escriba otro
+                    </span>
+                </div>
             
-            <div class="form-group">
-                <input
-                    type="text"
-                    id="field-nombre"
-                    name="nombre"
-                    required
-                    class="form-control input1"
-                    placeholder="nombre"
-                    title="nombre"
-                    >
-            </div>
-            <div class="form-group">
-                <input
-                    type="text"
-                    id="field-apellidos"
-                    name="apellidos"
-                    required
-                    class="form-control input1"
-                    placeholder="apellidos"
-                    title="apellidos"
-                    >
-            </div>
+                <div class="form-group">
+                    <input
+                        type="text"
+                        id="field-fecha_nacimiento"
+                        name="fecha_nacimiento"
+                        required
+                        class="form-control bs_datepicker"
+                        placeholder="fecha de nacimiento (AAAA-MM-DD)"
+                        title="fecha de nacimiento (AAAA-MM-DD)"
+                        >
+                </div>
+            
+                <div class="form-group">
+                    <input type="radio" name="sexo" value="1" required> Mujer
+                    <input type="radio" name="sexo" value="2"> Hombre
+                </div>
 
-            <div class="form-group" v-bind:class="{'has-error': ! validation.email_unique }">
-                <input
-                    type="email"
-                    id="field-email"
-                    name="email"
-                    required
-                    class="form-control input1"
-                    placeholder="correo electrónico"
-                    title="correo electrónico"
-                    v-on:change="validate_form"
-                    >
-                <span class="help-block" v-show="! validation.email_unique">
-                    El correo electrónico ya está registrado, por favor escriba otro
-                </span>
-            </div>
-        
-            <div class="form-group">
-                <input
-                    type="text"
-                    id="field-fecha_nacimiento"
-                    name="fecha_nacimiento"
-                    required
-                    class="form-control bs_datepicker input1"
-                    placeholder="fecha de nacimiento (AAAA-MM-DD)"
-                    title="fecha de nacimiento (AAAA-MM-DD)"
-                    >
-            </div>
-        
-            <div class="form-group">
-                <input type="radio" name="sexo" value="1" required> Mujer
-                <input type="radio" name="sexo" value="2"> Hombre
-            </div>
+                <div class="form-group">
+                    <p>
+                        <input type="checkbox" name="condiciones" value="1" required style="display: inline; height: 25px; width: 15px;"/>
+                        Acepto los 
+                        
+                        <a href="<?php echo base_url("posts/leer/17/terminos-de-uso") ?>" target="_blank">
+                            Términos de uso
+                        </a>
+                        de Districatólicas S.A.S.
+                    </p>
+                </div>
 
-            <div class="form-group">
-                <p>
-                    <input type="checkbox" name="condiciones" value="1" required style="display: inline; height: 15px; width: 15px;"/>
-                    Acepto los <?= anchor('posts/leer/17/terminos-de-uso', 'Términos de uso', 'target="_blank"') ?> de Districatólicas S.A.S.
+                <button type="submit" class="button w120p"><span>Registrarme</span></button>
+
+                <hr>
+
+                <p class="text-center">
+                    Ya tengo una cuenta
                 </p>
-            </div>
-
-            <button type="submit" class="button">
-                <span>
-                    Registrarme
-                </span>
-            </button>
-        </form>
+                <div class="text-center">
+                    <a class="btn btn-polo w120p" href="<?php echo base_url("accounts/login") ?>">
+                        Iniciar sesión
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
     
-    <div class="col-md-6">
+    <div class="col-md-7">
         <table width="100%" class="table table-default">
             <tbody>
                 <tr>
@@ -96,7 +109,7 @@
                         </h4>
                     </td>
                     <td>
-                        Escriba sus datos personales, nombre, apellidos.
+                        Escribe tus datos personales, nombre, apellidos.
                     </td>
                 </tr>
 
@@ -108,8 +121,8 @@
                         </h4>
                     </td>
                     <td>
-                        Use preferiblemente una cuenta de correo diferente a <b class="text-danger">@hotmail.com</b>,
-                        ya que el mensaje de activación podría no llegar a su bandeja de entrada.
+                        Usa preferiblemente una cuenta de correo diferente a <b class="text-danger">@hotmail.com</b>,
+                        ya que el mensaje de activación podría no llegar a tu bandeja de entrada.
                     </td>
                 </tr>
 
@@ -121,7 +134,7 @@
                         </h4>
                     </td>
                     <td>
-                        Escriba su fecha de nacimiento con el formato AAAA-MM-DD, por ejemplo "1991-03-12".
+                        Escribe tu fecha de nacimiento con el formato AAAA-MM-DD, por ejemplo "1991-03-12".
                     </td>
                 </tr>
 
@@ -133,7 +146,11 @@
                         </h4>
                     </td>
                     <td>
-                        Lee >>aquí<< los términos de uso de este sitio. Activa la casilla de aceptación.
+                        Lee >>
+                        <a href="<?php echo base_url("posts/leer/17/terminos-de-uso") ?>" target="_blank">
+                            aquí
+                        </a>
+                        << los términos de uso de este sitio. Activa la casilla de aceptación para realizar el registro.
                     </td>
                 </tr>
             </tbody>

@@ -35,9 +35,9 @@ class App extends CI_Controller{
         {
             $this->logged();    //Ya está logueado
         } else {
-            $data['titulo_pagina'] = 'Ingreso de usuarios';
-            $data['vista_a'] = 'plantillas/polo/login_v';
-            $this->load->view(PTL_FRONT, $data);
+            $data['head_title'] = 'Ingreso de usuarios';
+            $data['view_a'] = 'templates/polo/login_v';
+            $this->load->view(TPL_FRONT, $data);
         }
     }
     
@@ -45,29 +45,22 @@ class App extends CI_Controller{
      * Proveniente de app/login, se valida los datos de usuario
      * verificando nombre de usuario y contraseña
      */
-    function validar_login()
+    function validate_login()
     {
-        $this->output->enable_profiler(TRUE);
-        
         //Validación de login
             $username = $this->input->post('username');
             $password = $this->input->post('password');
             
-            $validar_login = $this->Login_model->validar_login($username, $password);
+            $validate_login = $this->Login_model->validate($username, $password);
         
-        //Se establece el destino según el resultado de validación
-            if ( $validar_login['ejecutado'] )
+        //Crea sesión si se valida usuario y contraseña
+            if ( $validate_login['status'] )
             {
                 $this->Login_model->crear_sesion($username, TRUE);
-                $destino = 'app/logged';
-            } else {
-                //No validado, volver a login con resultado
-                $destino = 'app/login';
-                $this->session->set_flashdata('username', $this->input->post('username') );
-                $this->session->set_flashdata('mensajes', $validar_login['mensajes']);
             }
-            
-        redirect($destino);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($validate_login));
     }
     
     /**
@@ -77,7 +70,7 @@ class App extends CI_Controller{
     function logged()
     {
         $arr_destinos = array(
-            0 => 'pedidos/explorar/?est=3',
+            0 => 'pedidos/explorar/',
             1 => 'pedidos/explorar',
             2 => 'pedidos/explorar',
             6 => 'productos/explorar',
@@ -114,7 +107,7 @@ class App extends CI_Controller{
         
         //Destruir sesión existente y redirigir al login, inicio.
             $this->session->sess_destroy();
-            redirect('app/login');
+            redirect('accounts/login');
     }
     
     

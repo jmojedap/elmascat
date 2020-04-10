@@ -52,7 +52,7 @@
                                     <?php echo anchor("pedidos/carrito", '<span class="hidden-xs">Pagar</span>', 'title="Ir a pagar"') ?>
                                 </div>
                                 <div class="login">
-                                    <?php echo anchor("app/login", '<span class="hidden-xs">Ingresar</span>', 'title="Iniciar sesión"') ?>
+                                    <?php echo anchor("accounts/login", '<span class="hidden-xs">Ingresar</span>', 'title="Iniciar sesión"') ?>
                                 </div>
                             <?php } ?>
                         </div>

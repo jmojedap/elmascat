@@ -124,7 +124,10 @@
                     
                     <tr>
                         <td>Documento</td>
-                        <td><?= $row->no_documento ?></td>
+                        <td>
+                            <span class="text-muted"><?php echo $this->Item_model->nombre(53, $row->tipo_documento_id) ?></span>
+                            <?= $row->no_documento ?>
+                        </td>
                     </tr>
                     
                     <tr>

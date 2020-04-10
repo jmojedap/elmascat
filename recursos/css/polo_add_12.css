@@ -4,8 +4,20 @@ body{
     font-size: 14px;
 }
 
-/* BOTONES */
+.main-container{
+    margin-bottom: 20px;
+}
 
+/* CAJAS */
+
+
+.box_1{
+    padding: 2em;
+    background-color: #f7f7f7;
+    border: 1px solid #eaeaea;
+}
+
+/* BOTONES */
 .btn-polo {
     border: 1px solid #ddd;
     padding: 10px 7px;
@@ -109,8 +121,8 @@ img.logo_social{
 /* FORMULARIOS
 ----------------------------------------------------------------------------------------------------*/
 
-input.form-control{
-    border-radius: 0px;
+.form-control{
+    border-radius: 2px;
 }
 
 /* ADAPTACIÓN BOOTSTRAP
@@ -142,7 +154,7 @@ input.form-control{
 }
 
 .checkout_steps {
-    font-family: 'Open Sans';
+    font-size: 0.8em;
 }
 
 .checkout_steps {
@@ -155,7 +167,7 @@ input.form-control{
 }
 
 .checkout_steps .step.active{
-    font-size: 1.2em;
+    font-weight: bold;
     background-color: #fdd922;
     color: #333333;
 }

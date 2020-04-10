@@ -51,7 +51,7 @@
                             <tfoot>
                                 <tr class="first last">
                                     <td class="a-right last" colspan="7">
-                                        <?php echo anchor("productos/catalogo", '<i class="fa fa-arrow-left"></i><span><span> Volver al catálogo</span></span>', 'class="btn btn-polo" title="Volver al catálogo"') ?>
+                                        <?php echo anchor("productos/catalogo", '<i class="fa fa-arrow-left"></i><span><span> Catálogo</span></span>', 'class="btn btn-polo" title="Volver al catálogo"') ?>
                                         <?php echo anchor("pedidos/abandonar", '<i class="fa fa-times"></i> Vaciar carrito', 'class="btn btn-polo pull-right" title="Cancelar el pedido"') ?>
                                     </td>
                                 </tr>
