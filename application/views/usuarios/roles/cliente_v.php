@@ -36,14 +36,14 @@
         );
             
         $arr_menus['editar'] = array(
-            'icono' => '<i class="fa fa-pencil"></i>',
+            'icono' => '<i class="fa fa-pencil-alt"></i>',
             'texto' => 'Editar',
             'link' => "usuarios/editar/edit/{$row->id}",
             'atributos' => 'title="Editar datos del cliente"'
         );
             
         $arr_menus['editarme'] = array(
-            'icono' => '<i class="fa fa-edit"></i>',
+            'icono' => '<i class="fa fa-pencil-alt"></i>',
             'texto' => 'Editar',
             'link' => "usuarios/editarme/edit/{$row->id}",
             'atributos' => 'title="Editar datos del cliente"'

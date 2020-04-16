@@ -23,6 +23,7 @@
             $menus['productos/procesos'] = array('productos', '');
             $menus['productos/categorias'] = array('productos', '');
             $menus['productos/variaciones'] = array('productos', '');
+            $menus['productos/books'] = array('productos', '');
             $menus['productos/importar_existencias'] = array('productos', '');
             $menus['productos/importar_existencias_e'] = array('productos', '');
             
@@ -52,7 +53,7 @@
             $menus['archivos/editar'] = array('recursos', 'recursos-archivos');
             $menus['archivos/cambiar'] = array('recursos', 'recursos-archivos');
             
-            $menus['posts/explorar'] = array('recursos', 'recursos-posts');
+            $menus['posts/explore'] = array('recursos', 'recursos-posts');
             $menus['posts/editar'] = array('recursos', 'recursos-posts');
             $menus['posts/lista'] = array('recursos', 'recursos-posts');
             
@@ -108,16 +109,6 @@
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-        <!-- Sidebar user panel -->
-        <div class="user-panel">
-            <div class="pull-left image">
-                <img src="<?php echo $this->session->userdata('src_img') ?>" class="img-circle" alt="User Image" />
-            </div>
-            <div class="pull-left info">
-                <p><?= $this->session->userdata('nombre_corto') ?></p>
-            </div>
-        </div>
-        
         <!-- sidebar menu: : style can be found in sidebar.less -->
         
         <ul class="sidebar-menu">
@@ -141,13 +132,13 @@
             
             <li class="<?= $clases_m0['usuarios'] ?>">
                 <a href="<?= base_url() ?>usuarios/explorar">
-                    <i class="fa fa-users"></i> <span>Usuarios</span>
+                    <i class="fa fa-user"></i> <span>Usuarios</span>
                 </a>
             </li>
             
             <li class="treeview <?= $clases_m0['estadisticas'] ?>">
                 <a href="#">
-                    <i class="fa fa-bar-chart"></i> <span>Estadísticas</span> <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-chart-line"></i> <span>Estadísticas</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['estadisticas-pedidos'] ?>">
@@ -158,8 +149,8 @@
             
             <li class="treeview <?= $clases_m0['recursos'] ?>">
                 <a href="#">
-                    <i class="fa fa-folder-o"></i>
-                    <span>Recursos</span>
+                    <i class="fa fa-table"></i>
+                    <span>Datos</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
@@ -167,7 +158,7 @@
                         <?= anchor('archivos/imagenes', '<i class="fa fa-file"></i> Archivos') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-posts'] ?>">
-                        <?= anchor('posts/explorar', '<i class="fa fa-newspaper-o"></i> Posts') ?>
+                        <?= anchor('posts/explore', '<i class="fa fa-newspaper"></i> Posts') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-eventos'] ?>">
                         <?= anchor('eventos/explorar', '<i class="fa fa-calendar"></i> Eventos') ?>
@@ -177,11 +168,11 @@
             
             <li class="treeview <?= $clases_m0['ajustes'] ?>">
                 <a href="#">
-                    <i class="fa fa-sliders"></i> <span>Ajustes</span> <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-cog"></i> <span>Ajustes</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['ajustes-parametros'] ?>">
-                        <?= anchor('admin/sis_opcion', '<i class="fa fa-gear"></i> Parámetros') ?>
+                        <?= anchor('admin/sis_opcion', '<i class="fa fa-sliders-h"></i> Parámetros') ?>
                     </li>
                     <li class="<?= $clases_m1['ajustes-lugares'] ?>">
                         <?= anchor("lugares/sublugares/51", '<i class="fa fa-map-marker"></i> Ciudades y lugares') ?>

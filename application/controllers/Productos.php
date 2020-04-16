@@ -305,7 +305,7 @@ class Productos extends CI_Controller{
             $resultados = $this->Producto_model->catalogo($busqueda, $config['per_page'], $offset);
         
         //Variables
-            $data['titulo_pagina'] = NOMBRE_APP;
+            $data['head_title'] = NOMBRE_APP;
             $data['cant_resultados'] = $config['total_rows'];
             $data['busqueda'] = $busqueda;
             $data['busqueda_str'] = $busqueda_str;
@@ -314,8 +314,8 @@ class Productos extends CI_Controller{
             $data['fabricantes'] = $this->Producto_model->fabricantes();
         
         //Solicitar vista
-            $data['vista_a'] = 'productos/catalogo/catalogo_v';
-            $this->load->view(PTL_FRONT, $data);
+            $data['view_a'] = 'productos/catalogo/catalogo_v';
+            $this->load->view(TPL_FRONT, $data);
     }
     
     /**
@@ -351,8 +351,7 @@ class Productos extends CI_Controller{
         $data['metadatos'] = $this->Producto_model->metadatos_valor($producto_id, 'visible');
         $data['variaciones'] = $this->Producto_model->variaciones($producto_id);
         $data['comentarios'] = $this->Producto_model->comentarios($producto_id);
-        $data['vista_a'] = 'productos/detalle/producto_v';
-        $data['vista_b'] = 'productos/detalle/info_v';
+        $data['view_a'] = 'productos/detalle/producto_v';
         $data['arr_precio'] = $this->Producto_model->arr_precio($producto_id);
         $data['arr_tipos_precio'] = $this->Producto_model->arr_tipos_precio();
         
@@ -360,7 +359,7 @@ class Productos extends CI_Controller{
             $data['imagenes'] = $this->Producto_model->imagenes($producto_id);
             $data['palabras_clave'] = $this->Producto_model->palabras_clave($producto_id);
         
-        $this->load->view(PTL_FRONT, $data);
+        $this->load->view(TPL_FRONT, $data);
     }
     
     
@@ -828,6 +827,23 @@ class Productos extends CI_Controller{
         
         $output = array_merge($data,(array)$gc_output);
         $this->load->view(PTL_ADMIN, $output);
+    }
+
+// CONTENIDOS ASIGNADOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Contenidos digitales asignados a un producto
+     * 2020-04-15
+     */
+    function books($producto_id)
+    {
+        $data = $this->Producto_model->basico($producto_id);
+
+        $data['books'] = $this->Producto_model->assigned_posts($producto_id);
+        $data['vista_b'] = 'productos/books_v';
+
+        $this->App_model->view(PTL_ADMIN, $data);
     }
     
 }

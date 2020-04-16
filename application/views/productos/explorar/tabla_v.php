@@ -112,4 +112,4 @@
     </tbody>
 </table>
 
-<?= $this->load->view('app/modal_eliminar'); ?>
+<?php $this->load->view('app/modal_eliminar'); ?>

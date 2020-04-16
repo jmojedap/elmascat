@@ -3,232 +3,271 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Posts extends CI_Controller{
     
-    function __construct() {
+    function __construct() 
+    {
         parent::__construct();
-
         $this->load->model('Post_model');
-        
-        //Para definir hora local
-        date_default_timezone_set("America/Bogota");
+        date_default_timezone_set("America/Bogota");    //Para definir hora local
     }
     
-    function index($post_id)
+    function index($post_id = NULL)
     {
-        $row = $this->Pcrn->registro_id('post', $post_id);
-        $destino = 'posts/editar/' . $post_id;
-        if ( $row->tipo_id == 22 ) { $destino = "posts/lista/{$post_id}"; }
-        
-        redirect($destino);
-                
-    }
-
-//CRUD
-//---------------------------------------------------------------------------------------------------
-
-    
-    function explorar()
-    {
-        
-        //Cargando
-            $this->load->model('Busqueda_model');
-            $this->load->helper('text');
-        
-        //Datos de consulta, construyendo array de búsqueda
-            $busqueda = $this->Busqueda_model->busqueda_array();
-            $busqueda_str = $this->Busqueda_model->busqueda_str();
-            $resultados_total = $this->Post_model->buscar($busqueda); //Para calcular el total de resultados
-        
-        //Paginación
-            $this->load->library('pagination');
-            $config = $this->App_model->config_paginacion(2);
-            $config['base_url'] = base_url() . "posts/explorar/?{$busqueda_str}";
-            $config['total_rows'] = $resultados_total->num_rows();
-            $this->pagination->initialize($config);
-            
-        //Generar resultados para mostrar
-            $offset = $this->input->get('per_page');
-            $resultados = $this->Post_model->buscar($busqueda, $config['per_page'], $offset);
-        
-        //Variables para vista
-            $data['cant_resultados'] = $config['total_rows'];
-            $data['busqueda'] = $busqueda;
-            $data['busqueda_str'] = $busqueda_str;
-            $data['resultados'] = $resultados;
-            $data['listas'] = $this->db->get_where('item', 'categoria_id = 22');
-        
-        //Solicitar vista
-            $data['titulo_pagina'] = 'Posts';
-            $data['subtitulo_pagina'] = $data['cant_resultados'] . ' resultados';
-            $data['vista_menu'] = 'posts/explorar_menu_v';
-            $data['vista_a'] = 'posts/explorar_v';
-            $this->load->view(PTL_ADMIN, $data);
-    }
-    
-    /**
-     * AJAX
-     * Eliminar un grupo de posts seleccionados
-     */
-    function eliminar_seleccionados()
-    {
-        $str_seleccionados = $this->input->post('seleccionados');
-        
-        $seleccionados = explode('-', $str_seleccionados);
-        
-        foreach ( $seleccionados as $elemento_id ) {
-            $this->Post_model->eliminar($elemento_id);
+        if ( is_null($post_id) ) {
+            redirect("posts/explore/");
+        } else {
+            redirect("posts/info/{$post_id}");
         }
-        
-        echo count($seleccionados);
     }
     
-    /**
-     * Exporta el resultado de la búsqueda a un archivo de Excel
-     */
-    function exportar()
-    {
-        
-        //Cargando
-            $this->load->model('Busqueda_model');
-            $this->load->model('Pcrn_excel');
-        
-        //Datos de consulta, construyendo array de búsqueda
-            $busqueda = $this->Busqueda_model->busqueda_array();
-            $resultados_total = $this->Busqueda_model->posts($busqueda); //Para calcular el total de resultados
-        
-        //Preparar datos
-            $datos['nombre_hoja'] = 'Posts';
-            $datos['query'] = $resultados_total;
-            
-        //Preparar archivo
-            $objWriter = $this->Pcrn_excel->archivo_query($datos);
-        
-        $data['objWriter'] = $objWriter;
-        $data['nombre_archivo'] = date('Ymd_His'). '_tickets.xls'; //save our workbook as this file name
-        
-        $this->load->view('app/descargar_phpexcel_v', $data);
-            
-    }
-    
-    function nuevo()
-    {
-        $gc_output = $this->Post_model->crud_basico();
-        
-        //Array data espefícicas
-            $data['titulo_pagina'] = 'Posts';
-            $data['subtitulo_pagina'] = 'Explorar';
-            $data['vista_menu'] = 'posts/explorar_menu_v';
-            $data['vista_a'] = 'comunes/gc_v';
-        
-        $output = array_merge($data,(array)$gc_output);
-        $this->load->view(PTL_ADMIN, $output);
-    }
-    
-    /**
-     * Editar la información bsica de un post
-     * Funciona con grocery crud
-     * 
-     * @param type $proceso
-     * @param type $post_id
-     */
-    function editar($post_id)
-    {   
-        $this->load->model('Esp');
-        //Datos básicos
-            $data = $this->Post_model->basico($post_id);
-        
-        //Array data espefícicas
-            $vista_b = 'posts/editar_v';
-            if ( $data['row']->tipo_id == 22 ) { $vista_b = 'posts/listas/editar_v'; }
-            $data['vista_b'] = $vista_b;
-        
-        $this->load->view(PTL_ADMIN, $data);
-    }
-    
-    function actualizar($post_id)
-    {
-        $this->Post_model->actualizar($post_id);
-        redirect("posts/editar/{$post_id}/actualizado");
-    }
-    
-    function ver($post_id)
-    {
-        
-        $data = $this->Post_model->basico($post_id);    
-        $data['detalle'] = $this->Post_model->detalle($post_id);
-        $data['extras'] = $this->Post_model->extras($post_id);
-        $data['row_ciudad'] = $this->Pcrn->registro_id('lugar', $data['row']->ciudad_id);
-        
-        //Estados
-            $data['estados'] = $this->db->get_where('item', 'categoria_id = 7');
-        
-        //Variables
-            $data['post_id'] = $post_id;
-        
-        //Solicitar vista
-            $data['subtitulo_pagina'] = 'Post';
-            $data['vista_a'] = 'posts/post_v';
-            $data['vista_b'] = 'posts/ver_v';
-            $this->load->view(PTL_ADMIN, $data);
-    }
-    
-    function leer($post_id)
-    {
-        
-        $data = $this->Post_model->basico($post_id);    
-        
-        //Variables
-            $data['post_id'] = $post_id;
-        
-        //Solicitar vista
-            $data['subtitulo_pagina'] = 'Post';
-            $data['vista_a'] = 'posts/leer_v';
-            $this->load->view(PTL_FRONT, $data);
-    }
-    
-//LISTAS - TIPO 22
+//EXPLORE FUNCTIONS
 //---------------------------------------------------------------------------------------------------
+
+    /** Exploración de Posts */
+    function explore()
+    {        
+        //Datos básicos de la exploración
+            $data = $this->Post_model->explore_data(1);
+        
+        //Opciones de filtros de búsqueda
+            $data['options_type'] = $this->Item_model->options('categoria_id = 33', 'Todos');
+            
+        //Arrays con valores para contenido en lista
+            $data['arr_types'] = $this->Item_model->arr_cod('categoria_id = 33');
+            
+        //Cargar vista
+            $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Listado de Posts, filtrados por búsqueda, JSON
+     */
+    function get($num_page = 1)
+    {
+        $data = $this->Post_model->get($num_page);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
     /**
-     * Muestra los elementos de un post tipo lista, CRUD de los elementos de la lista
-     * 
-     * @param type $post_id
+     * AJAX JSON
+     * Eliminar un conjunto de posts seleccionados
      */
-    function lista($post_id)
+    function delete_selected()
     {
-        //$this->output->enable_profiler(TRUE);
-            $this->load->model('Esp');
-            
+        $selected = explode(',', $this->input->post('selected'));
+        $data['quan_deleted'] = 0;
+        
+        foreach ( $selected as $row_id ) 
+        {
+            $data['quan_deleted'] += $this->Post_model->delete($row_id);
+        }
+
+        //Establecer resultado
+        if ( $data['qty_deleted'] > 0 ) { $data['status'] = 1; }
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+    
+// CRUD
+//-----------------------------------------------------------------------------
+
+    /**
+     * Vista Formulario para la creación de un nuevo post
+     */
+    function add()
+    {
+        //Variables generales
+            $data['head_title'] = 'Post';
+            $data['head_subtitle'] = 'Nuevo';
+            $data['nav_2'] = 'posts/explore/menu_v';
+            $data['view_a'] = 'posts/add_v';
+
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Crea un nuevo registro en la tabla post
+     * 2019-11-29
+     */
+    function insert()
+    {
+        $data = $this->Post_model->insert();
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+    
+    /**
+     * Información general del post
+     */
+    function info($post_id)
+    {        
         //Datos básicos
-            $data = $this->Post_model->basico($post_id);
-        
-        //Variables
-            $tabla_id = $this->Pcrn->si_vacia($data['row']->referente_1_id, '1000');
-            $elementos_lista = $this->Post_model->metadatos($post_id, 22);  //22, tipo de dato, elementos de lista
-            
-        //Cargando variables
-            $data['tabla_id'] = $tabla_id;
-            $data['tabla'] = $this->Pcrn->campo('sis_tabla', "id = {$tabla_id}", 'nombre_tabla');
-            $data['elementos_lista'] = $elementos_lista;
-            
-        //Array data espefícicas
-            $data['vista_a'] = 'posts/listas/lista_v';
-            $data['vista_b'] = 'posts/listas/elementos_v';
-        
-        $this->load->view(PTL_ADMIN, $data);
+        $data = $this->Post_model->basic($post_id);
+        $data['view_a'] = 'posts/info_v';
+        $this->App_model->view(TPL_ADMIN, $data);
     }
     
-    function reordenar_lista($post_id)
+// EDICIÓN Y ACTUALIZACIÓN
+//-----------------------------------------------------------------------------
+
+    /**
+     * Formulario para la edición de los datos de un user. Los datos que se
+     * editan dependen de la $section elegida.
+     */
+    function edit($post_id)
     {
-        $str_orden = $this->input->post('str_orden');
+        //Datos básicos
+        $data = $this->Post_model->basic($post_id);
+
+        $data['options_type'] = $this->Item_model->options('categoria_id = 33', 'Todos');
         
-        parse_str($str_orden);
-        $arr_elementos = $elemento;
+        //Array data espefícicas
+            $data['nav_2'] = 'posts/menu_v';
+            $data['head_subtitle'] = 'Editar';
+            $data['view_a'] = $this->edit_view($data['row']);
         
-        $cant_elementos = $this->Post_model->reordenar_lista($post_id, $arr_elementos);
-        
-        $this->output
-        ->set_content_type('application/json')
-        ->set_output(json_encode($cant_elementos));
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Guardar un registro en la tabla post, si post_id = 0, se crea nuevo registro
+     * 2019-11-29
+     */
+    function update($post_id)
+    {
+        $data = $this->Post_model->update($post_id);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Nombre de la vista con el formulario para la edición del post. Puede cambiar dependiendo
+     * del tipo (type_id).
+     * 2020-02-23
+     */
+    function edit_view($row)
+    {
+        $edit_view = 'posts/edit_v';
+
+        return $edit_view;
     }
     
+// IMAGEN PRINCIPAL DEL POST
+//-----------------------------------------------------------------------------
+
+    function image($post_id)
+    {
+        $data = $this->Post_model->basic($post_id);        
+
+        $data['view_a'] = 'posts/image/image_v';
+        $data['nav_2'] = 'posts/menu_v';
+        $data['subtitle_head'] = 'Imagen asociada';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    function cropping($post_id)
+    {
+        $data = $this->Post_model->basic($post_id);        
+
+        $data['image_id'] = $data['row']->image_id;
+        $data['src_image'] = $data['att_img']['src'];
+        $data['back_destination'] = "posts/image/{$post_id}";
+
+        $data['view_a'] = 'files/cropping_v';
+        $data['nav_2'] = 'posts/menu_v';
+        $data['subtitle_head'] = 'Imagen asociada al post';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * AJAX JSON
+     * Carga file de image y se la asigna a un post.
+     * 2020-02-22
+     */
+    function set_image($post_id)
+    {
+        //Cargue
+        $this->load->model('File_model');
+        $data_upload = $this->File_model->upload();
+        
+        $data = $data_upload;
+        if ( $data_upload['status'] )
+        {
+            $this->Post_model->remove_image($post_id);                                  //Quitar image actual, si tiene una
+            $data = $this->Post_model->set_image($post_id, $data_upload['row']->id);    //Asignar imagen nueva
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Desasigna y elimina la image asociada a un post, si la tiene.
+     */
+    function remove_image($post_id)
+    {
+        $data = $this->Post_model->remove_image($post_id);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+// IMPORTACIÓN DE POSTS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Mostrar formulario de importación de posts
+     * con archivo Excel. El resultado del formulario se envía a 
+     * 'posts/import_e'
+     */
+    function import($type = 'general')
+    {
+        $data = $this->Post_model->import_config($type);
+
+        $data['url_file'] = URL_RESOURCES . 'import_templates/' . $data['template_file_name'];
+
+        $data['head_title'] = 'Posts';
+        $data['nav_2'] = 'posts/explore/menu_v';
+        $data['view_a'] = 'common/import_v';
+        
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    //Ejecuta la importación de posts con archivo Excel
+    function import_e()
+    {
+        //Proceso
+        $this->load->library('excel');            
+        $imported_data = $this->excel->arr_sheet_default($this->input->post('sheet_name'));
+        
+        if ( $imported_data['status'] == 1 )
+        {
+            $data = $this->Post_model->import($imported_data['arr_sheet']);
+        }
+
+        //Cargue de variables
+            $data['status'] = $imported_data['status'];
+            $data['message'] = $imported_data['message'];
+            $data['arr_sheet'] = $imported_data['arr_sheet'];
+            $data['sheet_name'] = $this->input->post('sheet_name');
+            $data['back_destination'] = "posts/explore/";
+        
+        //Cargar vista
+            $data['head_title'] = 'Posts';
+            $data['head_subtitle'] = 'Resultado importación';
+            $data['view_a'] = 'common/import_result_v';
+            $data['nav_2'] = 'posts/explore/menu_v';
+
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+// Asignación a usuario
+//-----------------------------------------------------------------------------
+
+    /**
+     * Asigna un contenido digital a un usuario
+     */
+    function add_to_user($post_id, $user_id)
+    {
+        $data = $this->Post_model->add_to_user($post_id, $user_id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+
+
 }

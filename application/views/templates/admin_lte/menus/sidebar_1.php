@@ -23,6 +23,7 @@
             $menus['productos/procesos'] = array('productos', '');
             $menus['productos/categorias'] = array('productos', '');
             $menus['productos/variaciones'] = array('productos', '');
+            $menus['productos/books'] = array('productos', '');
             $menus['productos/importar_existencias'] = array('productos', '');
             $menus['productos/importar_existencias_e'] = array('productos', '');
             
@@ -52,7 +53,7 @@
             $menus['archivos/editar'] = array('recursos', 'recursos-archivos');
             $menus['archivos/cambiar'] = array('recursos', 'recursos-archivos');
             
-            $menus['posts/explorar'] = array('recursos', 'recursos-posts');
+            $menus['posts/explore'] = array('recursos', 'recursos-posts');
             $menus['posts/editar'] = array('recursos', 'recursos-posts');
             $menus['posts/lista'] = array('recursos', 'recursos-posts');
             
@@ -140,7 +141,7 @@
             
             <li class="<?= $clases_m0['usuarios'] ?>">
                 <a href="<?= base_url() ?>usuarios/explorar">
-                    <i class="fa fa-users"></i> <span>Usuarios</span>
+                    <i class="fa fa-user"></i> <span>Usuarios</span>
                 </a>
             </li>
             
@@ -166,7 +167,7 @@
                         <?= anchor('archivos/imagenes', '<i class="fa fa-file"></i> Archivos') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-posts'] ?>">
-                        <?= anchor('posts/explorar', '<i class="fa fa-newspaper-o"></i> Posts') ?>
+                        <?= anchor('posts/explore', '<i class="fa fa-newspaper-o"></i> Posts') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-eventos'] ?>">
                         <?= anchor('eventos/explorar', '<i class="fa fa-calendar"></i> Eventos') ?>
@@ -180,7 +181,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['ajustes-parametros'] ?>">
-                        <?= anchor('admin/sis_opcion', '<i class="fa fa-gear"></i> Parámetros') ?>
+                        <?= anchor('admin/sis_opcion', '<i class="fa fa-sliders-h"></i> Parámetros') ?>
                     </li>
                     <li class="<?= $clases_m1['ajustes-lugares'] ?>">
                         <?= anchor("lugares/explorar/?tp=4", '<i class="fa fa-map-marker"></i> Ciudades y lugares') ?>

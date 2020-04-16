@@ -49,7 +49,7 @@
         );
         
         $arr_menus['ver'] = array(
-            'icono' => '',
+            'icono' => '<i class="fa fa-info-circle"></i>',
             'texto' => 'Información ',
             'link' => "productos/ver/{$row->id}",
             'atributos' => ''
@@ -75,6 +75,13 @@
             'link' => "productos/variaciones/{$row->id}/",
             'atributos' => ''
         );
+
+        $arr_menus['books'] = array(
+            'icono' => '<i class="fa fa-book"></i>',
+            'texto' => 'Contenidos',
+            'link' => "productos/books/{$row->id}/",
+            'atributos' => ''
+        );
         
         $arr_menus['editar'] = array(
             'icono' => '<i class="fa fa-edit"></i>',
@@ -91,8 +98,8 @@
         );
         
     //Elementos de menú para cada rol
-        $elementos_rol[0] = array('explorar', 'ver', 'editar', 'tags', 'variaciones', 'detalle', 'nuevo');
-        $elementos_rol[1] = array('explorar', 'ver', 'editar', 'tags', 'variaciones', 'detalle', 'nuevo');
+        $elementos_rol[0] = array('explorar', 'ver', 'editar', 'tags', 'variaciones','books', 'detalle', 'nuevo');
+        $elementos_rol[1] = array('explorar', 'ver', 'editar', 'tags', 'variaciones','books', 'detalle', 'nuevo');
         $elementos_rol[2] = array('explorar', 'ver', 'editar', 'tags', 'variaciones', 'detalle', 'nuevo');
         $elementos_rol[6] = array('explorar', 'ver', 'editar', 'tags', 'variaciones', 'detalle', 'nuevo');
         $elementos_rol[7] = array('explorar', 'ver', 'editar', 'tags', 'variaciones', 'detalle', 'nuevo');

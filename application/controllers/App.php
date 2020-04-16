@@ -31,14 +31,7 @@ class App extends CI_Controller{
      */
     function login()
     {
-        if ( $this->session->userdata('logged') )
-        {
-            $this->logged();    //Ya está logueado
-        } else {
-            $data['head_title'] = 'Ingreso de usuarios';
-            $data['view_a'] = 'templates/polo/login_v';
-            $this->load->view(TPL_FRONT, $data);
-        }
+        redirect('accounts/login/');
     }
     
     /**
@@ -119,10 +112,10 @@ class App extends CI_Controller{
     {
         //$this->output->enable_profiler(TRUE);
         
-        $data['vista_a'] = 'app/no_permitido_v';
-        $data['titulo_pagina'] = "Acceso no permitido";
+        $data['view_a'] = 'app/no_permitido_v';
+        $data['head_title'] = "Acceso no permitido";
         
-        $this->load->view(PTL_FRONT, $data);
+        $this->load->view(TPL_FRONT, $data);
     }
     
 // BÚSQUEDAS Y REDIRECCIONAMIENTO
@@ -355,20 +348,10 @@ class App extends CI_Controller{
     
     function prueba()
     {
+        $data['head_title'] = 'Prueba librería';
+        $data['view_a'] = 'app/prueba_v';
         
-        
-        $data['titulo_pagina'] = 'Prueba librería';
-        $data['vista_a'] = 'app/prueba_v';
-        
-        $this->load->view(PTL_ADMIN, $data);
-    }
-    
-    function polo($vista = 'grid')
-    {
-        $data['titulo_pagina'] = 'Test Polo';
-        $data['subtitulo_pagina'] = 'Template';
-        $data['vista_a'] = "plantillas/polo/ejemplos/{$vista}";
-        $this->load->view(PTL_FRONT, $data);
+        $this->load->view(TPL_ADMIN, $data);
     }
 
     function update_address()

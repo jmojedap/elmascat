@@ -1,3 +1,3 @@
-<?= $this->load->view($vista_menu); ?>
+<?php $this->load->view($vista_menu); ?>
 <?= $output; ?>
 

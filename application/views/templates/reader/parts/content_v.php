@@ -6,6 +6,10 @@
         <button class="w2 float-left btn btn-secondary" v-on:click="change_page(-1)">
             <i class="fa fa-chevron-left"></i>
         </button>
+        <a href="<?php echo base_url('usuarios/books/') ?>" class="btn btn-light" title="Ir a mis libros">
+            <i class="fa fa-arrow-left"></i>
+            Mis libros
+        </a>
         <button class="btn" v-on:click="set_mode('index')" v-bind:class="{'btn-warning': mode == 'index', 'btn-light': mode != 'index' }"><i class="fa fa-list-ol"></i> Índice</button>
         <button class="btn" v-on:click="set_mode('mini')" v-bind:class="{'btn-warning': mode == 'mini', 'btn-light': mode != 'mini' }"><i class="far fa-file"></i> Páginas</button>
         <button class="w2 float-right btn btn-secondary" v-on:click="change_page(1)">

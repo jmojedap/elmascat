@@ -6,12 +6,12 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
 <!--Head tema AdminLTE 2-->
-<?php $this->load->view('plantillas/admin_lte/head_lte') ?>
+<?php $this->load->view('templates/admin_lte/parts/head_lte') ?>
 
 <!--Estilos adicionales-->
-<link type="text/css" rel="stylesheet" href="<?= base_url('recursos/css/admin_lte_add.css') ?>">
-<link type="text/css" rel="stylesheet" href="<?= base_url('recursos/css/bs3_bs4.css') ?>">
-<link type="text/css" rel="stylesheet" href="<?= base_url('recursos/css/style_pml.css') ?>">
+<link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES . 'css/admin_lte_add.css' ?>">
+<link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES . 'css/bs3_bs4.css' ?>">
+<link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES . 'css/style_pml.css' ?>">
 
 <!-- Vue.js -->
 <?php $this->load->view('assets/vue') ?>

@@ -1094,5 +1094,23 @@ class Usuario_model extends CI_Model{
         
         return $pedidos;
     }
+
+// CONTENIDOS VIRUTALES ASIGNADOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Contenidos digitales asignados a un usuario
+     */
+    function assigned_posts($user_id)
+    {
+        $this->db->select('post.id, nombre_post AS title, code, slug, resumen, post.estado, publicado, meta.id AS meta_id');
+        $this->db->join('meta', 'post.id = meta.relacionado_id');
+        $this->db->where('meta.dato_id', 100012);   //Asignación de contenido
+        $this->db->where('meta.elemento_id', $user_id);
+
+        $posts = $this->db->get('post');
+        
+        return $posts;
+    }
     
 }

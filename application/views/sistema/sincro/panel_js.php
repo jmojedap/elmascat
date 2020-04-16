@@ -1,4 +1,4 @@
-<script src="<?= base_url('js/Math.uuid.js') ?>"></script>
+<script src="<?= URL_RESOUCES ?>js/Math.uuid.js"></script>
 
 <script>
 //Variables 
@@ -285,7 +285,7 @@
      */
     function boton_proceso()
     {
-        $('#sincro_' + tabla).html('<i class="fa fa-refresh fa-spin"></i>');
+        $('#sincro_' + tabla).html('<i class="fa fa-sync fa-spin"></i>');
         $('#sincro_' + tabla).removeClass('btn-warning');
         $('#sincro_' + tabla).addClass('btn-info');
     }
@@ -295,7 +295,7 @@
      */
     function boton_reiniciar()
     {
-        $('#sincro_' + tabla).html('<i class="fa fa-refresh"></i>');
+        $('#sincro_' + tabla).html('<i class="fa fa-sync"></i>');
         $('#sincro_' + tabla).removeClass('btn-info');
         $('#sincro_' + tabla).addClass('btn-warning');
     }

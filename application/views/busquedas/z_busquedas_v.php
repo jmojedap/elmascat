@@ -4,7 +4,7 @@
 
 <div class="row">
     <div class="col-lg-3 col-md-4">
-        <?= $this->load->view('busquedas/widget_categorias_v'); ?>
+        <?php $this->load->view('busquedas/widget_categorias_v'); ?>
     </div>
 
     <div class="col-lg-9">

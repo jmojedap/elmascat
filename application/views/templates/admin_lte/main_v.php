@@ -4,7 +4,7 @@
         ini_set('error_reporting', E_ERROR);
         
     //Sidebar, según el rol del usuario
-        $sidebar = 'templates/admin_lte/parts/menus/sidebar_' . $this->session->userdata('rol_id');
+        $sidebar = 'templates/admin_lte/menus/sidebar_' . $this->session->userdata('role');
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,11 +34,8 @@
                 </section><!-- /.content -->
             </div><!-- /.content-wrapper -->
             
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.0
-                </div>
-                <strong>Copyright &copy; 2009-2018 <a href="http://www.pacarina.com">Pacarina Media Lab</a>.</strong>
+            <footer class="main-footer text-center">
+                <strong>&copy; 2020 &middot; <a href="http://www.pacarina.com" target="_blank">Pacarina Media Lab</a></strong>
             </footer>
         </div><!-- ./wrapper -->
 

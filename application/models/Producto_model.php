@@ -18,6 +18,8 @@ class Producto_Model extends CI_Model{
         $basico['row_archivo'] = $this->Pcrn->registro_id('archivo', $row->imagen_id);
         $basico['titulo_pagina'] = $row->nombre_producto;
         $basico['vista_a'] = 'productos/producto_v';
+        $basico['head_title'] = $row->nombre_producto;
+        $basico['view_a'] = 'productos/producto_v';
         
         return $basico;
     }
@@ -1842,6 +1844,53 @@ class Producto_Model extends CI_Model{
         }
         
         return $no_importados;
+    }
+
+// GESTIÓN DE POSTS ASOCIADOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Asignar un contenido de la tabla post a un usuario, lo agrega como metadato
+     * en la tabla meta, con el tipo 100012
+     * 2020-04-15
+     */
+    function add_post($producto_id, $post_id)
+    {
+        //Construir registro
+        $arr_row['tabla_id'] = 3100;    //producto
+        $arr_row['dato_id'] = 310012;   //Asignación de post a un producto
+        $arr_row['elemento_id'] = $producto_id; //Producto ID, al que se asigna
+        $arr_row['relacionado_id'] = $post_id;  //ID contenido
+        $arr_row['usuario_id'] = 0;  //Usuario que asigna
+
+        //Establecer usuario que ejecuta
+        if ( $this->session->userdata('logged') ) {
+            $arr_row['usuario_id'] = $this->session->userdata('user_id');
+        }
+
+        $condition = "dato_id = {$arr_row['dato_id']} AND elemento_id = {$arr_row['elemento_id']} AND relacionado_id = {$arr_row['relacionado_id']}";
+        $meta_id = $this->Db_model->save('meta', $condition, $arr_row);
+
+        //Establecer resultado
+        $data = array('status' => 0, 'saved_id' => '0');
+        if ( $meta_id > 0) { $data = array('status' => 1, 'saved_id' => $meta_id); }
+
+        return $data;
+    }
+
+    /**
+     * Contenidos digitales asignados a un producto
+     */
+    function assigned_posts($producto_id)
+    {
+        $this->db->select('post.id, nombre_post AS title, code, slug, resumen, post.estado, publicado, meta.id AS meta_id');
+        $this->db->join('meta', 'post.id = meta.relacionado_id');
+        $this->db->where('meta.dato_id', 310012);   //Asignación de contenido
+        $this->db->where('meta.elemento_id', $producto_id);
+
+        $posts = $this->db->get('post');
+        
+        return $posts;
     }
     
 }

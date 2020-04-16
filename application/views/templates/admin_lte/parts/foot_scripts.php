@@ -10,4 +10,4 @@
 <script src="<?= URL_ASSETS ?>bootstrap/js/bootstrap.min.js" type="text/javascript"></script>    
 
 <!-- AdminLTE App -->
-<script src="<?= URL_ASSETS ?>admin_lte/dist/js/app.min.js" type="text/javascript"></script>
+<script src="<?= URL_RESOURCES ?>templates/admin_lte/dist/js/app.min.js" type="text/javascript"></script>

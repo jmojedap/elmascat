@@ -352,7 +352,7 @@ class Pcrn extends CI_Model{
      * @param type $fecha
      * @return type 
      */
-    function tiempo_hace($fecha, $poner_prefijo)
+    function tiempo_hace($fecha, $poner_prefijo = false)
     { 
         $segundos_periodo = $this->segundos_periodo_array();
         

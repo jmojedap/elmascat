@@ -18,8 +18,8 @@
 <div class="row" ondragstart="return false" onselectstart="return false" oncontextmenu="return false">
     <div class="col-sm-3">
         <div class="left-sidebar">
-            <?= $this->load->view('busquedas/widget_categorias_v'); ?>
-            <?= $this->load->view('busquedas/widget_fabricantes_v'); ?>
+            <?php $this->load->view('busquedas/widget_categorias_v'); ?>
+            <?php $this->load->view('busquedas/widget_fabricantes_v'); ?>
         </div>
     </div>
 

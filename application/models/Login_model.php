@@ -192,23 +192,29 @@ class Login_model extends CI_Model{
     function session_data($username)
     {
         $this->load->helper('text');
-        $row_usuario = $this->Pcrn->registro('usuario', "username = '{$username}' OR email='{$username}'");
+        $row_user = $this->Db_model->row('usuario', "username = '{$username}' OR email='{$username}'");
 
         //$data general
             $data = array(
                 'logged' =>   TRUE,
-                'nombre_usuario'    =>  $row_usuario->username,
-                'nombre_completo'    =>  "{$row_usuario->nombre} {$row_usuario->apellidos}",
-                'nombre_corto'    =>  $row_usuario->nombre,
-                'usuario_id'    =>  $row_usuario->id,
-                'rol_id'    => $row_usuario->rol_id,
-                'ultimo_login'    => $row_usuario->ultimo_login,
-                'src_img'    => $this->App_model->src_img_usuario($row_usuario, '60px_')
+                'nombre_usuario'    =>  $row_user->username,
+                'nombre_completo'    =>  "{$row_user->nombre} {$row_user->apellidos}",
+                'nombre_corto'    =>  $row_user->nombre,
+                'usuario_id'    =>  $row_user->id,
+                'rol_id'    => $row_user->rol_id,
+                'ultimo_login'    => $row_user->ultimo_login,
+                'src_img'    => $this->App_model->src_img_usuario($row_user, '60px_'),
+                'username'    =>  $row_user->username,
+                'display_name'    =>  $row_user->nombre . ' ' . $row_user->apellidos,
+                'first_name'    =>  $row_user->nombre,
+                'user_id'    =>  $row_user->id,
+                'role'    => $row_user->rol_id,
+                'role_abbr'    => $this->Db_model->field('item', "categoria_id = 58 AND id_interno = {$row_user->rol_id}", 'abreviatura')
             );
             
         //$data específico
             //Seguridad, utilizada en hooks/acceso
-            $data['acl'] = $this->acl($row_usuario);
+            $data['acl'] = $this->acl($row_user);
         
         //Devolver array
             return $data;

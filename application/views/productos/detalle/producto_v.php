@@ -15,6 +15,12 @@
         
     //
         $contador_img = 0;  //Contador de imágenes
+
+    //Cantidad disponibles
+    $qty_disponibles = $row_variacion->cant_disponibles;
+    if ( $row->cant_disponibles == 0 ) { $qty_disponibles = 'agotado'; }
+    if ( $row->cant_disponibles > 100 ) { $qty_disponibles = '100+'; }
+    
 ?>
 
 <script>
@@ -101,11 +107,8 @@
                         <p class="availability in-stock">
                             Disponibles:
                             <span>
-                                <?php if ( $row->cant_disponibles > 0 ){ ?>
-                                    <?= $row_variacion->cant_disponibles ?>
-                                <?php } else { ?>
-                                    agotado
-                                <?php } ?> 
+                                <?= $qty_disponibles ?>
+                                
                             </span>
                         </p>
                         

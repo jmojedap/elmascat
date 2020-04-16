@@ -9,6 +9,9 @@
         
     //Pedidos
         $menus['usuarios/mis_pedidos'] = array('pedidos', '');
+
+    //Pedidos
+        $menus['usuarios/books'] = array('books', '');
     
 //Clases para menú izquierda
     $ubicacion = $this->uri->segment(1) . '/' . $this->uri->segment(2);
@@ -47,6 +50,12 @@
             <li class="<?= $clases_m0['pedidos'] ?>">
                 <a href="<?= base_url('usuarios/pedidos/1') ?>">
                     <i class="fa fa-shopping-cart"></i> <span>Mis pedidos</span>
+                </a>
+            </li>
+
+            <li class="<?= $clases_m0['books'] ?>">
+                <a href="<?= base_url('usuarios/books/') ?>">
+                    <i class="fa fa-book"></i> <span>Mis libros virtuales</span>
                 </a>
             </li>
             

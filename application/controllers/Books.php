@@ -18,7 +18,7 @@ class Books extends CI_Controller{
 // Lectura
 //-----------------------------------------------------------------------------
 
-    function read($book_code)
+    function read($book_code, $meta_id)
     {
         $data = $this->Book_model->book_info($book_code);
 
@@ -35,7 +35,14 @@ class Books extends CI_Controller{
         $str_index = file_get_contents(PATH_CONTENT . "books/{$book_code}/index_01.json");
         $data['book_index'] = $str_index;
 
-        $this->load->view('templates/reader/reader_v', $data);
+        //$view = 'templates/reader/demo_v';
+        if ( $this->Book_model->readable($meta_id) ) {
+            $view = 'templates/reader/reader_v'; 
+        } else {
+            redirect('app/no_permitido');
+        }
+
+        $this->load->view($view, $data);
     }
 
     function rename_pages($book_code = 'mda_202004')

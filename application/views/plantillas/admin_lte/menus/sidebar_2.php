@@ -53,7 +53,7 @@
         $menus['archivos/editar'] = array('recursos', 'recursos-archivos');
         $menus['archivos/cambiar'] = array('recursos', 'recursos-archivos');
         
-        $menus['posts/explorar'] = array('recursos', 'recursos-posts');
+        $menus['posts/explore'] = array('recursos', 'recursos-posts');
         $menus['posts/editar'] = array('recursos', 'recursos-posts');
         $menus['posts/lista'] = array('recursos', 'recursos-posts');
         
@@ -114,7 +114,7 @@
                         <?= anchor('archivos/imagenes', '<i class="fa fa-file"></i> Archivos') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-posts'] ?>">
-                        <?= anchor('posts/explorar', '<i class="fa fa-newspaper"></i> Posts') ?>
+                        <?= anchor('posts/explore', '<i class="fa fa-newspaper"></i> Posts') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-eventos'] ?>">
                         <?= anchor('eventos/explorar', '<i class="fa fa-calendar"></i> Eventos') ?>

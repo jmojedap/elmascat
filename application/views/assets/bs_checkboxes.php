@@ -1,1 +1,1 @@
-<link rel="stylesheet" href="<?= base_url('recursos/css/checkboxes.css') ?>">
+<link rel="stylesheet" href="<?= base_url('resources/css/checkboxes.css') ?>">

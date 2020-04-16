@@ -1,5 +1,5 @@
 <?php
-    $carpeta_tema = URL_ASSETS . 'polo/blue/';
+    $carpeta_tema = URL_RESOURCES . 'templates/polo/blue/';
 ?>
 
 <!-- Mobile Specific -->
@@ -11,8 +11,8 @@
         <link rel="stylesheet" href="<?php echo $carpeta_tema ?>css/owl.carousel.css" type="text/css">
         <link rel="stylesheet" href="<?php echo $carpeta_tema ?>css/owl.theme.css" type="text/css">
 
-        <link type="text/css" rel="stylesheet" href="<?php echo base_url('recursos/css/bs3_bs4.css') ?>">
-        <link type="text/css" rel="stylesheet" href="<?php echo base_url('recursos/css/style_pml.css') ?>">
+        <link type="text/css" rel="stylesheet" href="<?php echo URL_RESOURCES ?>css/bs3_bs4.css">
+        <link type="text/css" rel="stylesheet" href="<?php echo URL_RESOURCES ?>css/style_pml.css">
         
         <!-- Google Fonts -->
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,300,700,800,400,600' rel='stylesheet' type='text/css'>

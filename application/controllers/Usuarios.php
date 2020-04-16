@@ -129,7 +129,7 @@ class Usuarios extends CI_Controller{
     function info($usuario_id)
     {
         //Datos básicos
-        if ( $this->session->userdata('rol_id') > 2 ) { $usuario_id = $this->session->userdata('usuario_id'); }
+        if ( $this->session->userdata('role') > 2 ) { $usuario_id = $this->session->userdata('user_id'); }
         $data = $this->Usuario_model->basico($usuario_id);
         
         //Array data espefícicas
@@ -175,10 +175,10 @@ class Usuarios extends CI_Controller{
         $row_usuario = $this->Pcrn->registro_id('usuario', $usuario_id);
         
         //Solicitar vista
-            $data['titulo_pagina'] = 'Usuario registrado';
-            $data['subtitulo_pagina'] = $row_usuario->nombre . ' ' . $row_usuario->apellidos;
-            $data['vista_a'] = 'usuarios/registrado_v';
-            $this->load->view(PTL_FRONT, $data);
+            $data['head_title'] = 'Usuario registrado';
+            $data['head_subtitle'] = $row_usuario->nombre . ' ' . $row_usuario->apellidos;
+            $data['view_a'] = 'usuarios/registrado_v';
+            $this->load->view(TPL_FRONT, $data);
     }
     
     function enviar_email($usuario_id = 2)
@@ -426,6 +426,17 @@ class Usuarios extends CI_Controller{
             ->set_content_type('application/json')
             ->set_output(json_encode($username));
     }
+
+    /**
+     * Actualiza el campo user.activation_key, para activar o restaurar la contraseña de un usuario
+     * 2019-11-18
+     */
+    function set_activation_key($user_id)
+    {
+        $this->load->model('Account_model');
+        $activation_key = $this->Account_model->activation_key($user_id);
+        $this->output->set_content_type('application/json')->set_output(json_encode($activation_key));
+    }
     
 // PROCESOS
 //-----------------------------------------------------------------------------
@@ -515,6 +526,27 @@ class Usuarios extends CI_Controller{
         
         $this->session->set_flashdata('resultado', $resultado);
         redirect("usuarios/direcciones/{$usuario_id}");
+    }
+
+// CONTENIDOS ASIGNADOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Contenidos digitales asignados a un usuario
+     * 2020-04-15
+     */
+    function books($user_id = 0)
+    {
+        //Control de permisos de acceso
+        if ( $this->session->userdata('role') >= 10 ) { $user_id = $this->session->userdata('user_id'); }
+
+        $data = $this->Usuario_model->basico($user_id);
+
+        $data['books'] = $this->Usuario_model->assigned_posts($user_id);
+
+        $data['vista_b'] = 'usuarios/books_v';
+
+        $this->App_model->view(PTL_ADMIN, $data);
     }
     
 }

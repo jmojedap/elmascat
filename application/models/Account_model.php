@@ -236,12 +236,12 @@ class Account_model extends CI_Model{
     function activation_key($user_id)
     {
         $this->load->helper('string');
-        $arr_row['activation_key'] = strtolower(random_string('alpha', 12));
+        $arr_row['cod_activacion'] = strtolower(random_string('alpha', 12));
         
         $this->db->where('id', $user_id);
         $this->db->update('usuario', $arr_row);
 
-        return $arr_row['activation_key'];
+        return $arr_row['cod_activacion'];
     }
 
     function activate($activation_key)

@@ -543,11 +543,11 @@ class Pedidos extends CI_Controller{
             $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Donde se envían los datos para el pago
         
         //Solicitar vista
-            $data['titulo_pagina'] = 'Districatólicas';
-            $data['vista_a'] = 'pedidos/compra/compra_v';
-            $data['vista_b'] = 'pedidos/compra/compra_b_usd_v';
+            $data['head_title'] = 'Districatólicas';
+            $data['view_a'] = 'pedidos/compra/compra_v';
+            $data['view_b'] = 'pedidos/compra/compra_b_usd_v';
             $data['section_id'] = 'cart_items';
-            $this->load->view(PTL_FRONT, $data);
+            $this->load->view(TPL_FRONT, $data);
     }
 
     /**
@@ -677,10 +677,10 @@ class Pedidos extends CI_Controller{
     function test_pol()
     {
         //Solicitar vista
-            $data['titulo_pagina'] = 'Test Respuesta';
-            $data['subtitulo_pagina'] = 'Test Respuesta';
-            $data['vista_a'] = 'pedidos/respuesta_test_v';
-            $this->load->view(PTL_FRONT, $data);
+            $data['head_title'] = 'Test Respuesta';
+            $data['head_subtitle'] = 'Test Respuesta';
+            $data['view_a'] = 'pedidos/respuesta_test_v';
+            $this->load->view(TPL_FRONT, $data);
     }
     
     /**
@@ -749,10 +749,10 @@ class Pedidos extends CI_Controller{
         $data['row_pedido'] = $row_pedido;
         
         //Solicitar vista
-            $data['titulo_pagina'] = 'Districatólicas';
-            $data['vista_a'] = 'pedidos/compra/compra_v';
-            $data['vista_b'] = 'pedidos/compra/respuesta_v';
-            $this->load->view(PTL_FRONT, $data);
+            $data['head_title'] = 'Districatólicas';
+            $data['view_a'] = 'pedidos/compra/compra_v';
+            $data['view_b'] = 'pedidos/compra/respuesta_v';
+            $this->load->view(TPL_FRONT, $data);
     }
     
     function respuesta_print()

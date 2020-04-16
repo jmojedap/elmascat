@@ -92,11 +92,11 @@ define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 define('RUTA_IMG', 'recursos/imagenes/');
 define('RUTA_UPLOADS', 'uploads/');
-define('URL_IMG', 'http://www.districatolicas.com/tienda/recursos/imagenes/');
+define('URL_IMG', 'http://www.districatolicas.com/tienda/resources/images/');
 define('URL_ASSETS', 'http://www.districatolicas.com/tienda/assets/');
-define('URL_RECURSOS', 'http://www.districatolicas.com/tienda/recursos/');
+define('URL_RECURSOS', 'http://www.districatolicas.com/tienda/resources/');
 define('URL_UPLOADS', 'http://www.districatolicas.com/tienda/uploads/');
-define('PTL_ADMIN', 'plantillas/admin_lte/plantilla_v');       //Vista plantilla de administración
+define('PTL_ADMIN', 'templates/admin_lte/main_v');       //Vista plantilla de administración
 define('PTL_ADMIN_F', 'plantillas/admin_lte/');                //Folder de la carpeta de la plantilla de administración
 define('PTL_FRONT', 'plantillas/polo/plantilla_v');          //Vista plantilla del front
 define('VER_LOCAL', FALSE);                         //Es una versión local
@@ -106,6 +106,9 @@ define('NOMBRE_APP', 'DistriCatólicas');            //Nombre de la aplicación
 define('APP_NAME', 'DistriCatólicas');            //Nombre de la aplicación
 define('PATH_CONTENT', 'content/');                     //Carpeta de contenido de la aplicación
 define('URL_CONTENT', 'http://www.districatolicas.com/tienda/content/');  //URL de la carpeta de contenido de la aplicación
+define('URL_RESOURCES', 'http://www.districatolicas.com/tienda/resources/');
+
+define('TPL_ADMIN', 'templates/admin_pml/main_v');          //Vista plantilla del front
 define('TPL_FRONT', 'templates/polo/main_v');          //Vista plantilla del front
 
 define('K_RCSK', '6LfwTtgUAAAAAFQYAKdRfPMsTYWHw5SAgX2gwUda');   //ReCaptcha V3 SiteKey

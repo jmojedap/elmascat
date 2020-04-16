@@ -80,7 +80,7 @@
 <div class="row">
     <div class="col col-md-6">
         
-        <div class="sep1">
+        <div class="mb-2">
             <?= form_dropdown('cat', $opciones_categorias, $categoria_id, 'class="form-control chosen-select" id="cat"') ?>
         </div>
         
@@ -92,7 +92,7 @@
                     Elementos
                     (<?= $items->num_rows() ?>)
                 </th>
-                <th class="<?= $clases_col['botones'] ?>" width="60px">
+                <th class="<?= $clases_col['botones'] ?>" width="90px">
                 </th>
             </thead>
 
@@ -112,11 +112,11 @@
                             <?= $row_item->item ?>
                         </td>
                         <td class="<?= $clases_col['botones'] ?>">
-                            <a class="a4" href="<?= base_url("items/listado/{$categoria_id}/{$row_item->id}") ?>">
-                                <i class="fa fa-pencil"></i>
+                            <a class="btn btn-default btn-sm" href="<?= base_url("items/listado/{$categoria_id}/{$row_item->id}") ?>">
+                                <i class="fa fa-pencil-alt"></i>
                             </a>
-                            <a class="a4 btn_eliminar" data-item_id="<?= $row_item->id ?>" data-toggle="modal" data-target="#modal_eliminar">
-                                <i class="fa fa-times"></i>
+                            <a class="btn btn-default btn-sm btn_eliminar" data-item_id="<?= $row_item->id ?>" data-toggle="modal" data-target="#modal_eliminar">
+                                <i class="fa fa-trash"></i>
                             </a>
                         </td>
                     </tr>

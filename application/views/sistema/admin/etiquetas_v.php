@@ -151,7 +151,7 @@
     }
 </style>
 
-<?= $this->load->view('datos/parametros_menu_v'); ?>
+<?php $this->load->view('datos/parametros_menu_v'); ?>
 
 <div class="panel panel-default">
     <div class="panel-body">
@@ -243,4 +243,4 @@
     </div>
 </div>
 
-<?= $this->load->view('app/modal_eliminar'); ?>
+<?php $this->load->view('app/modal_eliminar'); ?>

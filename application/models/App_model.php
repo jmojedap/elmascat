@@ -16,6 +16,37 @@ class App_model extends CI_Model{
     
 //---------------------------------------------------------------------------------------------------------
 //SISTEMA
+
+    /**
+     * Carga la view solicitada, si por get se solicita una view específica
+     * se devuelve por secciones el html de la view, por JSON.
+     * 
+     * @param type $view
+     * @param type $data
+     */
+    function view($view, $data)
+    {
+        if ( $this->input->get('json') )
+        {
+            //Sende sections JSON
+            $result['head_title'] = $data['head_title'];
+            $result['head_subtitle'] = '';
+            $result['nav_2'] = '';
+            $result['nav_3'] = '';
+            $result['view_a'] = '';
+            
+            if ( isset($data['head_subtitle']) ) { $result['head_subtitle'] = $data['head_subtitle']; }
+            if ( isset($data['view_a']) ) { $result['view_a'] = $this->load->view($data['view_a'], $data, TRUE); }
+            if ( isset($data['nav_2']) ) { $result['nav_2'] = $this->load->view($data['nav_2'], $data, TRUE); }
+            if ( isset($data['nav_3']) ) { $result['nav_3'] = $this->load->view($data['nav_3'], $data, TRUE); }
+            
+            $this->output->set_content_type('application/json')->set_output(json_encode($result));
+            //echo trim(json_encode($result));
+        } else {
+            //Cargar view completa de forma normal
+            $this->load->view($view, $data);
+        }
+    }
     
     function menu_actual()
     {

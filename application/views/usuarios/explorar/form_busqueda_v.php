@@ -4,7 +4,7 @@
             'class' =>  'form-control',
             'name' => 'q',
             'autofocus' => TRUE,
-            'placeholder' => 'Buscar por nombre, documento o e-mail...',
+            'placeholder' => 'Buscar usuario',
             'value' => $busqueda['q']
         );
 

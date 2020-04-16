@@ -1,4 +1,4 @@
-<?php $carpeta = URL_ASSETS . 'admin_lte/plugins/ionslider/'; ?>
+<?php $carpeta = URL_RESOURCES . 'templates/admin_lte/plugins/ionslider/'; ?>
 
 <!-- Ionicons -->
 <link href="http://code.ionicframework.com/ionicons/2.0.0/css/ionicons.min.css" rel="stylesheet" type="text/css" />
