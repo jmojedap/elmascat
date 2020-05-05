@@ -47,7 +47,13 @@
         {
             $links_orden[$encabezado] = "{$cf}?{$b_sin_orden}&o={$encabezado}&ot={$orden_alt}";
         }
+
+    //Estado
+    $arr_estados[1] = '<i class="fa fa-check-circle text-success" title="Activo"></i>';
+    $arr_estados[0] = '<i class="far fa-circle text-danger" title="Inactivo"></i>';
 ?>
+
+
 
 
 <table class="table table-default bg-blanco" cellspacing="0">
@@ -65,10 +71,9 @@
         </th>
         
         <th class="<?= $clases_col['rol'] ?>">Rol</th>
-        <th class="<?= $clases_col['sexo'] ?>">Sexo</th>
-        <th class="<?= $clases_col['no_documento'] ?>">No. Documento</th>
-        <th class="<?= $clases_col['fecha_nacimiento'] ?>">Nacimiento</th>
         <th class="<?= $clases_col['telefono'] ?>">Contacto</th>
+        <th class="<?= $clases_col['sexo'] ?>">Otros</th>
+        <th class="<?= $clases_col['no_documento'] ?>">No. Documento</th>
     </thead>
     
     <tbody>
@@ -102,37 +107,32 @@
                 
                 
                 <td class="<?= $clases_col['rol'] ?>">
-                    <?php if ( $row_resultado->estado == 1 ) { ?>
-                        <i class="fa fa-check-circle-o text-success" title="Activo"></i>
-                    <?php } else { ?>
-                        <i class="fa fa-circle-o resaltar" title="Inactivo"></i>
-                    <?php } ?>
+                    <?= $arr_estados[$row_resultado->estado] ?>
                     <?= $arr_roles[$row_resultado->rol_id] ?>
+                </td>
+
+                <td class="<?= $clases_col['telefono'] ?>">
+                    <?= $row_resultado->celular ?>
+                    &middot;
+                    <?= $this->App_model->nombre_lugar($row_resultado->ciudad_id, 'CR') ?>
+                    <br/>
+
+                    <a href="https://wa.me/57<?php echo $row_resultado->celular ?>" class="btn-success btn btn-xs" target="_blank">
+                        <i class="fab fa-whatsapp"></i> Mensaje
+                    </a>
+                    
                 </td>
                 
                 <td class="<?= $clases_col['sexo'] ?>">
                     <?= $arr_sexos[$row_resultado->sexo] ?>
+                    &middot;
+                    <?= $this->pml->ago($row_resultado->fecha_nacimiento, false); ?>
                 </td>
                 
                 <td class="<?= $clases_col['no_documento'] ?>">
                     <?= $row_resultado->no_documento ?>
                 </td>
                 
-                <td class="<?= $clases_col['fecha_nacimiento'] ?>">
-                    <?= $this->Pcrn->fecha_formato($row_resultado->fecha_nacimiento, 'Y-M-d') ?>
-                    <br/>
-                    <span class="suave"><?= $this->Pcrn->tiempo_hace($row_resultado->fecha_nacimiento); ?></span>
-                </td>
-
-
-                <td class="<?= $clases_col['telefono'] ?>">
-                    <?= $this->App_model->nombre_lugar($row_resultado->ciudad_id, 'CR') ?>
-                    <br/>
-                    <span class="suave"><i class="fa fa-phone"></i></span>
-                    <?= $row_resultado->telefono ?>
-                    <span class="suave"> - <i class="fa fa-mobile"></i></span>
-                    <?= $row_resultado->celular ?>
-                </td>
             </tr>
         <?php } //foreach ?>
     </tbody>

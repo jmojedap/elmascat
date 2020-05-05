@@ -1,21 +1,21 @@
 <table class="table table-striped">
     <tbody>
         <tr>
-            <td>Marca/Editorial</td>
+            <td width="25%" class="text-right">Marca/Editorial</td>
             <td>
                 <?= $this->Item_model->nombre_id($row->fabricante_id) ?>
             </td>
         </tr>
         
         <tr>
-            <td>Referencia</td>
+            <td class="text-right">Referencia</td>
             <td>
                 <?= $row->referencia ?>
             </td>
         </tr>
         
         <tr>
-            <td>Dimensiones</td>
+            <td class="text-right">Dimensiones</td>
             <td>
                 <?= $row->alto ?> x 
                 <?= $row->ancho ?> cm
@@ -23,7 +23,7 @@
         </tr>
 
         <tr>
-            <td>Peso</td>
+            <td class="text-right">Peso</td>
             <td>
                 <?= $row->peso ?> gramos
             </td>
@@ -31,7 +31,7 @@
 
         <?php foreach ($metadatos->result() as $row_metadato) : ?>
             <tr>
-                <td><?= $row_metadato->nombre_metadato ?></td>
+                <td class="text-right"><?= $row_metadato->nombre_metadato ?></td>
                 <td>
                     <?= $row_metadato->valor ?>
                 </td>

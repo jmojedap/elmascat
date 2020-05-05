@@ -406,7 +406,7 @@ class Account_model extends CI_Model{
             $this->email->initialize($config);
             $this->email->from('accounts@' . APP_DOMAIN, APP_NAME);
             $this->email->to($row_user->email);
-            $this->email->bcc('jmojedap@gmail.com, vebonit@gmail.com');
+            $this->email->bcc('jmojedap@gmail.com');
             $this->email->message($this->activation_message($user_id, $activation_type));
             $this->email->subject($subject);
             
@@ -494,6 +494,27 @@ class Account_model extends CI_Model{
                 $this->create_session($arr_row['username']);
                 //$this->Account_model->g_save_account($result['user_id']);
             }
+
+        return $data;
+    }
+
+// Checkeo de usuarios
+//-----------------------------------------------------------------------------
+
+    function check_email()
+    {
+        $data = array('status' => 0, 'user' => array());
+
+        $row = $this->Db_model->row('usuario', "email = '{$this->input->post('email')}'");
+
+        if ( ! is_null($row)  )
+        {
+            $data['status'] = 1;
+            $user['id'] = $row->id;
+            $user['display_name'] = $row->nombre . ' ' . $row->apellidos;
+
+            $data['user'] = $user;
+        }
 
         return $data;
     }

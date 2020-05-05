@@ -279,7 +279,7 @@ class Post_model extends CI_Model{
         if ( ! is_null($row_file) )
         {
             $att_img['src'] = URL_UPLOADS . $row_file->carpeta . $row_file->nombre_archivo;
-            $att_img['alt'] = $row_file->title;
+            $att_img['alt'] = $row_file->titulo_archivo;
         }
 
         return $att_img;
@@ -457,5 +457,66 @@ class Post_model extends CI_Model{
         if ( $meta_id > 0) { $data = array('status' => 1, 'saved_id' => $meta_id); }
 
         return $data;
+    }
+
+    /**
+     * Quita la asignación de un post a un usuario
+     * 2020-04-30
+     */
+    function remove_to_user($post_id, $meta_id)
+    {
+        $data = array('status' => 0, 'qty_deleted' => 0);
+
+        $this->db->where('id', $meta_id);
+        $this->db->where('relacionado_id', $post_id);
+        $this->db->delete('meta');
+
+        $data['qty_deleted'] = $this->db->affected_rows();
+
+        if ( $data['qty_deleted'] > 0) { $data['status'] = 1; }
+
+        return $data;
+    }
+
+// Seguimiento
+//-----------------------------------------------------------------------------
+    /**
+     * Guardar evento de apertura de post
+     * 2020-04-26
+     */
+    function save_open_event($post_id)
+    {
+        $arr_row['tipo_id'] = 51;   //Apertura de post
+        $arr_row['inicio'] = date('Y-m-d H:i:s');
+        $arr_row['editado'] = date('Y-m-d H:i:s');
+        $arr_row['creado'] = date('Y-m-d H:i:s');
+        $arr_row['direccion_ip'] = $this->input->ip_address();
+        $arr_row['elemento_id'] = $post_id;
+
+        if( ! is_null($this->session->userdata('usuario_id')) )
+        {
+            $arr_row['usuario_id'] = $this->session->userdata('usuario_id');
+            $arr_row['editor_id'] = $this->session->userdata('usuario_id');
+            $arr_row['creador_id'] = $this->session->userdata('usuario_id');
+        }
+
+        $evento_id = $this->Db_model->save('evento', 'id = 0', $arr_row);
+
+        return $evento_id;
+    }
+
+// Listas 22
+//-----------------------------------------------------------------------------
+
+    function metadata($post_id, $dato_id = NULL)
+    {
+        $this->db->select('*');
+        $this->db->where('relacionado_id', $post_id);
+        $this->db->where('dato_id', $dato_id);
+        $this->db->order_by('dato_id', 'ASC');
+        $this->db->order_by('orden', 'ASC');
+        $query = $this->db->get('meta');
+        
+        return $query;
     }
 }

@@ -103,6 +103,30 @@ class Posts extends CI_Controller{
         $data['view_a'] = 'posts/info_v';
         $this->App_model->view(TPL_ADMIN, $data);
     }
+
+    function open($post_id)
+    {
+        $row = $this->Db_model->row_id('post', $post_id);
+        $destination = "posts/info/{$post_id}";
+
+        if ( $row->tipo_id == 8 ) { $destination = "books/read/{$row->code}/0"; }
+
+        redirect($destination);
+    }
+
+    function leer($post_id)
+    {
+        
+        $data = $this->Post_model->basic($post_id);    
+        
+        //Variables
+            $data['post_id'] = $post_id;
+        
+        //Solicitar vista
+            $data['titulo_pagina'] = 'Post';
+            $data['view_a'] = 'posts/leer_v';
+            $this->load->view(TPL_FRONT, $data);
+    }
     
 // EDICIÓN Y ACTUALIZACIÓN
 //-----------------------------------------------------------------------------
@@ -266,6 +290,62 @@ class Posts extends CI_Controller{
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Retira un contenido digital a un usuario
+     * 2020-04-30
+     */
+    function remove_to_user($post_id, $meta_id)
+    {
+        $data = $this->Post_model->remove_to_user($post_id, $meta_id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+//LISTAS - TIPO 22
+//---------------------------------------------------------------------------------------------------
+    
+    /**
+     * Muestra los elementos de un post tipo lista, CRUD de los elementos de la lista
+     * 
+     * @param type $post_id
+     */
+    function lista($post_id)
+    {
+        //$this->output->enable_profiler(TRUE);
+            $this->load->model('Esp');
+            
+        //Datos básicos
+            $data = $this->Post_model->basic($post_id);
+        
+        //Variables
+            $tabla_id = $this->Pcrn->si_vacia($data['row']->referente_1_id, '1000');
+            $elementos_lista = $this->Post_model->metadata($post_id, 22);  //22, tipo de dato, elementos de lista
+            
+        //Cargando variables
+            $data['tabla_id'] = $tabla_id;
+            $data['tabla'] = $this->Pcrn->campo('sis_tabla', "id = {$tabla_id}", 'nombre_tabla');
+            $data['elementos_lista'] = $elementos_lista;
+            
+        //Array data espefícicas
+            //$data['view_a'] = 'posts/listas/lista_v';
+            $data['view_a'] = 'posts/listas/elementos_v';
+        
+        $this->load->view(TPL_ADMIN, $data);
+    }
+    
+    function reordenar_lista($post_id)
+    {
+        $str_orden = $this->input->post('str_orden');
+        
+        parse_str($str_orden);
+        $arr_elementos = $elemento;
+        
+        $cant_elementos = $this->Post_model->reordenar_lista($post_id, $arr_elementos);
+        
+        $this->output->set_content_type('application/json')->set_output(json_encode($cant_elementos));
     }
 
 

@@ -35,7 +35,7 @@
                     <ul id="cart-sidebar" class="mini-products-list">
                         <?php foreach ($detalle->result() as $row_detalle) : ?>
                             <?php
-                                $att_img = $this->App_model->att_img($row_detalle->producto_id, 125);
+                                $att_img = $this->App_model->att_img($row_detalle->producto_id, 500);
                                 $att_img['width'] = 80;
                             ?>
                             <?php if ( $i <= 3 ){ ?>

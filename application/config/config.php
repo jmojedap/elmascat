@@ -356,8 +356,8 @@ $config['encryption_key'] = 'hKgXq3L33A2eew89qi7fzYJeVm42Ah2a';
 |
 */
 $config['sess_driver'] = 'files';
-$config['sess_cookie_name'] = 'dc_session';
-$config['sess_expiration'] = 259200;    //3 días
+$config['sess_cookie_name'] = 'dcl_session';
+$config['sess_expiration'] = 2592000;    //30 días
 $config['sess_save_path'] = NULL;
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;

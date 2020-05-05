@@ -520,26 +520,48 @@ class App_model extends CI_Model{
     /* Devuelve un array con las opciones de la tabla lugar, limitadas por una condición definida
     * en un formato ($formato) definido
     */
-    function opciones_lugar($condicion, $formato = 1, $texto_vacio = ' Lugar ')
+    function opciones_lugar($condicion, $campo_valor = 'nombre_lugar', $texto_vacio = NULL)
     {
         
-        $this->db->select("CONCAT('0', lugar.id) AS lugar_id, nombre_lugar, CONCAT((nombre_lugar), ', ', (region)) AS cr, CONCAT((nombre_lugar), ' (', (region), ' - ', (pais),')') AS crp", FALSE); 
+        $this->db->select("CONCAT('0', lugar.id) AS lugar_id, nombre_lugar, CONCAT((nombre_lugar), ' - ', (region)) AS cr, CONCAT((nombre_lugar), ' (', (region), ' - ', (pais),')') AS crp", FALSE); 
         $this->db->where($condicion);
         $this->db->order_by('lugar.nombre_lugar', 'ASC');
         $query = $this->db->get('lugar');
         
         $campo_indice = 'lugar_id';
-        
-        if ( $formato == 1 )
+
+        $opciones_lugar = $this->Pcrn->query_to_array($query, $campo_valor, $campo_indice);
+
+        if ( ! is_null($texto_vacio) )
         {
-            $campo_valor = 'nombre_lugar';
-        } elseif ( $formato == 'CR' ) {
-            $campo_valor = 'cr';
-        } elseif ( $formato == 'CRP' ) {
-            $campo_valor = 'crp';
+            $opciones_lugar = array_merge(array('' => '[ ' . $texto_vacio . ' ]'), $opciones_lugar);
         }
         
-        $opciones_lugar = array_merge(array('' => '[ ' . $texto_vacio . ' ]'), $this->Pcrn->query_to_array($query, $campo_valor, $campo_indice));
+        
+        return $opciones_lugar;
+    }
+
+    /* Devuelve un array con las opciones de la tabla lugar, limitadas por una condición definida
+    * en un formato ($formato) definido
+    */
+    function opciones_lugar_poblacion($condicion, $campo_valor = 'nombre_lugar', $texto_vacio = NULL)
+    {
+        
+        $this->db->select("CONCAT('0', lugar.id) AS lugar_id, nombre_lugar, CONCAT((nombre_lugar), ' - ', (region)) AS cr, CONCAT((nombre_lugar), ' (', (region), ' - ', (pais),')') AS crp", FALSE); 
+        $this->db->where($condicion);
+        $this->db->order_by('lugar.poblacion', 'DESC');
+        $this->db->order_by('lugar.nombre_lugar', 'ASC');
+        $query = $this->db->get('lugar');
+        
+        $campo_indice = 'lugar_id';
+
+        $opciones_lugar = $this->Pcrn->query_to_array($query, $campo_valor, $campo_indice);
+
+        if ( ! is_null($texto_vacio) )
+        {
+            $opciones_lugar = array_merge(array('' => '[ ' . $texto_vacio . ' ]'), $opciones_lugar);
+        }
+        
         
         return $opciones_lugar;
     }
@@ -552,7 +574,8 @@ class App_model extends CI_Model{
         
         $this->db->select("CONCAT('0', post.id) AS post_id, nombre_post", FALSE); 
         $this->db->where($condicion);
-        $this->db->order_by('post.nombre_post', 'ASC');
+        $this->db->order_by('post.id', 'ASC');
+        //$this->db->order_by('post.nombre_post', 'ASC');
         $query = $this->db->get('post');
         
         $campo_indice = 'post_id';

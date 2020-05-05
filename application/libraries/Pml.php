@@ -195,7 +195,7 @@ class Pml {
             }
             
             //Se agrega la unidad de medida
-            $interval = round($time_units, 1, PHP_ROUND_HALF_DOWN) . $sufix;
+            $interval = round($time_units, 0, PHP_ROUND_HALF_UP) . $sufix;
         }
 
         return $interval;

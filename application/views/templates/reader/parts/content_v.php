@@ -1,23 +1,35 @@
-
-
 <div id="app_book" class="container">
     <!-- BARRA DE HERRAMIENTAS-->
-    <div class="mb-2 text-center mw800p">
-        <button class="w2 float-left btn btn-secondary" v-on:click="change_page(-1)">
+    <div class="mb-2 text-center section">
+        <button class="w2 float-left btn btn-arrows" v-on:click="change_page(-1)">
             <i class="fa fa-chevron-left"></i>
         </button>
-        <a href="<?php echo base_url('usuarios/books/') ?>" class="btn btn-light" title="Ir a mis libros">
-            <i class="fa fa-arrow-left"></i>
-            Mis libros
-        </a>
-        <button class="btn" v-on:click="set_mode('index')" v-bind:class="{'btn-warning': mode == 'index', 'btn-light': mode != 'index' }"><i class="fa fa-list-ol"></i> Índice</button>
-        <button class="btn" v-on:click="set_mode('mini')" v-bind:class="{'btn-warning': mode == 'mini', 'btn-light': mode != 'mini' }"><i class="far fa-file"></i> Páginas</button>
-        <button class="w2 float-right btn btn-secondary" v-on:click="change_page(1)">
+
+        <?php if ( is_null($this->session->userdata('logged')) ) { ?>
+            <a href="<?php echo base_url('catalogo/productos_digitales/') ?>" class="btn btn-light" title="Volver a catálogo digital">
+                <i class="fa fa-arrow-left"></i> <span class="hidden-sm">Volver</span> 
+            </a>
+        <?php } else { ?>
+            <?php if ( $this->session->userdata('logged') ) { ?>
+                <a href="<?php echo base_url('usuarios/books/') ?>" class="btn btn-light" title="Ir a mis libros">
+                    <i class="fa fa-arrow-left"></i> <span class="hidden-sm">Mis libros</span> 
+                </a>
+            <?php } ?>
+        <?php } ?>
+
+        <button class="btn" v-on:click="set_mode('index')" v-bind:class="{'btn-warning': mode == 'index', 'btn-light': mode != 'index' }">
+            <i class="fa fa-list-ol"></i> <span class="hidden-sm">Índice</span> 
+        </button>
+        <button class="btn" v-on:click="set_mode('mini')" v-bind:class="{'btn-warning': mode == 'mini', 'btn-light': mode != 'mini' }">
+            <i class="far fa-file"></i> <span class="hidden-sm">Páginas</span> 
+        </button>
+
+        <button class="w2 float-right btn btn-arrows" v-on:click="change_page(1)">
             <i class="fa fa-chevron-right"></i>
         </button>
     </div>
 
-    <div class="mw800p">
+    <div class="section">
         <input
             type="range"
             class="custom-range"
@@ -29,7 +41,7 @@
             >
     </div>
 
-    <div class="row book_index" v-show="mode == 'index'">
+    <div class="row book_index section" v-show="mode == 'index'">
         <div class="mb-2">
             <button class="btn btn-info w120p" v-on:click="toggle_index_detail" v-show="!show_index_detail">
                 <i class="fa fa-plus"></i>
@@ -58,7 +70,7 @@
         </a>
     </div>
 
-    <div class="mw800p" v-show="mode == 'page'">
-        <img class="page" v-bind:src="`<?php echo $url_folder ?>read/` + page" alt="Página libro">
+    <div class="section" v-show="mode == 'page'">
+        <img class="page" v-bind:src="page.src" alt="Página libro">        
     </div>
 </div>

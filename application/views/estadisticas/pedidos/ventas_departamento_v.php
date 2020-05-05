@@ -15,7 +15,7 @@
 ?>
 
 <div class="bs-caja">
-    <div class="sep2">
+    <div class="mb-2">
         <p>
             Suma del valor de los pedidos con 
             <span class="resaltar">
@@ -37,7 +37,7 @@
         <tbody>
             <?php foreach ($ventas_departamento->result() as $row_departamento) : ?>
             <?php
-                $porcentaje = $this->Pcrn->int_percent($row_departamento->sum_valor_total, 50000000);
+                $porcentaje = $this->Pcrn->int_percent($row_departamento->sum_valor_total, 80000000);
                 $avg_valor = $this->Pcrn->dividir($row_departamento->sum_valor_total, $row_departamento->cant_pedidos);
                 $ventas_miles = number_format($this->Pcrn->dividir($row_departamento->sum_valor_total, 1000), 0, ',', '.');
             ?>

@@ -1,10 +1,4 @@
-<?php $this->load->view('assets/chosen_jquery'); ?>
-
 <?php
-    $att_form = array(
-        'class' => 'form-horizontal'
-    );
-
     $att_factura = array(
         'id'     => 'campo-factura',
         'name'   => 'factura',
@@ -34,22 +28,41 @@
     );
     
     $opciones_estado = $this->Item_model->opciones('categoria_id = 7');
-    
-    $att_submit = array(
-        'class' => 'btn btn-primary w120p',
-        'value' => 'Guardar'
-    );
 ?>
 
-<?php $this->load->view('comunes/resultado_proceso_v'); ?>
+<script>
+    var pedido_id = '<?php echo $row->id ?>';
+
+    $(document).ready(function(){
+        $('#pedido_form').submit(function(){
+            act_pedido();
+            return false;
+        });
+    });
+
+    function act_pedido(){
+        $.ajax({        
+            type: 'POST',
+            url: app_url + 'pedidos/guardar_admin/' + pedido_id,
+            data: $('#pedido_form').serialize(),
+            success: function(response){
+                var type = 'success';
+                if ( response.status == 1 ) {
+                    type = 'success';
+                }
+                toastr[type](response.message);
+            }
+        });
+    }
+</script>
 
 <div class="panel panel-default center_box_750">
     <div class="panel-body">
-        <?= form_open($destino_form, $att_form) ?>
+        <form accept-charset="utf-8" method="POST" id="pedido_form" class="form-horizontal">
             <div class="form-group">
                 <label for="estado_pedido" class="col-md-3 control-label">Estado</label>
                 <div class="col-md-9">
-                    <?= form_dropdown('estado_pedido', $opciones_estado, $row->estado_pedido, 'class="form-control chosen-select"') ?>
+                    <?= form_dropdown('estado_pedido', $opciones_estado, $row->estado_pedido, 'class="form-control"') ?>
                 </div>
             </div>
             
@@ -76,9 +89,11 @@
             
             <div class="form-group">
                 <div class="col-md-offset-3 col-md-9">
-                    <?= form_submit($att_submit) ?>
+                    <button class="btn btn-primary w120p" type="submit">
+                        Guardar
+                    </button>
                 </div>
             </div>
-        <?= form_close('') ?>
+        </form>
     </div>
 </div>

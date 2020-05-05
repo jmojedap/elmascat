@@ -249,5 +249,23 @@ class Admin extends CI_Controller {
     
 //PROCESOS MASIVOS DE DEPURACIÓN O ACTUALIZACIÓN
 //---------------------------------------------------------------------------------------------------    
+
+    function gestion_suscriptores()
+    {
+        $this->db->where('rol_id', 23);
+        $suscriptores = $this->db->get('usuario');
+
+        $this->load->model('Usuario_model');
+        $this->load->model('Post_model');
+
+        foreach ($suscriptores->result() as $row_usuario)
+        {
+            echo $row_usuario->apellidos . '<br>';
+            $this->Usuario_model->cod_activacion($row_usuario->id);
+            $this->Usuario_model->establecer_contrasena($row_usuario->id, $row_usuario->no_documento);
+            $this->Post_model->add_to_user(311, $row_usuario->id);
+        }
+        
+    }
         
 }

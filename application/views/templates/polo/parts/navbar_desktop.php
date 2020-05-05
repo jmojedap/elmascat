@@ -15,21 +15,21 @@
 
 <style>
     #nav .link_especial{
-        background-color: #fdd922;
-        color: #333;
+        background-color: #f44336;
+        color: #FFF;
     }
 </style>
 
 <ul id="nav" class="hidden-xs">
     <li class="level0 parent drop-menu"><a href="<?php echo base_url() ?>">inicio</a></li>
     
-    <li class="level0 parent drop-menu active" title="Productos en oferta">
+    <li class="level0 parent drop-menu active hidden" title="Productos en oferta">
         <a href="<?php echo base_url("productos/catalogo/?ofrt=1") ?>" class="<?php echo $clases_menu['oferta'] ?>">
             Ofertas
         </a>
     </li>
     
-    <li class="level0 parent drop-menu active" title="Nuevos productos">
+    <li class="level0 parent drop-menu active hidden" title="Nuevos productos">
         <a href="<?php echo base_url("productos/catalogo/?fi={$fi_novedades}") ?>" class="<?php echo $clases_menu['novedades'] ?>">
             Novedades
         </a>
@@ -60,9 +60,38 @@
     </li>
 
     <li class="level0 parent drop-menu" title="¿Quieres ser distribuidor de Districatólicas?">
-        <a href="<?php echo base_url("info/distribuidores_disponibles") ?>" class="link_especial" title="Información sobre la Revista Minutos de Amor Abril 2020">
-            <span>Abril 2020</span>
+        <a href="<?php echo base_url("catalogo/productos_digitales") ?>" class="link_especial" title="Información sobre la Revista Minutos de Amor Abril 2020">
+            <span>Minutos de Amor Mayo 2020</span>
         </a>
     </li>
+    <li class="level0 parent drop-menu" title="¿Quieres ser distribuidor de Districatólicas?">
+        <a href="<?php echo base_url("posts/leer/331/como-comprar-minutos-de-amor-en-linea") ?>" title="Paso a paso para comprar en DistriCatolicas.com">
+            <span>¿Cómo comprar?</span>
+        </a>
+    </li>
+
+    <?php if ( $this->session->userdata('logged') ){ ?>
+        <li class="level0 parent drop-menu" title="Información de mi cuenta de usuario">
+            <a href="<?php echo base_url("usuarios/books") ?>">
+                Mis Libros
+            </a>
+        </li>
+        <li class="level0 parent drop-menu" title="Cerrar sesión de usuario">
+            <a href="<?php echo base_url("app/logout") ?>">
+                Cerrar sesión
+            </a>
+        </li>
+    <?php } else { ?>
+        <li class="level0 parent drop-menu" title="Iniciar sesión de usuario">
+            <a href="<?php echo base_url("accounts/login/") ?>">
+                Iniciar sesión
+            </a>
+        </li>
+        <li class="level0 parent drop-menu" title="Registrarme en Districatolicas.com">
+            <a href="<?php echo base_url("accounts/signup/") ?>">
+                Registrarme
+            </a>
+        </li>
+    <?php } ?>
     
 </ul>

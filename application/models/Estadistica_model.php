@@ -15,6 +15,35 @@ class Estadistica_Model extends CI_Model{
         
         return $query;
     }
+
+    function ventas_mes($year)
+    {
+        $this->db->select('LEFT(creado, (7)) AS periodo, COUNT(id) AS cant_pedidos, SUM(total_productos) AS sum_total_productos, SUM(total_extras) AS sum_total_extras, SUM(peso_total) as sum_peso_total, SUM(valor_total) AS sum_valor_total');
+        $this->db->where('codigo_respuesta_pol', 1);    //Pago confirmado
+        $this->db->where('creado >=', "{$year}-01-01 00:00:00");
+        $this->db->where('creado <=', "{$year}-12-31 11:59:59");
+        $this->db->group_by('LEFT(creado, (7))');
+        $this->db->order_by('LEFT(creado, (7)) ASC');
+        $query = $this->db->get('pedido');
+        
+        return $query;
+    }
+
+    function ventas_dia($qty_days)
+    {
+        $date = date('Y-m-d');
+        $qty_days_mod = $qty_days - 1;
+        $start = date('Y-m-d', strtotime($date . " - {$qty_days_mod} days"));
+
+        $this->db->select('LEFT(creado, (10)) AS dia, COUNT(id) AS cant_pedidos, SUM(total_productos) AS sum_total_productos, SUM(total_extras) AS sum_total_extras, SUM(peso_total) as sum_peso_total, SUM(valor_total) AS sum_valor_total');
+        $this->db->where('codigo_respuesta_pol', 1);    //Pago confirmado
+        $this->db->where('creado >=', "{$start} 00:00:00");
+        $this->db->group_by('LEFT(creado, (10))');
+        $this->db->order_by('LEFT(creado, (10)) ASC');
+        $query = $this->db->get('pedido');
+        
+        return $query;
+    }
     
     function ventas_ciudad($cod_rta_pol = NULL)
     {

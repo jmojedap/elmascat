@@ -7,7 +7,7 @@
         <form id="main-contact-form" class="contact-form row" name="contact-form" method="post">
             <div class="col-md-2">
                 <?php if ( $this->session->userdata('logged') ){ ?>
-                    <a href="<?php echo base_url("pedidos/mis_pedidos") ?>" class="btn btn-primary btn-block">
+                    <a href="<?php echo base_url("usuarios/mis_pedidos") ?>" class="btn btn-primary btn-block">
                         <i class="fa fa-arrow-left"></i>
                         Mis pedidos
                     </a>
@@ -177,7 +177,7 @@
 
                         $pct_descuento = 100 - $this->Pcrn->int_percent($row_detalle->precio, $row_detalle->precio_nominal);
 
-                        $att_img = $this->Producto_model->att_img($row_detalle->producto_id, 125);
+                        $att_img = $this->Producto_model->att_img($row_detalle->producto_id, 500);
                         $att_img['width'] = 75;
                         $att_imt['alt'] = $row_detalle->nombre_producto;
                     ?>

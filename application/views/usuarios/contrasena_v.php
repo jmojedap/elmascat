@@ -32,15 +32,15 @@
     
     $submit = array(
         'value' =>  'Guardar',
-        'class' =>  'btn btn-success'
+        'class' =>  'btn btn-success w120p'
     )
 
 ?>
 
-<div class="panel panel-default">
+<div class="panel panel-default center_box_450">
     <div class="panel-body">
         <div class="row">   
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <?= form_open('usuarios/cambiar_contrasena'); ?>
                     <?= form_hidden('id', $usuario_id_cambio); ?>
 
@@ -63,7 +63,7 @@
                 <?= form_close();?>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <?php if ( validation_errors() ):?>
                     <?= validation_errors('<div class="alert alert-warning" role="alert">', '</div>') ?>
                 <?php endif ?>

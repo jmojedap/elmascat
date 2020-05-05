@@ -12,6 +12,7 @@
             $menus['usuarios/direcciones'] = array('usuarios');
             $menus['usuarios/pedidos'] = array('usuarios');
             $menus['usuarios/editarme'] = array('usuarios');
+            $menus['usuarios/books'] = array('usuarios');
         
         //Productos
             $menus['productos/explorar'] = array('productos');
@@ -28,7 +29,7 @@
             $menus['productos/importar_existencias_e'] = array('productos', '');
             
         //Estadísticas
-            $menus['pedidos/resumen_mes'] = array('estadisticas', 'estadisticas-pedidos');
+            $menus['pedidos/resumen_dia'] = array('estadisticas', 'estadisticas-pedidos');
             $menus['pedidos/resumen_mes'] = array('estadisticas', 'estadisticas-pedidos');
             $menus['pedidos/ventas_departamento'] = array('estadisticas', 'estadisticas-pedidos');
             $menus['pedidos/meta_anual'] = array('estadisticas', 'estadisticas-pedidos');
@@ -108,16 +109,6 @@
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-        <!-- Sidebar user panel -->
-        <div class="user-panel">
-            <div class="pull-left image">
-                <img src="<?= URL_IMG ?>app/user_mid.jpg" class="img-circle" alt="User Image" />
-            </div>
-            <div class="pull-left info">
-                <p><?= $this->session->userdata('nombre_corto') ?></p>
-            </div>
-        </div>
-        
         <!-- sidebar menu: : style can be found in sidebar.less -->
         
         <ul class="sidebar-menu">
@@ -151,15 +142,15 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['estadisticas-pedidos'] ?>">
-                        <?= anchor("pedidos/resumen_mes", '<i class="fa fa-shopping-cart"></i> Ventas') ?>
+                        <?= anchor("pedidos/resumen_dia", '<i class="fa fa-shopping-cart"></i> Ventas') ?>
                     </li>
                 </ul>
             </li>
             
             <li class="treeview <?= $clases_m0['recursos'] ?>">
                 <a href="#">
-                    <i class="fa fa-folder-o"></i>
-                    <span>Recursos</span>
+                    <i class="fa fa-table"></i>
+                    <span>Datos</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
@@ -167,7 +158,7 @@
                         <?= anchor('archivos/imagenes', '<i class="fa fa-file"></i> Archivos') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-posts'] ?>">
-                        <?= anchor('posts/explore', '<i class="fa fa-newspaper-o"></i> Posts') ?>
+                        <?= anchor('posts/explore', '<i class="fa fa-newspaper"></i> Posts') ?>
                     </li>
                     <li class="<?= $clases_m1['recursos-eventos'] ?>">
                         <?= anchor('eventos/explorar', '<i class="fa fa-calendar"></i> Eventos') ?>
@@ -177,7 +168,7 @@
             
             <li class="treeview <?= $clases_m0['ajustes'] ?>">
                 <a href="#">
-                    <i class="fa fa-sliders"></i> <span>Ajustes</span> <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-sliders-h"></i> <span>Ajustes</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['ajustes-parametros'] ?>">
@@ -190,7 +181,7 @@
                         <?= anchor("items/listado/", '<i class="fa fa-bars"></i> Ítems') ?>
                     </li>
                     <li class="<?= $clases_m1['ajustes-database'] ?>">
-                        <?= anchor("develop/tablas/item", '<i class="fa fa-database"></i> Base de datos') ?>
+                        <?= anchor("admin/tablas/meta", '<i class="fa fa-database"></i> Base de datos') ?>
                     </li>
                 </ul>
             </li>

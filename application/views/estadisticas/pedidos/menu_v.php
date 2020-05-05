@@ -5,6 +5,13 @@
         $clases[$seccion] = 'active';
     
     //Atributos de los elementos del menú
+        $arr_menus['resumen_dia'] = array(
+            'icono' => '',
+            'texto' => 'Día',
+            'link' => "pedidos/resumen_dia/",
+            'atributos' => 'title="Resumen de ventas por día"'
+        );
+
         $arr_menus['resumen_mes'] = array(
             'icono' => '<i class="fa fa-calendar-o"></i>',
             'texto' => 'Mes',
@@ -48,9 +55,9 @@
         );
         
     //Elementos de menú según el rol del visitante
-        $elementos_rol[0] = array('resumen_mes', 'ventas_departamento', 'meta_anual', 'productos_top', 'efectividad', 'ventas_categoria');
-        $elementos_rol[1] = array('resumen_mes', 'ventas_departamento', 'meta_anual', 'productos_top', 'efectividad', 'ventas_categoria');
-        $elementos_rol[2] = array('resumen_mes', 'meta_anual', 'productos_top', 'efectividad');
+        $elementos_rol[0] = array('resumen_dia', 'resumen_mes', 'ventas_departamento', 'meta_anual', 'productos_top', 'efectividad', 'ventas_categoria');
+        $elementos_rol[1] = array('resumen_dia', 'resumen_mes', 'ventas_departamento', 'meta_anual', 'productos_top', 'efectividad', 'ventas_categoria');
+        $elementos_rol[2] = array('resumen_dia', 'resumen_mes', 'meta_anual', 'productos_top', 'efectividad');
         
         
     //Definiendo menú mostrar, según el rol del visitante

@@ -2,24 +2,16 @@
 class Usuario_model extends CI_Model{
     
     //Devuelve un arra con los datos del usuario
-    function basico($usuario_id)
+    function basic($user_id)
     {
-        $basico = array();
-        
-        $this->db->where('id', $usuario_id);
-        $query = $this->db->get('usuario');
-        
-        if( $query->num_rows() > 0 )
-        {
-            $row = $query->row();
+        $row = $this->Db_model->row_id('usuario', $user_id);
             
-            $basico['nombre_completo'] = $row->nombre . " " . $row->apellidos;
-            $basico['titulo_pagina'] = $row->nombre . " " . $row->apellidos;
-            $basico['vista_a'] = 'usuarios/roles/cliente_v';
-            $basico['row'] = $row;            
-        }
+        $data['nombre_completo'] = $row->nombre . " " . $row->apellidos;
+        $data['titulo_pagina'] = $row->nombre . " " . $row->apellidos;
+        $data['nav_2'] = 'usuarios/roles/cliente_v';
+        $data['row'] = $row;            
         
-        return $basico;
+        return $data;
     }
     
     function buscar($busqueda, $per_page = NULL, $offset = NULL)
@@ -429,9 +421,9 @@ class Usuario_model extends CI_Model{
             $this->cod_activacion($usuario_id);
             
         //Asunto de mensaje
-            $subject = 'Activar cuenta en Districatólicas Unidas S.A.S.';
+            $subject = 'Actívate en DistriCatolicas.com';
             if ( $tipo_activacion == 'restaurar' ) {
-                $subject = 'Restaurar contraseña en Districatólicas Unidas S.A.S.';
+                $subject = 'Restaurar contraseña en DistriCatolicas.com';
             }
         
         //Enviar Email
@@ -439,7 +431,7 @@ class Usuario_model extends CI_Model{
             $config['mailtype'] = 'html';
 
             $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'Districatólicas Unidas S.A.S.');
+            $this->email->from('info@districatolicas.com', 'DistriCatolicas.com');
             $this->email->to($row_usuario->email);
             $this->email->message($this->Usuario_model->mensaje_activacion($usuario_id, $tipo_activacion));
             $this->email->subject($subject);
@@ -1103,10 +1095,12 @@ class Usuario_model extends CI_Model{
      */
     function assigned_posts($user_id)
     {
-        $this->db->select('post.id, nombre_post AS title, code, slug, resumen, post.estado, publicado, meta.id AS meta_id');
+        $this->db->select('post.id, nombre_post AS title, code, slug, resumen, post.estado, publicado, meta.id AS meta_id, imagen_id');
         $this->db->join('meta', 'post.id = meta.relacionado_id');
         $this->db->where('meta.dato_id', 100012);   //Asignación de contenido
         $this->db->where('meta.elemento_id', $user_id);
+        $this->db->order_by('post.estado', 'ASC');
+        $this->db->order_by('post.publicado', 'ASC');
 
         $posts = $this->db->get('post');
         

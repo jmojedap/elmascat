@@ -34,7 +34,7 @@
                     {{ element.type_id | type_name  }}
                 </td>
                 <td class="<?php echo $cl_col['excerpt'] ?>">
-                    <a v-bind:href="`<?php echo base_url("posts/info/") ?>` + element.id">
+                    <a v-bind:href="`<?php echo base_url("posts/info") ?>/` + element.id">
                         {{ element.post_name }}
                     </a>
                     <p>{{ element.excerpt }}</p>

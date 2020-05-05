@@ -935,7 +935,7 @@ class Producto_Model extends CI_Model{
     
     function act_puntaje_auto_masivo()
     {
-        $this->db->limit(500);
+        $this->db->limit(750);
         $this->db->order_by('puntaje', 'RANDOM');
         $productos = $this->db->get('producto');
 
@@ -946,7 +946,7 @@ class Producto_Model extends CI_Model{
             $sum_puntaje += $this->act_puntaje_auto($row_producto->id);
         }
 
-        $avg_puntaje = number_format($sum_puntaje / 500, 0);
+        $avg_puntaje = number_format($sum_puntaje / 750, 0);
         
         $data['status'] = 1;
         $data['message'] = 'Actualización ejecutada, promedio: ' . $avg_puntaje;
@@ -1885,6 +1885,7 @@ class Producto_Model extends CI_Model{
     {
         $this->db->select('post.id, nombre_post AS title, code, slug, resumen, post.estado, publicado, meta.id AS meta_id');
         $this->db->join('meta', 'post.id = meta.relacionado_id');
+        $this->db->order_by('post.id', 'ASC');
         $this->db->where('meta.dato_id', 310012);   //Asignación de contenido
         $this->db->where('meta.elemento_id', $producto_id);
 

@@ -18,6 +18,7 @@
         data: {
             key_page: 0,
             pages: <?php echo json_encode($pages); ?>,
+            drive_pages: <?php echo $drive_pages; ?>,
             page: '',
             book_index: <?php echo $book_index ?>,
             index_key: 0,
@@ -27,13 +28,14 @@
         },
         methods: {
             get_list: function(){
-                this.page = this.pages[0];
+                //this.page = this.pages[0];
+                this.page = this.drive_pages[0];
             },
             change_page: function(sum){
                 this.key_page = parseInt(this.key_page) + sum;
                 if ( this.key_page < 0 ) { this.key_page = 0; }
-                if ( this.key_page >= this.pages.length ) { this.key_page = parseInt(this.pages.length) - 1; }
-                this.page = this.pages[this.key_page]; 
+                if ( this.key_page >= this.drive_pages.length ) { this.key_page = parseInt(this.drive_pages.length) - 1; }
+                this.page = this.drive_pages[this.key_page]; 
                 this.set_mode('page');
             },
             set_mode: function(value){
@@ -41,7 +43,9 @@
             },
             set_page: function(key_page){
                 this.key_page = key_page;
-                this.page = this.pages[this.key_page];
+                //this.page = this.pages[this.key_page];
+                this.page = this.drive_pages[this.key_page];
+                console.log(this.page.src);
                 this.set_mode('page');
             },
             set_index: function(index_key){

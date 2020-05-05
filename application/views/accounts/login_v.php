@@ -6,11 +6,20 @@
 </style>
 
 <div id="login_app" class="text-center box_1">
-    <p>
-        Escribe tu correo electrónico
-        <br/>
-        y tu contraseña para ingresar.
-    </p>
+
+    <?php if ( $this->uri->segment(3) == 'suscriptor' ) { ?>
+        <div class="alert alert-success">
+            <i class="fa fa-info-circle fa-2x text-center"></i>
+            <br>
+            Querido suscriptor, ingresa con tu <b>NÚMERO DE DOCUMENTO</b>, en las dos casillas siguientes, sin espacios ni puntos.
+        </div>
+    <?php } else {?>
+        <p>
+            Escribe tu correo electrónico
+            <br/>
+            y tu contraseña para ingresar.
+        </p>
+    <?php } ?>
 
     <form accept-charset="utf-8" method="POST" id="login_form" @submit.prevent="validate_login">
         <div class="form-group">

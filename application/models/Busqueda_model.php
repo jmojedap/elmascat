@@ -51,7 +51,8 @@ class Busqueda_model extends CI_Model{
             'dcto',     //Descuento aplicado a un producto
             'prc_min',  //Precio mínimo
             'prc_max',  //Precio máximo
-            'condicion' //Condición SQL Where adicional
+            'condicion',//Condición SQL Where adicional
+            'fe1',      //Filtro especial 1
         );
         
         return $arr_indices;

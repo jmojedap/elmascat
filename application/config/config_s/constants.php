@@ -105,6 +105,7 @@ define('NOMBRE_APP', 'DistriCatólicas');            //Nombre de la aplicación
 
 define('APP_NAME', 'DistriCatólicas');            //Nombre de la aplicación
 define('PATH_CONTENT', 'content/');                     //Carpeta de contenido de la aplicación
+define('PATH_UPLOADS', 'uploads/');
 define('URL_CONTENT', 'http://www.districatolicas.com/tienda/content/');  //URL de la carpeta de contenido de la aplicación
 define('URL_RESOURCES', 'http://www.districatolicas.com/tienda/resources/');
 

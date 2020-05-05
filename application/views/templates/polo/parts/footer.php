@@ -3,49 +3,6 @@
 ?>
 
 <footer class="footer wow bounceInUp animated">
-    <div class="brand-logo hidden">
-        <div class="container">
-            <div class="slider-items-products">
-                <div id="brand-logo-slider" class="product-flexslider hidden-buttons">
-                    <div class="slider-items slider-width-col6"> 
-
-                        <!-- Item -->
-                        <div class="item"> <a href="#x"><img src="<?= $carpeta_ejemplo ?>images/b-logo1.png" alt="Image"></a> </div>
-                        <!-- End Item --> 
-
-                        <!-- Item -->
-                        <div class="item"> <a href="#x"><img src="<?= $carpeta_ejemplo ?>images/b-logo2.png" alt="Image"></a> </div>
-                        <!-- End Item --> 
-
-                        <!-- Item -->
-                        <div class="item"> <a href="#x"><img src="<?= $carpeta_ejemplo ?>images/b-logo3.png" alt="Image"></a> </div>
-                        <!-- End Item --> 
-
-                        <!-- Item -->
-                        <div class="item"> <a href="#x"><img src="<?= $carpeta_ejemplo ?>images/b-logo4.png" alt="Image"></a> </div>
-                        <!-- End Item --> 
-
-                        <!-- Item -->
-                        <div class="item"> <a href="#x"><img src="<?= $carpeta_ejemplo ?>images/b-logo5.png" alt="Image"></a> </div>
-                        <!-- End Item --> 
-
-                        <!-- Item -->
-                        <div class="item"> <a href="#x"><img src="<?= $carpeta_ejemplo ?>images/b-logo6.png" alt="Image"></a> </div>
-                        <!-- End Item --> 
-
-                        <!-- Item -->
-                        <div class="item"> <a href="#x"><img src="<?= $carpeta_ejemplo ?>images/b-logo1.png" alt="Image"></a> </div>
-                        <!-- End Item --> 
-
-                        <!-- Item -->
-                        <div class="item"> <a href="#x"><img src="<?= $carpeta_ejemplo ?>images/b-logo4.png" alt="Image"></a> </div>
-                        <!-- End Item --> 
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="footer-top">
         <div class="container">
             <div class="row">
@@ -92,7 +49,7 @@
     </div>
     <div class="footer-middle container">
         <div class="row">
-            <div class="col-md-3 col-sm-4">
+            <div class="col-md-5 col-sm-4">
                 <div class="footer-logo">
                     <a href="<?= base_url() . 'posts/leer/15/sobre_nosotros' ?>" title="Districatólicas Unidas S.A.S.">
                         <img src="<?= URL_IMG ?>app/logo_polo.png" alt="logo">
@@ -100,21 +57,10 @@
                 </div>
                 <p>Realice sus pagos seguros mediante </p>
                 <div class="payment-accept_">
-                    <div style="max-width: 250px;">
-                        <img width="100%" src="<?= URL_IMG ?>app/pagosonline.png" alt="payment"> 
+                    <div style="max-width: 302px;">
+                        <img width="100%" src="<?= URL_IMG ?>app/payu_medios_pago.png" alt="payment"> 
                     </div>
                 </div>
-            </div>
-            <div class="col-md-2 col-sm-4">
-                <h4>Servicios</h4>
-                <ul class="links">
-                    <li class="first">
-                        <a href="<?= base_url() . 'posts/leer/15/sobre_nosotros' ?>">Contáctenos</a>
-                    </li>
-                    <li class="last">
-                        <?= anchor("pedidos/estado", "Estado de pedido", 'class="" title=""') ?>
-                    </li>
-                </ul>
             </div>
             <div class="col-md-2 col-sm-4">
                 <h4>Sitios de interés</h4>
@@ -138,6 +84,9 @@
                     </li>
                     <li class=" last">
                         <?= anchor("posts/leer/16/politica-de-privacidad", 'Política de privacidad') ?>
+                    </li>
+                    <li class="last">
+                        <?= anchor("pedidos/estado", "Estado de pedido", 'class="" title=""') ?>
                     </li>
                 </ul>
             </div>

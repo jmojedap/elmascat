@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <![endif]-->
         <title><?php echo $head_title ?></title>
-        <link rel="shortcut icon" href="<?php echo URL_IMG ?>app/icono.png" type="image/ico" />
+        <link rel="shortcut icon" href="<?php echo URL_IMG ?>app/favicon.png" type="image/ico" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Libreria Catolica Bogota Colombia">

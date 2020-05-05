@@ -29,7 +29,7 @@
         <?php if ( $arr_extras['gastos_envio'] ) { ?>
             <tr>
                 <td class="a-left">
-                    Gastos transacción y Envío (<?= $row->peso_total ?> kg)
+                    Valor de envío (<?= $row->peso_total ?> kg)
                 </td>
                 <td class="text-right">
                     <span class="money">

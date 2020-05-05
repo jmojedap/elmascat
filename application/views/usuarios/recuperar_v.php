@@ -19,7 +19,7 @@
         <h2 class="title"><i class="fa fa-user text-primary"></i> Recuperación de cuentas</h2>
     </div>
     <div class="box_1">
-        <p>Ingrese su dirección de correo electrónico, enviaremos un mensaje para recuperar su cuenta de usuario.</p>
+        <p>Ingresa tu dirección de correo electrónico, enviaremos un mensaje para restaurar la contraseña de tu cuenta de usuario.</p>
         <?= form_open("usuarios/recuperar_e", $att_form) ?>
             <div class="form-group">
                 <input name="email" type="text" class="form-control" required="required" placeholder="Correo electrónico" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />

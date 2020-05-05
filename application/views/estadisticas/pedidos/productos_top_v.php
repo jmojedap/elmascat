@@ -12,7 +12,7 @@
             <tbody>
                 <?php foreach($productos->result() as $row_producto) : ?>
                 <?php
-                    $porcentaje = $this->Pcrn->int_percent($row_producto->sum_valor, 5000000);
+                    $porcentaje = $this->Pcrn->int_percent($row_producto->sum_valor, 15000000);
                 ?>
                 <tr>
                     <td class="<?= $clases_col['nombre_producto'] ?>">

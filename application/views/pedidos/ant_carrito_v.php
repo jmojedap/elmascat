@@ -76,7 +76,7 @@
                             $peso_detalle = $row_detalle->cantidad * $row_detalle->peso;
                             $row_producto = $this->Pcrn->registro_id('producto', $row_detalle->producto_id);
                             
-                            $att_img = $this->Producto_model->att_img($row_detalle->producto_id, 125);
+                            $att_img = $this->Producto_model->att_img($row_detalle->producto_id, 500);
                         ?>
                         <tr>
                             <td class="image">

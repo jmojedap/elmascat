@@ -60,7 +60,15 @@
                                 <tbody>
                                     <tr>
                                         <td>Respuesta Pagos On Line</td>
-                                        <td><?= $this->App_model->nombre_item($arr_respuesta_pol['codigo_respuesta_pol'], 2, 10) ?></td>
+                                        <td>
+                                            <?= $this->Item_model->nombre(10, $arr_respuesta_pol['codigo_respuesta_pol']) ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Estado transacción</td>
+                                        <td>
+                                            <?= $this->Item_model->nombre(9, $arr_respuesta_pol['estado_pol']) ?>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Cód. Transacción en Pagos On Line</td>

@@ -3,6 +3,14 @@
         <table class="table bg-white">
             <tbody>
                 <tr>
+                    <td>Abrir</td>
+                    <td>
+                        <a href="<?php echo base_url("posts/open/{$row->id}") ?>" class="btn btn-light">
+                            Abrir
+                        </a>
+                    </td>
+                </tr>
+                <tr>
                     <td>ID</td>
                     <td><?php echo $row->id ?></td>
                 </tr>

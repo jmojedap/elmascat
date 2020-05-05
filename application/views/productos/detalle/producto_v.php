@@ -1,10 +1,10 @@
 <?php
-    $src = RUTA_UPLOADS . $row_archivo->carpeta . '500px_' . $row_archivo->nombre_archivo;
+    $src = URL_UPLOADS . $row_archivo->carpeta . '500px_' . $row_archivo->nombre_archivo;
     $src_alt = URL_IMG . 'app/250px_producto.png';   //Imagen alternativa
     list($tamano_img['ancho'], $tamano_img['alto'], $tamano_img['tipo'], $tamano_img['atributos']) = getimagesize($src);
 
     $att_img['src'] = $src;
-    $att_img['onError'] = "this.src='" . $src_alt . "'"; //Imagen alternativa
+    //$att_img['onError'] = "this.src='" . $src_alt . "'"; //Imagen alternativa
     $att_img['id'] = "img_producto";
     
     //Según las proporciones de la imagen, alternar alto o ancho al 100%
@@ -145,6 +145,7 @@
                         <div class="add-to-box">
                             <?php if ( $row->cant_disponibles > 0 ){ ?>
                                 <div class="add-to-cart">
+                                <?php if ( $row->peso > 0 ) { ?>    
                                     <label for="qty">Cantidad:</label>
                                     <div class="pull-left">
                                         <div class="custom pull-left">
@@ -153,6 +154,9 @@
                                             <button onClick="var result = document.getElementById('qty'); var qty = result.value; if( !isNaN( qty )) result.value++;return false;" class="increase items-count" type="button"><i class="fa fa-plus">&nbsp;</i></button>
                                         </div>
                                     </div>
+                                <?php } else { ?>
+                                    <input type="hidden" name="qty">
+                                <?php } ?>
                                     <button id="add-to-cart" class="button btn-cart" title="Agregar al carrito de compras" type="button">
                                         <span><i class="icon-basket"></i> Al carrito</span>
                                     </button>

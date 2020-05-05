@@ -4,10 +4,15 @@
         $mostrar_solicitud = 0;
         if ( $row->id == $this->session->userdata('usuario_id') && $row->rol_id == 21  ) { $mostrar_solicitud = 1; }
         //if ( $this->uri->segment(3) == 'test'  ) { $mostrar_solicitud = 1; }  //Para pruebas
+
+    $wa_message = "Hola *{$row->nombre}*, te saludamos de DistriCatolicas.com - Minutos de Amor. ";
+    $wa_message .= ' Por favor ingresa al siguiente link para activar tu cuenta de usuario:';
+
+    $wa_message = urlencode($wa_message);
 ?>
 
 <?php 
-    $src_perfil = URL_IMG . 'app/user_mid.jpg';
+    $src_perfil = URL_IMG . 'users/user.png';
 ?>
 
 <script>
@@ -46,34 +51,30 @@
                 <img class="profile-user-img img-responsive img-circle" src="<?= $src_perfil ?>" alt="Imagen de perfil de usuario">
                 <h3 class="text-center"><?= $row->nombre . ' ' . $row->apellidos ?></h3>
                 <p class="text-muted text-center"><?= $this->App_model->nombre_item($row->rol_id, 1, 58) ?></p>
-                <ul class="list-group list-group-unbordered">
-                    <li class="list-group-item">
-                        <b>Documento</b>
-                        <span class="pull-right"><?= $row->no_documento ?></span>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Fecha Nacimiento</b>
-                        <span class="pull-right"><?= $row->fecha_nacimiento ?></span>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Edad</b>
-                        <span class="pull-right"><?= $this->Pcrn->tiempo_hace($row->fecha_nacimiento) ?></span>
-                    </li>
-                    <li class="list-group-item">
-                        <b>Perfil</b>
-                        <span class="pull-right"><?= $this->Item_model->nombre(58, $row->rol_id) ?></span>
-                    </li>
+                <p class="text-center">
+                    <?php if ( $row->estado == 1 ) { ?>
+                        <i class="fa fa-check-circle text-success"></i> Activo
+                    <?php } else { ?>
+                        <i class="far fa-circle text-danger"></i> Inactivo
+                    <?php } ?>
+                </p>
+                <?php if ( $this->session->userdata('role') <= 1 ) { ?>
+                    <p class="text-center">
+                        <a href="<?php echo base_url("admin/ml/{$row->id}") ?>" class="btn btn-primary btn-lg" title="Acceder como este usuario">
+                            <i class="fa fa-sign-in-alt"></i>
+                            Acceder
+                        </a>
+                    </p>
+                <?php } ?>
 
-                    <li class="list-group-item">
-                        <b>Teléfono</b>
-                        <span class="pull-right"><?= $row->telefono ?></span>
-                    </li>
-                    
-                    <li class="list-group-item">
-                        <b>Celular</b>
-                        <span class="pull-right"><?= $row->celular ?></span>
-                    </li>
-                </ul>
+                <?php if ( $this->session->userdata('role') <= 10 ) { ?>
+                    <p class="text-center">
+                        <b class="text-success"><?= number_format($qty_login, 0, ',', '.') ?></b>  Sesiones
+                        &middot;    
+                        <b class="text-success"><?= number_format($qty_open_posts, 0, ',', '.') ?></b> aperturas de libros virtuales
+                    </p>
+                <?php } ?>
+                
             </div>
         </div>
     </div>
@@ -82,74 +83,107 @@
         <table class="table table-striped bg-blanco">
             <tbody>
                 <tr>
-                    <td class="text-right" width="25%"><span class="suave">Nombre</span></td>
+                    <td class="text-right" width="25%"><span class="text-muted">Nombre</span></td>
                     <td width="75%"><?= $row->nombre ?></td>
                 </tr>
                 <tr>
-                    <td class="text-right"><span class="suave">Apellidos</span></td>
+                    <td class="text-right"><span class="text-muted">Apellidos</span></td>
                     <td><?= $row->apellidos ?></td>
-                    
+                </tr>
+                <tr>
+                    <td class="text-right">
+                    <span class="text-muted">
+                        Documento
+                    </span></td>
+                    <td>
+                        <?= $row->no_documento ?> &middot;
+                        <?= $this->Item_model->nombre(53, $row->tipo_documento_id);  ?>
+                    </td>
                 </tr>
 
                 <tr>
-                    <td class="text-right"><span class="suave">Nombre de usuario</span></td>
+                    <td class="text-right"><span class="text-muted">Nombre de usuario</span></td>
                     <td><?= $row->username ?></td>
                     
                 </tr>
 
                 <tr>
-                    <td class="text-right"><span class="suave">Correo electrónico</span></td>
+                    <td class="text-right"><span class="text-muted">Correo electrónico</span></td>
                     <td><?= $row->email ?></td>
                     
                 </tr>
 
                 <tr>
-                    <td class="text-right"><span class="suave">Sexo</span></td>
+                    <td class="text-right"><span class="text-muted">Sexo</span></td>
                     <td><?= $this->Item_model->nombre(59, $row->sexo) ?></td>
                     
                 </tr>
 
                 <tr>
-                    <td class="text-right"><span class="suave">Tipo de usuario</span></td>
+                    <td class="text-right"><span class="text-muted">Tipo de usuario</span></td>
                     <td><?= $this->Item_model->nombre(58, $row->rol_id) ?></td>
                 </tr>
 
                 <tr>
-                    <td class="text-right"><span class="suave">Fecha de nacimiento</span></td>
-                    <td><?= $this->Pcrn->fecha_formato($row->fecha_nacimiento, 'Y-M-d') ?></td>
+                    <td class="text-right"><span class="text-muted">Fecha de nacimiento</span></td>
+                    <td>
+                        <?= $this->Pcrn->fecha_formato($row->fecha_nacimiento, 'Y-M-d') ?>
+                        &middot;
+                        <span class="text-muted">
+                            <?= $this->pml->ago($row->fecha_nacimiento, false) ?>
+                        </span>
+                    </td>
                 </tr>
 
                 <tr>
-                    <td class="text-right"><span class="suave">Dirección</span></td>
+                    <td class="text-right"><span class="text-muted">Ciudad</span></td>
+                    <td><?= $this->App_model->nombre_lugar($row->ciudad_id, 'CR') ?></td>
+                    
+                </tr>
+                <tr>
+                    <td class="text-right"><span class="text-muted">Dirección</span></td>
                     <td><?php echo $row->address ?></td>
                 </tr>
-
                 <tr>
-                    <td class="text-right"><span class="suave">Teléfono</span></td>
-                    <td><?= $row->telefono ?></td>
-                    
-                </tr>
-                <tr>
-                    <td class="text-right"><span class="suave">Celular</span></td>
-                    <td><?= $row->celular ?></td>
-                </tr>
-                <tr>
-                    <td class="text-right"><span class="suave">Página Web</span></td>
+                    <td class="text-right"><span class="text-muted">Celular</span></td>
                     <td>
-                        <?= anchor($this->Pcrn->preparar_url($row->url), $this->Pcrn->texto_url($row->url), 'target="_blank"') ?>
+                        <?= $row->celular ?>
+                        <a href="https://web.whatsapp.com/send?phone=57<?php echo $row->celular ?>&text=<?= $wa_message ?>" class="btn-success btn btn-xs" target="_blank">
+                            <i class="fab fa-whatsapp"></i> Enviar Mensaje
+                        </a>
                     </td>
-                    
                 </tr>
-                <?php if ( $this->session->userdata('role') <= 2  ) { ?>
+                <tr>
+                    <td class="text-right"><span class="text-muted">Actualizado</span></td>
+                    <td title="<?php echo $row->editado ?>">
+                        <?= $this->Pcrn->fecha_formato($row->editado, 'Y-M-d') ?>
+                        <span class="text-muted">
+                            (<?= $this->Pcrn->tiempo_hace($row->editado) ?>)
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-right"><span class="text-muted">Registrado desde</span></td>
+                    <td title="<?php echo $row->creado ?>">
+                        <?= $this->Pcrn->fecha_formato($row->creado, 'Y-M-d') ?>
+                        <span class="text-muted">
+                            (<?= $this->Pcrn->tiempo_hace($row->creado) ?>)
+                        </span>
+                    </td>
+                </tr>
+                <?php if ( $this->session->userdata('role') <= 6  ) { ?>
                     <tr>
                         <td class="text-right">
                             <button class="btn btn-primary btn-sm" id="btn_set_activation_key">
-                                <i class="fa fa-redo-alt"></i>
+                                <i class="fa fa-redo-alt"></i> Activación
                             </button>
-                            <span class="text-muted">Activación</span>
                         </td>
                         <td>
-                            <span id="activation_key"></span>
+                            <span id="activation_key">
+                                <?php if ( $row->estado != 1 ) { ?>    
+                                    <?= base_url("usuarios/activar/{$row->cod_activacion}") ?>
+                                <?php } ?>
+                            </span>
                         </td>
                     </tr>
                 <?php } ?>

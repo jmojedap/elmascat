@@ -1,9 +1,8 @@
-<div class="login" style="min-height: 600px;">
+<div class="login center_box_450" style="min-height: 300px;">
     <div style="text-align: center;">
         <img src="<?= URL_IMG ?>app/logo_eshopper.png" />
-        <h4 role="alert" class="alert alert-warning"><i class="fa fa-info-circle"></i> Acceso no permitido</h4>
-        <?= anchor('app', '<i class="fa fa-caret-left"></i> Volver', 'class="btn btn-info"') ?>
-        <?= anchor('accounts/login', '<i class="fa fa-user"></i> Login de usuario', 'class="btn btn-default"') ?>
+        <h4 role="alert" class="alert alert-info"><i class="fa fa-info-circle"></i> Acceso no permitido</h4>
+        <?= anchor('accounts/login', 'Iniciar sesión', 'class="btn btn-polo-lg" style="max-width: 300px;"') ?>
     </div>
 
 </div>

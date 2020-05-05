@@ -101,9 +101,7 @@ class Usuarios extends CI_Controller{
         
         $resultado = $this->Usuario_model->insertar($registro);
         
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode($resultado));
+        $this->output->set_content_type('application/json')->set_output(json_encode($resultado));
     }
     
     /**
@@ -114,13 +112,12 @@ class Usuarios extends CI_Controller{
         $usuario_id = $this->uri->segment(4);
         
         //Datos básicos
-        $data = $this->Usuario_model->basico($usuario_id);
+        $data = $this->Usuario_model->basic($usuario_id);
         
         $gc_output = $this->Usuario_model->crud_admin($data['row']);
         
         //Array data espefícicas
-            $data['vista_b'] = 'usuarios/editar_v';
-            $data['vista_menu'] = 'usuarios/menu_admin_v';
+            $data['vista_a'] = 'usuarios/editar_v';
         
         $output = array_merge($data,(array)$gc_output);
         $this->load->view(PTL_ADMIN, $output);
@@ -129,11 +126,14 @@ class Usuarios extends CI_Controller{
     function info($usuario_id)
     {
         //Datos básicos
-        if ( $this->session->userdata('role') > 2 ) { $usuario_id = $this->session->userdata('user_id'); }
-        $data = $this->Usuario_model->basico($usuario_id);
+        if ( $this->session->userdata('role') > 6 ) { $usuario_id = $this->session->userdata('user_id'); }
+        $data = $this->Usuario_model->basic($usuario_id);
+
+        $data['qty_login'] = $this->Db_model->num_rows('evento', "tipo_id = 101 AND usuario_id = {$usuario_id}");
+        $data['qty_open_posts'] = $this->Db_model->num_rows('evento', "tipo_id = 51 AND usuario_id = {$usuario_id}");
         
         //Array data espefícicas
-        $data['vista_b'] = 'usuarios/info_v';
+        $data['vista_a'] = 'usuarios/info_v';
         $data['vista_menu'] = 'usuarios/menu_admin_v';
         
         $this->load->view(PTL_ADMIN, $data);
@@ -143,7 +143,7 @@ class Usuarios extends CI_Controller{
     {
         //Datos básicos
         if ( $this->session->userdata('rol_id') > 2 ) { $usuario_id = $this->session->userdata('usuario_id'); }
-        $data = $this->Usuario_model->basico($usuario_id);
+        $data = $this->Usuario_model->basic($usuario_id);
         
         //Array data espefícicas
         $data['vista_b'] = 'usuarios/procesos_v';
@@ -328,13 +328,12 @@ class Usuarios extends CI_Controller{
     
     function mi_perfil()
     {
-        
         //Datos básicos
-        $data = $this->Usuario_model->basico($this->session->userdata('usuario_id'));
+        $data = $this->Usuario_model->basic($this->session->userdata('usuario_id'));
         
         //Array data espefícicas
-        $data['vista_b'] = 'usuarios/info_v';
-        $data['vista_menu'] = 'usuarios/menu_personal_v';
+        $data['vista_a'] = 'usuarios/info_v';
+        $data['nav_1'] = 'usuarios/menu_personal_v';
         
         $this->load->view(PTL_ADMIN, $data);
     }
@@ -344,7 +343,7 @@ class Usuarios extends CI_Controller{
         $usuario_id = $this->uri->segment(4);
         
         //Datos básicos
-        $data = $this->Usuario_model->basico($this->session->userdata('usuario_id'));
+        $data = $this->Usuario_model->basic($this->session->userdata('usuario_id'));
         
         $gc_output = $this->Usuario_model->crud_basico($data['row']);
         
@@ -355,7 +354,7 @@ class Usuarios extends CI_Controller{
         }
         
         //Array data espefícicas
-        $data['vista_b'] = 'usuarios/editar_v';
+        $data['vista_a'] = 'usuarios/editar_v';
         $data['vista_menu'] = 'usuarios/menu_personal_v';
         
         
@@ -370,13 +369,12 @@ class Usuarios extends CI_Controller{
     function contrasena($resultado = FALSE)
     {
         
-        $data = $this->Usuario_model->basico($this->session->userdata('usuario_id'));
+        $data = $this->Usuario_model->basic($this->session->userdata('usuario_id'));
         
         $data['resultado'] = $resultado;
         
         //Solicitar vista
-            $data['vista_menu'] = 'usuarios/menu_personal_v';
-            $data['vista_b'] = 'usuarios/contrasena_v';
+            $data['vista_a'] = 'usuarios/contrasena_v';
             $this->load->view(PTL_ADMIN, $data);
         
     }
@@ -422,9 +420,7 @@ class Usuarios extends CI_Controller{
         $apellidos = $this->input->post('apellidos');
         $username = $this->Usuario_model->generar_username($nombre, $apellidos);
         
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode($username));
+        $this->output->set_content_type('application/json')->set_output(json_encode($username));
     }
 
     /**
@@ -453,16 +449,19 @@ class Usuarios extends CI_Controller{
     
     function pedidos($usuario_id) 
     {
-        if( $this->session->userdata('rol_id') > 2 ) { $usuario_id = $this->session->userdata('usuario_id'); }
-        $data = $this->Usuario_model->basico($usuario_id);
+        if ( $this->session->userdata('role') > 6 ) { $usuario_id = $this->session->userdata('user_id'); }
+        $data = $this->Usuario_model->basic($usuario_id);
         
         //Variables específicas
             $data['pedidos'] = $this->Usuario_model->pedidos($usuario_id);
-        
 
         //Variables generales
-        $data['subtitulo_pagina'] = 'Pedidos';
-        $data['vista_b'] = 'usuarios/pedidos_v';
+        $data['vista_a'] = 'usuarios/pedidos_v';
+        if ( $this->session->userdata('role') >= 20 )
+        {
+            $data['titulo_pagina'] = 'Mis pedidos';
+            $data['nav_2'] = NULL; 
+        }
 
         $this->load->view(PTL_ADMIN, $data);
     }
@@ -471,61 +470,6 @@ class Usuarios extends CI_Controller{
     {
         $usuario_id = $this->session->userdata('usuario_id');
         $this->pedidos($usuario_id);
-    }
-
-//DIRECCIONES DE ENTREGA
-//---------------------------------------------------------------------------------------------------
-
-    /**
-     * Administración de direcciones de entrega de un usuario
-     * @param type $usuario_id
-     */
-    function direcciones($usuario_id)
-    {   
-        if( $this->session->userdata('rol_id') > 2 ) { $usuario_id = $this->session->userdata('usuario_id'); }
-        $data = $this->Usuario_model->basico($usuario_id);
-        
-        //Render grocery crud
-            $gc_output = $this->Usuario_model->crud_direccion($usuario_id);
-        
-        //Direcciones actuales
-            $data['direcciones'] = $this->Usuario_model->direcciones($usuario_id);
-            $data['direccion_editable'] = $this->Usuario_model->direccion_editable($this->uri->segment(5));
-        
-        //Solicitar vista
-            $data['subtitulo_pagina'] = 'Direcciones';
-            $data['vista_b'] = 'usuarios/direcciones_v';
-            $data['vista_menu'] = 'usuarios/menu_personal_v';
-        
-            $output = array_merge($data,(array)$gc_output);
-            $this->load->view(PTL_ADMIN, $output);
-    }
-    
-    /**
-     * Establece una dirección de un usuario como la principal
-     * 
-     * @param type $usuario_id
-     * @param type $direccion_id
-     */
-    function act_dir_principal($usuario_id, $direccion_id)
-    {
-        $this->Usuario_model->act_dir_principal($usuario_id, $direccion_id);
-        redirect("usuarios/direcciones/{$usuario_id}");
-    }
-    
-    /**
-     * REDIRECT
-     * Elimina una dirección de entrega de un usuario.
-     * 
-     * @param type $usuario_id
-     * @param type $direccion_id
-     */
-    function eliminar_direccion($usuario_id, $direccion_id) 
-    {
-        $resultado = $this->Usuario_model->eliminar_direccion($usuario_id, $direccion_id);
-        
-        $this->session->set_flashdata('resultado', $resultado);
-        redirect("usuarios/direcciones/{$usuario_id}");
     }
 
 // CONTENIDOS ASIGNADOS
@@ -537,14 +481,18 @@ class Usuarios extends CI_Controller{
      */
     function books($user_id = 0)
     {
+        $this->load->model('Archivo_model');
         //Control de permisos de acceso
         if ( $this->session->userdata('role') >= 10 ) { $user_id = $this->session->userdata('user_id'); }
+        if ( $user_id == 0 ) { $user_id = $this->session->userdata('user_id'); }
 
-        $data = $this->Usuario_model->basico($user_id);
+        $data = $this->Usuario_model->basic($user_id);
 
         $data['books'] = $this->Usuario_model->assigned_posts($user_id);
+        $data['options_book'] = $this->App_model->opciones_post('tipo_id = 8', 'n', 'Libro');
 
-        $data['vista_b'] = 'usuarios/books_v';
+        $data['vista_a'] = 'usuarios/books_v';
+        if ( $this->session->userdata('role') >= 20 ) { $data['nav_2'] = NULL; }
 
         $this->App_model->view(PTL_ADMIN, $data);
     }

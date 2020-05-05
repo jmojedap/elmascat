@@ -68,8 +68,9 @@ class App extends CI_Controller{
             2 => 'pedidos/explorar',
             6 => 'productos/explorar',
             7 => 'productos/explorar',
-            21 => 'productos/catalogo',
-            22 => 'productos/catalogo',
+            21 => 'usuarios/books',
+            22 => 'usuarios/books',
+            23 => 'usuarios/books'
         );
             
         $destino = $arr_destinos[$this->session->userdata('rol_id')];
@@ -328,7 +329,6 @@ class App extends CI_Controller{
     
     function ajax_usuarios()
     {
-        
         $this->load->model('Busqueda_model');
         $this->load->model('Usuario_model');
         
@@ -338,9 +338,7 @@ class App extends CI_Controller{
         
         $arr_usuarios = $resultados->result_array();
         
-        $this->output
-        ->set_content_type('application/json')
-        ->set_output(json_encode($arr_usuarios));
+        $this->output->set_content_type('application/json')->set_output(json_encode($arr_usuarios));
     }
     
 //---------------------------------------------------------------------------------------------------
@@ -350,8 +348,8 @@ class App extends CI_Controller{
     {
         $data['head_title'] = 'Prueba librería';
         $data['view_a'] = 'app/prueba_v';
-        
-        $this->load->view(TPL_ADMIN, $data);
+        $this->load->view($data['view_a'], $data);
+        //$this->load->view(TPL_ADMIN, $data);
     }
 
     function update_address()

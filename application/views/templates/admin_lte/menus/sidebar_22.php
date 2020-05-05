@@ -23,15 +23,6 @@
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-        <!-- Sidebar user panel -->
-        <div class="user-panel">
-            <div class="pull-left image">
-                <img src="<?= URL_IMG ?>app/user_mid.jpg" class="img-circle" alt="User Image" />
-            </div>
-            <div class="pull-left info">
-                <p><?= $this->session->userdata('nombre_corto') ?></p>
-            </div>
-        </div>
         
         <!-- sidebar menu: : style can be found in sidebar.less -->
         
@@ -40,7 +31,7 @@
             
             <li class="<?= $clases_m0['pedidos'] ?>">
                 <a href="<?= base_url() ?>">
-                    <i class="fa fa-home"></i> <span>Volver a tienda</span>
+                    <i class="fa fa-arrow-left"></i> <span>Volver a tienda</span>
                 </a>
             </li>
             

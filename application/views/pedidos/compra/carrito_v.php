@@ -68,7 +68,7 @@
 
                                         $pct_descuento = 100 - $this->Pcrn->int_percent($row_detalle->precio, $row_detalle->precio_nominal);
 
-                                        $att_img = $this->Producto_model->att_img($row_detalle->producto_id, 125);
+                                        $att_img = $this->Producto_model->att_img($row_detalle->producto_id, 500);
                                         $att_img['width'] = 75;
                                         $att_imt['alt'] = $row_detalle->nombre_producto;
                                     ?>
@@ -111,7 +111,12 @@
                                         </td>
 
                                         <td class="a-center movewishlist">
-                                            <input maxlength="12" type="number" min="1" max="100" class="input-polo cant_producto" title="Cantidad" size="4" value="<?php echo $row_detalle->cantidad ?>" data-producto_id="<?php echo $row_detalle->producto_id ?>">
+                                            <?php if ( $row_detalle->peso > 0 ) { ?>    
+                                                <!-- Se puede modificar solo si tiene peso y debe enviarse físicamente -->
+                                                <input maxlength="12" type="number" min="1" max="100" class="input-polo cant_producto" title="Cantidad" size="4" value="<?php echo $row_detalle->cantidad ?>" data-producto_id="<?php echo $row_detalle->producto_id ?>">
+                                            <?php } else { ?>
+                                                1
+                                            <?php } ?>
                                         </td>
                                         <td class="a-right movewishlist">
                                             <span class="cart-price">
@@ -160,7 +165,7 @@
         
         <?php $this->load->view('pedidos/compra/totales_v'); ?>
         
-        <a type="button" title="Continuar con la compra" class="btn-polo-lg btn-block text-center" href="<?php echo base_url("pedidos/compra_a/{$row->cod_pedido}") ?>">
+        <a type="button" title="Continuar con la compra" class="btn-polo-lg btn-block text-center" href="<?php echo base_url("pedidos/usuario") ?>">
             <i class="fa fa-check"></i>
             Continuar
         </a>

@@ -56,7 +56,7 @@
             <h2 class="resaltar"><?php echo $row->nombre . ' ' . $row->apellidos ?></h2>
             <h3 class="suave"><?php echo $textos['subtitulo'] ?></h3>
             <p class="suave"><?php echo $row->username ?></p>
-            <p>Establezca su contraseña para Districatolicas.com</p>
+            <p>Establece tu contraseña para DistriCatolicas.com</p>
         </div>
             
         <div class="mb-2" id="card_form">
@@ -71,8 +71,7 @@
                         pattern="(?=.*\d)(?=.*[a-z]).{8,}"
                         class="form-control"
                         placeholder="contraseña"
-                        value=""
-                        title="Debe tener al menos un número y una letra minúscula, y al menos 8 caractéres"
+                        title="8 caractéres o más, al menos un número y una letra minúscula"
                         >
                 </div>
                 <div class="form-group">
@@ -82,14 +81,13 @@
                         name="passconf"
                         required
                         class="form-control"
-                        placeholder="confirme su contraseña"
-                        title="confirme su contraseña"
-                        value=""
+                        placeholder="confirma tu contraseña"
+                        title="confirma tu contraseña"
                         minlength="8"
                         >
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-success btn-block" type="submit">
+                    <button class="btn btn-polo-lg btn-block" type="submit">
                         <?php echo $textos['boton'] ?>
                     </button>
                 </div>
@@ -104,10 +102,10 @@
                 <i class="fa fa-check fa-2x"></i>
             </p>
             <p class="mb-2">
-                Su cuenta fue activada correctamente
+                Tu cuenta fue activada correctamente
             </p>
             <p>
-                <a href="<?php echo base_url("usuarios/mi_perfil") ?>" class="btn btn-success btn-block">
+                <a href="<?php echo base_url("usuarios/books") ?>" class="btn btn-success btn-block">
                     Continuar
                 </a>
             </p>

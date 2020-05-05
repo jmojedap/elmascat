@@ -8,7 +8,7 @@
             <td class="a-left" colspan="1"><strong>Total</strong></td>
             <td class="text-right">
                 <strong>
-                    <span class="price" style="font-size: 150%;">
+                    <span class="money money_total" style="font-size: 150%;">
                         USD $<?php echo $form_data['valor'] ?>
                     </span>
                 </strong>
@@ -21,7 +21,7 @@
                 Subtotal productos
             </td>
             <td class="text-right">
-                <span class="price">
+                <span class="money">
                     $ <?php echo number_format($row->total_productos/$precio_dolar, 2, '.', ',') ?>
                 </span>
             </td>
@@ -33,7 +33,7 @@
                     Gastos transacción y Envío (<?= $row->peso_total ?> kg)
                 </td>
                 <td class="text-right">
-                    <span class="price">
+                    <span class="money">
                         $ <?php echo number_format($arr_extras['gastos_envio']/$precio_dolar, 2, '.', ',') ?>
                     </span>
                 </td>

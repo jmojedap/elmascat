@@ -589,7 +589,8 @@ class Archivo_model extends CI_Model{
         
         $carpeta = "{$anio}/{$mes}/";
         
-        foreach( $archivos as $nombre_archivo ){
+        foreach( $archivos as $nombre_archivo )
+        {
             
             $sin_prefijo = $this->quitar_prefijo($nombre_archivo);
             $tiene_registro = $this->tiene_registro($carpeta, $sin_prefijo);
@@ -643,10 +644,6 @@ class Archivo_model extends CI_Model{
         
         if ( $query->num_rows() > 0 ) { $tiene_registro = 1; }
         
-        $registro['texto_1'] = $this->db->last_query();
-        $registro['entero_1'] = $query->num_rows();
-        $this->db->insert('z_procesos', $registro);
-        
         return $tiene_registro;
     }
     
@@ -667,5 +664,38 @@ class Archivo_model extends CI_Model{
         }
         
         return $sin_prefijo;
+    }
+
+    function unlink_thumbnails($year, $month)
+    {
+        $cant_eliminados = 0;
+        $carpeta = "{$year}/{$month}/";
+
+        $this->db->where('carpeta', $carpeta);
+        $archivos = $this->db->get('archivo');
+
+        foreach ($archivos->result() as $row_archivo)
+        {
+            $file_path_1 = PATH_UPLOADS . $carpeta . '125px_' . $row_archivo->nombre_archivo;
+            if ( file_exists($file_path_1) )
+            {
+                unlink($file_path_1);
+                $cant_eliminados++;
+            }
+
+            $file_path_2 = PATH_UPLOADS . $carpeta . '250px_' . $row_archivo->nombre_archivo;
+            if ( file_exists($file_path_2) )
+            {
+                unlink($file_path_2);
+                $cant_eliminados++;
+            }
+        }
+
+        $data = array('status' => 0, 'message' => 'No se eliminaron archivos');
+        if ( $cant_eliminados > 0 ) {
+            $data = array('status' => 1, 'message' => "Archivos eliminados: {$cant_eliminados}");
+        }
+        
+        return $data;
     }
 }

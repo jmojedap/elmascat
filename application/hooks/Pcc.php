@@ -87,8 +87,12 @@ class Pcc {
         $funciones_publicas[] = 'productos/visitar';
         $funciones_publicas[] = 'productos/catalogo';
         $funciones_publicas[] = 'productos/catalogo_redirect';
+
+        $funciones_publicas[] = 'catalogo/productos';
+        $funciones_publicas[] = 'catalogo/productos_digitales';
         
         $funciones_publicas[] = 'pedidos/carrito';
+        $funciones_publicas[] = 'pedidos/usuario';
         $funciones_publicas[] = 'pedidos/compra_a';
         $funciones_publicas[] = 'pedidos/compra_b';
         $funciones_publicas[] = 'pedidos/compra_b_usd';
@@ -103,6 +107,7 @@ class Pcc {
         $funciones_publicas[] = 'pedidos/guardar_detalle';  //Ajax
         $funciones_publicas[] = 'pedidos/guardar_pedido';  //Ajax
         $funciones_publicas[] = 'pedidos/guardar_lugar';  //Ajax
+        $funciones_publicas[] = 'pedidos/set_user';  //Ajax
         
         $funciones_publicas[] = 'usuarios/registrado';
         $funciones_publicas[] = 'usuarios/activar';
@@ -128,8 +133,10 @@ class Pcc {
         $funciones_publicas[] = 'accounts/register';
         $funciones_publicas[] = 'accounts/registered';
         $funciones_publicas[] = 'accounts/fb_login';
+        $funciones_publicas[] = 'accounts/check_email';
+        $funciones_publicas[] = 'accounts/fast_register';
 
-        $funciones_publicas[] = 'books/read';
+        $funciones_publicas[] = 'books/demo';
 
         $funciones_publicas[] = 'info/distribuidores_disponibles';
         

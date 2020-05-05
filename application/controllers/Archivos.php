@@ -184,12 +184,12 @@ class Archivos extends CI_Controller{
         echo count($seleccionados);
     }
     
-    function carpetas($anio, $mes, $offset = 0)
+    function carpetas($year, $month, $offset = 0)
     {
         //Cargue
             $this->load->model('Esp');
         
-        $archivos = $this->Archivo_model->archivos($anio, $mes);
+        $archivos = $this->Archivo_model->archivos($year, $month);
         $cant_archivos = count($archivos);
         
         //Opciones meses
@@ -198,14 +198,14 @@ class Archivos extends CI_Controller{
         //Variables
             $data['archivos'] = $archivos;
             $data['cant_archivos'] = $cant_archivos;
-            $data['anio'] = $anio;
-            $data['mes'] = $mes;
-            $data['nombre_mes'] = $arr_meses[$mes];
-            $data['meses'] = $this->Esp->arr_meses();
-            $data['anios'] = range(2015, 2020);
+            $data['year'] = $year;
+            $data['month'] = $month;
+            $data['nombre_mes'] = $arr_meses[$month];
+            $data['months'] = $this->Esp->arr_meses();
+            $data['years'] = range(2015, 2022);
         
         //Solicitar vista
-            $data['titulo_pagina'] = "Archivos :: {$anio}/{$data['nombre_mes']}";
+            $data['titulo_pagina'] = "Archivos :: {$year}/{$data['nombre_mes']}";
             $data['subtitulo_pagina'] = $cant_archivos;
             $data['vista_menu'] = 'archivos/explorar_menu_v';
             $data['vista_a'] = 'archivos/carpetas_v';
@@ -218,19 +218,24 @@ class Archivos extends CI_Controller{
      * @param type $anio
      * @param type $mes
      */
-    function unlink_no_usados($anio, $mes)
+    function unlink_no_usados($year, $month)
     {
-        $cant_eliminados = $this->Archivo_model->unlink_no_usados($anio, $mes);
-        $resultado['mensaje'] = "Se eliminaron {$cant_eliminados} sin utilizar";
-        $this->session->set_flashdata('resultado', $resultado);
-        redirect("archivos/carpetas/{$anio}/{$mes}");
+        $data = array('status' => 0, 'message' => 'No se eliminaron archivos');
+
+        $cant_eliminados = $this->Archivo_model->unlink_no_usados($year, $month);
+        if ( $cant_eliminados > 0 )
+        {
+            $data['status'] = 1;
+            $data['message'] = "Se eliminaron {$cant_eliminados} sin utilizar";
+        }
+        
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     /**
-     * Eliminar archivos
-     * 
-     * @param type $anio
-     * @param type $mes
+     * Modifica calidad y tamaño de archivo original
+     * 2020-04-29
      */
     function mod_original($anio, $mes)
     {
@@ -245,11 +250,19 @@ class Archivos extends CI_Controller{
         foreach( $archivos->result() as $row_archivo ){
             $cant_modificados += $this->Archivo_model->mod_original($row_archivo->carpeta, $row_archivo->nombre_archivo);
         }
+
+        $data['message'] = "Archivos modificados: {$cant_modificados}";
         
-        //$cant_modificados = $archivos->num_rows();
-        $mensaje = "Se modificaron {$cant_modificados} archivos";
-        $this->session->set_flashdata('mensaje', $mensaje);
-        redirect("archivos/carpetas/{$anio}/{$mes}");
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    function unlink_thumbnails($year, $month)
+    {
+        $data = $this->Archivo_model->unlink_thumbnails($year, $month);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
 //CARGUE - UPLOAD

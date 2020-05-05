@@ -37,7 +37,7 @@
 ?>
 
 
-<table class="table table-default bg-blanco" cellspacing="0">
+<table class="table table-default table-responsive bg-blanco" cellspacing="0">
     <thead>
         <th class="<?= $clases_col['selector'] ?>" width="10px;">
             <?= form_checkbox($att_check_todos) ?>
@@ -53,6 +53,9 @@
         </th>
         <th class="<?= $clases_col['cant_disponibles'] ?>">
             <?= anchor($links_orden['cant_disponibles'], 'Disponibles', 'title="Ordenar por cantidad disponible"') ?>
+        </th>
+        <th class="<?= $clases_col['cant_ventas'] ?>">
+            Ventas
         </th>
         <th class="<?= $clases_col['promocion'] ?>">Promoción</th>
         <th class="<?= $clases_col['descripcion'] ?>">Descripción</th>
@@ -72,6 +75,9 @@
                     
                 //Otros
                     $get_str_sin_dcto = $this->Pcrn->get_str('dcto');
+
+                //Vendidos
+                    $cant_ventas = $this->Db_model->num_rows('pedido_detalle', "producto_id = {$row_resultado->id} AND pedido_id IN (SELECT id FROM pedido WHERE codigo_respuesta_pol = 1)");
             ?>
             <tr>
                 <td class="<?= $clases_col['selector'] ?>">
@@ -92,6 +98,10 @@
                 
                 <td class="text-right <?= $clases_col['cant_disponibles'] ?>">
                     <?= $row_resultado->cant_disponibles ?>
+                </td>
+
+                <td class="text-right <?= $clases_col['cant_ventas'] ?>">
+                    <?= $cant_ventas ?>
                 </td>
                 
                 

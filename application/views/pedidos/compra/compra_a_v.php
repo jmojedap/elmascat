@@ -13,9 +13,9 @@
             <?php if ( ! ($row->ciudad > 0) ) { ?>
             <div class="form-horizontal">
                 <div class="form-group">
-                    <label for="ciudad_id" class="col-md-4 control-label">Ciudad de entrega</label>
+                    <label for="ciudad_id" class="col-md-4 control-label">Ciudad residencia</label>
                     <div class="col-md-8">
-                        <?php echo form_dropdown('ciudad_id', $options_ciudad, $row->ciudad_id, 'id="ciudad_id" class="form-control chosen-select_no" v-model="ciudad_id" v-on:change="guardar_lugar"') ?>
+                        <?php echo form_dropdown('ciudad_id', $options_ciudad, $row->ciudad_id, 'id="ciudad_id" class="form-control input-lg chosen-select_no" v-model="ciudad_id" v-on:change="guardar_lugar"') ?>
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                                 id="field-nombre"
                                 name="nombre"
                                 required
-                                class="form-control"
+                                class="form-control input-lg"
                                 placeholder="Nombres"
                                 title="Nombres"
                                 v-model="form_values.nombre"
@@ -48,10 +48,10 @@
                                 id="field-apellidos"
                                 name="apellidos"
                                 required
-                                class="form-control"
+                                class="form-control input-lg"
                                 placeholder="Apellidos"
                                 title="Apellidos"
-                                v-bind:value="form_values.apellidos"
+                                v-model="form_values.apellidos"
                                 >
                         </div>
                     </div>
@@ -64,14 +64,14 @@
                                 name="no_documento"
                                 required
                                 minlength="5"
-                                class="form-control"
+                                class="form-control input-lg"
                                 placeholder="CC o NIT"
                                 title="CC o NIT"
-                                v-bind:value="form_values.no_documento"
+                                v-model="form_values.no_documento"
                                 >
                         </div>
                         <div class="col-md-4">
-                            <?php echo form_dropdown('tipo_documento_id', $options_tipo_documento, '', 'class="form-control" required v-bind:value="`0` + form_values.tipo_documento_id"') ?>
+                            <?php echo form_dropdown('tipo_documento_id', $options_tipo_documento, '', 'class="form-control input-lg" required v-model="`0` + form_values.tipo_documento_id"') ?>
                         </div>
                     </div>
                     <div class="form-group">
@@ -82,10 +82,11 @@
                                 id="field-email"
                                 name="email"
                                 required
-                                class="form-control"
+                                class="form-control input-lg"
                                 title="Correo electrónico"
-                                v-bind:value="form_values.email"
+                                v-model="form_values.email"
                                 >
+                            <span id="helpBlock" class="help-block">Si usa un correo de <b class="text-danger">hotmail.com</b>, el mensaje para la activación de su cuenta podría llegar a la carpeta de spam o correo no deseado.</span>
                         </div>
                     </div>
     
@@ -97,9 +98,9 @@
                                 id="field-direccion"
                                 name="direccion"
                                 required
-                                class="form-control"
+                                class="form-control input-lg"
                                 title="Dirección de entrega del pedido"
-                                v-bind:value="form_values.direccion"
+                                v-model="form_values.direccion"
                                 >
                         </div>
                     </div>
@@ -111,14 +112,17 @@
                                 id="field-celular"
                                 name="celular"
                                 required
-                                class="form-control"
+                                class="form-control input-lg"
                                 placeholder="Número celular"
-                                title="Número celular"
-                                pattern="[0-9]{10}"
-                                v-bind:value="form_values.celular"
+                                title="Número teléfono celular sin espacios, solo números"
+                                pattern="[0-9]{5,}"
+                                v-model="form_values.celular"
                                 >
                         </div>
                     </div>
+
+                    
+
                     <div class="form-group">
                         <label for="notas" class="col-md-4 control-label">Notas sobre el pedido</label>
                         <div class="col-md-8">
@@ -126,13 +130,38 @@
                                 rows="3"
                                 id="field-notas"
                                 name="notas"
-                                class="form-control"
+                                class="form-control input-lg"
                                 placeholder="Notas sobre su pedido e instrucciones de envío"
                                 title="Notas sobre su pedido e instrucciones de envío"
-                                v-bind:value="form_values.notas"
+                                v-model="form_values.notas"
                                 ></textarea>
                         </div>
                     </div>
+
+                    <hr>
+                    <?php if ( is_null($row_usuario->fecha_nacimiento) )  { ?>
+                        <div class="form-group row">
+                            <label for="fecha_nacimiento" class="col-xs-12 col-md-4 control-label">Fecha de nacimiento</label>
+                            <div class="col-xs-4 col-md-2">
+                                <?php echo form_dropdown('day', $options_day, '', 'class="form-control input-lg" required v-model="day"') ?>
+                            </div>
+                            <div class="col-xs-4 col-md-4">
+                                <?php echo form_dropdown('month', $options_month, '', 'class="form-control input-lg" required v-model="month"') ?>
+                            </div>
+                            <div class="col-xs-4 col-md-2">
+                                <?php echo form_dropdown('year', $options_year, '', 'class="form-control input-lg" required v-model="year"') ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <?php if ( is_null($row_usuario->sexo) )  { ?>
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-4">
+                                <input type="radio" name="sexo" value="1" required> Mujer
+                                <input type="radio" name="sexo" value="2"> Hombre
+                            </div>
+                        </div>
+                    <?php } ?>
+                    
                 </div>
                 <div class="col-md-4">
                     <?php $this->load->view('pedidos/compra/totales_v'); ?>
@@ -156,7 +185,10 @@
         data: {
             cod_pedido: '<?php echo $cod_pedido ?>',
             ciudad_id: '0<?php echo $row->ciudad_id ?>',
-            form_values: <?php echo json_encode($row); ?>
+            form_values: <?php echo json_encode($row); ?>,
+            year: '01985',
+            month: '006',
+            day: '015'
         },
         methods: {
             guardar_lugar: function(){

@@ -4,7 +4,16 @@
     $get_url = str_replace(current_url(), '', $url);
     $link_print = "pedidos/respuesta_print{$get_url}";
 
+    $cl_respuesta = 'warning';
+    $icono_respuesta = '<i class="fa fa-info-circle warning"></i>';
+    if ( $arr_respuesta_pol['codigo_respuesta_pol'] == 1 )
+    {
+        $cl_respuesta = 'success';
+        $icono_respuesta = '<i class="fa fa-check-circle text-success"></i>';
+    }
+
 ?>
+
 
 <div class="row">
     <div class="col-md-8 col-md-offset-2">
@@ -14,12 +23,21 @@
         
         <table class="table table-striped">
             <tbody>
-                <tr>
-                    <td>Respuesta Pagos On Line</td>
-                    <td><?= $this->App_model->nombre_item($arr_respuesta_pol['codigo_respuesta_pol'], 2, 10) ?></td>
+                <tr class="<?php echo $cl_respuesta ?>">
+                    <td>Respuesta PayU</td>
+                    <td>
+                        <?= $icono_respuesta ?>
+                        <?= $this->Item_model->nombre(10, $arr_respuesta_pol['codigo_respuesta_pol']) ?>
+                    </td>
                 </tr>
                 <tr>
-                    <td>Cód. Transacción en Pagos On Line</td>
+                    <td>Estado transacción</td>
+                    <td>
+                        <?= $this->Item_model->nombre(9, $arr_respuesta_pol['estado_pol']) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cód. Transacción en PayU</td>
                     <td><?= $arr_respuesta_pol['ref_pol'] ?></td>
                 </tr>
                 <tr>

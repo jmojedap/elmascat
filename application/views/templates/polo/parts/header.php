@@ -13,7 +13,7 @@
 ?>
 
 <header class="header-container">
-    <div class="header-top">
+    <div class="header-top hidden-xs">
         <div class="container">
             <div class="row"> 
                 <!-- Header Language -->
@@ -22,7 +22,7 @@
                 </div>
                 <div class="col-xs-6">
                     <a class="welcome-msg hidden-xs pull-right" href="https://wa.me/573013054053" target="_blank">
-                        <?php echo img(RUTA_IMG . 'app/whatsapp-logo-vector_16x16.png') ?>
+                        <?php echo img(URL_IMG . 'app/whatsapp-logo-vector_16x16.png') ?>
                         WhatsApp 301 305 4053
                     </a>
                 </div>

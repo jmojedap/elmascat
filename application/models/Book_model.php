@@ -10,10 +10,15 @@ class Book_model extends CI_Model{
     {
         $row = $this->Db_model->row('post', "code = '{$book_code}'");
         $book['head_title'] = $row->nombre_post;
+        $book['book_id'] = $row->id;
 
         return $book;
     }
 
+    /**
+     * Determina si el usuario en sesión tiene o no permiso para leer un book
+     * dependiendo del rol y de las asignaciones.
+     */
     function readable($meta_id)
     {
         $readable = false;
@@ -21,13 +26,16 @@ class Book_model extends CI_Model{
         $row_meta = $this->Db_model->row_id('meta', $meta_id);
 
         //Si lo tiene asignado, permitido
-        if ( $row_meta->elemento_id == $this->session->userdata('user_id') )
+        if ( ! is_null($row_meta))
         {
-            $readable = true;
+            if ( $row_meta->elemento_id == $this->session->userdata('user_id') )
+            {
+                $readable = true;
+            }
         }
 
         //Si es usuario interno, permitido
-        if ( $this->session->userdata('role') < 10 ) {
+        if ( $this->session->userdata('logged') == true && $this->session->userdata('role') < 10 ) {
             $readable = true;
         }
 

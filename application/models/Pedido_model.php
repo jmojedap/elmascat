@@ -39,6 +39,11 @@ class Pedido_Model extends CI_Model{
             
         //Otros filtros
             if ( $busqueda['est'] != '' ) { $this->db->where('estado_pedido', $busqueda['est']); }    //Editado
+            if ( $busqueda['fe1'] != '' )
+            {
+                if ( $busqueda['fe1'] == '01' ) { $this->db->where('peso_total > 0');}
+                if ( $busqueda['fe1'] == '02' ) { $this->db->where('peso_total = 0');}
+            }
             if ( $busqueda['condicion'] != '' ) { $this->db->where($busqueda['condicion']); }    //Condición especial
             
         //Obtener resultados
@@ -96,30 +101,33 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Actualizar registro de pedido, datos de administración.
-     * 
-     * @param type $pedido_id
-     * @return string
+     * 2020-04-28
      */
     function guardar_admin($pedido_id)
     {   
         //Resultado del proceso, valor por defecto
-            $resultado['clase'] = 'alert-success';
-            $resultado['mensaje'] = 'El pedido se guardó correctamente.';
-            $resultado['modificado'] = 0;   //El registró no se modificó
+            $data = array('status' => 0, 'message' => 'El pedido NO se modificó');
         
         //Actualizar registro
-            $registro = $this->input->post();
+            $arr_row = $this->input->post();
+            $arr_row['editado_usuario_id'] = $this->session->userdata('usuario_id');
             $this->db->where('id', $pedido_id);
-            $this->db->update('pedido', $registro);
-            
+            $this->db->update('pedido', $arr_row);
             
         if ( $this->db->affected_rows() > 0 ) 
         {
-            $resultado['modificado'] = 1;
-            $resultado['mensaje'] .= ' Se enviará un e-mail al cliente notificando los cambios.';
+            $data['status'] = 1;
+            $data['message'] = 'Pedido Actualizado';
+
+            //Enviar email, si corresponde a un estado de interés comercial
+            if ( in_array($arr_row['estado_pedido'], array(4,6)) )
+            {
+                $this->Pedido_model->email_actualizacion($pedido_id);    
+                $data['message'] .= '. E-mail enviado al cliente.';
+            }
         }
         
-        return $resultado;
+        return $data;
     }
     
 //DATOS SOBRE UN PEDIDO
@@ -185,7 +193,10 @@ class Pedido_Model extends CI_Model{
         return $query;
     }
     
-    
+    /**
+     * Calcula el valor en dinero, para un pedido específico, de los valores extras
+     * cobrados, con alguna condición (WHERE) específica
+     */
     function valor_extras($pedido_id, $condicion = NULL)
     {
         $valor_extras = 0;
@@ -218,9 +229,6 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Guarda un registro en la tabla pedido_detalle (pd)
-     * 
-     * @param type $registro
-     * @return type
      */
     function guardar_detalle($registro)
     {
@@ -542,8 +550,8 @@ class Pedido_Model extends CI_Model{
         
         //Extras
         //$this->act_extras_relacionados($pedido_id); //Desactivado, 2017-07-11
-        $this->act_flete($pedido_id);
-        $this->act_comision_pol($pedido_id);        //Actualizar comisión POL
+        $this->act_flete($pedido_id);               //Costos de envío del pedido
+        //$this->act_comision_pol($pedido_id);      //Actualizar comisión POL (DESACTIVADA 2020-04-16)
         $this->act_totales_2($pedido_id);           //Valor total extras
         
         //Productos + Extras
@@ -674,7 +682,109 @@ class Pedido_Model extends CI_Model{
             //Guardar
                 $this->Pcrn->guardar('pedido_detalle', $condicion, $registro);
         }
+    }
+
+    /**
+     * Verifica y valida usuario asociado a un pedido que no tiene usaurio_id identificado
+     * 2020-04-17
+     */
+    function validate_user($pedido_id)
+    {
+        $row = $this->Db_model->row_id('pedido', $pedido_id);
         
+        //No hay usuario definido
+        if ( $row->usuario_id == 0 )
+        {
+            //Identificar usuario por el email
+            $row_usuario = $this->Db_model->row('usuario', "email = '{$row->email}'");
+
+            if ( ! is_null($row_usuario) )
+            {
+                //Usuario ya existe en la base de datos
+                $arr_row['usuario_id'] = $row_usuario->id;
+            } else {
+                //No existe, crearlo y enviar email de activación
+                $user['no_documento'] = $this->input->post('no_documento');
+                $user['tipo_documento_id'] = $this->input->post('tipo_documento_id');
+                $user['address'] = $this->input->post('direccion');
+                $user['ciudad_id'] = $row->ciudad_id;
+                $user['sexo'] = $this->input->post('sexo');
+                $user['fecha_nacimiento'] = substr($this->input->post('year'),-4) . '-' . substr($this->input->post('month'),-2) . '-' .  substr($this->input->post('day'),-2);
+                
+                $this->load->model('Usuario_model');
+                $arr_row['usuario_id'] = $this->Usuario_model->guardar($user);
+
+                $this->Usuario_model->email_activacion($arr_row['usuario_id']);  //Envía mensaje email para activar cuenta de usuario
+            }
+
+            //Cargar usuario en variables de sesión
+            $this->session->set_userdata('user_id', $arr_row['usuario_id']);
+
+            //Se actualiza pedido.usuario_id
+            $this->db->where('id', $row->id);
+            $this->db->update('pedido', $arr_row);
+        }
+    }
+
+    /**
+     * Carga los datos del pedido al usuario, si no los tiene.
+     * 2020-04-30
+     */
+    function set_user_data($pedido_id)
+    {
+        $data['saved_id'] = 0;  //Valor por defecto
+        $row = $this->Db_model->row_id('pedido', $pedido_id);
+        
+        //Hay usuario definido
+        if ( $row->usuario_id > 0 )
+        {
+            //Identificar usuario por el email
+            $row_usuario = $this->Db_model->row_id('usuario', $row->usuario_id);
+
+            $user = array();
+
+            if ( strlen($row_usuario->nombre) == 0 ) { $user['nombre'] = $this->input->post('nombre'); }
+            if ( strlen($row_usuario->apellidos) == 0 ) { $user['apellidos'] = $this->input->post('apellidos'); }
+            if ( strlen($row_usuario->no_documento) == 0 ) { $user['no_documento'] = $this->input->post('no_documento'); }
+            if ( strlen($row_usuario->tipo_documento_id) == 0 ) { $user['tipo_documento_id'] = $this->input->post('tipo_documento_id'); }
+            if ( strlen($row_usuario->ciudad_id) == 0 ) { $user['ciudad_id'] = $this->input->post('ciudad_id'); }
+            if ( strlen($row_usuario->address) == 0 ) { $user['address'] = $this->input->post('direccion'); }
+            if ( strlen($row_usuario->celular) == 0 ) { $user['celular'] = $this->input->post('celular'); }
+            if ( is_null($row_usuario->sexo) ) { $user['sexo'] = $this->input->post('sexo'); }
+            if ( is_null($row_usuario->fecha_nacimiento) ) { $user['fecha_nacimiento'] = substr($this->input->post('year'),-4) . '-' . substr($this->input->post('month'),-2) . '-' .  substr($this->input->post('day'),-2); }
+
+            if ( count($user) > 0 )
+            {
+                $data['saved_id'] = $this->Db_model->save('usuario', "id = {$row_usuario->id}", $user);
+            }
+
+
+            //Cargar usuario en variables de sesión
+            $this->session->set_userdata('user_id', $data['saved_id']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Establecer un usuario y sus datos a un pedido en curso
+     * 2020-04-30
+     */
+    function set_user($user_id)
+    {
+        $row_user = $this->Db_model->row_id('usuario', $user_id);
+
+        $arr_row['usuario_id'] = $user_id;
+        $arr_row['email'] = $row_user->email;
+
+        //Se actualiza pedido.usuario_id
+        $this->db->where('id', $this->session->userdata('pedido_id'));
+        $this->db->update('pedido', $arr_row);
+
+        $data['usuario_id'] = $user_id;
+        $data['pedido'] = $this->session->userdata('pedido_id');
+
+        return $data;
     }
     
 //DESCUENTO PARA DISTRIBUIDOR
@@ -934,12 +1044,13 @@ class Pedido_Model extends CI_Model{
     {
         
         //Identificar Pedido
+        $meta_id = 0;
         $row = $this->row_cod_pedido($this->input->post('ref_venta'));    
 
         if ( ! is_null($row) )
         {
             //Guardar array completo de confirmación en la tabla "meta"
-                $this->json_confirmacion($row->id);
+                $meta_id = $this->json_confirmacion($row->id);
 
             //Actualizar registro de pedido
                 $estado_pedido = $this->act_estado($row->id, 1);    //Usuario id=1, administrador
@@ -949,17 +1060,69 @@ class Pedido_Model extends CI_Model{
                 {
                     //Pago confirmado
                     $this->descontar_disponibles($row->id);
+
+                    //Asignar contenidos digitales asociados a los productos comprados
+                    $this->assign_posts($row->id);
                 }
 
-            //Enviar mensaje a administradores de tienda y al cliente
+
+            //Enviar mensaje a administradores de tienda y al cliente ** ACTIVAR **
                 $this->email_cliente($row->id);
                 $this->email_admon($row->id);
                 //if ( $estado_pedido == 3 ) { $this->email_admon($row->id); }
-                
-
-            return $row->id;
         }
-        
+
+        return $meta_id;
+    }
+
+// GESTIÓN DE ASIGNACIÓN DE PRODUCTOS DIGITALES
+//-----------------------------------------------------------------------------
+
+    /**
+     * Verifica qué productos de los comprados incluyen contenidos digitales y se los asigna
+     * al usuario que realizó la compra
+     * 2020-04-16
+     * 
+     */
+    function assign_posts($pedido_id)
+    {
+        //Cargue inicial
+        $this->load->model('Producto_model');
+        $this->load->model('Post_model');
+        $row = $this->Db_model->row_id('pedido', $pedido_id);
+
+        $productos = $this->digital_products($pedido_id);   //Productos con contenidos digitales
+
+        $arr_posts = array();
+        foreach( $productos->result() as $row_producto )
+        {
+            $posts = $this->Producto_model->assigned_posts($row_producto->id);
+            foreach ( $posts->result() as $row_post )
+            {
+                $arr_posts[] = array('id' => $row_post->id, 'title' => $row_post->title);
+                $this->Post_model->add_to_user($row_post->id, $row->usuario_id);
+            }
+        }
+
+        $data['productos'] = $productos->result();
+        $data['posts'] = $arr_posts;
+        $data['qty_posts'] = count($arr_posts);
+
+        return $data;
+    }
+
+    /**
+     * Listado de productos con contenidos digitales que están incluidos en un pedido
+     * 2020-04-16
+     */
+    function digital_products($pedido_id)
+    {
+        $this->db->select('id,nombre_producto');
+        $this->db->where("id IN (SELECT producto_id FROM pedido_detalle WHERE pedido_id = {$pedido_id} AND tipo_id = 1)");
+        $this->db->where('categoria_id', 162);  //Contenidos digitales
+        $productos = $this->db->get('producto');
+
+        return $productos;
     }
     
 // Comisión para Pagos On Line
@@ -1016,12 +1179,9 @@ class Pedido_Model extends CI_Model{
      * Calcula el valor de la comisión cobrada por POL en una transacción de
      * ventas
      * 
-     * @param type $pedido_id
-     * @return type
      */
     function comision_pol($pedido_id)
     {
-        
         //Variables iniciales
             $valor_total_bruto = $this->valor_total($pedido_id);    //Valor total bruto del pedido
             $cpol_actual = $this->comision_pol_actual($pedido_id);  //Valor actual de la comisión
@@ -1035,7 +1195,7 @@ class Pedido_Model extends CI_Model{
             $comision_pol = 900 + ($valor_total * 0.02);    //Medida transitoria 2016-08-29
             if ( $comision_pol < 2900 ) { $comision_pol = 2900; }    //El valor mínimo de la comisión es 2900
 
-            $comision_iva = $comision_pol * 0.16;   //Iva de la comisión POL
+            $comision_iva = $comision_pol * 0.19;   //Iva de la comisión POL
             $retencion_tc = $valor_total * $tasa_retenciones * $probabilidad_tc; //Retención por pago tarjeta de crédito
 
         //Total
@@ -1051,26 +1211,24 @@ class Pedido_Model extends CI_Model{
     /**
      * Actualiza el valor de la comisión pol en la tabla pedido_detalle
      * 
-     * @param type $pedido_id
      */
     function act_comision_pol($pedido_id)
     {
-        //Se actualiza si la ciudad ya está definida
-            //Construir registro
-                $registro['pedido_id'] = $pedido_id;
-                $registro['producto_id'] = 4;   //COD 4, corresponde a comisión pol, ver Ajustes > Parámetros > Extras pedidos
-                $registro['tipo_id'] = 2;       //No es un producto (1), es un elemento extra (2)
-                $registro['precio'] = $this->comision_pol($pedido_id);
-                $registro['cantidad'] = 1;      //Una (1) comision
-                $registro['costo'] = 0;
-                $registro['precio_nominal'] = 0;
-                $registro['iva'] = 0;
+        //Construir registro
+            $registro['pedido_id'] = $pedido_id;
+            $registro['producto_id'] = 4;   //COD 4, corresponde a comisión pol, ver Ajustes > Parámetros > Extras pedidos
+            $registro['tipo_id'] = 2;       //No es un producto (1), es un elemento extra (2)
+            $registro['precio'] = $this->comision_pol($pedido_id);
+            $registro['cantidad'] = 1;      //Una (1) comision
+            $registro['costo'] = 0;
+            $registro['precio_nominal'] = 0;
+            $registro['iva'] = 0;
 
-            //Condición
-                $condicion = "pedido_id = {$pedido_id} AND producto_id = 4 AND tipo_id = 2";
+        //Condición
+            $condicion = "pedido_id = {$pedido_id} AND producto_id = 4 AND tipo_id = 2";
 
-            //Guardar
-                $this->Pcrn->guardar('pedido_detalle', $condicion, $registro);
+        //Guardar
+            $this->Pcrn->guardar('pedido_detalle', $condicion, $registro);
     }
     
 // 
@@ -1262,8 +1420,6 @@ class Pedido_Model extends CI_Model{
      * tomado de los datos de POL guardados en la tabla meta tras la 
      * confirmación del resultado de la transacción de pago.
      * 
-     * @param type $pedido_id
-     * @return int
      */
     function codigo_respuesta_pol($pedido_id)
     {

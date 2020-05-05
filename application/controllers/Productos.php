@@ -338,8 +338,14 @@ class Productos extends CI_Controller{
             //Para redirigir a la primera variación del producto
             $producto_id = $variaciones->row()->id;
         }
+
+        $destination = "productos/detalle/{$producto_id}/{$slug}";
+        if ( in_array($producto_id, array(17206, 17205, 17204)) )
+        {
+            $destination = 'catalogo/productos_digitales';
+        }
         
-        redirect("productos/detalle/{$producto_id}/{$slug}");
+        redirect($destination);
     }
     
     function detalle($producto_id)
@@ -845,5 +851,4 @@ class Productos extends CI_Controller{
 
         $this->App_model->view(PTL_ADMIN, $data);
     }
-    
 }

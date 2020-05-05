@@ -538,5 +538,46 @@ class Evento_Model extends CI_Model{
         
         return $evento_id;
     }
+
+// OPIONES DROPDOWN
+//-----------------------------------------------------------------------------
+
+    function options_year($start, $end)
+    {
+        $options_year = array();
+        for ($year=$start; $year < $end; $year++) { 
+            $options_year['0' . $year] = $year;
+        }
+
+        return $options_year;
+    }
+
+    function options_month()
+    {
+        $options_month['001'] = 'Enero';
+        $options_month['002'] = 'Febrero';
+        $options_month['003'] = 'Marzo';
+        $options_month['004'] = 'Abril';
+        $options_month['005'] = 'Mayo';
+        $options_month['006'] = 'Junio';
+        $options_month['007'] = 'Julio';
+        $options_month['008'] = 'Agosto';
+        $options_month['009'] = 'Septiembre';
+        $options_month['010'] = 'Octubre';
+        $options_month['011'] = 'Noviembre';
+        $options_month['012'] = 'Diciembre';
+
+        return $options_month;
+    }
+
+    function options_day()
+    {
+        $options_day = array();
+        for ($day=1; $day < 32; $day++) { 
+            $options_day['0' . $day] = $day;
+        }
+
+        return $options_day;
+    }
     
 }

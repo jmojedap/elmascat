@@ -391,7 +391,7 @@ class Pcrn extends CI_Model{
             }
             
             //Se agrega la unidad de medida
-            $tiempo_hace = $this->validar_medida($valor_tiempo, 1, $sufijo_periodo);
+            $tiempo_hace = $this->validar_medida($valor_tiempo, 0, $sufijo_periodo);
             
             if ( $poner_prefijo ) { $tiempo_hace = $prefijo . $tiempo_hace; }
         }

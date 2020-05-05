@@ -118,22 +118,13 @@ class Pedidos extends CI_Controller{
     /**
      * Recibie datos post de pedidos/editar. Guarda los datos de gestión administrativa
      * de un pedido. Si se generan cambios se envía notificación por email al cliente
-     * 
-     * @param type $pedido_id
      */
     function guardar_admin($pedido_id)
     {
-        $this->output->enable_profiler(TRUE);
-        $resultado = $this->Pedido_model->guardar_admin($pedido_id);
+        $data = $this->Pedido_model->guardar_admin($pedido_id);
         
-        //Si los datos del pedido se modificaron se envía email al cliente, 
-        if ( $resultado['modificado'] )
-        {
-            $this->Pedido_model->email_actualizacion($pedido_id);    
-        }
-        
-        $this->session->set_flashdata('resultado', $resultado);
-        redirect("pedidos/editar/edit/{$pedido_id}");
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     /**
@@ -315,7 +306,10 @@ class Pedidos extends CI_Controller{
     function resumen_mes()
     {
         $this->load->model('Estadistica_model');
-        $resumen_mes = $this->Estadistica_model->pedidos_resumen_mes(1);
+        for ($year=2018; $year < 2021; $year++)
+        { 
+            $resumen_mes[$year] = $this->Estadistica_model->ventas_mes($year);
+        }
         
         //Cargando variables
             $data['resumen_mes'] = $resumen_mes;
@@ -324,6 +318,21 @@ class Pedidos extends CI_Controller{
             $data['titulo_pagina'] = 'Pedidos';
             $data['subtitulo_pagina'] = 'Resumen por mes';
             $data['vista_a'] = 'estadisticas/pedidos/resumen_mes_v';
+            $data['vista_menu'] = 'estadisticas/pedidos/menu_v';
+            $this->load->view(PTL_ADMIN, $data);
+    }
+
+    function resumen_dia($qty_days = 7)
+    {
+        //Cargando variables
+            $this->load->model('Estadistica_model');
+            $data['resumen_dia'] = $this->Estadistica_model->ventas_dia($qty_days);
+            $data['qty_days'] = $qty_days;
+        
+        //Solicitar vista
+            $data['titulo_pagina'] = 'Pedidos';
+            $data['subtitulo_pagina'] = 'Resumen por día';
+            $data['vista_a'] = 'estadisticas/pedidos/resumen_dia_v';
             $data['vista_menu'] = 'estadisticas/pedidos/menu_v';
             $this->load->view(PTL_ADMIN, $data);
     }
@@ -453,6 +462,26 @@ class Pedidos extends CI_Controller{
             $data['head_title'] = 'Carrito de compras';
             $this->load->view(TPL_FRONT, $data);
     }
+
+    function usuario()
+    {
+        $pedido_id = $this->session->userdata('pedido_id');
+        $data = $this->Pedido_model->basico($pedido_id);
+
+        if ( $data['row']->usuario_id > 0 )
+        {
+            redirect('pedidos/compra_a');
+        } else {
+            //Variables
+                $data['recaptcha_sitekey'] = K_RCSK;    //config/constants.php
+
+            //Solicitar vista
+                $data['head_title'] = 'Datos de entrega';
+                $data['view_a'] = 'pedidos/compra/compra_v';
+                $data['view_b'] = 'pedidos/compra/usuario_v';
+                $this->load->view(TPL_FRONT, $data);
+        }
+    }
     
     /**
      * Etapa A del proceso de compra y pago. Se solicitan datos de localización
@@ -460,10 +489,10 @@ class Pedidos extends CI_Controller{
      */
     function compra_a()
     {
-        
         $this->load->model('Producto_model');
         $this->load->model('Flete_model');
         $this->load->model('Usuario_model');
+        $this->load->model('Evento_model');
         
         $pedido_id = $this->session->userdata('pedido_id');
         
@@ -471,22 +500,38 @@ class Pedidos extends CI_Controller{
         
         $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
 
-        $data['options_ciudad'] = $this->App_model->opciones_lugar("tipo_id = 4 AND activo = 1", 'CRP', 'Ciudad');
-        $data['options_tipo_documento'] = $this->Item_model->opciones('categoria_id = 53 AND filtro LIKE "%-cliente-%"');
+        //Opciones formulario
+            $data['options_pais'] = $this->App_model->opciones_lugar("tipo_id = 2 AND activo = 1", 'nombre_lugar', 'País');
+            $options_ciudad_grande = $this->App_model->opciones_lugar_poblacion("tipo_id = 4 AND activo = 1 and poblacion > 400000", 'cr', 'Ciudad');
+            $options_ciudad_pre = $this->App_model->opciones_lugar("(tipo_id = 4 AND activo = 1) OR (id = 1)", 'cr');
+            $data['options_ciudad'] = array_merge($options_ciudad_grande, $options_ciudad_pre);
+            $data['options_tipo_documento'] = $this->Item_model->opciones('categoria_id = 53 AND filtro LIKE "%-cliente-%"');
+            $data['options_year'] = $this->Evento_model->options_year(1920,2005);
+            $data['options_month'] = $this->Evento_model->options_month();
+            $data['options_day'] = $this->Evento_model->options_day();
+            $data['row_usuario'] = $this->Db_model->row_id('usuario', $data['row']->usuario_id);
         
         //Extras
             $arr_extras['gastos_envio'] = $this->Pedido_model->valor_extras($pedido_id, 'producto_id IN (1,4)');
-            $arr_extras['dto_distribuidor'] = $this->Pedido_model->valor_extras($pedido_id, 'producto_id = 3');
             $data['arr_extras'] = $arr_extras;
+
+        //Si tiene peso o no, cambian los datos solicitados
+            $data['view_b'] = 'pedidos/compra/compra_a_v';
+            if ( $data['row']->peso_total == 0 ) {
+                $data['view_b'] = 'pedidos/compra/compra_a_sin_peso_v';
+            }
         
         //Solicitar vista
             $data['head_title'] = 'Datos de entrega';
             $data['view_a'] = 'pedidos/compra/compra_v';
-            $data['view_b'] = 'pedidos/compra/compra_a_v';
             $data['section_id'] = 'cart_items';
             $this->load->view(TPL_FRONT, $data);
     }
     
+    /**
+     * Resumen del pedido, productos y datos de entrega, para revisión antes de ir a plataforma de pagos
+     * 2020-04-16
+     */
     function compra_b()
     {
         $this->load->model('Producto_model');
@@ -616,12 +661,19 @@ class Pedidos extends CI_Controller{
         {
             //Construir registro y guardar
             $arr_row = $this->input->post();
+			unset($arr_row['fecha_nacimiento']);      //No cargar datos de registro de usuario
+            unset($arr_row['year']);      //No cargar datos de registro de usuario
+            unset($arr_row['month']);     //No cargar datos de registro de usuario
+            unset($arr_row['day']);       //No cargar datos de registro de usuario
+            unset($arr_row['sexo']);                //No cargar datos de registro de usuario
             $data['qty_affected'] =  $this->Pedido_model->act_pedido($pedido_id, $arr_row);
+
+            //Validar usuario comprador
+            $this->Pedido_model->set_user_data($pedido_id);
         }
 
         //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-        
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));   
     }
     
     /**
@@ -667,20 +719,31 @@ class Pedidos extends CI_Controller{
         $this->Pedido_model->act_totales($pedido_id);
         redirect("pedidos/compra_a/{$row->cod_pedido}");
     }
+
+    function set_user($user_id)
+    {
+        $data = $this->Pedido_model->set_user($user_id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
 //PAGOS ON LINE
 //---------------------------------------------------------------------------------------------------
     
     /**
-     * Para pruebas, Pagos on line
+     * Formulario para probar el resultado de ejecución de la página de confirmación
+     * ejecutada por PayU remotamente
      */
-    function test_pol()
+    function test($type, $order_id)
     {
-        //Solicitar vista
-            $data['head_title'] = 'Test Respuesta';
-            $data['head_subtitle'] = 'Test Respuesta';
-            $data['view_a'] = 'pedidos/respuesta_test_v';
-            $this->load->view(TPL_FRONT, $data);
+        $data = $this->Pedido_model->basico($order_id);
+
+        $data['head_title'] = 'Test compras';
+        $data['head_subtitle'] = $type;
+        //$data['nav_2'] = "pedidos/pedido_v";
+        $data['view_a'] = "pedidos/compra/test_{$type}_v";
+        $this->App_model->view(TPL_ADMIN, $data);
     }
     
     /**
@@ -727,34 +790,6 @@ class Pedidos extends CI_Controller{
             $this->load->view(TPL_FRONT, $data);
     }
     
-    /**
-     * Página respuesta para mostrar datos de PagosOnLine al usuario
-     */
-    function respuesta_test()
-    {
-        //$this->output->enable_profiler(TRUE);
-        //$this->Pedido_model->abandonar(); //Se abandona el pedido de las variables de sesión
-        
-        $arr_respuesta_pol = $this->Pedido_model->arr_respuesta_pol();
-        $row_pedido = $this->Pedido_model->row_cod_pedido($arr_respuesta_pol['ref_venta']);
-        
-        $this->load->model('Producto_model');
-        $pedido_id = $row_pedido->id;
-        
-        $data = $this->Pedido_model->basico($pedido_id);
-        $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
-        $data['extras'] = $this->Pedido_model->extras($pedido_id);
-        $data['row_ciudad'] = $this->Pcrn->registro_id('lugar', $data['row']->ciudad_id);
-        $data['arr_respuesta_pol'] = $arr_respuesta_pol;
-        $data['row_pedido'] = $row_pedido;
-        
-        //Solicitar vista
-            $data['head_title'] = 'Districatólicas';
-            $data['view_a'] = 'pedidos/compra/compra_v';
-            $data['view_b'] = 'pedidos/compra/respuesta_v';
-            $this->load->view(TPL_FRONT, $data);
-    }
-    
     function respuesta_print()
     {
         //$this->output->enable_profiler(TRUE);
@@ -789,6 +824,13 @@ class Pedidos extends CI_Controller{
         //$this->Pedido_model->marca_confirmacion_pol();
         $confirmacion_pol = $this->Pedido_model->confirmacion_pol();
         $this->output->set_content_type('application/json')->set_output($confirmacion_pol);
+    }
+
+    function assign_posts($pedido_id)
+    {
+        $data = $this->Pedido_model->assign_posts($pedido_id);
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     

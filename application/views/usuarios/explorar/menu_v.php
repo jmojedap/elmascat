@@ -31,6 +31,7 @@
         $elementos_rol[0] = array('explorar', 'nuevo', 'solicitudes_rol');
         $elementos_rol[1] = array('explorar', 'nuevo', 'solicitudes_rol');
         $elementos_rol[2] = array('explorar');
+        $elementos_rol[6] = array('explorar');
         
     //Definiendo menú mostrar
         $elementos = $elementos_rol[$this->session->userdata('rol_id')];

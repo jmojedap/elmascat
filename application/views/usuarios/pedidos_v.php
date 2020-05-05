@@ -1,23 +1,22 @@
 <?php
     //Clases columnas
-        $clases_col['cod'] = '';
-        $clases_col['estado'] = 'hidden-xs';
-        $clases_col['creado'] = 'hidden-xs hidden-sm';
-        $clases_col['creado_hace'] = 'hidden-xs';
-        $clases_col['valor'] = 'hidden-xs';
+        $cl_col['cod'] = '';
+        $cl_col['estado'] = 'hidden-xs';
+        $cl_col['creado'] = 'hidden-xs hidden-sm';
+        $cl_col['creado_hace'] = 'hidden-xs';
+        $cl_col['valor'] = 'hidden-xs';
 ?>
 
 
 <table class="table table-default bg-blanco" cellspacing="0">
     <thead>
         <tr>
-            <th width="100px;" class="">CÓD</th>
-            <th class="">Datos pedido</th>
-            <th class="<?= $clases_col['estado'] ?>">Estado</th>
-            <th class="<?= $clases_col['valor'] ?> info">Valor total</th>
-            <th class="<?= $clases_col['otros'] ?>">Datos</th>
-            <th class="<?= $clases_col['editado'] ?>">Actualizado</th>
-            <th class="<?= $clases_col['creado'] ?>">Creado</th>
+            <th width="200px;" class="<?php echo $cl_col['cod'] ?>">Ref. Venta</th>
+            <th class="<?= $cl_col['estado'] ?>">Estado</th>
+            <th class="<?= $cl_col['valor'] ?> info">Valor total</th>
+            <th class="<?= $cl_col['otros'] ?>">Datos</th>
+            <th class="<?= $cl_col['editado'] ?>">Actualizado</th>
+            <th class="<?= $cl_col['creado'] ?>">Creado</th>
         </tr>
     </thead>
     <tbody>
@@ -39,30 +38,32 @@
                 );
             ?>
             <tr>
-                <td class=""><span class="etiqueta primario w1"><?= $link_pedido ?></span></td>
-                <td class="">
-                    <?php if ( $row_resultado->estado_pedido == 1 ){ ?>
-                        <?= anchor("pedidos/retomar/{$row_resultado->cod_pedido}", 'Continuar', 'class="btn btn-success" title="Retomar el pedido"') ?>
-                        <br/>
+                <td class="<?php echo $cl_col['cod'] ?>">
+                    <?php if ( $this->session->userdata('role') < 10 ) { ?>
+                        <a href="<?php echo base_url("pedidos/ver/{$row_resultado->id}") ?>" class="">
+                            <?= $row_resultado->cod_pedido; ?>
+                        </a>
+                    <?php } else { ?>
+                        <?= $link_pedido ?>
                     <?php } ?>
                 </td>
 
-                <td class="<?= $clases_col['estado'] ?>">
+                <td class="<?= $cl_col['estado'] ?>">
                     <?= $estado_pedido ?>
                     <?php if ( $row_resultado->estado_pedido == 1 ){ ?>
-                        <?php //anchor("pedidos/retomar/{$row_resultado->cod_pedido}", 'Continuar', 'class="btn btn-success" title="Retomar el pedido"') ?>
+                        <?php anchor("pedidos/retomar/{$row_resultado->cod_pedido}", 'Continuar', 'class="btn btn-success" title="Retomar el pedido"') ?>
                     <?php } ?>
                 </td>
                 
-                <td class="<?= $clases_col['valor'] ?> info text-right">
+                <td class="<?= $cl_col['valor'] ?> info text-right">
                     <?= $this->Pcrn->moneda($row_resultado->valor_total); ?>
                 </td>
                 
-                <td class="<?= $clases_col['otros'] ?>">
+                <td class="<?= $cl_col['otros'] ?>">
                     <?php if ( strlen($row_resultado->factura) > 0 ) { ?>
                         <span class="suave">Factura:</span>
                         <?= $row_resultado->factura ?>
-                        <span class="suave"> | </span>
+                        <span class="suave"> &middot; </span>
                     <?php } ?>
                     <?php if ( strlen($row_resultado->no_guia) > 0 ) { ?>
                         <span class="suave">Guía:</span>
@@ -70,14 +71,14 @@
                     <?php } ?>
                 </td>
                 
-                <td class="<?= $clases_col['editado'] ?>">
+                <td class="<?= $cl_col['editado'] ?>">
                     <?= $this->Pcrn->fecha_formato($row_resultado->editado, 'Y-M-d') ?>
-                    |
+                    &middot;
                     <?= $editado_hace ?>
                 </td>
-                <td class="<?= $clases_col['creado'] ?>">
+                <td class="<?= $cl_col['creado'] ?>">
                     <?= $this->Pcrn->fecha_formato($row_resultado->creado, 'Y-M-d') ?>
-                    |
+                    &middot;
                     <?= $creado_hace ?>
                 </td>
                 

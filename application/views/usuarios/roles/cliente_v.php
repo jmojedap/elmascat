@@ -8,7 +8,7 @@
     
     //Atributos de los elementos del menú
         $arr_menus['explorar'] = array(
-            'icono' => '<i class="fa fa-list-alt"></i>',
+            'icono' => '<i class="fa fa-search"></i>',
             'texto' => '',
             'link' => "usuarios/explorar",
             'atributos' => 'title="Explorar usuarios"'
@@ -26,6 +26,13 @@
             'texto' => 'Pedidos',
             'link' => "usuarios/pedidos/{$row->id}",
             'atributos' => 'title="Pedidos del cliente"'
+        );
+
+        $arr_menus['books'] = array(
+            'icono' => '<i class="fa fa-book"></i>',
+            'texto' => 'Contenidos',
+            'link' => "usuarios/books/{$row->id}",
+            'atributos' => 'title="Contenidos asignados al usuario"'
         );
             
         $arr_menus['contrasena'] = array(
@@ -50,14 +57,14 @@
         );
         
     //Elementos de menú según el rol del visitante
-        $elementos_rol[0] = array('explorar', 'info', 'pedidos', 'editar');
-        $elementos_rol[1] = array('explorar', 'info', 'pedidos', 'editar');
-        $elementos_rol[2] = array('explorar', 'info', 'pedidos', 'editar');
-        $elementos_rol[6] = array('info', 'pedidos', 'direcciones');
+        $elementos_rol[0] = array('explorar', 'info', 'pedidos', 'books', 'editar');
+        $elementos_rol[1] = array('explorar', 'info', 'pedidos', 'books', 'editar');
+        $elementos_rol[2] = array('explorar', 'info', 'pedidos', 'books', 'editar');
+        $elementos_rol[6] = array('explorar', 'info', 'pedidos', 'books');
         $elementos_rol[7] = array('info', 'pedidos', 'direcciones');
-        $elementos_rol[21] = array('info', 'pedidos', 'editarme');
-        $elementos_rol[22] = array('info', 'pedidos', 'editarme');
-        $elementos_rol[23] = array('info', 'pedidos', 'editarme');
+        $elementos_rol[21] = array('info', 'editarme');
+        $elementos_rol[22] = array('info', 'editarme');
+        $elementos_rol[23] = array('info', 'editarme');
         
     //Definiendo menú mostrar, según el rol del visitante
         $elementos = $elementos_rol[$this->session->userdata('rol_id')];
@@ -75,5 +82,3 @@
     
     //Cargue vista
         $this->load->view('comunes/menu_v', $data_menu);
-        $this->load->view($vista_b);
-        

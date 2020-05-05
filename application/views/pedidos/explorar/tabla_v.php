@@ -12,44 +12,49 @@
         );
 
     //Clases columna
-        $clases_col['cliente'] = 'hidden-xs';
-        $clases_col['estado'] = 'hidden-xs';
-        $clases_col['valor_total'] = '';
-        $clases_col['respuesta_pol'] = 'hidden-xs hidden-sm';
-        $clases_col['otros'] = 'hidden-xs hidden-sm';
-        $clases_col['creado'] = 'hidden-xs hidden-sm';
-        $clases_col['editar'] = 'hidden-xs';
+        $cl_col['cliente'] = 'hidden-xs';
+        $cl_col['estado'] = 'hidden-xs';
+        $cl_col['valor_total'] = '';
+        $cl_col['respuesta_pol'] = 'hidden-xs hidden-sm';
+        $cl_col['peso'] = 'hidden-xs hidden-sm';
+        $cl_col['otros'] = 'hidden-xs hidden-sm';
+        $cl_col['creado'] = 'hidden-xs hidden-sm';
+        $cl_col['editar'] = 'hidden-xs';
         
         
         if ( $this->session->userdata('rol_id') >= 3 )
         {
-            $clases_col['selector'] = 'hidden';
-            $clases_col['botones'] = 'hidden';
+            $cl_col['selector'] = 'hidden';
+            $cl_col['botones'] = 'hidden';
         }
         
         if ( $this->session->userdata('rol_id') <= 2 )
         {
-            $clases_col['selector'] = '';
+            $cl_col['selector'] = '';
         }
         
     //Arrays con valores para contenido en lista
         $clases_estado = $this->Pedido_model->clases_estado();
         $arr_respuestas_pol = $this->Item_model->arr_item(10);
 
+    //Estado usuario
+    $arr_estados[1] = '<i class="fa fa-check-circle text-success" title="Activo"></i>';
+    $arr_estados[0] = '<i class="far fa-circle text-danger" title="Inactivo"></i>';
+
 ?>
 
 <table class="table table-default bg-blanco" cellspacing="0">
     <thead>
-        <th class="<?= $clases_col['selector'] ?>" width="10px;"><?= form_checkbox($att_check_todos) ?></th>
+        <th class="<?= $cl_col['selector'] ?>" width="10px;"><?= form_checkbox($att_check_todos) ?></th>
         <th width="45px;" class="warning">ID</th>
-        <th>Cód. Pedido</th>
-        <th class="<?= $clases_col['cliente'] ?>">Cliente</th>
-        <th class="<?= $clases_col['estado'] ?>">Estado</th>
-        <th class="<?= $clases_col['valor_total'] ?>">Valor</th>
-        <th class="<?= $clases_col['respuesta_pol'] ?>">Estado pago</th>
-        <th class="<?= $clases_col['otros'] ?>">Datos</th>
-        <th class="<?= $clases_col['editado'] ?>">Editado</th>
-        <th class="<?= $clases_col['creado'] ?>">Creado</th>
+        <th>Ref. Venta</th>
+        <th class="<?= $cl_col['cliente'] ?>">Cliente</th>
+        <th class="<?= $cl_col['estado'] ?>">Estado</th>
+        <th class="<?= $cl_col['valor_total'] ?>">Valor</th>
+        <th class="<?= $cl_col['respuesta_pol'] ?>">Estado pago</th>
+        <th class="<?= $cl_col['peso'] ?>">Peso (kg)</th>
+        <th class="<?= $cl_col['otros'] ?>">Datos</th>
+        <th class="<?= $cl_col['editado'] ?>">Editado</th>
     </thead>
     <tbody>
         <?php foreach ($resultados->result() as $row_resultado){ ?>
@@ -76,9 +81,21 @@
                         $clase_fila = 'danger';
                     }
 
+                    $cl_peso = '';
+                    if ( $row_resultado->peso_total > 0 ) { $cl_peso = 'warning'; }
+
                 //Respuesta pol
                     $indice = '0' . $row_resultado->codigo_respuesta_pol;
+                    
+                //Identificar cliente
                     $nombre_cliente = $row_resultado->nombre . ' ' . $row_resultado->apellidos;
+                    $row_usuario = $this->Db_model->row_id('usuario', $row_resultado->usuario_id);
+                    $estado_cliente = 'No Registrado';
+                    if ( ! is_null($row_usuario) )
+                    {
+                        $estado_cliente = $arr_estados[$row_usuario->estado];
+                        $cant_contenidos = $this->Db_model->num_rows('meta', "dato_id = 100012 AND elemento_id = {$row_usuario->id}");
+                    }
             ?>
             <tr class="<?= $clase_fila ?>">
                 <?php if ( $this->session->userdata('rol_id') <= 2  ) { ?>
@@ -88,24 +105,33 @@
                 <?php } ?>
                 <td class="warning"><span class="etiqueta primario w1"><?= $row_resultado->id ?></span></td>
                 <td><?= $link_pedido ?></td>
-                <td class="<?= $clases_col['cliente'] ?>">
+                <td class="<?= $cl_col['cliente'] ?>">
                         <?php if ( $row_resultado->usuario_id > 0 ) { ?>
-                            <?= anchor("usuarios/pedidos/{$row_resultado->usuario_id}", $nombre_cliente, 'title="Ver pedidos del cliente"') ?>
+                            <?= $estado_cliente ?>
+                            <?= anchor("usuarios/info/{$row_resultado->usuario_id}", $nombre_cliente, 'title="Ver pedidos del cliente"') ?>
+                            <a href="<?php echo base_url("usuarios/books/{$row_resultado->usuario_id}") ?>" class="btn btn-default btn-xs" target="_blank" title="Contenidos asignados">
+                                <?= $cant_contenidos ?>
+                            </a>
                         <?php } else { ?>
                             <?= $nombre_cliente ?>
                         <?php } ?>
                 </td>
-                <td class="<?= $clases_col['estado'] ?> <?= $clases_estado[$row_resultado->estado_pedido] ?>"><?= $this->App_model->nombre_item($row_resultado->estado_pedido, 1, 7) ?></td>
-                <td class="<?= $clases_col['valor_total'] ?> text-right">
+                <td class="<?= $cl_col['estado'] ?> <?= $clases_estado[$row_resultado->estado_pedido] ?>"><?= $this->App_model->nombre_item($row_resultado->estado_pedido, 1, 7) ?></td>
+                <td class="<?= $cl_col['valor_total'] ?> text-right">
                     <?= number_format($row_resultado->valor_total, 0, ',', '.'); ?>
                 </td>
-                <td class="<?= $clases_col['respuesta_pol'] ?>">
+                <td class="<?= $cl_col['respuesta_pol'] ?>">
                     <?php if ( $cant_reg_pol > 0 ){ ?>
                         <?= anchor("pedidos/pol/{$row_resultado->id}", '<i class="fa fa-credit-card"></i>', 'class="btn btn-warning btn-xs" title="Datos de transación en Pagos On Line"') ?>
                     <?php } ?>
                     <?= $arr_respuestas_pol[$indice] ?>
                 </td>
-                <td class="<?= $clases_col['otros'] ?>">
+                <td class="<?php echo $cl_col['peso'] ?> <?= $cl_peso ?>">
+                    <?php if ( $row_resultado->peso_total > 0 ) { ?>
+                        <?php echo $row_resultado->peso_total ?>
+                    <?php } ?>
+                </td>
+                <td class="<?= $cl_col['otros'] ?>">
                     <?php if ( strlen($row_resultado->factura) > 0 ) { ?>
                         <span class="suave">Factura:</span>
                         <?= $row_resultado->factura ?>
@@ -116,16 +142,11 @@
                         <?= $row_resultado->no_guia ?>
                     <?php } ?>
                 </td>
-                <td class="<?= $clases_col['editado'] ?>">
-                    <?= $this->Pcrn->fecha_formato($row_resultado->editado, 'M-d'); ?>
-                    <span class="suave">
-                        (<?= $this->Pcrn->tiempo_hace($row_resultado->editado); ?>)
-                    </span>
-                </td>
-                <td class="<?= $clases_col['creado'] ?>">
-                    <?= $this->Pcrn->fecha_formato($row_resultado->creado, 'M-d'); ?>
-                    <span class="suave">
-                        (<?= $this->Pcrn->tiempo_hace($row_resultado->creado); ?>)
+                <td class="<?= $cl_col['editado'] ?>">
+                    <?= $this->App_model->nombre_usuario($row_resultado->editado_usuario_id); ?>
+                    &middot;
+                    <span class="suave" title="<?= $row_resultado->editado ?>">
+                        <?= $this->pml->ago($row_resultado->editado, false); ?>
                     </span>
                 </td>
             </tr>

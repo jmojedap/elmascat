@@ -132,7 +132,7 @@ class Accounts extends CI_Controller {
                 if ( $data['saved_id'] > 0 ) { $data['status'] = 1; }
             
             //Enviar email con código de activación
-                //$this->Usuario_model->email_activacion($data['saved_id']);
+                $this->Usuario_model->email_activacion($data['saved_id']);
         } else {
             $data['validation'] = $res_validation['validation'];
         }
@@ -450,5 +450,54 @@ class Accounts extends CI_Controller {
     function fb_login()
     {
         $this->load->view('accounts/fb_login_v');
+    }
+
+// CHECKEO DE USUARIOS PARA REGISTRO
+//-----------------------------------------------------------------------------
+
+    /**
+     * Registro rápido de usuarios que están realizando una compra
+     * 2020-04-30
+     */
+    function fast_register()
+    {
+        $data = array('status' => 0);  //Initial result values
+        $res_validation = $this->Account_model->validate();
+        $recaptcha = $this->App_model->recaptcha();
+            
+        if ( $res_validation['status'] && $recaptcha->score > 0.5 )
+        {
+            //Construir registro del nuevo user
+                $arr_row['email'] = $this->input->post('email');
+                $arr_row['password'] = $this->Account_model->crypt_pw($this->input->post('password'));
+                $arr_row['username'] = $arr_row['email'];
+                $arr_row['estado'] = 1;
+
+            //Crear
+                $this->load->model('Usuario_model');
+                $data['saved_id'] = $this->Usuario_model->crear_usuario($arr_row);
+
+                if ( $data['saved_id'] > 0 ) { $data['status'] = 1; }
+        } else {
+            $data['validation'] = $res_validation['validation'];
+        }
+
+        //Si hay un pedido en curso asignar el usuario creado
+        if ( ! is_null($this->session->userdata('pedido_id'))  )
+        {
+            $this->load->model('Pedido_model');
+            $this->Pedido_model->set_user($data['saved_id']);
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    function check_email()
+    {
+        $data = $this->Account_model->check_email();
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 }
