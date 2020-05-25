@@ -25,36 +25,55 @@ class Login_model extends CI_Model{
             if ( $user_status['status'] == 1 ) { $conditions++; }   //Usuario activo
             
         //Se valida el login si se cumplen las condiciones
-        if ( $conditions == 2 ) 
-        {
-            $data['status'] = 1;
-        }
+            if ( $conditions == 2 )  { $data['status'] = 1; }
             
         return $data;
     }
     
-    //Verificar si tiene cookie para ser recordado en el equipo
+    /**
+     * Verificar si tiene cookie para ser recordado en el equipo
+     * e iniciar sesión automáticamente
+     * 2020-05-05
+     */
     function login_cookie()
     {
         $this->load->helper('cookie');
-        get_cookie('dcsesionrc');
-        $recordarme = $this->input->cookie('dcsesionrc');
+        $activation_key = get_cookie('rm');
 
-        $condicion = "cod_activacion = '{$recordarme}'";
-        $row_usuario = $this->Pcrn->registro('usuario', $condicion);
+        $condition = "cod_activacion = '{$activation_key}'";
+        $row_user = $this->Db_model->row('usuario', $condition);
 
-        if ( ! is_null($row_usuario) && strlen($recordarme) > 0)
+        if ( ! is_null($row_user) && strlen($activation_key) > 0)
         {
-            $this->crear_sesion($row_usuario->username, TRUE);
-        }    
+            $this->crear_sesion($row_user->username, TRUE);
+        }
+
+        return $activation_key;
+    }
+
+    /**
+     * Crear cookie para recordar usuario en el equipo
+     * rm: rememberme
+     * 2020-05-05
+     */
+    function rememberme()
+    {
+        $this->load->helper('string');
+        $arr_row['cod_activacion'] = 'rm' . strtolower(random_string('alpha', 30));
+        
+        //Crear cookie por 7 días
+            $this->load->helper('cookie');
+            set_cookie('rm', $arr_row['cod_activacion'], 7*24*60*60);
+        
+        //Actualizar en la base de datos
+            $this->db->where('id', $this->session->userdata('user_id'));
+            $this->db->update('usuario', $arr_row);
     }
     
     /**
      * Array con: valor del campo usuario.estado, y un mensaje explicando 
      * el estado
      * 
-     * @param type $username
-     * @return string
      */
     function user_status($username)
     {
@@ -124,9 +143,6 @@ class Login_model extends CI_Model{
         
         //Actualizar usuario.ultimo_login
             $this->act_ultimo_login($username);
-        
-        //Si el usuario solicitó ser recordardo en el equipo
-            if ( $this->input->post('recordarme') ) { $this->recordarme(); }
     }
     
     /**
@@ -169,24 +185,6 @@ class Login_model extends CI_Model{
             
         //Destruir sesión existente
             $this->session->sess_destroy();
-    }
-    
-    /**
-     * Se ejecuta la función si el usuario activó la casilla "Recordarme" en
-     * el formulario de login.
-     */
-    function recordarme()
-    {
-        $this->load->helper('string');
-        $registro['cod_activacion'] = random_string('alnum', 32);
-        
-        //Crear cookie por 7 días
-            $this->load->helper('cookie');
-            set_cookie('dcsesionrc', $registro['cod_activacion'], 7*24*60*60);
-        
-        //Actualizar en la base de datos
-            $this->db->where('id', $this->session->userdata('usuario_id'));
-            $this->db->update('usuario', $registro);
     }
     
     function session_data($username)

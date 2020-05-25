@@ -312,7 +312,7 @@ class Posts extends CI_Controller{
      * 
      * @param type $post_id
      */
-    function lista($post_id)
+    function list_elements($post_id)
     {
         //$this->output->enable_profiler(TRUE);
             $this->load->model('Esp');
@@ -330,10 +330,10 @@ class Posts extends CI_Controller{
             $data['elementos_lista'] = $elementos_lista;
             
         //Array data espefícicas
-            //$data['view_a'] = 'posts/listas/lista_v';
-            $data['view_a'] = 'posts/listas/elementos_v';
+            $data['nav_2'] = 'posts/types/list/menu_v';
+            $data['view_a'] = 'posts/types/list/list_elements_v';
         
-        $this->load->view(TPL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN, $data);
     }
     
     function reordenar_lista($post_id)
@@ -347,7 +347,5 @@ class Posts extends CI_Controller{
         
         $this->output->set_content_type('application/json')->set_output(json_encode($cant_elementos));
     }
-
-
 
 }

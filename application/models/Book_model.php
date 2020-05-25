@@ -8,9 +8,15 @@ class Book_model extends CI_Model{
      */
     function book_info($book_code)
     {
-        $row = $this->Db_model->row('post', "code = '{$book_code}'");
+        /*$row = $this->Db_model->row('post', "code = '{$book_code}'");
         $book['head_title'] = $row->nombre_post;
         $book['book_id'] = $row->id;
+        $book['book_code'] = $row->code;*/
+        
+        $book['head_title'] = 'Revista Minutos de Amor - Mayo de 2020';
+        $book['book_id'] = 311;
+        $book['book_code'] = $book_code;
+
 
         return $book;
     }

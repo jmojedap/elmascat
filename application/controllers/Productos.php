@@ -18,6 +18,7 @@ class Productos extends CI_Controller{
     function index()
     {
         $this->catalogo();
+        //$this->inicio();
     }
     
     /**
@@ -272,12 +273,24 @@ class Productos extends CI_Controller{
         $busqueda_str = $this->Busqueda_model->busqueda_str();
         redirect("productos/catalogo/?{$busqueda_str}");
     }
+
+    /**
+     * Inicio a catálogo, archivo caché
+     * 2020-05-08
+     */
+    function inicio()
+    {
+        $data['head_title'] = 'DistriCatólicas';
+        $data['view_a'] = 'cache/productos_catalogo';
+        $this->load->view(TPL_FRONT, $data);
+    }
     
     /**
      * Catálogo de productos, responde a búsquedas y filtros
      */
     function catalogo()
     {
+        
         //Cargue inicial
             $this->load->helper('text');
             $this->load->model('Archivo_model');
@@ -295,7 +308,7 @@ class Productos extends CI_Controller{
         //Paginación
             $this->load->library('pagination');
             $config = $this->App_model->config_paginacion(3);
-            $config['per_page'] = 12;
+            $config['per_page'] = 9;
             $config['base_url'] = base_url("productos/catalogo/?{$busqueda_str}");
             $config['total_rows'] = $resultados_total->num_rows();
             $this->pagination->initialize($config);
@@ -315,6 +328,7 @@ class Productos extends CI_Controller{
         
         //Solicitar vista
             $data['view_a'] = 'productos/catalogo/catalogo_v';
+            //$data['view_a'] = 'cache/productos_catalogo';
             $this->load->view(TPL_FRONT, $data);
     }
     

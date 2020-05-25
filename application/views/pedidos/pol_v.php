@@ -9,7 +9,7 @@
     );
     
     $clase_alert = 'alert alert-info';
-    $texto_mensaje = 'No se ha registrado confirmación de PagosOnLine';
+    $texto_mensaje = 'No se ha registrado confirmación de PayU';
     
     if ( count($arr_respuesta_pol) > 0 )
     {
@@ -51,7 +51,7 @@
     <div class="col col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Resumen Respuesta POL
+                Resumen Respuesta PayU
             </div>
             <div class="panel-body">
                 <?php if ( count($arr_respuesta_pol) > 0 ) { ?>
@@ -124,7 +124,7 @@
     <div class="col col-sm-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Detalle Respuesta POL
+                Detalle Respuesta PayU
             </div>
             <div class="panel-body">
                 

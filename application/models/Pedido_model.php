@@ -23,7 +23,7 @@ class Pedido_Model extends CI_Model{
         //Crear array con términos de búsqueda
             if ( strlen($busqueda['q']) > 2 ){
                 
-                $campos_pedidos = array('nombre', 'apellidos', 'cod_pedido', 'factura', 'no_guia');
+                $campos_pedidos = array('nombre', 'apellidos', 'cod_pedido', 'factura', 'no_guia', 'email');
                 
                 $concat_campos = $this->Busqueda_model->concat_campos($campos_pedidos);
                 $palabras = $this->Busqueda_model->palabras($busqueda['q']);
@@ -38,7 +38,8 @@ class Pedido_Model extends CI_Model{
             $this->db->order_by('id', 'DESC');
             
         //Otros filtros
-            if ( $busqueda['est'] != '' ) { $this->db->where('estado_pedido', $busqueda['est']); }    //Editado
+            if ( $busqueda['est'] != '' ) { $this->db->where('estado_pedido', $busqueda['est']); }    //Estado
+            if ( $busqueda['fi'] != '' ) { $this->db->where('creado >=', $busqueda['fi']); }    //Fecha de creación
             if ( $busqueda['fe1'] != '' )
             {
                 if ( $busqueda['fe1'] == '01' ) { $this->db->where('peso_total > 0');}

@@ -5,8 +5,7 @@
     }
 </style>
 
-<div id="login_app" class="text-center box_1">
-
+<div id="login_app" class="text-center">
     <?php if ( $this->uri->segment(3) == 'suscriptor' ) { ?>
         <div class="alert alert-success">
             <i class="fa fa-info-circle fa-2x text-center"></i>
@@ -15,9 +14,7 @@
         </div>
     <?php } else {?>
         <p>
-            Escribe tu correo electrónico
-            <br/>
-            y tu contraseña para ingresar.
+            Escribe tu correo electrónico y contraseña
         </p>
     <?php } ?>
 
@@ -25,19 +22,22 @@
         <div class="form-group">
             <label class="sr-only" for="inputEmail">Email</label>
             <input
-                class="form-control"
+                class="form-control input-lg"
                 name="username"
-                placeholder="Username o correo electrónico"
+                placeholder="Correo electrónico"
                 required
                 title="Username o dirección de correo electrónico">
         </div>
         <div class="form-group">
             <label class="sr-only" for="inputPassword">Contraseña</label>
-            <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Contraseña" required>
+            <input type="password" class="form-control input-lg" id="inputPassword" name="password" placeholder="Contraseña" required>
+        </div>
+        <div class="form-group">
+            <label><input type="checkbox" name="rememberme" value="1" checked> Mantener sesión iniciada</label>
         </div>
         
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+            <button type="submit" class="btn btn-polo-lg btn-block">Ingresar</button>
         </div>
         
         <div class="form-group clearfix">

@@ -58,8 +58,8 @@
         );
             
         $arr_menus['pol'] = array(
-            'icono' => '<i class="fa fa-credit-card"></i>',
-            'texto' => 'PagosOnLine',
+            'icono' => '',
+            'texto' => 'PayU',
             'link' => "pedidos/pol/{$row->id}",
             'atributos' => 'title="Datos de Pagos On Line sobre el pedido"'
         );

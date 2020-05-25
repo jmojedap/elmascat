@@ -20,3 +20,18 @@
 .w120p { width: 120px; }
 
 .mw750p { max-width: 750px; }
+
+/* DISPLAY PANTALLAS GRANES Y PEQUEÑAS */
+/* 2020-05-23 */
+
+@media (min-width: 731px) {
+    .only-sm {
+        display: none;
+    }
+}
+
+@media (max-width: 730px) {
+    .only-lg {
+        display: none;
+    }
+}

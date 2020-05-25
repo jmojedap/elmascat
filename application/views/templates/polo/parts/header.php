@@ -7,9 +7,6 @@
         $att_form = array(
             'id' => 'search_mini_form'
         );
-        
-    //Opciones categorías
-        $opciones_categorias = $this->Item_model->opciones_id('categoria_id = 21', 'Categorías');
 ?>
 
 <header class="header-container">

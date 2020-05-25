@@ -12,6 +12,12 @@ class Post_model extends CI_Model{
         $data['view_a'] = 'posts/post_v';
         $data['nav_2'] = 'posts/menu_v';
 
+        //Listas
+        if ( $data['row']->tipo_id == 22  )
+        {
+            $data['nav_2'] = 'posts/types/list/menu_v';
+        }
+
         return $data;
     }
 

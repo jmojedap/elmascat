@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | environments.
 |
 */
-$config['base_url'] = 'https://www.districatolicas.com/tienda/';
+$config['base_url'] = 'http://www.districatolicas.com/tienda/';
 
 /*
 |--------------------------------------------------------------------------
@@ -305,7 +305,7 @@ $config['cache_query_string'] = FALSE;
 | http://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-$config['encryption_key'] = '9qi7hKgXq3YJ2eew8fzeVm42Ah3L33Ab';
+$config['encryption_key'] = '9qi7h3YJ2eew8fzKgXqeVm42Ah3L33Ab';
 
 /*
 |--------------------------------------------------------------------------
@@ -378,7 +378,7 @@ $config['sess_regenerate_destroy'] = FALSE;
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['cookie_prefix']	= '';
+$config['cookie_prefix']	= 'discat_';
 $config['cookie_domain']	= '';
 $config['cookie_path']		= '/';
 $config['cookie_secure']	= FALSE;

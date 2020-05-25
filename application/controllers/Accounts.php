@@ -32,11 +32,13 @@ class Accounts extends CI_Controller {
     /**
      * Form login de users se ingresa con nombre de user y 
      * contraseña. Los datos se envían vía ajax a accounts/validate_login
+     * 2020-05-05
      */
     function login()
     {
-        //Verificar si es recordado en el equipo
-            //$this->Account_model->login_cookie();
+        //Verificar si es recordado en el equipo (rm: rememberme)
+            $this->load->model('Login_model');
+            $data['rm'] = $this->Login_model->login_cookie();
         
         //Verificar si está logueado
             if ( $this->session->userdata('logged') )

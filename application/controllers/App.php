@@ -50,6 +50,8 @@ class App extends CI_Controller{
             if ( $validate_login['status'] )
             {
                 $this->Login_model->crear_sesion($username, TRUE);
+
+                if ( $this->input->post('rememberme') ) { $this->Login_model->rememberme(); }
             }
 
         //Salida JSON
@@ -63,8 +65,8 @@ class App extends CI_Controller{
     function logged()
     {
         $arr_destinos = array(
-            0 => 'pedidos/explorar/',
-            1 => 'pedidos/explorar',
+            0 => 'pedidos/resumen_dia/',
+            1 => 'pedidos/resumen_dia/',
             2 => 'pedidos/explorar',
             6 => 'productos/explorar',
             7 => 'productos/explorar',
@@ -101,6 +103,12 @@ class App extends CI_Controller{
         
         //Destruir sesión existente y redirigir al login, inicio.
             $this->session->sess_destroy();
+
+        //Eliminar cookie rememberme
+            $this->load->helper('cookie');
+            delete_cookie('rm');
+
+        //Redirigir a login inicio
             redirect('accounts/login');
     }
     
@@ -117,6 +125,20 @@ class App extends CI_Controller{
         $data['head_title'] = "Acceso no permitido";
         
         $this->load->view(TPL_FRONT, $data);
+    }
+
+    /**
+     * Dirección a la que se redirige un usuario cuando intenta ingresar
+     * a una función no permitida o denegada para su rol.
+     */
+    function mantenimiento()
+    {
+        /*//$this->output->enable_profiler(TRUE);
+        
+        $data['view_a'] = 'app/mantenimiento_v';
+        $data['head_title'] = "Districatólicas";
+        
+        $this->load->view('app/mantenimiento_v');*/
     }
     
 // BÚSQUEDAS Y REDIRECCIONAMIENTO
@@ -348,8 +370,16 @@ class App extends CI_Controller{
     {
         $data['head_title'] = 'Prueba librería';
         $data['view_a'] = 'app/prueba_v';
-        $this->load->view($data['view_a'], $data);
+        //$this->load->view($data['view_a'], $data);
         //$this->load->view(TPL_ADMIN, $data);
+    }
+
+    function carousel()
+    {
+        $data['head_title'] = 'Carousel Slick';
+        $data['view_a'] = 'app/testing/carousel_slick_v';
+        //$this->load->view($data['view_a'], $data);
+        $this->load->view(TPL_ADMIN, $data);
     }
 
     function update_address()

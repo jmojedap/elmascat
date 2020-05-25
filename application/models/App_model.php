@@ -254,6 +254,8 @@ class App_model extends CI_Model{
                 $nombre_usuario = "{$row->nombre} {$row->apellidos}";
             } elseif ( $formato == 3 ){
                 $nombre_usuario = "{$row->apellidos} {$row->nombre}";
+            } elseif ( $formato == 'na' ){
+                $nombre_usuario = "{$row->nombre} {$row->apellidos}"; 
             }
         } else {
             //Si el varlor de $usuario_id está vacío

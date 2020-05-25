@@ -34,15 +34,12 @@ class Account_model extends CI_Model{
         }
             
         return $data;
-    }
-    
+    }    
 
     //Check if the user has cookie to be remembered in his browser
-    /*function login_cookie()
+    function login_cookie()
     {
-        $this->load->helper('cookie');
-        get_cookie('leli_sesion');
-        $rememberme = $this->input->cookie('lelisesionrc');
+        $rememberme = $this->input->cookie('discatak');
 
         $condition = "activation_key = '{$rememberme}'";
         $row_user = $this->Db_model->row('usuario', $condition);
@@ -51,7 +48,27 @@ class Account_model extends CI_Model{
         {
             $this->create_sesion($row_user->username, TRUE);
         }    
-    }*/
+    }
+
+    /**
+     * Crear cookie para recordar usuario en el equipo
+     * discatak: districatolicas activation key
+     */
+    function rememberme($username)
+    {
+        $row_user = $this->Db_model->row('usuario', "username = '{$username}' OR email='{$username}' OR no_documento='{$username}'");
+
+        $data = array('status' => 0, 'dcak' => '');
+
+        if ( is_null($row_user) )
+        {
+            $this->load->helper('cookie');
+            set_cookie('discatak', $row_user->cod_activacion);
+            $data = array('status' => 1, 'dcak' => $row_user->cod_activacion);
+        }
+
+        return $row_user->cod_activacion;
+    }
 
     /**
      * Guardar evento final de sesión, eliminar cookie y destruir sesión
@@ -75,8 +92,8 @@ class Account_model extends CI_Model{
         }
     
     //Eliminar cookie
-        /*$this->load->helper('cookie');
-        delete_cookie('lelisesionrc');*/
+        $this->load->helper('cookie');
+        delete_cookie('districatolicas_session');
         
     //Destruir sesión existente
         $this->session->sess_destroy();
@@ -101,7 +118,7 @@ class Account_model extends CI_Model{
             $this->update_last_login($username);
         
         //Si el user solicitó ser recordardo en el equipo
-            //if ( $this->input->post('rememberme') ) { $this->rememberme(); }
+            if ( $this->input->post('rememberme') ) { $this->rememberme($username); }
     }
     
     /**

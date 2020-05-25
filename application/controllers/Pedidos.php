@@ -253,6 +253,7 @@ class Pedidos extends CI_Controller{
         $data['options_extra'] = $this->Item_model->opciones('categoria_id = 6', 'Extra Tipo');
         $data['arr_extra_types'] = $this->Item_model->arr_item(6, 'id_interno_num');
         $data['editable'] = ( $data['row']->estado_pedido == 1) ? 1 : 0 ; //Se pueden editar extras sí estado iniciado (1)
+        if ( $this->session->userdata('role') <= 1 ) { $data['editable'] = 1; }
 
         $data['subtitulo_pagina'] = 'Extras';
         $data['vista_a'] = 'pedidos/pedido_v';
@@ -739,7 +740,7 @@ class Pedidos extends CI_Controller{
     {
         $data = $this->Pedido_model->basico($order_id);
 
-        $data['head_title'] = 'Test compras';
+        $data['head_title'] = 'Test compras: ' . $order_id;
         $data['head_subtitle'] = $type;
         //$data['nav_2'] = "pedidos/pedido_v";
         $data['view_a'] = "pedidos/compra/test_{$type}_v";

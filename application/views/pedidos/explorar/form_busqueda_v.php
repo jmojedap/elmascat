@@ -23,7 +23,7 @@
         );
         
     //Clases filtros
-        $arr_filtros = array('est', 'fe1');
+        $arr_filtros = array('est', 'fe1', 'fi');
         foreach ( $arr_filtros as $filtro )
         {
             $clases_filtros[$filtro] = 'sin_filtrar';
@@ -62,7 +62,19 @@
                 <?= form_dropdown('fe1', $opciones_peso, $busqueda['fe1'], 'class="form-control" title="Filtrar por peso"'); ?>
             </div>
         </div>
-
+        <div class="form-group <?= $clases_filtros['fi'] ?>">
+            <label for="fi" class="col-sm-3 control-label">Creado desde</label>
+            <div class="col-sm-6">
+                <input
+                    type="date"
+                    id="field-fi"
+                    name="fi"
+                    value="<?= $busqueda['fi'] ?>"
+                    class="form-control"
+                    title="Creados desde"
+                    >
+            </div>
+        </div>
     </div>
 
 <?= form_close() ?>

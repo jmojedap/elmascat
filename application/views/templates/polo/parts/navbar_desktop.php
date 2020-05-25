@@ -18,6 +18,11 @@
         background-color: #f44336;
         color: #FFF;
     }
+
+    #nav .link_yellow{
+        background-color: #fdd922;
+        color: #333;
+    }
 </style>
 
 <ul id="nav" class="hidden-xs">
@@ -35,18 +40,6 @@
         </a>
     </li>
     
-    <li class="level0 parent drop-menu" title="Instructivo de pagos en línea PSE para distribuidores y mayoristas">
-        <a href="<?php echo base_url("posts/leer/28/pagos-pse/") ?>" class="<?php echo $clases_menu['pagos_pse'] ?>">
-            <span>Pagos PSE</span>
-        </a>
-    </li>
-
-    <li class="level0 parent drop-menu">
-        <a href="<?php echo base_url("posts/leer/15/sobre-nosotros/") ?>" class="<?php echo $clases_menu['sobre_nosotros'] ?>">
-            sobre nosotros
-        </a>
-    </li>
-    
     <li class="level0 parent drop-menu hidden" title="¿Quieres ser distribuidor de Districatólicas?">
         <a href="<?php echo base_url("pedidos/soy_distribuidor") ?>" class="<?php echo $clases_menu['soy_distribuidor'] ?>">
             soy distribuidor
@@ -54,9 +47,7 @@
     </li>
 
     <li class="level0 parent drop-menu">
-        <a href="<?php echo base_url("pedidos/estado") ?>" class="<?php echo $clases_menu['pedidos_estado'] ?>">
-            estado compra
-        </a>
+        <a href="<?php echo base_url("productos/catalogo/?tag=627") ?>" class="<?php echo $clases_menu['pedidos_estado'] ?> link_yellow">ideas para regalo</a>
     </li>
 
     <li class="level0 parent drop-menu" title="¿Quieres ser distribuidor de Districatólicas?">
@@ -68,6 +59,16 @@
         <a href="<?php echo base_url("posts/leer/331/como-comprar-minutos-de-amor-en-linea") ?>" title="Paso a paso para comprar en DistriCatolicas.com">
             <span>¿Cómo comprar?</span>
         </a>
+    </li>
+
+    <li class="level0 parent drop-menu">
+        <a href="#"><span>Información</span> 
+        </a>
+        <ul class="level1">
+            <li class="level1 parent"><a title="Instructivo de pagos en línea PSE para distribuidores y mayoristas" href="<?php echo base_url("posts/leer/28/pagos-pse/") ?>"><span>Pagos PSE</span></a></li>
+            <li class="level1 parent"><a title="Sobre DistriCatólicas" href="<?php echo base_url("posts/leer/15/sobre-nosotros/") ?>"><span>Sobre nosotros</span></a></li>
+            <li class="level1 parent"><a title="Estado de mi compra" href="<?php echo base_url("pedidos/estado") ?>"><span>Estado compra</span></a></li>
+        </ul>
     </li>
 
     <?php if ( $this->session->userdata('logged') ){ ?>

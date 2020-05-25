@@ -20,6 +20,14 @@ class Pcc {
             } else {
                 redirect("app/no_permitido/{$cf}");
             }
+
+            /*if ( $cf == 'app/mantenimiento' )
+            {
+                $this->CI->load->view('app/mantenimiento_v');
+            } else {
+                //redirect("app/no_permitido/{$cf}");
+                redirect('app/mantenimiento');
+            }*/
     }
     
     /**
@@ -70,6 +78,7 @@ class Pcc {
         $funciones_publicas[] = 'app/login';
         $funciones_publicas[] = 'app/polo';
         $funciones_publicas[] = 'app/buscar';
+        $funciones_publicas[] = 'app/mantenimiento';
         
         $funciones_publicas[] = 'app/registro';
         $funciones_publicas[] = 'app/registrar';
@@ -86,6 +95,7 @@ class Pcc {
         $funciones_publicas[] = 'productos/detalle';
         $funciones_publicas[] = 'productos/visitar';
         $funciones_publicas[] = 'productos/catalogo';
+        $funciones_publicas[] = 'productos/inicio';
         $funciones_publicas[] = 'productos/catalogo_redirect';
 
         $funciones_publicas[] = 'catalogo/productos';

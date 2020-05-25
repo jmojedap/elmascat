@@ -57,7 +57,7 @@
         <tbody>
             <tr v-for="(book, key) in books">
                 <td>
-                    <a v-bind:href="`<?php echo base_url("books/read/") ?>` + `/` + book.code + `/` + book.meta_id + `/` + book.slug" v-show="book.estado == 1">
+                    <a v-bind:href="`<?php echo base_url("books/read/") ?>` + `/` + book.code + `/` + book.meta_id + `/` + book.slug + `/` + book.format" v-show="book.estado == 1">
                         <img
                             v-bind:src="book.img_src"
                             class="cover_book"

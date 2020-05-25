@@ -1,3 +1,17 @@
+<?php
+    //$reload_url = base_url("books/read/{$book_code}/{$meta_id}/{$slug}/vl");
+    $reload_url = base_url("books/read/{$book_code}/{$meta_id}/{$slug}");
+?>
+
+<script>
+    function reload_book()
+    {
+        setTimeout(function () {
+            window.location = '<?php echo $reload_url; ?>';
+        }, 5000);
+    }
+</script>
+
 <div id="app_book" class="container">
     <!-- BARRA DE HERRAMIENTAS-->
     <div class="mb-2 text-center section">
@@ -71,6 +85,7 @@
     </div>
 
     <div class="section" v-show="mode == 'page'">
-        <img class="page" v-bind:src="page.src" alt="Página libro">        
+        <!-- <img class="page" v-bind:src="page.src" alt="Página libro" onerror="this.src='<?php echo URL_IMG ?>books/no_cargada.png'">         -->
+        <img class="page" v-bind:src="page.src" alt="Página libro" onerror="reload_book();">
     </div>
 </div>

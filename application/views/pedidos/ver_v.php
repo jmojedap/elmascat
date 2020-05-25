@@ -113,12 +113,23 @@
             <table class="table table-condensed">
                 <tbody>
                     <tr>
-                        <td>Código pedido</td>
+                        <td>Ref. venta</td>
                         <td><?= $row->cod_pedido ?></td>
                     </tr>
                     
                     <tr>
-                        <td>Cliente</td>
+                        <td>Usuario</td>
+                        <td>
+                            <?php if ( $row->usuario_id > 0 ) { ?>
+                                <a href="<?php echo base_url("usuarios/info/{$row->usuario_id}") ?>" class="">
+                                    <?= $this->App_model->nombre_usuario($row->usuario_id, 'na') ?>
+                                </a>
+                            <?php } ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>A nombre de</td>
                         <td><?= $row->nombre . ' ' . $row->apellidos ?></td>
                     </tr>
                     
@@ -139,7 +150,7 @@
                         <td>Creado</td>
                         <td title="<?= $row->creado ?>"> 
                             <?= $this->Pcrn->fecha_formato($row->creado, 'M-d h:i') ?>
-                            | <?= $this->Pcrn->tiempo_hace($row->creado) ?>
+                            &middot; <?= $this->Pcrn->tiempo_hace($row->creado) ?>
                         </td>
                     </tr>
                     
@@ -187,7 +198,7 @@
                         <td>
                             <?= $row->celular ?>
                             <?php if ( strlen($row->telefono) ) { ?>
-                                |
+                                &middot;
                                 <?= $row->telefono ?>
                             <?php } ?>
                         </td>
@@ -232,7 +243,7 @@
                     <tr>
                         <td>Editado</td>
                         <td>
-                            <?= $this->Pcrn->fecha_formato($row->editado, 'M-d h:i') ?> |
+                            <?= $this->Pcrn->fecha_formato($row->editado, 'M-d h:i') ?> &middot;
                             Hace <?= $this->Pcrn->tiempo_hace($row->editado) ?>
                         </td>
                     </tr>
@@ -265,12 +276,10 @@
     </div>
 </div>
 
-<div class="box box-info">
-    <div class="box-header">
-        <h3 class="box-title">Productos</h3>
-    </div>
-    <!-- /.box-header -->
-    <div class="box-body no-padding">
+<div class="panel panel-success">
+    <div class="panel-heading">Productos</div>
+    <!-- /.panel-header -->
+    <div class="panel-body no-padding">
         <table class="table table-default bg-blanco">
             <thead class="text-c">
                 <th width="45px;" class="warning">ID</th>
@@ -311,7 +320,7 @@
                         //Descuento
                             $descuento = $row_detalle->cantidad * ($row_detalle->precio_nominal - $row_detalle->precio);
 
-                        //Checkbox
+                        //Checkpanel
                             $att_check = array(
                                 'class' =>  'check_registro',
                                 'data-id' => $row_detalle->id,
@@ -342,15 +351,13 @@
             </tbody>
         </table>
     </div>
-    <!-- /.box-body -->
+    <!-- /.panel-body -->
 </div>
 
-<div class="box">
-    <div class="box-header">
-        <h3 class="box-title">Otros</h3>
-    </div>
-    <!-- /.box-header -->
-    <div class="box-body no-padding">
+<div class="panel panel-default">
+    <div class="panel-heading">Extras</div>
+    <!-- /.panel-header -->
+    <div class="panel-body no-padding">
         <table class="table table-bordered">
             <thead>
                 <th>Concepto</th>
@@ -381,5 +388,5 @@
             </tbody>
         </table>
     </div>
-    <!-- /.box-body -->
+    <!-- /.panel-body -->
 </div>

@@ -106,15 +106,17 @@
                 <td class="warning"><span class="etiqueta primario w1"><?= $row_resultado->id ?></span></td>
                 <td><?= $link_pedido ?></td>
                 <td class="<?= $cl_col['cliente'] ?>">
-                        <?php if ( $row_resultado->usuario_id > 0 ) { ?>
-                            <?= $estado_cliente ?>
-                            <?= anchor("usuarios/info/{$row_resultado->usuario_id}", $nombre_cliente, 'title="Ver pedidos del cliente"') ?>
-                            <a href="<?php echo base_url("usuarios/books/{$row_resultado->usuario_id}") ?>" class="btn btn-default btn-xs" target="_blank" title="Contenidos asignados">
-                                <?= $cant_contenidos ?>
-                            </a>
-                        <?php } else { ?>
-                            <?= $nombre_cliente ?>
-                        <?php } ?>
+                    <?php if ( $row_resultado->usuario_id > 0 ) { ?>
+                        <?= $estado_cliente ?>
+                        <?= anchor("usuarios/info/{$row_resultado->usuario_id}", $nombre_cliente, 'title="Ver pedidos del cliente"') ?>
+                        <a href="<?php echo base_url("usuarios/books/{$row_resultado->usuario_id}") ?>" class="btn btn-default btn-xs" target="_blank" title="Contenidos asignados">
+                            <?= $cant_contenidos ?>
+                        </a>
+                    <?php } else { ?>
+                        <?= $nombre_cliente ?>
+                    <?php } ?>
+                    <br>
+                    <?= $row_resultado->email ?>
                 </td>
                 <td class="<?= $cl_col['estado'] ?> <?= $clases_estado[$row_resultado->estado_pedido] ?>"><?= $this->App_model->nombre_item($row_resultado->estado_pedido, 1, 7) ?></td>
                 <td class="<?= $cl_col['valor_total'] ?> text-right">

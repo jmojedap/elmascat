@@ -20,6 +20,7 @@ class Books extends CI_Controller{
 
     function read($book_code, $meta_id = 0, $slug = '', $format = 'mix')
     {
+        //$this->output->enable_profiler(TRUE);
         $data = $this->Book_model->book_info($book_code);
 
         $this->load->helper('file');
@@ -31,9 +32,12 @@ class Books extends CI_Controller{
         $data['pages'] = $pages;
         $data['url_folder'] = URL_CONTENT . "books/{$book_code}/";
         $data['format'] = $format;
+        $data['book_code'] = $book_code;
+        $data['meta_id'] = $meta_id;
+        $data['slug'] = $slug;
 
         //Guardar evento de apertura
-        $this->Post_model->save_open_event($data['book_id']);
+        //$this->Post_model->save_open_event($data['book_id']);
 
         //Índice
         $str_index = file_get_contents(PATH_CONTENT . "books/{$book_code}/index_01.json");
@@ -44,12 +48,14 @@ class Books extends CI_Controller{
         $data['drive_pages'] = $str_pages;
 
         //$view = 'templates/reader/demo_v';
-        if ( $this->Book_model->readable($meta_id) ) {
+        $view = 'templates/reader/reader_v'; 
+        $this->load->view($view, $data);
+        /*if ( $this->Book_model->readable($meta_id) ) {
             $view = 'templates/reader/reader_v'; 
             $this->load->view($view, $data);
         } else {
             redirect('app/no_permitido');
-        }
+        }*/
     }
 
     /**
