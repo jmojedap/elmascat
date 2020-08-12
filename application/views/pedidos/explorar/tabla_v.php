@@ -1,10 +1,4 @@
 <?php
-    //Tabla de resultados
-        $att_check_todos = array(
-            'name' => 'check_todos',
-            'id'    => 'check_todos',
-            'checked' => FALSE
-        );
         
         $att_check = array(
             'class' =>  'check_registro',
@@ -45,16 +39,19 @@
 
 <table class="table table-default bg-blanco" cellspacing="0">
     <thead>
-        <th class="<?= $cl_col['selector'] ?>" width="10px;"><?= form_checkbox($att_check_todos) ?></th>
+        <th class="<?= $cl_col['selector'] ?>" width="10px;">
+            <input type="checkbox" name="check_todos" id="check_todos">
+        </th>
         <th width="45px;" class="warning">ID</th>
         <th>Ref. Venta</th>
         <th class="<?= $cl_col['cliente'] ?>">Cliente</th>
         <th class="<?= $cl_col['estado'] ?>">Estado</th>
         <th class="<?= $cl_col['valor_total'] ?>">Valor</th>
-        <th class="<?= $cl_col['respuesta_pol'] ?>">Estado pago</th>
+        <th class="<?= $cl_col['respuesta_pol'] ?>">PayU</th>
         <th class="<?= $cl_col['peso'] ?>">Peso (kg)</th>
         <th class="<?= $cl_col['otros'] ?>">Datos</th>
         <th class="<?= $cl_col['editado'] ?>">Editado</th>
+        
     </thead>
     <tbody>
         <?php foreach ($resultados->result() as $row_resultado){ ?>
@@ -66,23 +63,34 @@
 
                 //Datos POL
                     $condicion = "dato_id = 3005 AND elemento_id = {$row_resultado->id}";
-                    $cant_reg_pol = $this->Pcrn->num_registros('meta', $condicion);
+                    $confirmacion = $this->Pedido_model->confirmacion($row_resultado->id);
+                    
+                    //PayU Estado
+                    $payu['row_class'] = '';
+                    $payu['icono'] = '';
+                    $payu['class'] = '';
+                    if ( ! is_null($confirmacion) )
+                    {
+                        $payu['icono'] = '<i class="far fa-circle"></i>';
+                        $payu['class'] = 'text-primary';
+                        
+                        if ( $confirmacion->codigo_respuesta_pol == 1 ) {
+                            $payu['icono'] = '<i class="fa fa-check-circle"></i>';
+                            $payu['class'] = 'text-success';
+                        }
 
-                //Checkbox
-                    $att_check = array(
-                        'class' =>  'check_registro',
-                        'data-id' => $row_resultado->id,
-                        'checked' => FALSE
-                    );
-
-                //Clase fila
-                    $clase_fila = '';
-                    if ( $cant_reg_pol > 0 && $row_resultado->estado_pedido <= 1 ) {
-                        $clase_fila = 'danger';
+                        //Verificar firma
+                        $firma_pol_confirmacion = $this->Pedido_model->firma_pol_confirmacion($row_resultado->id, $confirmacion->estado_pol);
+                        if ( $firma_pol_confirmacion != $confirmacion->firma )
+                        {
+                            $payu['icono'] = '<i class="fa fa-exclamation-circle"></i>';
+                            $payu['class'] = 'text-warning';
+                            $payu['row_class'] = 'warning';
+                        }
                     }
 
                     $cl_peso = '';
-                    if ( $row_resultado->peso_total > 0 ) { $cl_peso = 'warning'; }
+                    if ( $row_resultado->peso_total > 0 ) { $cl_peso = 'info'; }
 
                 //Respuesta pol
                     $indice = '0' . $row_resultado->codigo_respuesta_pol;
@@ -94,24 +102,23 @@
                     if ( ! is_null($row_usuario) )
                     {
                         $estado_cliente = $arr_estados[$row_usuario->estado];
-                        $cant_contenidos = $this->Db_model->num_rows('meta', "dato_id = 100012 AND elemento_id = {$row_usuario->id}");
+                        //$cant_contenidos = $this->Db_model->num_rows('meta', "dato_id = 100012 AND elemento_id = {$row_usuario->id}");
                     }
             ?>
-            <tr class="<?= $clase_fila ?>">
+            <tr>
                 <?php if ( $this->session->userdata('rol_id') <= 2  ) { ?>
                     <td>
-                        <?= form_checkbox($att_check) ?>
+                        <input type="checkbox" class="check_registro" data-id="<?= $row_resultado->id ?>">
                     </td>
                 <?php } ?>
                 <td class="warning"><span class="etiqueta primario w1"><?= $row_resultado->id ?></span></td>
                 <td><?= $link_pedido ?></td>
                 <td class="<?= $cl_col['cliente'] ?>">
                     <?php if ( $row_resultado->usuario_id > 0 ) { ?>
-                        <?= $estado_cliente ?>
                         <?= anchor("usuarios/info/{$row_resultado->usuario_id}", $nombre_cliente, 'title="Ver pedidos del cliente"') ?>
-                        <a href="<?php echo base_url("usuarios/books/{$row_resultado->usuario_id}") ?>" class="btn btn-default btn-xs" target="_blank" title="Contenidos asignados">
-                            <?= $cant_contenidos ?>
-                        </a>
+                        <!-- <a href="<?php //echo base_url("usuarios/books/{$row_resultado->usuario_id}") ?>" class="btn btn-default btn-xs" target="_blank" title="Contenidos asignados">
+                            <?php //echo $cant_contenidos ?>
+                        </a> -->
                     <?php } else { ?>
                         <?= $nombre_cliente ?>
                     <?php } ?>
@@ -122,11 +129,15 @@
                 <td class="<?= $cl_col['valor_total'] ?> text-right">
                     <?= number_format($row_resultado->valor_total, 0, ',', '.'); ?>
                 </td>
-                <td class="<?= $cl_col['respuesta_pol'] ?>">
-                    <?php if ( $cant_reg_pol > 0 ){ ?>
-                        <?= anchor("pedidos/pol/{$row_resultado->id}", '<i class="fa fa-credit-card"></i>', 'class="btn btn-warning btn-xs" title="Datos de transación en Pagos On Line"') ?>
+                <td class="<?= $cl_col['respuesta_pol'] ?> <?= $payu['row_class'] ?>">
+                    <?php if ( ! is_null($confirmacion) ){ ?>
+                        <span class="<?= $payu['class'] ?>">
+                            <?= $payu['icono'] ?>
+                        </span>
+                        <a href="<?= base_url("pedidos/pol/{$row_resultado->id}") ?>" title="Datos de transación en PayU">
+                            <?= $arr_respuestas_pol[$indice] ?>
+                        </a>
                     <?php } ?>
-                    <?= $arr_respuestas_pol[$indice] ?>
                 </td>
                 <td class="<?php echo $cl_col['peso'] ?> <?= $cl_peso ?>">
                     <?php if ( $row_resultado->peso_total > 0 ) { ?>

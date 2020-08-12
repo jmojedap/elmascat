@@ -61,10 +61,6 @@ class Producto_Model extends CI_Model{
      * Igual a la función busqueda, pero agrega una restricción, producto debe
      * estar activo
      * 
-     * @param array $busqueda
-     * @param type $per_page
-     * @param type $offset
-     * @return type
      */
     function catalogo($busqueda, $per_page = NULL, $offset = NULL)
     {

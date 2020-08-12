@@ -576,18 +576,15 @@ class Archivo_model extends CI_Model{
     /**
      * Elimina los archivos que no están siendo utilizados en la herramienta
      * Se considera no usado si no tiene registro asociado en la tabla "archivo"
-     * 
-     * @param type $anio
-     * @param type $mes
-     * @return type
+     * 2020-05-25
      */
-    function unlink_no_usados($anio, $mes)
+    function unlink_no_usados($year, $month)
     {
-        $cant_eliminados = 0;
+        $arr_eliminados = array();
         $this->load->helper('file');
-        $archivos = get_filenames(RUTA_UPLOADS . $anio . '/' . $mes);
+        $archivos = get_filenames(RUTA_UPLOADS . $year . '/' . $month);
         
-        $carpeta = "{$anio}/{$mes}/";
+        $carpeta = "{$year}/{$month}/";
         
         foreach( $archivos as $nombre_archivo )
         {
@@ -596,11 +593,12 @@ class Archivo_model extends CI_Model{
             $tiene_registro = $this->tiene_registro($carpeta, $sin_prefijo);
             
             if ( ! $tiene_registro ) { 
-                $cant_eliminados += $this->unlink($carpeta, $sin_prefijo);
+                $this->unlink($carpeta, $sin_prefijo);
+                $arr_eliminados[] = $sin_prefijo;
             }
         }
         
-        return $cant_eliminados;
+        return $arr_eliminados;
     }
     
     /**
@@ -629,10 +627,6 @@ class Archivo_model extends CI_Model{
     /**
      * Devuelve 1/0, verifica si un archivo tiene registro relacionado
      * en la tabla "archivo"
-     * 
-     * @param type $carpeta
-     * @param type $nombre_archivo
-     * @return int
      */
     function tiene_registro($carpeta, $nombre_archivo)
     {

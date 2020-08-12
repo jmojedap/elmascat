@@ -4,7 +4,7 @@
     list($tamano_img['ancho'], $tamano_img['alto'], $tamano_img['tipo'], $tamano_img['atributos']) = getimagesize($src);
 
     $att_img['src'] = $src;
-    //$att_img['onError'] = "this.src='" . $src_alt . "'"; //Imagen alternativa
+    $att_img['onError'] = "this.src='" . $src_alt . "'"; //Imagen alternativa
     $att_img['id'] = "img_producto";
     
     //Según las proporciones de la imagen, alternar alto o ancho al 100%
@@ -67,7 +67,7 @@
             <div class="product-essential">
                 <form action="#" method="post" id="product_addtocart_form">
                     <!-- EVITAR CARGUE DE IMÁGENES GRANDES TEMPORAL 2020-05-07 -->
-                    <?php if ( $imagenes->num_rows() > 1000 ) { ?>
+                    <?php if ( $imagenes->num_rows() > 1 ) { ?>
                         <div class="product-img-box col-lg-6 col-sm-6 col-xs-12">
                             <ul class="moreview" id="moreview">
                                 <?php foreach ($imagenes->result() as $row_archivo) { ?>
@@ -78,10 +78,10 @@
                                         if ( $contador_img > 1 ) { $clase_li = "moreview_thumb thumb_{$contador_img}"; }
                                     ?>
                                     <li class="<?= $clase_li ?>">
-                                        <img class="moreview_thumb_image" src="<?= $src ?>" alt="thumbnail">
+                                        <img class="moreview_thumb_image" src="<?= $src ?>" alt="thumbnail mobile" onerror="this.src='<?php echo URL_IMG ?>app/500px_producto.png'">
                                         <span class="roll-over">Mueva el mouse para hacer zoom</span>
-                                        <img class="moreview_source_image" src="<?= $src ?>" alt="">
-                                        <img  class="zoomImg" src="<?= $src ?>" alt="thumbnail">
+                                        <img class="moreview_source_image" src="<?= $src ?>" alt="" onerror="this.src='<?php echo URL_IMG ?>app/500px_producto.png'">
+                                        <img  class="zoomImg" src="<?= $src ?>" alt="thumbnail" onerror="this.src='<?php echo URL_IMG ?>app/500px_producto.png'">
                                     </li>
                                 <?php } ?>
                             </ul>

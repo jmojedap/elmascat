@@ -428,7 +428,7 @@ a:focus {
 @media (max-width: 767px) {
   .main-sidebar,
   .left-side {
-    padding-top: 100px;
+    padding-top: 40px;
   }
 }
 @media (max-width: 767px) {
@@ -1577,23 +1577,31 @@ a:focus {
 #page_titles{
   max-height: 50px;
   overflow: hidden;
-  max-width: 70%;
-}
-
-#page_titles{
-  font-family: 'Ubuntu', sans-serif;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 300px;
+  white-space: nowrap;
+  margin-top: 0.5em;
 }
 
 #head_title{
+  font-family: 'Ubuntu', sans-serif;
   display: inline-block;
-  font-size: 1.7em;
+  font-size: 1.5em;
   color: #3e8ef7;
+}
+
+@media (max-width: 730px) {
+  #head_title {
+      max-width: 200px;
+      text-overflow: ellipsis;
+  }
 }
 
 #head_subtitle{
   display: inline-block;
-  color: #AAA;
-  font-size: 1.3em;
+  color: #777;
+  font-size: 1.2em;
   max-width: 200px;
   padding-left: 0.5em;
   margin-left: 0.5em;

@@ -525,4 +525,84 @@ class Post_model extends CI_Model{
         
         return $query;
     }
+
+// PROMOCIONES
+//-----------------------------------------------------------------------------
+    
+    /**
+     * Objeto GroceryCrud, renderizado
+     * @return type
+     */
+    function crud_promociones()
+    {
+        //Grocery crud
+        $tipo_id = 31001;  //Promociones de productos
+        $this->load->library('grocery_CRUD');
+        
+        $crud = new grocery_CRUD();
+        $crud->set_table('post');
+        $crud->set_subject('promoción');
+        $crud->where('tipo_id', $tipo_id);
+        $crud->unset_print();
+        $crud->unset_read();
+        $crud->order_by('editado', 'DESC');
+        $crud->columns('id', 'nombre_post', 'resumen', 'estado', 'referente_1_id');
+
+        //Permisos de edición
+            
+        //Filtros
+
+        //Títulos de los campos
+            $crud->display_as('nombre_post', 'Nombre promoción');
+            $crud->display_as('referente_1_id', '% Descuento');
+            $crud->display_as('estado', 'Promoción activa');
+        
+        //Relaciones
+            
+
+        //Formulario Edit
+            $crud->edit_fields(
+                    'nombre_post',
+                    'tipo_id',
+                    'resumen',
+                    'estado',
+                    'referente_1_id',
+                    'editor_id',
+                    'editado'
+                );
+
+        //Formulario Add
+            $crud->add_fields(
+                    'nombre_post',
+                    'tipo_id',
+                    'resumen',
+                    'estado',
+                    'referente_1_id',
+                    'editor_id',
+                    'editado',
+                    'usuario_id',
+                    'creado'
+                );
+            
+        //Opciones estado
+            $this->load->model('Esp');
+            $opciones_estado = $this->Esp->arr_si_no();
+            $crud->field_type('estado', 'dropdown', $opciones_estado);
+            
+        
+        //Valores por defecto
+            $crud->field_type('tipo_id', 'hidden', $tipo_id);
+            $crud->field_type('editor_id', 'hidden', $this->session->userdata('usuario_id'));
+            $crud->field_type('editado', 'hidden', date('Y-m-d H:i:s'));
+            $crud->field_type('usuario_id', 'hidden', $this->session->userdata('usuario_id'));
+            $crud->field_type('creado', 'hidden', date('Y-m-d H:i:s'));
+
+        //Reglas de validación
+            $crud->required_fields('nombre_post', 'referente_1_id');
+            $crud->unset_texteditor('resumen');
+        
+        $output = $crud->render();
+        
+        return $output;
+    }
 }

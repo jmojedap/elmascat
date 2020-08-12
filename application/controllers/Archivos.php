@@ -214,19 +214,17 @@ class Archivos extends CI_Controller{
     
     /**
      * Eliminar archivos
-     * 
-     * @param type $anio
-     * @param type $mes
      */
     function unlink_no_usados($year, $month)
     {
         $data = array('status' => 0, 'message' => 'No se eliminaron archivos');
 
-        $cant_eliminados = $this->Archivo_model->unlink_no_usados($year, $month);
-        if ( $cant_eliminados > 0 )
+        $arr_eliminados = $this->Archivo_model->unlink_no_usados($year, $month);
+        if ( count($arr_eliminados) > 0 )
         {
             $data['status'] = 1;
-            $data['message'] = "Se eliminaron {$cant_eliminados} sin utilizar";
+            $data['message'] = "Eliminados: " . count($arr_eliminados);
+            $data['eliminados'] = $arr_eliminados;
         }
         
         //Salida JSON

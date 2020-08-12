@@ -185,6 +185,16 @@
                     </li>
                 <?php echo form_close('') ?>
             </ul>
+
+            <div class="alert alert-info">
+                <p class="text-center">
+                    <i class="fa fa-info-circle"></i> <strong>Aviso importante</strong>
+                </p>
+                <p class="text-center">
+                    Debido a la contingencia sanitaria la entrega de tu compra puede tardar
+                    hasta 3 días hábiles en Bogotá y hasta <b>4 días hábiles</b> para el resto del país.
+                </p>
+            </div>
             
             <?php if ( $row->pais_id != 51 ) { ?>
                 <a class="btn btn-info btn-block" href="<?php echo base_url("pedidos/compra_b_usd/{$row->cod_pedido}") ?>">
@@ -195,4 +205,8 @@
             
         </div>
     </div>
+</div>
+
+<div class="pull-right">
+    <img src="<?= URL_IMG ?>app/positivessl_trust_seal_md_167x42.png" alt="payment"> 
 </div>

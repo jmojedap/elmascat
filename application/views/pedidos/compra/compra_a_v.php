@@ -219,3 +219,7 @@
         }
     });
 </script>
+
+<div class="pull-right">
+    <img src="<?= URL_IMG ?>app/positivessl_trust_seal_md_167x42.png" alt="payment"> 
+</div>

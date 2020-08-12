@@ -19,32 +19,27 @@
 //-----------------------------------------------------------------------------
 
     $(document).ready(function(){
-        
-        $('.check_registro').on('ifChanged', function(){
-            registro_id = '-' + $(this).data('id');
-            if( $(this).is(':checked') ) {  
-                seleccionados += registro_id;
-            } else {  
-                seleccionados = seleccionados.replace(registro_id, '');
-            }
+
+        $('#check_todos').change(function() {  
             
-            $('#seleccionados').html(seleccionados.substring(1));
-        });
-        
-        $('#check_todos').on('ifChanged', function(){
-            
-            if($(this).is(":checked")) { 
-                //Activado
-                $('.check_registro').iCheck('check');
+            if($(this).is(':checked')) {  
+                $('.check_registro').prop('checked', true);
                 seleccionados = seleccionados_todos;
             } else {
                 //Desactivado
-                $('.check_registro').iCheck('uncheck');
+                $('.check_registro').prop('checked', false);
                 seleccionados = '';
             }
-            
-            $('#seleccionados').html(seleccionados.substring(1));
         });
+
+        $('.check_registro').change(function() {  
+            registro_id = '-' + $(this).data('id');
+            if($(this).is(':checked')) {  
+                seleccionados += registro_id;
+            } else {
+                seleccionados = seleccionados.replace(registro_id, '');
+            }
+        }); 
         
         $('#eliminar_seleccionados').click(function(){
             eliminar();

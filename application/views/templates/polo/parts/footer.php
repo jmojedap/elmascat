@@ -55,10 +55,11 @@
                         <img src="<?= URL_IMG ?>app/logo_polo.png" alt="logo">
                     </a>
                 </div>
-                <p>Realice sus pagos seguros mediante </p>
+                <p>Realiza tus pagos seguros mediante </p>
                 <div class="payment-accept_">
                     <div style="max-width: 302px;">
-                        <img width="100%" src="<?= URL_IMG ?>app/payu_medios_pago.png" alt="payment"> 
+                        <img width="100%" src="<?= URL_IMG ?>app/payu_medios_pago.png" alt="payment" class="mb-2"> 
+                        <img src="<?= URL_IMG ?>app/positivessl_trust_seal_md_167x42.png" alt="payment"> 
                     </div>
                 </div>
             </div>

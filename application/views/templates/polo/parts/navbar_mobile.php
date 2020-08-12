@@ -38,18 +38,12 @@
                             </li>
                         <?php } ?>
 
-                        <li class="level0 parent drop-menu text-center" style="background-color: #f44336; padding: 10px;">
-                            <a href="<?php echo base_url("catalogo/productos_digitales") ?>" style="color: white;">Minutos de Amor Mayo 2020</a>
-                        </li>
-
-                        <li class="level0 parent drop-menu" title="¿Quieres ser distribuidor de Districatólicas?">
-                            <a href="<?php echo base_url("posts/leer/331/como-comprar-minutos-de-amor-en-linea") ?>" title="Paso a paso para comprar en DistriCatolicas.com">
-                                <span>¿Cómo comprar?</span>
-                            </a>
-                        </li>
-
                         <li class="level0 parent drop-menu" title="Carrito">
                             <a href="<?php echo base_url("pedidos/carrito") ?>"> Carrito de compras</a>
+                        </li>
+
+                        <li class="level0 parent drop-menu">
+                            <a href="<?php echo base_url("posts/leer/333/como-comprar-en-districatolicas") ?>"> ¿Como comprar?</a>
                         </li>
 
                         

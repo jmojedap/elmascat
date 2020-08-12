@@ -79,7 +79,7 @@
                                 <td>
                                     <div class="row">
                                         <div class="col col-sm-6">
-                                            Valor POL:
+                                            Valor en PayU:
                                         </div>
                                         <div class="col col-sm-6">
                                             <?= $arr_respuesta_pol['valor'] ?>
@@ -87,7 +87,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col col-sm-6">
-                                            Valor Pedido:
+                                            Valor en DC:
                                         </div>
                                         <div class="col col-sm-6">
                                             <?= number_format($row->valor_total,2,'.','') ?>

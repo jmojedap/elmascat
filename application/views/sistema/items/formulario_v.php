@@ -269,6 +269,17 @@
     </div>
 
     <div class="form-group">
+        <label for="ascendencia" class="col-sm-4 control-label">Ascendencia</label>
+        <div class="col-sm-8">
+            <input
+                name="ascendencia" id="field-ascendencia" type="text" class="form-control"
+                title="asdencencia" placeholder="asdencencia"
+                value="<?= $valores_form['ascendencia'] ?>"
+            >
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="item_largo" class="col-sm-4 control-label">Nombre largo</label>
         <div class="col-sm-8">
             <?= form_input($att_item_largo); ?>

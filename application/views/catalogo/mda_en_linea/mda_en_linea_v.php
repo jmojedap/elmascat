@@ -7,9 +7,9 @@
 
     <div class="row mb-2">
         <div class="col-xs-12">
-            <p class="presentation">Selecciona la edición.</p>
+            <p class="presentation text-center">Selecciona el plan</p>
         </div>
-        <div class="col-xs-4" v-for="(producto, key) in productos">
+        <div class="col-xs-6" v-for="(producto, key) in productos">
             <div class="sm_box" v-bind:class="{'active': producto_key == key }" v-on:click="set_current(key)">
                 <div class="sm_product">
                     {{ producto.nombre_corto }}
@@ -45,11 +45,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2 col-sm-12 presentation text-center">
             <p>
-                Querido lector, queremos seguir <b>acompañándote en tu oración diaria</b> desde tu casa.
-            </p>
-            <p>
-                Agradecemos tu ayuda en esta labor evangelizadora, y además seguir apoyando el trabajo 
-                de nuestros colaboradores y a los seminaristas respaldados por Minutos de Amor.
+                Cuenta con <b>tu oración diaria</b> en tu celular o tableta.
             </p>
         </div>
     </div>

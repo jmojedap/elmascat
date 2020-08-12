@@ -27,7 +27,7 @@ class Pedidos extends CI_Controller{
             $resultados_total = $this->Pedido_model->buscar($busqueda); //Para calcular el total de resultados
             
         //Generar resultados para mostrar
-            $data['per_page'] = 20; //Cantidad de registros por página
+            $data['per_page'] = 15; //Cantidad de registros por página
             $data['offset'] = $this->input->get('per_page');
             $resultados = $this->Pedido_model->buscar($busqueda, $data['per_page'], $data['offset']);
         

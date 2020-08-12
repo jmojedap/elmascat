@@ -64,7 +64,7 @@ class Books extends CI_Controller{
      */
     function demo()
     {
-        $book_code = 919580345880;
+        $book_code = '086239668181';
         $data = $this->Book_model->book_info($book_code);
 
         $this->load->helper('file');
@@ -86,7 +86,7 @@ class Books extends CI_Controller{
         $this->load->view('templates/reader/reader_v', $data);
     }
 
-    function rename_pages($book_code = '919580345880')
+    function rename_pages($book_code = '086239668181')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
@@ -96,7 +96,7 @@ class Books extends CI_Controller{
 
         foreach ( $pages as $file)
         {
-            $new_name = str_replace('Mayo','',$file);
+            $new_name = str_replace('Agosto','',$file);
             $new_name = str_replace('.jpg','',$new_name);
             $new_name = substr('00' . $new_name,-3) . '_' . random_string('numeric', 6) . '.jpg';
             echo $file . ' > ' . $new_name;
@@ -106,7 +106,7 @@ class Books extends CI_Controller{
         }
     }
 
-    function create_pages($book_code = '431854596068')
+    function create_read($book_code = '086239668181')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
@@ -120,13 +120,62 @@ class Books extends CI_Controller{
                 $config['image_library'] = 'gd2';
                 $config['maintain_ratio'] = TRUE;
                 $config['source_image'] = PATH_CONTENT . "books/{$book_code}/org/" . $file;
-                $config['new_image'] = PATH_CONTENT . "books/{$book_code}/mobile/" . $file;
-                
-                //$config['source_image'] = PATH_CONTENT . "books/{$book_code}/zoom/" . $file;
-                //$config['new_image'] = PATH_CONTENT . "books/{$book_code}/read/" . $file;
-                
-                //$config['new_image'] = PATH_CONTENT . "books/{$book_code}/mini/" . $file;
-                $config['width'] = 375;
+                $config['new_image'] = PATH_CONTENT . "books/{$book_code}/read/" . $file;
+                $config['width'] = 650;
+                $config['quality'] = 95;
+
+                $this->image_lib->initialize($config);
+                $this->image_lib->resize();
+                $this->image_lib->clear();
+            
+                echo $file;
+                echo '<br>';
+        }
+    }
+
+    function create_drive($book_code = '086239668181')
+    {
+        $this->load->helper('file');
+        $folder = PATH_CONTENT . "books/{$book_code}/org/";
+        $pages = get_filenames($folder);
+
+        $this->load->library('image_lib');
+        foreach ( $pages as $file)
+        {
+
+            //Config
+                $config['image_library'] = 'gd2';
+                $config['maintain_ratio'] = TRUE;
+                $config['source_image'] = PATH_CONTENT . "books/{$book_code}/org/" . $file;
+                $config['new_image'] = PATH_CONTENT . "books/{$book_code}/drive/" . $file;
+                $config['width'] = 650;
+                $config['quality'] = 100;
+
+                $this->image_lib->initialize($config);
+                $this->image_lib->resize();
+                $this->image_lib->clear();
+            
+                echo $file;
+                echo '<br>';
+        }
+    }
+
+    function create_mini($book_code = '086239668181')
+    {
+        $this->load->helper('file');
+        $folder = PATH_CONTENT . "books/{$book_code}/read/";
+        $pages = get_filenames($folder);
+
+        $this->load->library('image_lib');
+        foreach ( $pages as $file)
+        {
+
+            //Config
+                $config['image_library'] = 'gd2';
+                $config['maintain_ratio'] = TRUE;
+                $config['source_image'] = PATH_CONTENT . "books/{$book_code}/read/" . $file;
+                $config['new_image'] = PATH_CONTENT . "books/{$book_code}/mini/" . $file;
+                $config['width'] = 72;
                 $config['quality'] = 95;
 
                 $this->image_lib->initialize($config);

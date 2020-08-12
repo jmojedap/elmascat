@@ -1001,9 +1001,6 @@ class Pedido_Model extends CI_Model{
      * Genera la firma que genera POL tras una transacción,
      * Se genera y se compara con la enviada por POL a la página de confirmación
      * de una trasacción
-     * 
-     * @param type $estado_pol
-     * @return type
      */
     function firma_pol_confirmacion($pedido_id, $estado_pol)
     {
@@ -1469,6 +1466,22 @@ class Pedido_Model extends CI_Model{
             $sql = "UPDATE producto SET cant_disponibles = cant_disponibles - {$row_detalle->cantidad} WHERE id = {$row_detalle->producto_id}";
             $this->db->query($sql);
         }
+    }
+
+    function confirmacion($pedido_id)
+    {
+        $confirmacion = null;
+
+        $this->db->where("dato_id = 3005 AND elemento_id = {$pedido_id}");
+        $this->db->order_by('id', 'DESC');
+        $query = $this->db->get('meta');
+
+        if ( $query->num_rows() > 0 ) 
+        {
+            $confirmacion = json_decode($query->row(0)->valor);
+        }
+
+        return $confirmacion;
     }
 
 // GESTIÓN DE EXTRAS

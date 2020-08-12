@@ -153,6 +153,7 @@ class Item_model extends CI_Model{
             'id_interno',
             'abreviatura',
             'padre_id',
+            'ascendencia',
             'filtro',
             'descripcion',
             'slug',
@@ -162,7 +163,6 @@ class Item_model extends CI_Model{
         );
         
         return $campos;
-        
     }
     
     function siguiente_id_interno($categoria_id)

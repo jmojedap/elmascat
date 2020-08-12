@@ -1,8 +1,6 @@
 <?php $this->load->view('assets/chosen_jquery'); ?>
-<?php $this->load->view('assets/icheck'); ?>
 
 <?php
-        
     //Clases botones acción
         $clases_btn['eliminar_seleccionados'] = 'hidden';
         if ( $this->session->userdata('rol_id') <= 1 ) { $clases_btn['eliminar_seleccionados'] = ''; }
@@ -30,7 +28,7 @@
     </div>
     
     <div class="col-md-3">
-        <div class="pull-right sep1">
+        <div class="pull-right">
             <?php $this->load->view('comunes/paginacion_v'); ?>
         </div>
     </div>

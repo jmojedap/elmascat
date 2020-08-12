@@ -28,13 +28,13 @@
 <ul id="nav" class="hidden-xs">
     <li class="level0 parent drop-menu"><a href="<?php echo base_url() ?>">inicio</a></li>
     
-    <li class="level0 parent drop-menu active hidden" title="Productos en oferta">
+    <li class="level0 parent drop-menu" title="Productos en oferta">
         <a href="<?php echo base_url("productos/catalogo/?ofrt=1") ?>" class="<?php echo $clases_menu['oferta'] ?>">
             Ofertas
         </a>
     </li>
     
-    <li class="level0 parent drop-menu active hidden" title="Nuevos productos">
+    <li class="level0 parent drop-menu" title="Nuevos productos">
         <a href="<?php echo base_url("productos/catalogo/?fi={$fi_novedades}") ?>" class="<?php echo $clases_menu['novedades'] ?>">
             Novedades
         </a>
@@ -47,23 +47,24 @@
     </li>
 
     <li class="level0 parent drop-menu">
-        <a href="<?php echo base_url("productos/catalogo/?tag=627") ?>" class="<?php echo $clases_menu['pedidos_estado'] ?> link_yellow">ideas para regalo</a>
+        <a href="#"><span>Minutos de Amor</span></a>
+        <ul class="level1">
+            <li class="level1">
+                <a href="<?= base_url("productos/catalogo/?fab=513") ?>">Impresa</a>
+            </li>
+            <li class="level1">
+                <a href="<?= base_url("catalogo/productos_digitales") ?>">En Línea</a>
+            </li>
+        </ul>
     </li>
-
-    <li class="level0 parent drop-menu" title="¿Quieres ser distribuidor de Districatólicas?">
-        <a href="<?php echo base_url("catalogo/productos_digitales") ?>" class="link_especial" title="Información sobre la Revista Minutos de Amor Abril 2020">
-            <span>Minutos de Amor Mayo 2020</span>
-        </a>
-    </li>
-    <li class="level0 parent drop-menu" title="¿Quieres ser distribuidor de Districatólicas?">
-        <a href="<?php echo base_url("posts/leer/331/como-comprar-minutos-de-amor-en-linea") ?>" title="Paso a paso para comprar en DistriCatolicas.com">
+    <li class="level0 parent drop-menu" title="¿Cómo comprar?">
+        <a href="<?php echo base_url("posts/leer/333/como-comprar-en-districatolicas") ?>" title="Paso a paso para comprar en DistriCatolicas.com">
             <span>¿Cómo comprar?</span>
         </a>
     </li>
 
     <li class="level0 parent drop-menu">
-        <a href="#"><span>Información</span> 
-        </a>
+        <a href="#"><span>Información</span></a>
         <ul class="level1">
             <li class="level1 parent"><a title="Instructivo de pagos en línea PSE para distribuidores y mayoristas" href="<?php echo base_url("posts/leer/28/pagos-pse/") ?>"><span>Pagos PSE</span></a></li>
             <li class="level1 parent"><a title="Sobre DistriCatólicas" href="<?php echo base_url("posts/leer/15/sobre-nosotros/") ?>"><span>Sobre nosotros</span></a></li>
