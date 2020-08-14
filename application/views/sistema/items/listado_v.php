@@ -112,10 +112,10 @@
                             <?= $row_item->item ?>
                         </td>
                         <td class="<?= $clases_col['botones'] ?>">
-                            <a class="btn btn-default btn-sm" href="<?= base_url("items/listado/{$categoria_id}/{$row_item->id}") ?>">
+                            <a class="a4" href="<?= base_url("items/listado/{$categoria_id}/{$row_item->id}") ?>">
                                 <i class="fa fa-pencil-alt"></i>
                             </a>
-                            <a class="btn btn-default btn-sm btn_eliminar" data-item_id="<?= $row_item->id ?>" data-toggle="modal" data-target="#modal_eliminar">
+                            <a class="a4 btn_eliminar" data-item_id="<?= $row_item->id ?>" data-toggle="modal" data-target="#modal_eliminar">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </td>

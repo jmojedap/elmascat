@@ -48,5 +48,6 @@
         <!-- PML Tools -->
         <link type="text/css" rel="stylesheet" href="<?php echo URL_RESOURCES . 'css/style_pml.css' ?>">
         <script src="<?php echo URL_RESOURCES . 'js/pcrn.js' ?>"></script>
+        <script>const app_url = '<?php echo base_url() ?>'; const url_api = '<?php echo URL_API ?>';</script>
 
         <!-- END HEAD -->

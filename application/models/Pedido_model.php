@@ -10,11 +10,14 @@ class Pedido_Model extends CI_Model{
         $row = $query->row();
         
         $basico['row'] = $row;
-        $basico['titulo_pagina'] = $row->cod_pedido;
-        $basico['vista_a'] = 'pedidos/pedido_v';
+        $basico['head_title'] = $row->cod_pedido;
+        $basico['nav_2'] = 'pedidos/menu_v';
         
         return $basico;
     }
+
+// Exploración y búsqueda
+//-----------------------------------------------------------------------------
     
     function buscar($busqueda, $per_page = NULL, $offset = NULL)
     {
@@ -99,6 +102,9 @@ class Pedido_Model extends CI_Model{
                 $this->db->delete('pedido');
         }
     }
+
+// Administración
+//-----------------------------------------------------------------------------
     
     /**
      * Actualizar registro de pedido, datos de administración.
@@ -179,9 +185,6 @@ class Pedido_Model extends CI_Model{
     /**
      * Devuelve el detalle de un pedido, que no son productos, elementos extras
      * Descuentos, gastos de envío, etc.
-     * 
-     * @param type $pedido_id
-     * @return type
      */
     function extras($pedido_id)
     {
@@ -350,16 +353,14 @@ class Pedido_Model extends CI_Model{
 //---------------------------------------------------------------------------------------------------
     
     /**
-     * Devuelve un elemento row, de un pedido dado el código del pedido
-     * @param type $cod_pedido
-     * @return type
+     * Row, de un pedido dado el calor pedido.cod_pedido
+     * 2020-08-12
      */
     function row_cod_pedido($cod_pedido) 
     {
         $row = $this->Pcrn->registro('pedido', "cod_pedido = '{$cod_pedido}'");
         return $row;
     }
-    
     
     function rol_comprador($pedido_id)
     {
@@ -435,14 +436,13 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Actualiza el campo pedido.cod_pedido, con el formato definido
-     * 
-     * @param type $pedido_id
+     * 2020-08-12
      */
     function act_cod_pedido($pedido_id)
     {
         $this->load->helper('string');
         
-        $registro['cod_pedido'] = 'DC-' . strtoupper(random_string('alpha', 4)) . '-' . $pedido_id;
+        $registro['cod_pedido'] = 'DC' . strtoupper(random_string('alpha', 2)) . '-' . $pedido_id;
         
         $this->db->where('id', $pedido_id);
         $this->db->update('pedido', $registro);
@@ -453,9 +453,6 @@ class Pedido_Model extends CI_Model{
     /**
      * Establece la dirección de entrega de un pedido, conociendo el usuario y 
      * la dirección (post_id) registrada en la tabla post
-     * 
-     * @param type $pedido_id
-     * @param type $post_id
      */
     function set_direccion($pedido_id, $post_id = NULL)
     {
@@ -759,7 +756,6 @@ class Pedido_Model extends CI_Model{
                 $data['saved_id'] = $this->Db_model->save('usuario', "id = {$row_usuario->id}", $user);
             }
 
-
             //Cargar usuario en variables de sesión
             $this->session->set_userdata('user_id', $data['saved_id']);
         }
@@ -872,10 +868,7 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Devuelve array con los campos y valores para el formulario que se envía
-     * a Pagos On Line, para pruebas
-     * 
-     * @param type $pedido_id
-     * @return type
+     * a PayU, para pruebas
      */    
     function form_data_payu_pruebas($pedido_id)
     {
@@ -902,9 +895,6 @@ class Pedido_Model extends CI_Model{
     /**
      * Devuelve array con los campos y valores para el formulario que se envía
      * a Pagos On Line
-     * 
-     * @param type $pedido_id
-     * @return type
      */    
     function form_data_pol($pedido_id, $prueba = NULL)
     {
@@ -1032,15 +1022,11 @@ class Pedido_Model extends CI_Model{
     }
     
     /**
-     * Tomar y procesar los datos POST que envía PagosOnLine a la página 
-     * de confirmación.
+     * Tomar y procesar los datos POST que envía PagosOnLine a la página de confirmación
      * url_confirmacion >> 'pedidos/confirmacion_pol'
-     * 
-     * @return type
      */
     function confirmacion_pol()
     {
-        
         //Identificar Pedido
         $meta_id = 0;
         $row = $this->row_cod_pedido($this->input->post('ref_venta'));    
@@ -1051,26 +1037,107 @@ class Pedido_Model extends CI_Model{
                 $meta_id = $this->json_confirmacion($row->id);
 
             //Actualizar registro de pedido
-                $estado_pedido = $this->act_estado($row->id, 1);    //Usuario id=1, administrador
+                $codigo_respuesta_pol = $this->act_estado($row->id, 110);    //Usuario id=110, PayU Automático
 
-            //Descontar cantidades de producto.cant_disponibles, si está en estado 3: pago confirmado
-                if ( $estado_pedido == 3 )
+            //Descontar cantidades de producto.cant_disponibles, si codigo_respuesta_pol = 1: Trasnsacción aprobada
+                if ( $codigo_respuesta_pol == 1 )
                 {
-                    //Pago confirmado
-                    $this->descontar_disponibles($row->id);
-
-                    //Asignar contenidos digitales asociados a los productos comprados
-                    $this->assign_posts($row->id);
+                    $this->descontar_disponibles($row->id);     //Restar vendidos de cantidades disponibles
+                    $this->assign_posts($row->id);              //Asignar contenidos digitales asociados a los productos comprados
                 }
 
-
-            //Enviar mensaje a administradores de tienda y al cliente ** ACTIVAR **
-                $this->email_cliente($row->id);
-                $this->email_admon($row->id);
-                //if ( $estado_pedido == 3 ) { $this->email_admon($row->id); }
+            //Enviar e-mails a administradores de tienda y al cliente
+                if ( ENV == 'production' )
+                {
+                    $this->email_cliente($row->id);
+                    $this->email_admon($row->id);
+                    //if ( $estado_pedido == 3 ) { $this->email_admon($row->id); }
+                }
         }
 
         return $meta_id;
+    }
+
+    /**
+     * Crea un registro en la tabla meta, con los datos recibidos tras en la 
+     * ejecución de la página de confirmación por parte de Pagos On Line (POL).
+     */
+    function json_confirmacion($pedido_id)
+    {
+        //Datos POL
+            $arr_confirmacion_pol = $this->input->post();
+            $arr_confirmacion_pol['ip_address'] = $this->input->ip_address();
+            $json_confirmacion_pol = json_encode($arr_confirmacion_pol);
+        
+        //Construir registro
+            $registro['tabla_id'] = 3000;  //Pedido
+            $registro['elemento_id'] = $pedido_id;
+            $registro['relacionado_id'] = 0;
+            $registro['dato_id'] = 3005;  //Ver: parámetros > metadatos
+            $registro['editado'] = date('Y-m-d H:i:s');
+            $registro['valor'] = $json_confirmacion_pol;
+        
+        //Guardar
+            $this->db->insert('meta', $registro);
+        
+        return $this->db->insert_id();
+    }
+
+    /**
+     * Actualiza el campo pedido.estado_pedido dependiendo de los datos
+     * que se tengan de la transacción en Pagos On Line
+     * 2020-08-12
+     */
+    function act_estado($pedido_id, $usuario_id)
+    {
+        //Valores
+            $codigo_respuesta_pol = $this->codigo_respuesta_pol($pedido_id);
+            $estado_pedido = $this->estado_pedido_pol($codigo_respuesta_pol);
+            
+        //Registro
+            $arr_row['codigo_respuesta_pol'] = $codigo_respuesta_pol;
+            $arr_row['estado_pedido'] = $estado_pedido;
+            $arr_row['editado_usuario_id'] = $usuario_id;
+            $arr_row['confirmado'] = date('Y-m-d H:i:s');
+            
+        //Actualizar
+            $this->act_pedido($pedido_id, $arr_row);
+            
+        return $codigo_respuesta_pol;
+    }
+
+    /**
+     * Devuelve el código de respuesta de Pagos On Line tomado de los datos de POL guardados en la 
+     * tabla meta tras la confirmación del resultado de la transacción de pago.
+     * 2020-08-12
+     */
+    function codigo_respuesta_pol($pedido_id)
+    {
+        $codigo_respuesta_pol = 0; //Valor inicial
+        
+        $condicion = "tabla_id = 3000 AND dato_id = 3005 AND elemento_id = {$pedido_id} ORDER BY id DESC";
+        $json = $this->Pcrn->campo('meta', $condicion, 'valor');
+        
+        if ( strlen($json) > 0 ) 
+        {
+            $arr_confirmacion = json_decode($json, TRUE);
+            $codigo_respuesta_pol = $arr_confirmacion['codigo_respuesta_pol']; 
+        }
+        
+        return $codigo_respuesta_pol;
+    }
+    
+    /**
+     * Devuelve el código del estado de un pedido dependidendo de los datos de POL guardados
+     * en la tabla meta tras la confirmación del resultado de la transacción de pago.
+     * 2020-08-12
+     */
+    function estado_pedido_pol($codigo_respuesta_pol)
+    {
+        $estado_pedido = 2; //Valor inicial
+        if ( $codigo_respuesta_pol == 1 ) { $estado_pedido = 3; }     //Pago confirmado
+        
+        return $estado_pedido;
     }
 
 // GESTIÓN DE ASIGNACIÓN DE PRODUCTOS DIGITALES
@@ -1123,14 +1190,8 @@ class Pedido_Model extends CI_Model{
         return $productos;
     }
     
-// Comisión para Pagos On Line
-//-----------------------------------------------------------------------------
-    
     /**
      * Valor total del pedido, calculado desde pedido_detalle
-     * 
-     * @param type $pedido_id
-     * @return type
      */
     function valor_total($pedido_id)
     {
@@ -1150,9 +1211,6 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Valor actual de la comisión a POL guardada en la tabla pedido_detalle
-     * 
-     * @param type $pedido_id
-     * @return type
      */
     function comision_pol_actual($pedido_id)
     {
@@ -1174,9 +1232,7 @@ class Pedido_Model extends CI_Model{
     }
     
     /**
-     * Calcula el valor de la comisión cobrada por POL en una transacción de
-     * ventas
-     * 
+     * Calcula el valor de la comisión cobrada por POL en una transacción de ventas
      */
     function comision_pol($pedido_id)
     {
@@ -1208,7 +1264,6 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Actualiza el valor de la comisión pol en la tabla pedido_detalle
-     * 
      */
     function act_comision_pol($pedido_id)
     {
@@ -1232,31 +1287,6 @@ class Pedido_Model extends CI_Model{
 // 
 //-----------------------------------------------------------------------------
     
-    /**
-     * Actualiza el campo pedido.estado_pedido dependiendo de los datos
-     * que se tengan de la transacción en Pagos On Line
-     * 
-     * @param type $pedido_id
-     * @param type $usuario_id
-     * @return type}
-     */
-    function act_estado($pedido_id, $usuario_id)
-    {
-        //Valores
-            $codigo_respuesta_pol = $this->codigo_respuesta_pol($pedido_id);
-            $estado_pedido = $this->estado_pedido_pol($codigo_respuesta_pol);
-            
-        //Registro
-            $registro['codigo_respuesta_pol'] = $codigo_respuesta_pol;
-            $registro['estado_pedido'] = $estado_pedido;
-            $registro['editado_usuario_id'] = $usuario_id;
-            
-        //Actualizar
-            $this->act_pedido($pedido_id, $registro);
-            
-        return $estado_pedido;
-    }
-    
     function act_estado_pendientes()
     {
         //Seleccionar los pedidos pendientes
@@ -1273,6 +1303,9 @@ class Pedido_Model extends CI_Model{
             
         return $pedidos->num_rows();
     }
+
+// NOTIFICACIÓN EMAIL
+//-----------------------------------------------------------------------------
     
     /**
      * Tras la confirmación POL del pedido, se envía un mensaje de estado del pedido
@@ -1304,6 +1337,9 @@ class Pedido_Model extends CI_Model{
             
     }
     
+    /**
+     * String HTML con mensaje para enviar por email administrador
+     */
     function mensaje_admon($row_pedido)
     {
         $data['row_pedido'] = $row_pedido ;
@@ -1316,9 +1352,6 @@ class Pedido_Model extends CI_Model{
     
     /**
      * HTML del mensaje que se envía tras la actualización del estado de un pedido
-     * 
-     * @param type $row_pedido
-     * @return type
      */
     function mensaje_actualizacion($row_pedido)
     {
@@ -1331,10 +1364,7 @@ class Pedido_Model extends CI_Model{
     }
     
     /**
-     * Tras la confirmación POL del pedido, se envía un mensaje de estado del pedido
-     * al cliente
-     * 
-     * @param type $pedido_id
+     * Envía Email a cliente, estado del pedido Tras la confirmación POL del pedido
      */
     function email_cliente($pedido_id)
     {
@@ -1353,15 +1383,11 @@ class Pedido_Model extends CI_Model{
             $this->email->subject($subject);
             $this->email->message($this->mensaje_admon($row_pedido));
             
-            $this->email->send();   //Enviar
-            
+            $this->email->send();   //Enviar       
     }
     
     /**
-     * Tras edición de los datos administrativos de un pedido, se envía un
-     * e-mail de estado del pedido al cliente
-     * 
-     * @param type $pedido_id
+     * Envía e-mail de estado del pedido al cliente Tras edición de los datos logísticos de un pedido
      */
     function email_actualizacion($pedido_id)
     {
@@ -1384,73 +1410,6 @@ class Pedido_Model extends CI_Model{
             $this->email->send();   //Enviar
             
     }
-    
-    /**
-     * Crea un registro en la tabla meta, con los datos recibidos tras en la 
-     * ejecución de la página de confirmación por parte de Pagos On Line (POL).
-     * 
-     * @param type $pedido_id
-     * @return type
-     */
-    function json_confirmacion($pedido_id)
-    {
-        //Datos POL
-            $arr_confirmacion_pol = $this->input->post();
-            $arr_confirmacion_pol['ip_address'] = $this->input->ip_address();
-            $json_confirmacion_pol = json_encode($arr_confirmacion_pol);
-        
-        //Construir registro
-            $registro['tabla_id'] = 3000;  //Pedido
-            $registro['elemento_id'] = $pedido_id;
-            $registro['relacionado_id'] = 0;
-            $registro['dato_id'] = 3005;  //Ver: parámetros > metadatos
-            $registro['editado'] = date('Y-m-d H:i:s');
-            $registro['valor'] = $json_confirmacion_pol;
-        
-        //Guardar
-            $this->db->insert('meta', $registro);
-        
-        return $this->db->insert_id();
-    }
-    
-    /**
-     * Devuelve el código de respuesta de Pagos On Line
-     * tomado de los datos de POL guardados en la tabla meta tras la 
-     * confirmación del resultado de la transacción de pago.
-     * 
-     */
-    function codigo_respuesta_pol($pedido_id)
-    {
-        $codigo_respuesta_pol = 0; //Valor inicial
-        
-        $condicion = "tabla_id = 3000 AND dato_id = 3005 AND elemento_id = {$pedido_id} ORDER BY id DESC";
-        $json = $this->Pcrn->campo('meta', $condicion, 'valor');
-        
-        if ( strlen($json) > 0 ) 
-        {
-            $arr_confirmacion = json_decode($json, TRUE);
-            $codigo_respuesta_pol = $arr_confirmacion['codigo_respuesta_pol']; 
-        }
-        
-        return $codigo_respuesta_pol;
-    }
-    
-    /**
-     * Devuelve el código del estado de un pedido dependidendo 
-     * de los datos de POL guardados en la tabla meta tras la confirmación del resultado
-     * de la transacción de pago.
-     * 
-     * @param type $codigo_respuesta_pol
-     * @return int
-     */
-    function estado_pedido_pol($codigo_respuesta_pol)
-    {
-        $estado_pedido = 2; //Valor inicial
-        if ( $codigo_respuesta_pol == 1 ) { $estado_pedido = 3; }     //Pago confirmado
-        
-        return $estado_pedido;
-    }
-    
     
     /**
      * Actualiza el campo producto.cant_disponibles después de que se confirma el pago de un pedido

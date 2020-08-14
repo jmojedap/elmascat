@@ -13,8 +13,6 @@
         });
     });
 
-
-
     //Ajax
     function guardar_detalle(){
         $.ajax({        
@@ -24,7 +22,8 @@
                 producto_id : producto_id,
                 cantidad : cantidad
             },
-            success: function(){
+            success: function(response){
+                console.log(response);
                 window.location = base_url + 'pedidos/carrito';
             }
         });

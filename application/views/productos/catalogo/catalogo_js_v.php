@@ -11,6 +11,7 @@
         $('.ajax_add_to_cart_button').click(function(){
             producto_id = $(this).data('producto_id');
             guardar_detalle();
+            return false;
         });
     });
     
@@ -25,7 +26,8 @@
                 producto_id : producto_id,
                 cantidad : 1
             },
-            success: function(){
+            success: function(response){
+                console.log(response);
                 window.location = base_url + 'pedidos/carrito';
             }
         });

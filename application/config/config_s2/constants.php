@@ -108,9 +108,15 @@ define('PATH_CONTENT', 'content/');                     //Carpeta de contenido d
 define('PATH_UPLOADS', 'uploads/');
 define('URL_CONTENT', 'https://www.districatolicas.com/tienda/content/');  //URL de la carpeta de contenido de la aplicación
 define('URL_RESOURCES', 'https://www.districatolicas.com/tienda/resources/');
+define('URL_APP', 'https://www.districatolicas.com/tienda/');
+define('URL_API', 'https://www.districatolicas.com/tienda/');
+define('ENV', 'production');
 
 define('TPL_ADMIN', 'templates/admin_pml/main_v');          //Vista plantilla del front
 define('TPL_FRONT', 'templates/polo/main_v');          //Vista plantilla del front
 
 define('K_RCSK', '6LfwTtgUAAAAAFQYAKdRfPMsTYWHw5SAgX2gwUda');   //ReCaptcha V3 SiteKey
 define('K_RCSC', '6LfwTtgUAAAAAJjKiRm-UTwhA_MnDXpAY_Zm4089');   //ReCaptcha V3 Clave Secreta
+
+define('K_FBAI', '629784611201413');                            //Facebook App ID
+define('K_FBAK', '9062741e64c3cbe8b9ddb91d2d6921d2');           //Facebook App Secret Key

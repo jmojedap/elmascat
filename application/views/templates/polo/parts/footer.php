@@ -29,7 +29,7 @@
                                 <a href="https://www.instagram.com/districatolicas/" target="_blank">
                                     <?php
                                         $att_instagram = array(
-                                            'src' => RUTA_IMG . 'app/instagram.png',
+                                            'src' => URL_IMG . 'app/instagram.png',
                                             'width' => '32px'
                                         );
                                     ?>

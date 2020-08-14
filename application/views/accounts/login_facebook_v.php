@@ -5,6 +5,8 @@
     }
 </style>
 
+<?php $this->load->view('accounts/login_facebook_script_v') ?>
+
 <div id="login_app" class="text-center">
     <?php if ( $this->uri->segment(3) == 'suscriptor' ) { ?>
         <div class="alert alert-success">
@@ -39,12 +41,18 @@
         <div class="form-group">
             <button type="submit" class="btn btn-polo-lg btn-block">Ingresar</button>
         </div>
+
+        <!-- Botón Login con Facebook -->
+        <div class="form-group">
+            <div class="fb-login-button"
+                data-size="large" data-button-type="login_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" data-width=""
+                scope="public_profile,email" onlogin="checkLoginState();">
+            </div>
+        </div>
         
         <div class="form-group clearfix">
             <a href="<?php echo base_url('usuarios/recuperar') ?>">¿Olvidaste los datos de tu cuenta?</a>
         </div>
-        
-        
     </form>
 
     <br/>
@@ -59,10 +67,12 @@
     <p>
         <a class="btn-polo w120p" href="<?php echo base_url('accounts/signup') ?>">Regístrate</a>
     </p>
+
+    
 </div>
 
 <script>
-    var form_destination = url_app + 'app/validate_login';
+    var form_destination = app_url + 'app/validate_login';
     new Vue({
         el: '#login_app',
         data: {

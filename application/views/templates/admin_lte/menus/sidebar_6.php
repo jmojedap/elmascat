@@ -53,13 +53,6 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         
         <ul class="sidebar-menu">
-            <li class="header">NAVEGACIÓN</li>
-            
-            <li class="<?= $clases_m0['usuarios'] ?>">
-                <a href="<?= base_url() ?>usuarios/explorar">
-                    <i class="fa fa-user"></i> <span>Usuarios</span>
-                </a>
-            </li>
             <li class="<?= $clases_m0['pedidos'] ?>">
                 <a href="<?= base_url() ?>pedidos/explorar">
                     <i class="fa fa-shopping-cart"></i> <span>Pedidos</span>
@@ -69,6 +62,11 @@
             <li class="<?= $clases_m0['productos'] ?>">
                 <a href="<?= base_url() ?>productos/explorar">
                     <i class="fa fa-book"></i> <span>Productos</span>
+                </a>
+            </li>
+            <li class="<?= $clases_m0['usuarios'] ?>">
+                <a href="<?= base_url() ?>usuarios/explorar">
+                    <i class="fa fa-user"></i> <span>Usuarios</span>
                 </a>
             </li>
         </ul>

@@ -47,6 +47,10 @@ class Accounts extends CI_Controller {
             } else {
                 $data['head_title'] = APP_NAME;
                 $data['view_a'] = 'accounts/login_v';
+                if ( $this->uri->segment(3) == 'facebook' )
+                {
+                    $data['view_a'] = 'accounts/login_facebook_v';
+                }
                 //$data['g_client'] = $this->Account_model->g_client(); //Para botón login con Google
                 $this->load->view('templates/polo/main_v', $data);
             }
@@ -502,4 +506,38 @@ class Accounts extends CI_Controller {
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+// LOGIN CON CUENTA DE FACEBOOK
+//-----------------------------------------------------------------------------
+
+    function facebook_login()
+    {
+        if ( $this->session->userdata('user_id') ) {
+            redirect('app/logged');
+        } else {
+            $this->load->view('accounts/page_facebook_login_v');
+        }
+    }
+
+    /**
+     * Recibe por POST Access Token de usuario de facebook, se valida.
+     * También recibe por POST datos del usuario de facebook para crear usuario en la base de datos
+     * o iniciar sesión si ya existe.
+     * 2020-08-14
+     */
+    function validate_facebook_login()
+    {
+        $data = array('status' => 0, 'message' => 'Authentication failed');
+        $token_validation = $this->Account_model->facebook_validate_token($this->input->post('input_token'));
+
+        if ( $token_validation->is_valid )
+        {
+            //$data = array('status' => 1, 'message' => 'Authentication was successful');
+            $data = $this->Account_model->facebook_set_login();
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+    
 }

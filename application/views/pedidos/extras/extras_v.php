@@ -3,7 +3,7 @@
 <div id="app_extras">
     <div class="row">
         <div class="col-md-6">
-            <table class="table bg-blanco">
+            <table class="table bg-white">
                 <thead>
                     <th>Concepto</th>
                     <th>Valor</th>
@@ -31,8 +31,8 @@
                     Nuevo
                 </button>
             </div>
-            <div class="panel mb-1">
-                <div class="panel-body" id="new_extra">
+            <div class="card mb-1">
+                <div class="card-body" id="new_extra">
                     <?php $this->load->view('pedidos/extras/form_v') ?>
                 </div>
             </div>

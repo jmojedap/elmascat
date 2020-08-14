@@ -160,8 +160,6 @@
 </div>
 
 <script>
-    var app_url = '<?php echo base_url() ?>';
-    var url_api = '<?php echo base_url() ?>';
     new Vue({
         el: '#signup_app',
         data: {

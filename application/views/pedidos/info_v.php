@@ -64,7 +64,7 @@
             success: function(response){
                 if (response.qty_affected > 0) {
                     toastr['success']('Pedido reiniciado');
-                    $('#btn_reiniciar_pedido').removeClass('btn-default');
+                    $('#btn_reiniciar_pedido').removeClass('btn-light');
                     $('#btn_reiniciar_pedido').addClass('btn-success');
                     $('#btn_reiniciar_pedido').html('<i class="fa fa-check"></i> Reiniciado');
                     setTimeout(function(){ 
@@ -79,7 +79,7 @@
 </script>
 
 <div class="mb-2">
-    <a href="<?php echo base_url("pedidos/reporte/{$row->id}") ?>" class="btn btn-default w3" target="_blank" title="Imprimir reporte resumen">
+    <a href="<?php echo base_url("pedidos/reporte/{$row->id}") ?>" class="btn btn-light w3" target="_blank" title="Imprimir reporte resumen">
         <i class="fa fa-print"></i> Resumen
     </a>
     <?php if ( $row->estado_pedido == 1 ) { ?>
@@ -89,23 +89,23 @@
         </a>
     <?php } ?>
     <?php if ( $row->estado_pedido < 3 && $this->session->userdata('rol_id') <= 1 ) { ?>
-        <button class="btn btn-default w120p" title="Reiniciar el pedido para intentar nuevamente el pago" id="btn_reiniciar_pedido">
+        <button class="btn btn-light w120p" title="Reiniciar el pedido para intentar nuevamente el pago" id="btn_reiniciar_pedido">
             <i class="fa fa-sync-alt"></i>
             Reiniciar
         </button>
     <?php } ?>
     <?php if ( $this->session->userdata('rol_id') == 0 ) { ?>
-        <a href="<?php echo base_url("admin/tablas/pedido/edit/{$row->id}") ?>" class="btn btn-default w120p" title="Edición del registro en la base de datos" target="_blank">
+        <a href="<?php echo base_url("admin/tablas/pedido/edit/{$row->id}") ?>" class="btn btn-light w120p" title="Edición del registro en la base de datos" target="_blank">
             <i class="fa fa-edit"></i>
             Editar Row
         </a>
     <?php } ?>
 </div>
 
-<div class="row">
+<div class="row mb-2">
     <div class="col col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card card-default">
+            <div class="card-header">
                 <i class="fa fa-user"></i>
                 Cliente
             </div>
@@ -175,8 +175,8 @@
         </div>
     </div>
     <div class="col col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card card-default">
+            <div class="card-header">
                 <i class="fa fa-map-marker"></i>
                 Envío
             </div>
@@ -225,8 +225,8 @@
         </div>
     </div>
     <div class="col col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card card-default">
+            <div class="card-header">
                 Gestión
             </div>
 
@@ -276,11 +276,10 @@
     </div>
 </div>
 
-<div class="panel panel-success">
-    <div class="panel-heading">Productos</div>
-    <!-- /.panel-header -->
-    <div class="panel-body no-padding">
-        <table class="table table-default bg-blanco">
+<div class="card mb-2">
+    <div class="card-header">Productos</div>
+    
+        <table class="table bg-white">
             <thead class="text-c">
                 <th width="45px;" class="warning">ID</th>
                 <th>Referencia</th>
@@ -320,7 +319,7 @@
                         //Descuento
                             $descuento = $row_detalle->cantidad * ($row_detalle->precio_nominal - $row_detalle->precio);
 
-                        //Checkpanel
+                        //Checkcard
                             $att_check = array(
                                 'class' =>  'check_registro',
                                 'data-id' => $row_detalle->id,
@@ -350,15 +349,13 @@
                     <?php endforeach ?>
             </tbody>
         </table>
-    </div>
-    <!-- /.panel-body -->
 </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading">Extras</div>
-    <!-- /.panel-header -->
-    <div class="panel-body no-padding">
-        <table class="table table-bordered">
+<div class="card card-default">
+    <div class="card-header">Extras</div>
+    <!-- /.card-header -->
+    <div class="table-responsive">
+        <table class="table">
             <thead>
                 <th>Concepto</th>
                 <th>Nota</th>
@@ -388,5 +385,5 @@
             </tbody>
         </table>
     </div>
-    <!-- /.panel-body -->
+    <!-- /.card-body -->
 </div>

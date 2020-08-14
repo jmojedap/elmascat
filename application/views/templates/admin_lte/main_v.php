@@ -33,6 +33,9 @@
                     <?php if ( ! is_null($nav_2) ) { ?>
                         <?php $this->load->view($nav_2); ?>
                     <?php } ?>
+                    <?php if ( ! is_null($nav_3) ) { ?>
+                        <?php $this->load->view($nav_3); ?>
+                    <?php } ?>
                     <?php $this->load->view($vista_a); ?>
                 </section><!-- /.content -->
             </div><!-- /.content-wrapper -->

@@ -1,9 +1,6 @@
 <script>
-    const app_url = '<?php echo base_url() ?>';
-    const url_api = '<?php echo URL_API ?>';
     const app_r = '<?php echo $this->session->userdata('role_abbr') ?>';
     var app_cf = '<?php echo $this->uri->segment(1) . '/' . $this->uri->segment(2); ?>';
-
 
     //Set New CF (Controller Function), and load sections
     function load_cf(new_cf)
@@ -32,6 +29,7 @@
         $('#view_a').html('Cargando...');
         $('#view_b').html('');
         
+        if ( menu_type === 'element_description' ) { $('#nav_2').html(''); }
         if ( menu_type === 'nav_1' ) { $('#nav_2').html(''); }
         if ( menu_type === 'nav_2' ) { $('#nav_3').html(''); }
 

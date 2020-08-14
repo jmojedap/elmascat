@@ -54,7 +54,8 @@
                 producto_id : producto_id,
                 cantidad : cantidad
             },
-            success: function(){
+            success: function(response){
+                console.log(response);
                 window.location = base_url + 'pedidos/carrito';
             }
         });
@@ -67,7 +68,7 @@
             <div class="product-essential">
                 <form action="#" method="post" id="product_addtocart_form">
                     <!-- EVITAR CARGUE DE IMÁGENES GRANDES TEMPORAL 2020-05-07 -->
-                    <?php if ( $imagenes->num_rows() > 1 ) { ?>
+                    <?php if ( $imagenes->num_rows() > 1000 ) { ?>
                         <div class="product-img-box col-lg-6 col-sm-6 col-xs-12">
                             <ul class="moreview" id="moreview">
                                 <?php foreach ($imagenes->result() as $row_archivo) { ?>

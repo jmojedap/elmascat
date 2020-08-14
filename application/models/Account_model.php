@@ -515,6 +515,98 @@ class Account_model extends CI_Model{
         return $data;
     }
 
+// LOGIN Y REGISTRO CON CUENTA DE USUARIO DE FACEBOOK
+//-----------------------------------------------------------------------------
+
+    /**
+     * Valida si un user access token recibido es válido, se verifica teniendo en cuenta
+     * un app_access_token generado inicialmente.
+     * 2020-08-14
+     */
+    function facebook_validate_token($input_token)
+    {
+        $app_access_token = $this->facebook_get_app_access_token();
+        $url = "https://graph.facebook.com/debug_token?input_token={$input_token}&access_token={$app_access_token}";    
+
+        $content = $this->pml->get_url_content($url);
+        $token_validation = json_decode($content);
+
+        return $token_validation->data;
+    }
+
+    /**
+     * String, Genera un app_access_token de la Aplicación de Facebook asociada esta WebApp
+     * 2020-08-14
+     */
+    function facebook_get_app_access_token()
+    {
+        $client_id = K_FBAI;        //Ver config/constants.php
+        $client_secret = K_FBAK;    //Ver config/constants.php
+        $url = "https://graph.facebook.com/oauth/access_token?client_id={$client_id}&client_secret={$client_secret}&grant_type=client_credentials";
+
+        $str_content = $this->pml->get_url_content($url);   //Recibe JSON
+        $content = json_decode($str_content);               //Se convierte en un objeto 
+
+        //devuelve solo el string de access_token
+        return $content->access_token;
+    }
+
+    /**
+     * Tras validar el token de usuario de facebook, se realiza el login de usuario con esa cuenta
+     * Se verifica si el email, ya está registrado, y se inicia sesión.
+     * Si no existe, se crea usuario con los datos recibidos y se inicia sesión.
+     * 2020-08-14
+     */
+    function facebook_set_login()
+    {
+        $data['status'] = 0;    //Resultado inicial por defecto        
+
+        //Verificar si existe usuario con ese e-mail
+        $row_user = $this->Db_model->row('usuario', "email = '{$this->input->post('email')}'");
+
+        //Create session or insert new user
+            if ( ! is_null($row_user) )
+            {
+                $data['status'] = 1;
+                $data['message'] = 'Ya estás registrado: ' . $row_user->nombre;
+                $this->load->model('Login_model');
+                $this->Login_model->crear_sesion($row_user->username, TRUE);
+                //$this->create_session($row_user->username);
+            } else {
+                //Do not exists, insert new user
+                $data['status'] = 1;
+                $data['message'] = 'No estás registrado, crearemos tu cuenta';
+                //$this->Account_model->facebook_register();
+            }
+        
+        return $data;
+    }
+
+    function facebook_register()
+    {
+        //Construir registro del nuevo user
+            $arr_row['first_name'] = $this->input->post('first_name');
+            $arr_row['last_name'] = $this->input->post('last_name');
+            $arr_row['display_name'] = $arr_row['first_name'] . ' ' . $arr_row['last_name'];
+            //$arr_row['username'] = str_replace('@gmail.com', '', $g_userinfo['email']);
+            $arr_row['email'] = $this->input->post('email');
+            $arr_row['role'] = 31;         //31 Registrado
+            $arr_row['status'] = 1;        //Activo
+
+        //Insert in table "user"
+            $this->load->model('User_model');
+            $data = $this->User_model->insert($arr_row);
+
+        //Create user session
+            if ( $data['user_id'] > 0 )
+            {
+                $this->create_session($arr_row['username']);
+                //$this->Account_model->g_save_account($result['user_id']);
+            }
+
+        return $data;
+    }
+
 // Checkeo de usuarios
 //-----------------------------------------------------------------------------
 

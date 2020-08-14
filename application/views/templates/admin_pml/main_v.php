@@ -11,7 +11,6 @@
     </head>
     <body class="skin-dark-blue">
         <div class="wrapper">
-
             <?php $this->load->view('templates/admin_pml/parts/header'); ?>
             <?php $this->load->view('templates/admin_pml/parts/sidebar'); ?>
 

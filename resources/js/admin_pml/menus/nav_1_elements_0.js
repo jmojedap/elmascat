@@ -6,7 +6,7 @@ var nav_1_elements = [
         cf: 'pedidos/explorar',
         anchor: true,
         subelements: [],
-        sections: ['pedidos/explorar']
+        sections: ['pedidos/explorar', 'pedidos/info', 'pedidos/payu', 'pedidos/extras', 'pedidos/edit', 'pedidos/test']
     },
     {
         text: 'Productos',

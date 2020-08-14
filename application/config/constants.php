@@ -96,7 +96,6 @@ define('URL_IMG', 'http://localhost/districatolicas/resources/images/');
 define('URL_ASSETS', 'http://localhost/districatolicas/assets/');
 define('URL_RECURSOS', 'http://localhost/districatolicas/resources/');
 define('URL_UPLOADS', 'http://www.districatolicas.com/tienda/uploads/');
-//define('URL_UPLOADS', 'http://localhost/districatolicas/uploads/');
 define('PTL_ADMIN', 'templates/admin_lte/main_v');       //Vista plantilla de administración
 define('PTL_ADMIN_F', 'plantillas/admin_lte/');                //Folder de la carpeta de la plantilla de administración
 define('PTL_FRONT', 'plantillas/polo/plantilla_v');          //Vista plantilla del front
@@ -109,9 +108,15 @@ define('PATH_CONTENT', 'content/');                     //Carpeta de contenido d
 define('PATH_UPLOADS', 'uploads/');
 define('URL_CONTENT', 'http://localhost/districatolicas/content/');  //URL de la carpeta de contenido de la aplicación
 define('URL_RESOURCES', 'http://localhost/districatolicas/resources/');
+define('URL_APP', 'http://localhost/districatolicas/');
+define('URL_API', 'http://localhost/districatolicas/');
+define('ENV', 'development');
 
 define('TPL_ADMIN', 'templates/admin_pml/main_v');          //Vista plantilla del front
 define('TPL_FRONT', 'templates/polo/main_v');          //Vista plantilla del front
 
 define('K_RCSK', '6LfwTtgUAAAAAFQYAKdRfPMsTYWHw5SAgX2gwUda');   //ReCaptcha V3 SiteKey
 define('K_RCSC', '6LfwTtgUAAAAAJjKiRm-UTwhA_MnDXpAY_Zm4089');   //ReCaptcha V3 Clave Secreta
+
+define('K_FBAI', '629784611201413');                            //Facebook App ID
+define('K_FBAK', '9062741e64c3cbe8b9ddb91d2d6921d2');           //Facebook App Secret Key

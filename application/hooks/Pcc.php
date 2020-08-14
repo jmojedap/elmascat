@@ -142,7 +142,8 @@ class Pcc {
         $funciones_publicas[] = 'accounts/validate_signup';
         $funciones_publicas[] = 'accounts/register';
         $funciones_publicas[] = 'accounts/registered';
-        $funciones_publicas[] = 'accounts/fb_login';
+        $funciones_publicas[] = 'accounts/facebook_login';
+        $funciones_publicas[] = 'accounts/validate_facebook_login';
         $funciones_publicas[] = 'accounts/check_email';
         $funciones_publicas[] = 'accounts/fast_register';
 
