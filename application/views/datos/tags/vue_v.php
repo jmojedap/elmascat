@@ -5,7 +5,6 @@
             this.get_list();
         },
         data: {
-            app_url: '<?= base_url() ?>',
             list: [],
             form_values_new: { nombre_tag: '', descripcion: '', padre_id: '00'},
             form_values: {nombre_tag: '', descripcion: '', padre_id: '00'},
@@ -14,7 +13,7 @@
         },
         methods: {
             get_list: function(){
-                axios.get(this.app_url + 'datos/get_tags/')
+                axios.get(url_app + 'datos/get_tags/')
                 .then(response => {
                     this.list = response.data.list;
                 })
@@ -30,7 +29,7 @@
                 this.save();
             },
             save: function(){
-                axios.post(this.app_url + 'datos/save_tag/' + this.element_id, $('#tag_form').serialize())
+                axios.post(url_app + 'datos/save_tag/' + this.element_id, $('#tag_form').serialize())
                 .then(response => {
                     $('#modal_form').modal('hide');
                     if ( response.data.status == 1 ) {
@@ -57,7 +56,7 @@
                 }
             },
             delete_element: function(){
-                axios.get(this.app_url + 'datos/delete_tag/' + this.element_id)
+                axios.get(url_app + 'datos/delete_tag/' + this.element_id)
                 .then(response => {
                     if ( response.data.status == 1 ) {
                         this.list.splice(this.key, 1);

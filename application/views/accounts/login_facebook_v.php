@@ -72,7 +72,7 @@
 </div>
 
 <script>
-    var form_destination = app_url + 'app/validate_login';
+    var form_destination = url_app + 'app/validate_login';
     new Vue({
         el: '#login_app',
         data: {
@@ -85,7 +85,7 @@
                    .then(response => {
                         if ( response.data.status == 1 )
                         {
-                           window.location = app_url + 'app/logged';
+                           window.location = url_app + 'app/logged';
                         } else {
                             this.messages = response.data.messages;
                             this.status = response.data.status;

@@ -39,6 +39,16 @@
     border: 1px solid #eaeaea;
 }
 
+.btn-wa{
+    color: white;
+    background-color: #01e675;
+}
+
+.btn-wa:hover{
+    color: white;
+    background-color: #00d369;
+}
+
 /*ETIQUETAS TAG*/
 
 .tag {

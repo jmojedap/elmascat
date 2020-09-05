@@ -12,6 +12,48 @@ class Usuarios extends CI_Controller{
         //Para definir hora local
         date_default_timezone_set("America/Bogota");
     }
+
+//EXPLORACIÓN
+//---------------------------------------------------------------------------------------------------
+
+    function explorar()
+    {
+        redirect('usuarios/explore');
+    }
+
+    /** Exploración de Pedidos */
+    function explore($num_page = 1)
+    {
+        //Identificar filtros de búsqueda
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        //Datos básicos de la exploración
+            $data = $this->Usuario_model->explore_data($filters, $num_page);
+        
+        //Opciones de filtros de búsqueda
+            $data['options_role'] = $this->Item_model->options('categoria_id = 58', 'Todos');
+            
+        //Arrays con valores para contenido en lista
+            $data['arr_roles'] = $this->Item_model->arr_cod('categoria_id = 58');
+            $data['arr_genders'] = $this->Item_model->arr_cod('categoria_id = 59');
+            $data['arr_id_number_types'] = $this->Item_model->arr_item('53', 'id_interno_num_abreviatura');
+            
+        //Cargar vista
+            $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Listado de Pedidos, filtrados por búsqueda, JSON
+     */
+    function get($num_page = 1)
+    {
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        $data = $this->Usuario_model->get($filters, $num_page);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
 //---------------------------------------------------------------------------------------------------
 //GESTIÓN DE USUARIOS
@@ -19,7 +61,7 @@ class Usuarios extends CI_Controller{
     /**
      * Exploración y búsqueda de productos, administración
      */
-    function explorar()
+    function explorar_ant()
     {
         //Datos básicos de la exploración
             $data = $this->Usuario_model->data_explorar();
@@ -81,17 +123,20 @@ class Usuarios extends CI_Controller{
         echo count($seleccionados);
     }
     
-    function nuevo()
+    /**
+     * Formulario creación de nuevo usuario
+     */
+    function add()
     {
         $this->load->helper('string');
         
         //Array data espefícicas
-            $data['titulo_pagina'] = 'Usuarios';
-            $data['subtitulo_pagina'] = 'Nuevo';
-            $data['vista_menu'] = 'usuarios/explorar/menu_v';
-            $data['vista_a'] = 'usuarios/nuevo/nuevo_v';
+            $data['head_title'] = 'Usuarios';
+            $data['head_subtitle'] = 'Nuevo';
+            $data['nav_2'] = 'usuarios/explore/menu_v';
+            $data['view_a'] = 'usuarios/add/add_v';
         
-        $this->load->view(PTL_ADMIN, $data);
+        $this->load->view(TPL_ADMIN, $data);
     }
     
     function insertar()

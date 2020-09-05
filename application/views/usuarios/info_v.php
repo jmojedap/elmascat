@@ -35,9 +35,9 @@
     function set_activation_key(){
         $.ajax({        
             type: 'POST',
-            url: app_url + 'usuarios/set_activation_key/' + user_id,
+            url: url_app + 'usuarios/set_activation_key/' + user_id,
             success: function(response){
-                $('#activation_key').html(app_url + 'usuarios/activar/' + response);
+                $('#activation_key').html(url_app + 'usuarios/activar/' + response);
                 toastr['success']('Se actualizó la clave de activación');
             }
         });

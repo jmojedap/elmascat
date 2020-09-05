@@ -178,7 +178,7 @@
                     .then(response => {
                         console.log(response.data.message);
                         if ( response.data.status == 1 ) {
-                            window.location = app_url + 'accounts/registered/' + response.data.saved_id;
+                            window.location = url_app + 'accounts/registered/' + response.data.saved_id;
                         } else {
                             this.recaptcha_message = response.data.recaptcha_message;
                         }

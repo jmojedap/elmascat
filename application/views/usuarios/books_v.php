@@ -107,20 +107,20 @@
         },
         methods: {
             add_post: function(){
-                axios.get(app_url + 'posts/add_to_user/' + this.book_id + '/' + this.user_id)
+                axios.get(url_app + 'posts/add_to_user/' + this.book_id + '/' + this.user_id)
                 .then(response => {
                     console.log(response.data)
-                    window.location = app_url + 'usuarios/books/' + this.user_id;
+                    window.location = url_app + 'usuarios/books/' + this.user_id;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
             remove_post: function(book_id, meta_id){
-                axios.get(app_url + 'posts/remove_to_user/' + book_id + '/' + meta_id)
+                axios.get(url_app + 'posts/remove_to_user/' + book_id + '/' + meta_id)
                 .then(response => {
                     console.log(response.data)
-                    window.location = app_url + 'usuarios/books/' + this.user_id;
+                    window.location = url_app + 'usuarios/books/' + this.user_id;
                 })
                 .catch(function (error) {
                     console.log(error);

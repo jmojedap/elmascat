@@ -55,10 +55,10 @@
                 params.append('producto_id', this.producto_id);
                 params.append('cantidad', 1);
                 
-                axios.post(app_url + 'pedidos/guardar_detalle/', params)
+                axios.post(url_app + 'pedidos/guardar_detalle/', params)
                 .then(response => {
                     if ( response.data.status == 1 ) {
-                        window.location = app_url + 'pedidos/usuario/';
+                        window.location = url_app + 'pedidos/usuario/';
                     }
                 })
                 .catch(function (error) {

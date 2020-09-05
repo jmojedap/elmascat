@@ -28,7 +28,7 @@
          */
         $('#q_elementos').typeahead({
             ajax: {
-                url: app_url + 'app/arr_elementos_ajax/' + tabla,
+                url: url_app + 'app/arr_elementos_ajax/' + tabla,
                 method: 'post',
                 triggerLength: 2
             },
@@ -64,7 +64,7 @@
     
         $.ajax({        
             type: 'POST',
-            url: app_url + 'meta/guardar/',
+            url: url_app + 'meta/guardar/',
             data: {
                 tabla_id : tabla_id,
                 elemento_id : elemento_id,
@@ -73,7 +73,7 @@
                 orden : cant_elementos
             },
             success: function(){
-                window.location = app_url + 'posts/list/' + relacionado_id;
+                window.location = url_app + 'posts/list/' + relacionado_id;
             }
         });
     }
@@ -83,7 +83,7 @@
         
        $.ajax({
             type: 'POST',
-            url: app_url + 'app/eliminar_meta/',
+            url: url_app + 'app/eliminar_meta/',
             data: {
                 meta_id : meta_id
             },
@@ -101,7 +101,7 @@
         console.log('Reordenando');
         $.ajax({        
             type: 'POST',
-            url: app_url + 'posts/reordenar_lista/' + relacionado_id,
+            url: url_app + 'posts/reordenar_lista/' + relacionado_id,
             data: {
                 str_orden : str_orden
             }

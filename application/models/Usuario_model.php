@@ -14,123 +14,202 @@ class Usuario_model extends CI_Model{
         return $data;
     }
     
-    function buscar($busqueda, $per_page = NULL, $offset = NULL)
+// EXPLORE FUNCTIONS - usuarios/explore
+//-----------------------------------------------------------------------------
+    
+    /**
+     * Array con los datos para la vista de exploración
+     */
+    function explore_data($filters, $num_page)
     {
+        //Data inicial, de la tabla
+            $data = $this->get($filters, $num_page);
         
-        $filtro_rol = $this->filtro_rol($this->session->userdata('usuario_id'));
-
-        //Construir búsqueda
-        //Crear array con términos de búsqueda
-            if ( strlen($busqueda['q']) > 2 )
-            {
-                $concat_campos = $this->Busqueda_model->concat_campos(array('nombre', 'apellidos', 'username', 'no_documento', 'email'));
-                $palabras = $this->Busqueda_model->palabras($busqueda['q']);
-
-                foreach ($palabras as $palabra) {
-                    $this->db->like("CONCAT({$concat_campos})", $palabra);
-                }
-            }
-        
-        //Especificaciones de consulta
-            $this->db->where($filtro_rol); //Filtro según el rol de usuario que se tenga
-            $this->db->order_by('editado', 'DESC');
+        //Elemento de exploración
+            $data['controller'] = 'usuarios';                      //Nombre del controlador
+            $data['cf'] = 'usuarios/explore/';                      //Nombre del controlador
+            $data['views_folder'] = 'usuarios/explore/';           //Carpeta donde están las vistas de exploración
             
-        //Otros filtros
-            if ( $busqueda['rol'] != '' ) { $this->db->where('rol_id', $busqueda['rol']); }    //Rol de usuario
-            if ( $busqueda['sexo'] != '' ) { $this->db->where('sexo', $busqueda['sexo']); }    //Sexo
+        //Vistas
+            $data['head_title'] = 'Usuarios';
+            $data['head_subtitle'] = $data['search_num_rows'];
+            $data['view_a'] = $data['views_folder'] . 'explore_v';
+            $data['nav_2'] = $data['views_folder'] . 'menu_v';
+        
+        return $data;
+    }
+
+    /**
+     * Array con listado de usuarios, filtrados por búsqueda y num página, más datos adicionales sobre
+     * la búsqueda, filtros aplicados, total resultados, página máxima.
+     * 2020-08-01
+     */
+    function get($filters, $num_page, $per_page = 10)
+    {
+        //Referencia
+            $offset = ($num_page - 1) * $per_page;      //Número de la página de datos que se está consultado
+
+        //Búsqueda y Resultados
+            $elements = $this->search($filters, $per_page, $offset);    //Resultados para página
+        
+        //Cargar datos
+            $data['filters'] = $filters;
+            $data['list'] = $this->list($filters, $per_page, $offset);    //Resultados para página
+            $data['str_filters'] = $this->Search_model->str_filters();      //String con filtros en formato GET de URL
+            $data['search_num_rows'] = $this->search_num_rows($data['filters']);
+            $data['max_page'] = ceil($this->pml->if_zero($data['search_num_rows'],1) / $per_page);   //Cantidad de páginas
+
+        return $data;
+    }
+    
+    /**
+     * Query de usuarios, filtrados según búsqueda, limitados por página
+     * 2020-08-01
+     */
+    function search($filters, $per_page = NULL, $offset = NULL)
+    {
+        //Construir consulta
+            $this->db->select('usuario.id, username, display_name, address, institution_name, short_note, email, rol_id AS role, image_id, url_image, url_thumbnail, estado AS status, usuario.ciudad_id AS city_id, celular AS phone_number, telefono, sexo AS gender, fecha_nacimiento AS birth_date, no_documento AS id_number, tipo_documento_id AS id_number_type');
+            
+        //Orden
+            if ( $filters['o'] != '' )
+            {
+                $order_type = $this->pml->if_strlen($filters['ot'], 'ASC');
+                $this->db->order_by($filters['o'], $order_type);
+            } else {
+                $this->db->order_by('editado', 'DESC');
+            }
+            
+        //Filtros
+            $search_condition = $this->search_condition($filters);
+            if ( $search_condition ) { $this->db->where($search_condition);}
             
         //Obtener resultados
-        if ( is_null($per_page) ){
-            $query = $this->db->get('usuario'); //Resultados totales
-        } else {
             $query = $this->db->get('usuario', $per_page, $offset); //Resultados por página
-        }
         
         return $query;
+    }
+
+    /**
+     * String con condición WHERE SQL para filtrar users
+     * 2020-08-01
+     */
+    function search_condition($filters)
+    {
+        $condition = NULL;
+
+        $condition .= $this->role_filter() . ' AND ';
+
+        //q words condition
+        $words_condition = $this->Search_model->words_condition($filters['q'], array('display_name', 'email', 'no_documento', 'short_note'));
+        if ( $words_condition )
+        {
+            $condition .= $words_condition . ' AND ';
+        }
         
+        //Otros filtros
+        if ( $filters['role'] != '' ) { $condition .= "rol_id = {$filters['role']} AND "; }
+        
+        //Quitar cadena final de ' AND '
+        if ( strlen($condition) > 0 ) { $condition = substr($condition, 0, -5);}
+        
+        return $condition;
+    }
+
+    /**
+     * Array Listado elemento resultado de la búsqueda (filtros).
+     * 2020-06-19
+     */
+    function list($filters, $per_page = NULL, $offset = NULL)
+    {
+        $query = $this->search($filters, $per_page, $offset);
+        $list = array();
+
+        foreach ($query->result() as $row)
+        {
+            $row->city_name = $this->App_model->nombre_lugar($row->city_id);  //Cantidad de estudiantes*/
+            /*if ( $row->image_id == 0 )
+            {
+                $first_image = $this->first_image($row->id);
+                $row->url_image = $first_image['url'];
+                $row->url_thumbnail = $first_image['url_thumbnail'];
+            }*/
+            $list[] = $row;
+        }
+
+        return $list;
     }
     
     /**
      * Devuelve la cantidad de registros encontrados en la tabla con los filtros
      * establecidos en la búsqueda
-     * 
-     * @param type $busqueda
-     * @return type
      */
-    function cant_resultados($busqueda)
+    function search_num_rows($filters)
     {
-        $resultados = $this->buscar($busqueda); //Para calcular el total de resultados
-        return $resultados->num_rows();
+        $this->db->select('id');
+        $search_condition = $this->search_condition($filters);
+        if ( $search_condition ) { $this->db->where($search_condition);}
+        $query = $this->db->get('usuario'); //Para calcular el total de resultados
+
+        return $query->num_rows();
     }
     
     /**
-     * Devuelve segmento SQL
-     * 
-     * @param type $usuario_id
-     * @return type 
+     * Devuelve segmento SQL, para filtrar listado de usuarios según el rol del usuario en sesión
+     * 2020-08-01
      */
-    function filtro_rol()
+    function role_filter()
     {
+        $role = $this->session->userdata('role');
+        $condition = 'id = 0';  //Valor por defecto, ningún user, se obtendrían cero user.
         
-        $rol_id = $this->session->userdata('rol_id');
-        $condicion = 'id = 0';  //Valor por defecto, ningún usuario, se obtendrían cero usuarios.
-        
-        if ( $rol_id == 0 ) {
-            //Desarrollador, todos los usuarios
-            $condicion = 'id > 0';
-        } else  {
-            $condicion = 'id > 0';
+        if ( $role <= 2 ) 
+        {   //Desarrollador, todos los user
+            $condition = 'usuario.id > 0';
         }
         
-        
-        return $condicion;
-        
+        return $condition;
     }
     
     /**
-     * Array con los datos para la vista de exploración
+     * Array con options para ordenar el listado de user en la vista de
+     * exploración
      * 
-     * @return string
      */
-    function data_explorar()
+    function order_options()
     {
-        //Elemento de exploración
-            $data['elemento_p'] = 'usuarios';    //Nombre del elemento el plural
-            $data['elemento_s'] = 'usuario';      //Nombre del elemento en singular
-            $data['controlador'] = 'usuarios';   //Nombre del controlador
-            $data['funcion'] = 'explorar';      //Función de exploración
-            $data['cf'] = $data['controlador'] . '/' . $data['funcion'] . '/';      //Controlador función
-            $data['carpeta_vistas'] = 'usuarios/';   //Carpeta donde están las vistas de exploración
-            $data['titulo_pagina'] = 'Usuarios';
+        $order_options = array(
+            '' => '[ Ordenar por ]',
+            'id' => 'ID Usuario',
+            'last_name' => 'Apellidos',
+            'id_number' => 'No. documento',
+        );
         
-        //Paginación
-            $data['per_page'] = 20; //Cantidad de registros por página
-            $data['offset'] = $this->input->get('per_page');
-            
-        //Búsqueda y Resultados
-            $this->load->model('Busqueda_model');
-            $data['busqueda'] = $this->Busqueda_model->busqueda_array();
-            $data['busqueda_str'] = $this->Busqueda_model->busqueda_str();
-            $data['resultados'] = $this->Usuario_model->buscar($data['busqueda'], $data['per_page'], $data['offset']);    //Resultados para página
-            $data['cant_resultados'] = $this->Usuario_model->cant_resultados($data['busqueda']);
-            
-        //Otros
-            $data['url_paginacion'] = base_url("{$data['cf']}?{$data['busqueda_str']}");
-            $data['seleccionados_todos'] = '-'. $this->Pcrn->query_to_str($data['resultados'], 'id');   //Para selección masiva de todos los elementos de la página
+        return $order_options;
+    }
 
-        //Visitas
-            $data['subtitulo_pagina'] = $data['cant_resultados'];
-            $data['vista_a'] = $data['carpeta_vistas'] . 'explorar/explorar_v';
-            $data['vista_menu'] = $data['carpeta_vistas'] . 'explorar/menu_v';
-        
-        return $data;
-    }
-    
-    function editable()
+    /**
+     * Opciones de usuario en campos de autollenado, como agregar usuarios a una conversación
+     * 2019-11-13
+     */
+    function autocomplete($filters, $limit = 50)
     {
-        return TRUE;
+        //Construir condición de búsqueda
+            $search_condition = $this->search_condition($filters);
+        
+        //Especificaciones de consulta
+            $this->db->select('id, CONCAT((display_name), " (",(username), ")") AS value');
+            if ( $search_condition ) { $this->db->where($search_condition);}
+            $this->db->order_by('display_name', 'ASC');
+            $query = $this->db->get('user', $limit); //Resultados por página
+        
+        return $query;
     }
     
+    
+// FIN FUNCIONES EXPLORACIÓN
+//-----------------------------------------------------------------------------
+
     /** 
      * Devuelve render de formulario grocery crud para la edición
      * de datos de usuario

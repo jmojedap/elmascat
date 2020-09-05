@@ -1,22 +1,20 @@
-<?php $this->load->view('assets/toastr'); ?>
 <?php $this->load->view('assets/bootstrap_datepicker'); ?>
-<?php $this->load->view('assets/chosen_jquery'); ?>
+<?php $this->load->view('assets/bs4_chosen'); ?>
 
 <?php 
     $opciones_rol = $this->Item_model->opciones('categoria_id = 58', 'Rol de usuario');
     $opciones_sexo = $this->Item_model->opciones('categoria_id = 59 AND id_interno <= 2', 'Sexo');
-    $opciones_ciudad = $this->App_model->opciones_lugar('tipo_id = 4', 'CR', 'Ciudad');
+    $opciones_ciudad = $this->App_model->opciones_lugar('tipo_id = 4', 1, 'Ciudad');
     $opciones_tipo_documento = $this->Item_model->opciones('categoria_id = 53', 'Tipo documento');
 ?>
 
-<?php $this->load->view($vista_menu); ?>
 <?php $this->load->view('usuarios/nuevo/js_v'); ?>
 
-<div class="panel panel-default">
-    <div class="panel-body">
+<div class="card center_box_750">
+    <div class="card-body">
         <form id="formulario" accept-charset="utf-8" class="form-horizontal">
             <div class="form-group row">
-                <div class="col-sm-offset-4 col-md-8">
+                <div class="offset-md-4 col-md-8">
                     <button class="btn btn-success btn-block" type="submit">
                         Guardar
                     </button>
@@ -24,7 +22,7 @@
             </div>
 
             <div class="form-group row">
-                <label for="nombre" class="col-md-4 control-label">Nombre y Apellidos</label>
+                <label for="nombre" class="col-md-4 col-form-label text-right">Nombre y Apellidos</label>
                 <div class="col-md-4">
                     <input
                         id="campo-nombre"
@@ -50,7 +48,7 @@
             </div>
             
             <div class="form-group row" id="form-group_no_documento">
-                <label for="no_documento" class="col-md-4 control-label">No. documento</label>
+                <label for="no_documento" class="col-md-4 col-form-label text-right">No. documento</label>
                 <div class="col-md-4">
                     <input
                         id="campo-no_documento"
@@ -69,7 +67,7 @@
             </div>
             
             <div class="form-group row" id="form-group_email">
-                <label for="email" class="col-md-4 control-label">Correo electrónico</label>
+                <label for="email" class="col-md-4 col-form-label text-right">Correo electrónico</label>
                 <div class="col-md-8">
                     <input
                         id="campo-email"
@@ -83,7 +81,7 @@
             </div>
             
             <div class="form-group row" id="form-group_username">
-                <label for="username" class="col-md-4 control-label">Username *</label>
+                <label for="username" class="col-md-4 col-form-label text-right">Username *</label>
                 <div class="col-md-8">
                     <div class="input-group">
                         <div class="input-group-btn">
@@ -106,7 +104,7 @@
             </div>
             
             <div class="form-group row">
-                <label for="password" class="col-md-4 control-label">Contraseña *</label>
+                <label for="password" class="col-md-4 col-form-label text-right">Contraseña *</label>
                 <div class="col-md-8">
                     <input
                         id="campo-password"
@@ -122,14 +120,14 @@
             </div>
             
             <div class="form-group row">
-                <label for="ciudad_id" class="col-md-4 control-label">Ciudad residencia</label>
+                <label for="ciudad_id" class="col-md-4 col-form-label text-right">Ciudad residencia</label>
                 <div class="col-md-8">
-                    <?= form_dropdown('ciudad_id', $opciones_ciudad, '', 'class="form-control chosen-select" required') ?>
+                    <?= form_dropdown('ciudad_id', $opciones_ciudad, '', 'class="form-control form-control-chosen" required') ?>
                 </div>
             </div>
             
             <div class="form-group row">
-                <label for="address" class="col-md-4 control-label">Dirección residencia</label>
+                <label for="address" class="col-md-4 col-form-label text-right">Dirección residencia</label>
                 <div class="col-md-8">
                     <input
                         id="field-address"
@@ -141,7 +139,7 @@
             </div>
 
             <div class="form-group row">
-                <label for="fecha_nacimiento" class="col-md-4 control-label">Fecha de nacimiento *</label>
+                <label for="fecha_nacimiento" class="col-md-4 col-form-label text-right">Fecha de nacimiento *</label>
                 <div class="col-md-8">
                     <input
                         id="campo-fecha_nacimiento"
@@ -154,21 +152,21 @@
             </div>
             
             <div class="form-group row">
-                <label for="rol_id" class="col-md-4 control-label">Rol *</label>
+                <label for="rol_id" class="col-md-4 col-form-label text-right">Rol *</label>
                 <div class="col-md-8">
                     <?= form_dropdown('rol_id', $opciones_rol, '021', 'class="form-control" required') ?>
                 </div>
             </div>
             
             <div class="form-group row">
-                <label for="sexo" class="col-md-4 control-label">Sexo *</label>
+                <label for="sexo" class="col-md-4 col-form-label text-right">Sexo *</label>
                 <div class="col-md-8">
                     <?= form_dropdown('sexo', $opciones_sexo, '', 'class="form-control" required') ?>
                 </div>
             </div>
             
             <div class="form-group row">
-                <label for="celular" class="col-md-4 control-label">Celular</label>
+                <label for="celular" class="col-md-4 col-form-label text-right">Celular</label>
                 <div class="col-md-8">
                     <input
                         id="campo-celular"
