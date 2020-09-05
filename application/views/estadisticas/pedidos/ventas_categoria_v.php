@@ -38,19 +38,19 @@
                         $balance = $this->Pcrn->dividir($pct_ventas, $pct_inventario);
                     ?>
                     <tr>
-                        <td><?php echo $row_categoria->nombre_categoria ?></td>
-                        <td class="text-right"><?php echo $this->pacarina->moneda($row_categoria->valor, 'M') ?></td>
-                        <td class="text-center"><?php echo $pct_ventas ?></td>
-                        <td class="text-right"><?php echo $this->pacarina->moneda($valor_inventario, 'M') ?></td>
-                        <td><?php echo $pct_inventario ?></td>
-                        <td><?php echo number_format($balance, 2) ?></td>
+                        <td><?= $row_categoria->nombre_categoria ?></td>
+                        <td class="text-right"><?= $this->pacarina->moneda($row_categoria->valor, 'M') ?></td>
+                        <td class="text-center"><?= $pct_ventas ?></td>
+                        <td class="text-right"><?= $this->pacarina->moneda($valor_inventario, 'M') ?></td>
+                        <td><?= $pct_inventario ?></td>
+                        <td><?= number_format($balance, 2) ?></td>
                     </tr>
                 <?php } ?>
                 <tr class="info text-bold">
                     <td>Total</td>
-                    <td class="text-right"><?php echo $this->pacarina->moneda($sum_ventas, 'M') ?></td>
+                    <td class="text-right"><?= $this->pacarina->moneda($sum_ventas, 'M') ?></td>
                     <td></td>
-                    <td class="text-right"><?php echo $this->pacarina->moneda($sum_inventario, 'M') ?></td>
+                    <td class="text-right"><?= $this->pacarina->moneda($sum_inventario, 'M') ?></td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -98,8 +98,8 @@
         data: [
             <?php foreach ( $ventas_categoria->result() as $row_categoria ) { ?>
             {
-                name: '<?php echo $row_categoria->nombre_categoria ?>',
-                y: <?php echo $row_categoria->valor ?>
+                name: '<?= $row_categoria->nombre_categoria ?>',
+                y: <?= $row_categoria->valor ?>
             },
         <?php } ?>
         ]

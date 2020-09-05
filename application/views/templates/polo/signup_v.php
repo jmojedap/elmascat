@@ -75,7 +75,7 @@
                         <input type="checkbox" name="condiciones" value="1" required style="display: inline; height: 25px; width: 15px;"/>
                         Acepto los 
                         
-                        <a href="<?php echo base_url("posts/leer/17/terminos-de-uso") ?>" target="_blank">
+                        <a href="<?= base_url("posts/leer/17/terminos-de-uso") ?>" target="_blank">
                             Términos de uso
                         </a>
                         de Districatólicas S.A.S.
@@ -90,7 +90,7 @@
                     Ya tengo una cuenta
                 </p>
                 <div class="text-center">
-                    <a class="btn btn-polo w120p" href="<?php echo base_url("accounts/login") ?>">
+                    <a class="btn btn-polo w120p" href="<?= base_url("accounts/login") ?>">
                         Iniciar sesión
                     </a>
                 </div>
@@ -147,7 +147,7 @@
                     </td>
                     <td>
                         Lee >>
-                        <a href="<?php echo base_url("posts/leer/17/terminos-de-uso") ?>" target="_blank">
+                        <a href="<?= base_url("posts/leer/17/terminos-de-uso") ?>" target="_blank">
                             aquí
                         </a>
                         << los términos de uso de este sitio. Activa la casilla de aceptación para realizar el registro.

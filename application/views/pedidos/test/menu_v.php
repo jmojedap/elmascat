@@ -13,12 +13,12 @@
     var sections = [];
     var nav_3 = [];
     var sections_rol = [];
-    var element_id = '<?php echo $row->id ?>';
+    var element_id = '<?= $row->id ?>';
     
     sections.confirmation = {
         icon: '',
         text: 'Confirmación',
-        class: '<?php echo $cl_nav_3['test_confirmation'] ?>',
+        class: '<?= $cl_nav_3['test_confirmation'] ?>',
         cf: 'pedidos/test/' + element_id + '/confirmation',
         anchor: true
 
@@ -27,7 +27,7 @@
     sections.result = {
         icon: '',
         text: 'Resultado',
-        class: '<?php echo $cl_nav_3['test_result'] ?>',
+        class: '<?= $cl_nav_3['test_result'] ?>',
         cf: 'pedidos/test/' + element_id + '/result',
         anchor: true
     };

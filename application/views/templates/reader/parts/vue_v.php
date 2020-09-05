@@ -17,10 +17,10 @@
         },
         data: {
             key_page: 0,
-            pages: <?php echo json_encode($pages); ?>,
-            drive_pages: <?php echo $drive_pages; ?>,
+            pages: <?= json_encode($pages); ?>,
+            drive_pages: <?= $drive_pages; ?>,
             page: '',
-            book_index: <?php echo $book_index ?>,
+            book_index: <?= $book_index ?>,
             index_key: 0,
             current_index: {},
             mode: 'page',

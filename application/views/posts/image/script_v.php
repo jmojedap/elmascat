@@ -1,8 +1,8 @@
 <script>
 // Variables
 //-----------------------------------------------------------------------------
-    var post_id = '<?php echo $row->id ?>';
-    var src_default = '<?php echo URL_IMG ?>app/nd.png';
+    var post_id = '<?= $row->id ?>';
+    var src_default = '<?= URL_IMG ?>app/nd.png';
 
 // Document Ready
 //-----------------------------------------------------------------------------

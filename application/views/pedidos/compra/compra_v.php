@@ -24,16 +24,16 @@
 <table class="table table-bordered checkout_steps">
     <tbody>
         <tr class="text-center">
-            <td width="25%" class="step <?php echo $cl_steps['carrito'] ?>">
+            <td width="25%" class="step <?= $cl_steps['carrito'] ?>">
                 PRODUCTOS
             </td>
-            <td width="25%" class="step <?php echo $cl_steps['datos'] ?>">
+            <td width="25%" class="step <?= $cl_steps['datos'] ?>">
                 TUS DATOS
             </td>
-            <td width="25%" class="step <?php echo $cl_steps['verificacion'] ?>">
+            <td width="25%" class="step <?= $cl_steps['verificacion'] ?>">
                 VERIFICA
             </td>
-            <td width="25%" class="step <?php echo $cl_steps['resultado'] ?>">
+            <td width="25%" class="step <?= $cl_steps['resultado'] ?>">
                 RESULTADO
             </td>
         </tr>

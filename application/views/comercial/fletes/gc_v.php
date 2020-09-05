@@ -18,4 +18,4 @@
     
 <?php } ?>
 
-<?php echo $output; ?>
+<?= $output; ?>

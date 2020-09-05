@@ -1,7 +1,7 @@
 <script>
     //Variables
-    var base_url = '<?php echo base_url() ?>';
-    var pedido_id = <?php echo $pedido_id ?>;
+    var base_url = '<?= base_url() ?>';
+    var pedido_id = <?= $pedido_id ?>;
     var producto_id = 0;
     var cantidad = 1;   //Cantidad de detalle de productos
 
@@ -50,8 +50,8 @@
                             <tfoot>
                                 <tr class="first last">
                                     <td class="a-right last" colspan="7">
-                                        <?php echo anchor("productos/catalogo", '<i class="fa fa-arrow-left"></i><span><span> Catálogo</span></span>', 'class="btn btn-polo" title="Volver al catálogo"') ?>
-                                        <?php echo anchor("pedidos/abandonar", '<i class="fa fa-times"></i> Vaciar carrito', 'class="btn btn-polo pull-right" title="Cancelar el pedido"') ?>
+                                        <?= anchor("productos/catalogo", '<i class="fa fa-arrow-left"></i><span><span> Catálogo</span></span>', 'class="btn btn-polo" title="Volver al catálogo"') ?>
+                                        <?= anchor("pedidos/abandonar", '<i class="fa fa-times"></i> Vaciar carrito', 'class="btn btn-polo pull-right" title="Cancelar el pedido"') ?>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -73,23 +73,23 @@
                                     ?>
                                     <tr class="last even">
                                         <td class="image">
-                                            <?php echo anchor("productos/detalle/{$row_detalle->producto_id}", img($att_img), 'class="product-image" title="' . $row_detalle->nombre_producto . '"') ?>
+                                            <?= anchor("productos/detalle/{$row_detalle->producto_id}", img($att_img), 'class="product-image" title="' . $row_detalle->nombre_producto . '"') ?>
                                         </td>
                                         <td>
                                             <h2 class="product-name">
                                                 <b>
-                                                    <?php echo anchor("productos/detalle/{$row_detalle->producto_id}", $row_detalle->nombre_producto) ?>                                                
+                                                    <?= anchor("productos/detalle/{$row_detalle->producto_id}", $row_detalle->nombre_producto) ?>                                                
                                                 </b>
                                             </h2>
                                             <p>
                                                 <span class="money" style="font-size: 125%;">
-                                                    <?php echo $this->Pcrn->moneda($row_detalle->precio) ?>
+                                                    <?= $this->Pcrn->moneda($row_detalle->precio) ?>
                                                 </span> 
 
                                                 <?php if ( $precio_especial ) { ?>
                                                     <span class="correcto">
                                                         <i class="fa fa-caret-right"></i>
-                                                        <?php echo $arr_tipos_precio[$row_detalle->promocion_id] ?>
+                                                        <?= $arr_tipos_precio[$row_detalle->promocion_id] ?>
                                                     </span>
                                                 <?php } ?>
                                             </p>
@@ -99,11 +99,11 @@
                                                         Precio normal 
                                                     </span>
                                                     <span class="suave">
-                                                        <?php echo $this->Pcrn->moneda($row_detalle->precio_nominal) ?>
+                                                        <?= $this->Pcrn->moneda($row_detalle->precio_nominal) ?>
                                                     </span>
 
                                                     <span class="label label-success">
-                                                         -<?php echo $pct_descuento ?>%
+                                                         -<?= $pct_descuento ?>%
                                                     </span>
                                                 </p>
                                             <?php } ?>
@@ -112,7 +112,7 @@
                                         <td class="a-center movewishlist">
                                             <?php if ( $row_detalle->peso > 0 ) { ?>    
                                                 <!-- Se puede modificar solo si tiene peso y debe enviarse físicamente -->
-                                                <input maxlength="12" type="number" min="1" max="100" class="input-polo cant_producto" title="Cantidad" size="4" value="<?php echo $row_detalle->cantidad ?>" data-producto_id="<?php echo $row_detalle->producto_id ?>">
+                                                <input maxlength="12" type="number" min="1" max="100" class="input-polo cant_producto" title="Cantidad" size="4" value="<?= $row_detalle->cantidad ?>" data-producto_id="<?= $row_detalle->producto_id ?>">
                                             <?php } else { ?>
                                                 1
                                             <?php } ?>
@@ -120,16 +120,16 @@
                                         <td class="a-right movewishlist">
                                             <span class="cart-price">
                                                 <span class="money">
-                                                    <?php echo $this->Pcrn->moneda($precio_detalle) ?>
+                                                    <?= $this->Pcrn->moneda($precio_detalle) ?>
                                                 </span>
                                             </span>
                                             <?php if ( $precio_especial ) { ?>
                                                 <br/>
-                                                <span class="suave">Ahorro -<?php echo $this->Pcrn->moneda($ahorro) ?></span>
+                                                <span class="suave">Ahorro -<?= $this->Pcrn->moneda($ahorro) ?></span>
                                             <?php } ?>
                                         </td>
                                         <td class="a-center last">
-                                            <?php echo anchor("pedidos/eliminar_detalle/{$row_detalle->id}", '<span><span>Remove item</span></span>', 'class="button remove-item" title="Quitar producto del carrito"') ?>
+                                            <?= anchor("pedidos/eliminar_detalle/{$row_detalle->id}", '<span><span>Remove item</span></span>', 'class="button remove-item" title="Quitar producto del carrito"') ?>
                                         </td>
                                     </tr>
                                 <?php endforeach ?>
@@ -141,18 +141,18 @@
             
             <table class="table table-default bg-blanco hidden">
                 <thead>
-                    <th class="<?php echo $clases_col['promocion'] ?>">Descuentos</th>
-                    <th class="<?php echo $clases_col['sum_descuento'] ?>">Valor del descuento</th>
+                    <th class="<?= $clases_col['promocion'] ?>">Descuentos</th>
+                    <th class="<?= $clases_col['sum_descuento'] ?>">Valor del descuento</th>
                 </thead>
 
                 <tbody>
                     <?php foreach ($descuentos->result() as $row_descuento) : ?>
                         <tr>
-                            <td class="<?php echo $clases_col['nombre_elemento'] ?>">
-                                <?php echo $arr_tipos_precio[$row_descuento->promocion_id] ?>
+                            <td class="<?= $clases_col['nombre_elemento'] ?>">
+                                <?= $arr_tipos_precio[$row_descuento->promocion_id] ?>
                             </td>
-                            <td class="<?php echo $clases_col['nombre_elemento'] ?>">
-                                <?php echo $this->Pcrn->moneda($row_descuento->sum_descuento) ?>
+                            <td class="<?= $clases_col['nombre_elemento'] ?>">
+                                <?= $this->Pcrn->moneda($row_descuento->sum_descuento) ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -164,7 +164,7 @@
         
         <?php $this->load->view('pedidos/compra/totales_v'); ?>
         
-        <a type="button" title="Continuar con la compra" class="btn-polo-lg btn-block text-center" href="<?php echo base_url("pedidos/usuario") ?>">
+        <a type="button" title="Continuar con la compra" class="btn-polo-lg btn-block text-center" href="<?= base_url("pedidos/usuario") ?>">
             <i class="fa fa-check"></i>
             Continuar
         </a>

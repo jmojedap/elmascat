@@ -12,7 +12,7 @@
     $options_pol_response_code = $this->Item_model->options('categoria_id = 10');
 ?>
 
-<form action="<?php echo base_url('pedidos/respuesta/') ?>" accept-charset="utf-8" method="GET">
+<form action="<?= base_url('pedidos/respuesta/') ?>" accept-charset="utf-8" method="GET">
     <div class="card center_box_750">
         <div class="card-body">
             <div class="form-group row">
@@ -24,21 +24,21 @@
             <div class="form-group row">
                 <label for="polResponseCode" class="col-md-4 col-form-label text-right">polResponseCode</label>
                 <div class="col-md-8">
-                    <?php echo form_dropdown('polResponseCode', $options_pol_response_code, '01', 'class="form-control"') ?>
+                    <?= form_dropdown('polResponseCode', $options_pol_response_code, '01', 'class="form-control"') ?>
                 </div>
             </div>
 
             <?php foreach ( $payu_data as $field => $field_value ) { ?>
 
             <div class="form-group row">
-                <label for="" class="col-md-4 col-form-label text-right"><?php echo $field ?></label>
+                <label for="" class="col-md-4 col-form-label text-right"><?= $field ?></label>
                 <div class="col-md-8">
                     <input
                         type="text"
-                        name="<?php echo $field ?>"
+                        name="<?= $field ?>"
                         required
                         class="form-control"
-                        value="<?php echo $field_value ?>"
+                        value="<?= $field_value ?>"
                         >
                 </div>
             </div>

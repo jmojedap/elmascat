@@ -5,7 +5,7 @@
     var base_url = '<?= base_url() ?>';
     var controlador = 'usuarios';
     var username = '';
-    var random = '<?php echo random_string('alpha', 4) ?>';
+    var random = '<?= random_string('alpha', 4) ?>';
     //Validación
     var vld = {
         email : 1,  //1 por defecto, puede ser vacío
@@ -191,7 +191,7 @@
         vld.username = 1;
         $('#campo-email').val(random + '@gmail.com');
         unico_email();
-        $('#campo-no_documento').val('<?php echo date('Ymdhis') ?>');
+        $('#campo-no_documento').val('<?= date('Ymdhis') ?>');
         unico_no_documento();
         $('#campo-fecha_nacimiento').val('1975-06-14');
     }

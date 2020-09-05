@@ -7,18 +7,18 @@
         if ( ! is_null($result['icon'] ) ) { $icon = $result['icon']; }
     ?>
     <br/>
-    <div class="alert <?php echo $class ?>" role="alert">
+    <div class="alert <?= $class ?>" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         
-        <i class="fa <?php echo $icon ?>"></i>
-        <?php echo $result['message'] ?>
+        <i class="fa <?= $icon ?>"></i>
+        <?= $result['message'] ?>
     </div>
 
     <?php if ( isset($result['html']) ) { ?>
         <div class="">
-            <?php echo $result['html'] ?>
+            <?= $result['html'] ?>
         </div>
     <?php } ?>
 <?php endif ?>

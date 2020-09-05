@@ -2,7 +2,7 @@
 <script>
 // Variables
 //-----------------------------------------------------------------------------
-    var type_names = <?php echo json_encode($arr_types); ?>;
+    var type_names = <?= json_encode($arr_types); ?>;
 
 // Filters
 //-----------------------------------------------------------------------------
@@ -22,15 +22,15 @@
             //this.get_list();
         },
         data: {
-            cf: '<?php echo $cf; ?>',
-            controller: '<?php echo $controller; ?>',
+            cf: '<?= $cf; ?>',
+            controller: '<?= $controller; ?>',
             num_page: 1,
-            max_page: <?php echo $max_page; ?>,
-            list: <?php echo json_encode($list) ?>,
+            max_page: <?= $max_page; ?>,
+            list: <?= json_encode($list) ?>,
             element: [],
             selected: [],
             all_selected: false,
-            filters: <?php echo json_encode($filters) ?>,
+            filters: <?= json_encode($filters) ?>,
             showing_filters: false
         },
         methods: {

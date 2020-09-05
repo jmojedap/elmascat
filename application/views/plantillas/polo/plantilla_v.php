@@ -15,13 +15,13 @@
         <meta name="description" content="Libreria Catolica Bogota Colombia">
         <meta content="libreria, catolica, minutos de amor" name="keywords" />
         <meta name="author" content="Revista Minutos de Amor">
-        <title><?php echo $titulo_pagina ?></title>
+        <title><?= $titulo_pagina ?></title>
         
         <?php if ( ! is_null($image_src) ){ ?>
-            <link rel="image_src" href="<?php echo $image_src ?>">
+            <link rel="image_src" href="<?= $image_src ?>">
         <?php } ?>
         
-        <link rel="shortcut icon" href="<?php echo URL_IMG ?>app/icono.png" type="image/ico" />
+        <link rel="shortcut icon" href="<?= URL_IMG ?>app/icono.png" type="image/ico" />
         
         <?php $this->load->view('assets/jquery'); ?>
         <?php $this->load->view('assets/bootstrap'); ?>

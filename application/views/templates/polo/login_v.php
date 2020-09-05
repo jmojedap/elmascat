@@ -49,7 +49,7 @@
             <div class="content">
                 <p>Al crear una cuenta en nuestra tienda, usted será podrá realizar el proceso de compra más rápidamente, almacenar múltiples direcciones de envío, ver y realizar un seguimiento de sus pedidos en su cuenta y más.</p>
                 <div class="buttons-set">
-                    <button onclick="window.location = '<?php echo base_url('accounts/signup') ?>';" class="button create-account" type="button"><span>Crear una cuenta</span></button>
+                    <button onclick="window.location = '<?= base_url('accounts/signup') ?>';" class="button create-account" type="button"><span>Crear una cuenta</span></button>
                 </div>
             </div>
         </div>

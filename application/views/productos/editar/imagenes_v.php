@@ -66,7 +66,7 @@
             ?>
             <tr id="archivo_<?= $row_imagen->meta_id ?>">
                 <td>
-                    <?php echo img($att_img) ?>
+                    <?= img($att_img) ?>
                 </td>
                 <td>
                     <?php if ( ($row_imagen->archivo_id - $row->imagen_id) != 0 ){ ?>

@@ -40,10 +40,10 @@
         
         <th width="50px;" class="<?= $clases_col['info'] ?>"></th>
         
-        <th class="<?php echo $clases_col['tipo'] ?>">Tipo evento</th>
+        <th class="<?= $clases_col['tipo'] ?>">Tipo evento</th>
         <th class="<?= $clases_col['inicio'] ?>">Iniciado</th>
         <th>Nombre evento</th>
-        <th class="<?php echo $clases_col['creador'] ?>">Usuario</th>
+        <th class="<?= $clases_col['creador'] ?>">Usuario</th>
     </thead>
     
     <tbody>
@@ -68,29 +68,29 @@
                 
                 
                 <td>
-                    <a href="<?php echo base_url("evento/info/$row_resultado->id") ?>" class="btn btn-default">
+                    <a href="<?= base_url("evento/info/$row_resultado->id") ?>" class="btn btn-default">
                         <i class="fa fa-plus"></i>
                     </a>
                 </td>
                 
                 <td class="<?= $clases_col['tipo'] ?>">
-                    <?php echo $arr_tipos[$row_resultado->tipo_id] ?>
+                    <?= $arr_tipos[$row_resultado->tipo_id] ?>
                 </td>
                 
                 <td>
-                    <?php echo $this->Pcrn->fecha_formato($row_resultado->inicio, 'Y-M-d H:i') ?>
+                    <?= $this->Pcrn->fecha_formato($row_resultado->inicio, 'Y-M-d H:i') ?>
                     <br/>
                     <span class="suave">
-                        <?php echo $this->Pcrn->tiempo_hace($row_resultado->inicio, true); ?>
+                        <?= $this->Pcrn->tiempo_hace($row_resultado->inicio, true); ?>
                     </span>
                 </td>
                 
                 <td>
-                    <?php echo $row_resultado->nombre_evento ?>
+                    <?= $row_resultado->nombre_evento ?>
                 </td>
                 
                 <td class="<?= $clases_col['creador'] ?>">
-                    <?php echo $this->App_model->nombre_usuario($row_resultado->creador_id, 2); ?>
+                    <?= $this->App_model->nombre_usuario($row_resultado->creador_id, 2); ?>
                 </td>
             </tr>
         <?php } //foreach ?>

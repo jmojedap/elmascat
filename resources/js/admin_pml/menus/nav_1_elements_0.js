@@ -3,10 +3,10 @@ var nav_1_elements = [
         text: 'Pedidos',
         active: false,
         icon: 'fa fa-shopping-cart',
-        cf: 'pedidos/explorar',
+        cf: 'pedidos/explore',
         anchor: true,
         subelements: [],
-        sections: ['pedidos/explorar', 'pedidos/info', 'pedidos/payu', 'pedidos/extras', 'pedidos/edit', 'pedidos/test']
+        sections: ['pedidos/explore', 'pedidos/info', 'pedidos/payu', 'pedidos/extras', 'pedidos/edit', 'pedidos/test']
     },
     {
         text: 'Productos',

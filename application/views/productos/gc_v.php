@@ -34,5 +34,5 @@
     <?php $this->load->view($vista_menu); ?>
 <?php } ?>
 
-<?php echo $output; ?>
+<?= $output; ?>
 

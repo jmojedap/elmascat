@@ -23,7 +23,7 @@
         
         <table class="table table-striped">
             <tbody>
-                <tr class="<?php echo $cl_respuesta ?>">
+                <tr class="<?= $cl_respuesta ?>">
                     <td>Respuesta PayU</td>
                     <td>
                         <?= $icono_respuesta ?>

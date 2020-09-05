@@ -12,7 +12,7 @@
 <table class="table table-default bg-blanco" cellspacing="0">
     <thead>
         <tr>
-            <th class="<?php echo $cl_col['cod'] ?>">Ref. Venta</th>
+            <th class="<?= $cl_col['cod'] ?>">Ref. Venta</th>
             <th class="<?= $cl_col['proceso'] ?>"></th>
             <th class="<?= $cl_col['estado'] ?>">Estado</th>
             <th class="<?= $cl_col['valor'] ?> info">Valor total</th>
@@ -27,7 +27,8 @@
                 //Variables
                 $nombre_pedido = $row_resultado->cod_pedido;
 
-                $editable = $this->Pedido_model->editable($row_resultado->id);
+                //$editable = $this->Pedido_model->editable($row_resultado->id);
+                $editable = true;
                 $estado_pedido = $this->App_model->nombre_item($row_resultado->estado_pedido, 1, 7);
                 $creado_hace = $this->Pcrn->tiempo_hace($row_resultado->creado, TRUE);
                 $editado_hace = $this->Pcrn->tiempo_hace($row_resultado->editado, TRUE);
@@ -48,9 +49,9 @@
 
             
             <tr>
-                <td class="<?php echo $cl_col['cod'] ?>">
+                <td class="<?= $cl_col['cod'] ?>">
                     <?php if ( $this->session->userdata('role') < 10 ) { ?>
-                        <a href="<?php echo base_url("pedidos/ver/{$row_resultado->id}") ?>" class="">
+                        <a href="<?= base_url("pedidos/ver/{$row_resultado->id}") ?>" class="">
                             <?= $row_resultado->cod_pedido; ?>
                         </a>
                     <?php } else { ?>
@@ -58,7 +59,7 @@
                     <?php } ?>
                 </td>
 
-                <td class="<?php echo $cl_col['proceso'] ?>">
+                <td class="<?= $cl_col['proceso'] ?>">
                     <?= $link_pedido ?>
                 </td>
 

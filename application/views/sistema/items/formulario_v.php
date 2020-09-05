@@ -207,7 +207,7 @@
     <?= form_hidden('categoria_id', $categoria_id) ?>
 
     <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-8">
+        <div class="offset-md-4 col-sm-8">
             <?= form_submit($att_submit) ?>
         </div>
     </div>

@@ -46,7 +46,7 @@
                 <td class="text-right">
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-valuenow="<?= $porcentaje ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $porcentaje ?>%;">
-                            <?php echo $ventas_miles ?>
+                            <?= $ventas_miles ?>
                         </div>
                     </div>
                 </td>

@@ -355,10 +355,10 @@ $config['encryption_key'] = 'hKgXq3L33A2eew89qi7fzYJeVm42Ah2a';
 | except for 'cookie_prefix' and 'cookie_httponly', which are ignored here.
 |
 */
-$config['sess_driver'] = 'files';
+$config['sess_driver'] = 'database';    //ORG 2020-09-01: 'files'
 $config['sess_cookie_name'] = 'dcl_session';
 $config['sess_expiration'] = 2592000;    //30 días
-$config['sess_save_path'] = NULL;
+$config['sess_save_path'] = 'ci_sessions';   //ORG 2020-09-01: NULL
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;

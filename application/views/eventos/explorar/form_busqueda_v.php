@@ -42,7 +42,7 @@
         <div class="form-group <?= $clases_filtros['tipo'] ?>">
             <label for="rol" class="col-sm-3 control-label">Tipo</label>
             <div class="col-sm-6">
-                <?php echo form_dropdown('tp', $opciones_tipo, $busqueda['tp'], 'class="form-control" title="Filtrar por tipo de evento"'); ?>
+                <?= form_dropdown('tp', $opciones_tipo, $busqueda['tp'], 'class="form-control" title="Filtrar por tipo de evento"'); ?>
             </div>
         </div>
     </div>

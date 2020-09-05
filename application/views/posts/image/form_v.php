@@ -3,7 +3,7 @@
     if ( $row->imagen_id == 0 ) { $style_form_section = '';}
 ?>
 
-<div id="image_form" style="<?php echo $style_form_section ?>">
+<div id="image_form" style="<?= $style_form_section ?>">
     <div class="card center_box_750">
         <div class="card-body">
             <form accept-charset="utf-8" method="POST" id="file_form">

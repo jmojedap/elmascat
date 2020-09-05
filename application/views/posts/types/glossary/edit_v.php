@@ -11,7 +11,7 @@
 ?>
 
 <script>
-    var post_id = <?php echo $row->id ?>;
+    var post_id = <?= $row->id ?>;
 
     $(document).ready(function(){
         $('#field-content').summernote({
@@ -56,7 +56,7 @@
                             class="form-control"
                             placeholder="post name"
                             title="post name"
-                            value="<?php echo $row->post_name ?>"
+                            value="<?= $row->post_name ?>"
                             >
                     </div>
                 </div>
@@ -64,20 +64,20 @@
                 <div class="form-group row">
                     <label class="col-md-4 col-form-label text-right" for="excerpt">Definición</label>
                     <div class="col-md-8">
-                        <textarea name="excerpt" id="field-excerpt" rows="5" class="form-control" required><?php echo $row->excerpt ?></textarea>
+                        <textarea name="excerpt" id="field-excerpt" rows="5" class="form-control" required><?= $row->excerpt ?></textarea>
                     </div>
                 </div>
 
                 <?php foreach ( $arr_fields as $field => $title ) { ?>
                     <div class="form-group row">
-                        <label for="<?php echo $field ?>" class="col-md-4 col-form-label text-right"><?php echo $title ?></label>
+                        <label for="<?= $field ?>" class="col-md-4 col-form-label text-right"><?= $title ?></label>
                         <div class="col-md-8">
                             <input
                                 type="text"
-                                name="<?php echo $field ?>"
+                                name="<?= $field ?>"
                                 class="form-control"
-                                title="<?php echo $field ?>"
-                                value="<?php echo $row->$field ?>"
+                                title="<?= $field ?>"
+                                value="<?= $row->$field ?>"
                                 >
                         </div>
                     </div>

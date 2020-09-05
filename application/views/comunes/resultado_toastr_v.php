@@ -5,6 +5,6 @@
         if ( ! is_null($resultado['type'] ) ) { $type = $resultado['type']; }
     ?>
     <script>
-        toastr['<?php echo $type ?>']('<?php echo $resultado['mensaje'] ?>');
+        toastr['<?= $type ?>']('<?= $resultado['mensaje'] ?>');
     </script>
 <?php endif ?>

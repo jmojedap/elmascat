@@ -1,7 +1,7 @@
 <header class="main-header">
     <!-- Logo -->
     <a href="<?= base_url() ?>" class="logo">
-        <?php echo img(URL_IMG . 'app/logo_admin.png') ?>
+        <?= img(URL_IMG . 'app/logo_admin.png') ?>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
@@ -16,7 +16,7 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="min-width: 150px;">
-                        <img src="<?php echo $this->session->userdata('src_img') ?>" class="user-image" alt="User Image"/>
+                        <img src="<?= $this->session->userdata('src_img') ?>" class="user-image" alt="User Image"/>
                         <span class="hidden-xs"><?= $this->session->userdata('nombre_corto') ?></span>
                     </a>
                     <ul class="dropdown-menu">

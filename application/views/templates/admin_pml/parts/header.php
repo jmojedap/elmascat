@@ -1,7 +1,7 @@
 <header class="main-header">
     <!-- Logo -->
-    <a href="<?php echo base_url() ?>" class="logo fixed-top">
-        <img src="<?php echo URL_IMG . 'app/logo_admin.png' ?>" alt="WebApp Logo">
+    <a href="<?= base_url() ?>" class="logo fixed-top">
+        <img src="<?= URL_IMG . 'app/logo_admin.png' ?>" alt="WebApp Logo">
     </a>
     <nav class="navbar fixed-top" role="navigation" style="padding: 0px;">
         <!-- Sidebar toggle button-->
@@ -11,8 +11,8 @@
         </a>
 
         <div id="page_titles" class="float-left">
-            <h1 id="head_title"><?php echo substr($head_title, 0, 50) ?></h1>
-            <h2 id="head_subtitle"><?php echo $head_subtitle ?></h2>
+            <h1 id="head_title"><?= substr($head_title, 0, 50) ?></h1>
+            <h2 id="head_subtitle"><?= $head_subtitle ?></h2>
         </div>
 
         <div class="navbar-custom-menu">
@@ -20,14 +20,14 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu nav-item">
                     <a href="#" data-toggle="dropdown">
-                        <img src="<?php echo $this->session->userdata('src_img') ?>" class="user-image" alt="User Image">
+                        <img src="<?= $this->session->userdata('src_img') ?>" class="user-image" alt="User Image">
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="<?php echo $this->session->userdata('src_img') ?>" class="rounded-circle" alt="User Image" onerror="this.src='<?php echo URL_IMG ?>users/sm_user.png'">
+                            <img src="<?= $this->session->userdata('src_img') ?>" class="rounded-circle" alt="User Image" onerror="this.src='<?= URL_IMG ?>users/sm_user.png'">
                             <p>
-                                <?php echo $this->session->userdata('display_name') ?>
+                                <?= $this->session->userdata('display_name') ?>
                             </p>
                         </li>
 

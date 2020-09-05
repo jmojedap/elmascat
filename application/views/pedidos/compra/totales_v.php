@@ -8,7 +8,7 @@
             <td class="text-right">
                 <strong>
                     <span class="money money_total">
-                        <?php echo $this->Pcrn->moneda($row->valor_total) ?>
+                        <?= $this->Pcrn->moneda($row->valor_total) ?>
                     </span>
                 </strong>
             </td>

@@ -49,7 +49,7 @@
     </table>
 <?php } elseif ( $this->uri->segment(4) == 'add' or $direccion_editable ) { ?>
     <div class="bg-blanco">
-        <?php echo $output ?>
+        <?= $output ?>
     </div>
 <?php } else { ?>
     <div class="alert alert-warning">

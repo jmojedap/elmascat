@@ -20,7 +20,7 @@
                     {{ element.type_id | type_name  }}
                 </td>
                 <td>
-                    <a v-bind:href="`<?php echo base_url("posts/info") ?>/` + element.id">
+                    <a v-bind:href="`<?= base_url("posts/info") ?>/` + element.id">
                         {{ element.post_name }}
                     </a>
                     <p>{{ element.excerpt }}</p>

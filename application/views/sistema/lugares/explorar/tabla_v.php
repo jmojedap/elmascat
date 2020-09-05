@@ -83,7 +83,7 @@
                 //Checkbox
                     $att_check['data-id'] = $row_resultado->id;
             ?>
-            <tr id="fila_<?php echo $row_resultado->id ?>"> 
+            <tr id="fila_<?= $row_resultado->id ?>"> 
                 <td>
                     <div class="checkbox">
                         <label>

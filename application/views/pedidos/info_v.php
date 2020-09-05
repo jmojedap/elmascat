@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
         var base_url = '<?= base_url() ?>';
         var pedido_id = <?= $row->id ?>;
-        var cod_pedido = '<?php echo $row->cod_pedido ?>';
+        var cod_pedido = '<?= $row->cod_pedido ?>';
         var estado_pedido = <?= $row->estado_pedido ?>;
 
 // Document Ready
@@ -79,11 +79,14 @@
 </script>
 
 <div class="mb-2">
-    <a href="<?php echo base_url("pedidos/reporte/{$row->id}") ?>" class="btn btn-light w3" target="_blank" title="Imprimir reporte resumen">
+    <a href="<?= base_url("pedidos/reporte/{$row->id}") ?>" class="btn btn-light w120p" target="_blank" title="Imprimir reporte resumen">
         <i class="fa fa-print"></i> Resumen
     </a>
+    <a href="<?= base_url("pedidos/reporte/{$row->id}/label") ?>" class="btn btn-light w120p" target="_blank" title="Imprimir label envío">
+        <i class="fa fa-print"></i> Label
+    </a>
     <?php if ( $row->estado_pedido == 1 ) { ?>
-        <a href="<?php echo base_url("pedidos/link_pago/{$row->cod_pedido}") ?>" class="btn btn-success" target="_blank" title="Link para iniciar proceso de pago">
+        <a href="<?= base_url("pedidos/link_pago/{$row->cod_pedido}") ?>" class="btn btn-success" target="_blank" title="Link para iniciar proceso de pago">
             <i class="fa fa-link"></i>
             Link de pago
         </a>
@@ -95,7 +98,7 @@
         </button>
     <?php } ?>
     <?php if ( $this->session->userdata('rol_id') == 0 ) { ?>
-        <a href="<?php echo base_url("admin/tablas/pedido/edit/{$row->id}") ?>" class="btn btn-light w120p" title="Edición del registro en la base de datos" target="_blank">
+        <a href="<?= base_url("admin/tablas/pedido/edit/{$row->id}") ?>" class="btn btn-light w120p" title="Edición del registro en la base de datos" target="_blank">
             <i class="fa fa-edit"></i>
             Editar Row
         </a>
@@ -121,7 +124,7 @@
                         <td>Usuario</td>
                         <td>
                             <?php if ( $row->usuario_id > 0 ) { ?>
-                                <a href="<?php echo base_url("usuarios/info/{$row->usuario_id}") ?>" class="">
+                                <a href="<?= base_url("usuarios/info/{$row->usuario_id}") ?>" class="">
                                     <?= $this->App_model->nombre_usuario($row->usuario_id, 'na') ?>
                                 </a>
                             <?php } ?>
@@ -136,7 +139,7 @@
                     <tr>
                         <td>Documento</td>
                         <td>
-                            <span class="text-muted"><?php echo $this->Item_model->nombre(53, $row->tipo_documento_id) ?></span>
+                            <span class="text-muted"><?= $this->Item_model->nombre(53, $row->tipo_documento_id) ?></span>
                             <?= $row->no_documento ?>
                         </td>
                     </tr>
@@ -374,7 +377,7 @@
                 <?php foreach ($extras->result() as $row_extra) : ?>
                 <tr>
                     <td><?= $this->App_model->nombre_item($row_extra->producto_id, 1, 6) ?></td>
-                    <td><?php echo $row_extra->nota; ?></td>
+                    <td><?= $row_extra->nota; ?></td>
                     <td>
                         <span>
                             <?= $this->Pcrn->moneda($row_extra->precio) ?>

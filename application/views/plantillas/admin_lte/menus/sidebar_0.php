@@ -40,7 +40,7 @@
             $menus['fletes/editar'] = array('fletes');
             
         //Pedidos
-            $menus['pedidos/explorar'] = array('pedidos');
+            $menus['pedidos/explore'] = array('pedidos');
             $menus['pedidos/ver'] = array('pedidos');
             $menus['pedidos/nuevo'] = array('pedidos');
             $menus['pedidos/pol'] = array('pedidos');
@@ -111,7 +111,7 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="<?php echo $this->session->userdata('src_img') ?>" class="img-circle" alt="User Image" />
+                <img src="<?= $this->session->userdata('src_img') ?>" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
                 <p><?= $this->session->userdata('nombre_corto') ?></p>

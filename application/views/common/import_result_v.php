@@ -17,7 +17,7 @@
     );
 ?>
 
-<a href="<?php echo base_url($back_destination) ?>" class="btn btn-secondary">
+<a href="<?= base_url($back_destination) ?>" class="btn btn-secondary">
     <i class="fa fa-arrow-circle-left"></i>
     Volver
 </a>
@@ -29,19 +29,19 @@
         <tr>
             <td>Nombre hoja cálculo</td>
             <td width="50px"></td>
-            <td><?php echo $sheet_name ?></td>
+            <td><?= $sheet_name ?></td>
         </tr>
         <tr>
             <td>Filas encontradas</td>
             <td><i class="fa fa-info-circle text-info"></i></td>
-            <td><?php echo count($results) ?></td>
+            <td><?= count($results) ?></td>
         </tr>
         <tr>
             <td>Filas importadas</td>
             <td><i class="fa fa-check-circle text-success"></i></td>
-            <td><?php echo $qty_imported ?></td>
+            <td><?= $qty_imported ?></td>
         </tr>
-        <tr class="<?php echo $class_not_imported ?>">
+        <tr class="<?= $class_not_imported ?>">
             <td>Filas no importadas</td>
             <td>
                 <?php if ( $quan_not_imported > 0 ) { ?>
@@ -49,7 +49,7 @@
                 <?php } ?>
             </td>
             <td>
-                <?php echo $quan_not_imported ?>
+                <?= $quan_not_imported ?>
             </td>
         </tr>
     </tbody>
@@ -67,14 +67,14 @@
     <tbody>
         <?php foreach ( $results as $row_number => $result ) { ?>
             <tr>
-                <td><?php echo $row_number ?></td>
+                <td><?= $row_number ?></td>
                 <td class="table-">
-                    <i class="text-<?php echo $status_cl[$result['status']] ?> <?php echo $status_icons[$result['status']] ?>"></i>
+                    <i class="text-<?= $status_cl[$result['status']] ?> <?= $status_icons[$result['status']] ?>"></i>
                 </td>
                 <td>
-                    <?php echo $status_text[$result['status']] ?>
+                    <?= $status_text[$result['status']] ?>
                 </td>
-                <td><?php echo $result['text'] ?></td>
+                <td><?= $result['text'] ?></td>
             </tr>
         <?php } ?>
     </tbody>

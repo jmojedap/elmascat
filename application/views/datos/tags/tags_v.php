@@ -14,7 +14,7 @@
             <i class="fa fa-plus"></i> Nueva
         </button>
 
-        <?php echo anchor("datos/export_tags", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-default" title="Exportar listado de etiquetas"') ?>
+        <?= anchor("datos/export_tags", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-default" title="Exportar listado de etiquetas"') ?>
     </div>
 
     <table class="table table-hover bg-blanco">

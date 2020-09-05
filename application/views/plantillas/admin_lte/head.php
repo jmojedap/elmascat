@@ -1,5 +1,5 @@
 <meta charset="UTF-8">
-<title><?php echo $titulo_pagina ?></title>
+<title><?= $titulo_pagina ?></title>
 <link rel="shortcut icon" href="<?= URL_IMG ?>app/icono.png" type="image/ico"/>
 
 <!--JQuery-->
@@ -20,7 +20,7 @@
 <?php $this->load->view('assets/toastr') ?>
 
 <script>
-    const app_url = '<?php echo base_url() ?>';
+    const app_url = '<?= base_url() ?>';
 </script>
 
     

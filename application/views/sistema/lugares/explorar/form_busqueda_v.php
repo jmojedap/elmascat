@@ -12,7 +12,7 @@
         }
 ?>
 
-<form action="<?php echo base_url("app/buscar/{$controlador}/explorar") ?>" accept-charset="utf-8">
+<form action="<?= base_url("app/buscar/{$controlador}/explorar") ?>" accept-charset="utf-8">
     <div class="form-group row">
         <div class="col-sm-4">
             <div class="btn btn-default btn-block" id="alternar_avanzada" data-toggle="tooltip" title="Búsqueda avanzada">
@@ -31,7 +31,7 @@
             </div>
         </div>
     </div>
-    <div class="form-group row <?= $clases_filtros['tp'] ?>" <?php echo $style_filtros['tp'] ?>>
+    <div class="form-group row <?= $clases_filtros['tp'] ?>" <?= $style_filtros['tp'] ?>>
         <label for="tp" class="col-sm-4 col-form-label text-right">Tipo</label>
         <div class="col-sm-8">
             <?= form_dropdown('tp', $opciones_tipo, $busqueda['tp'], 'class="form-control" title="Filtrar tipo de lugar"'); ?>

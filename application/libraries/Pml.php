@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pml {
 
-    /** ACTUALIZADA 2019-06-17 */
+    /** ACTUALIZADA 2020-09-03 */
     
     /**
      * Converts codeigniter query object in an array
@@ -131,6 +131,21 @@ class Pml {
         return $money;
     }
 
+    /**
+     * Devuelve el valor de una clase html dependiendo de si un valor es igual
+     * a un elemento actual con el que se compara. Si son iguales se devuelve 
+     * la clase $active (Para resaltarlo como actual). Si son diferentes se
+     * devuelve la clase $inactive
+     * 2020-09-03
+     */
+    function active_class($current_element, $compare_element, $active, $inactive = '')
+    {
+        $active_class = $inactive;
+        if ( $current_element == $compare_element ) { $active_class = $active; }
+        
+        return $active_class;
+    }
+
 // DATE FUNCTIONS
 //-----------------------------------------------------------------------------
 
@@ -195,7 +210,7 @@ class Pml {
             }
             
             //Se agrega la unidad de medida
-            $interval = round($time_units, 0, PHP_ROUND_HALF_UP) . $sufix;
+            $interval = round($time_units, 1, PHP_ROUND_HALF_DOWN) . $sufix;
         }
 
         return $interval;
@@ -244,7 +259,7 @@ class Pml {
         if( ! is_null($date) )
         {
             $mkt = strtotime(substr($date . ' 00:00:00', 0, 19));
-            $age = round((time()-$mkt)/(60*60*24*365.25), 1, PHP_ROUND_HALF_DOWN);
+            $age = ceil((time()-$mkt)/(60*60*24*365.25)) - 1;
         }
         return $age;
     }
@@ -317,5 +332,4 @@ class Pml {
 
         return $content;
     }
-
 }

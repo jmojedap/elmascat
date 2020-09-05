@@ -1,13 +1,13 @@
 <div class="row">
     <div class="col-md-12">
         <div class="page-title">
-            <h2 class="title"><?php echo $head_title ?></h2>
+            <h2 class="title"><?= $head_title ?></h2>
         </div>
         <div class="status alert alert-success" style="display: none"></div>
         <form id="main-contact-form" class="contact-form row" name="contact-form" method="post">
             <div class="col-md-2">
                 <?php if ( $this->session->userdata('logged') ){ ?>
-                    <a href="<?php echo base_url("usuarios/mis_pedidos") ?>" class="btn btn-primary btn-block">
+                    <a href="<?= base_url("usuarios/mis_pedidos") ?>" class="btn btn-primary btn-block">
                         <i class="fa fa-arrow-left"></i>
                         Mis pedidos
                     </a>
@@ -22,7 +22,7 @@
                     class="form-control"
                     placeholder="Escribe el código de tu pedido"
                     title="Escriba el código de su pedido"
-                    value="<?php echo $cod_pedido ?>"
+                    value="<?= $cod_pedido ?>"
                     >
             </div>
 
@@ -39,7 +39,7 @@
     <div class="">
         <div class="alert alert-info" role="alert">
             <i class="fa fa-info-circle"></i>
-            Lo sentimos, no encontramos ningún pedido con el código <b> <?php echo $cod_pedido ?></b>
+            Lo sentimos, no encontramos ningún pedido con el código <b> <?= $cod_pedido ?></b>
         </div>
     </div>
 <?php } ?>
@@ -119,7 +119,7 @@
                                         Gastos transacción y envío
                                     </td>
                                     <td class="text-right">
-                                        <?php echo $this->Pcrn->moneda($arr_extras['gastos_envio']);  ?>
+                                        <?= $this->Pcrn->moneda($arr_extras['gastos_envio']);  ?>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -221,10 +221,10 @@
                             <?php } ?>
                         </td>
                         <td class="text-center">
-                            <?php echo $row_detalle->cantidad ?>
+                            <?= $row_detalle->cantidad ?>
                         </td>
                         <td class="text-right">
-                            <?php echo $this->Pcrn->moneda($precio_detalle) ?>
+                            <?= $this->Pcrn->moneda($precio_detalle) ?>
                         </td>
 
                     </tr>

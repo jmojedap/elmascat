@@ -76,7 +76,7 @@
                                                     x
                                                 </span>
                                                 <b>
-                                                    $ <?php echo number_format($row_detalle->precio/$precio_dolar, 2, '.', ',') ?>
+                                                    $ <?= number_format($row_detalle->precio/$precio_dolar, 2, '.', ',') ?>
                                                 </b>
                                                 
                                                 <span class="suave">
@@ -84,7 +84,7 @@
                                                 </span>
                                                 <span class="cart-price">
                                                     <span class="price">
-                                                        $ <?php echo number_format($precio_detalle/$precio_dolar, 2, '.', ',') ?>
+                                                        $ <?= number_format($precio_detalle/$precio_dolar, 2, '.', ',') ?>
                                                     </span>
                                                 </span>
                                             </p>
@@ -187,7 +187,7 @@
             <?= form_close('') ?>
         </ul>
         
-        <a class="btn btn-block btn-default" href="<?php echo base_url("pedidos/compra_b/{$row->cod_pedido}") ?>">
+        <a class="btn btn-block btn-default" href="<?= base_url("pedidos/compra_b/{$row->cod_pedido}") ?>">
             Pagar en Pesos Colombianos (COP)
         </a>
         

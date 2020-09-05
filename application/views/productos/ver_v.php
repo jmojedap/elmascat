@@ -134,7 +134,7 @@
                             $link = "productos/explorar/?tag={$row_tag->id}";
                         ?>
                         <li>
-                            <?php echo anchor($link, $row_tag->nombre_tag) ?>
+                            <?= anchor($link, $row_tag->nombre_tag) ?>
                         </li>
                     <?php endforeach ?>
                 </ul>

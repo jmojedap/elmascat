@@ -28,7 +28,7 @@
         <h2 class="title">Revista Minutos de Amor &middot; Abril 2020</h2>
     </div>
     <div class="row">
-        <div class="col-md-3 <?php echo $cl_col['lg'] ?>">
+        <div class="col-md-3 <?= $cl_col['lg'] ?>">
             <a href="http://www.districatolicas.com/tienda/productos/detalle/17149">
                 <img class="portada mb-2" src="http://www.districatolicas.com/tienda/uploads/2020/03/500px_401467203e907e8c5a5d416dbddadbfe.jpg" alt="Portada Revista Minutos de Amor Abril 2020" style="width: 100%">  
             </a>
@@ -58,16 +58,16 @@
             </div>
             <table class="table table-hover table-responsive">
                 <thead>
-                    <th class="<?php echo $cl_col['all'] ?>">Ciudad</th>
-                    <th class="<?php echo $cl_col['sm'] ?>">Información</th>
-                    <th class="<?php echo $cl_col['lg'] ?>">Sector</th>
-                    <th class="<?php echo $cl_col['lg'] ?>">Contacto</th>
-                    <th class="<?php echo $cl_col['lg'] ?>">Teléfono</th>
+                    <th class="<?= $cl_col['all'] ?>">Ciudad</th>
+                    <th class="<?= $cl_col['sm'] ?>">Información</th>
+                    <th class="<?= $cl_col['lg'] ?>">Sector</th>
+                    <th class="<?= $cl_col['lg'] ?>">Contacto</th>
+                    <th class="<?= $cl_col['lg'] ?>">Teléfono</th>
                 </thead>
                 <tbody>
                     <tr v-for="(distribuidor, d_key) in list">
-                        <td class="<?php echo $cl_col['all'] ?>">{{ distribuidor.city }}</td>
-                        <td class="<?php echo $cl_col['sm'] ?>">
+                        <td class="<?= $cl_col['all'] ?>">{{ distribuidor.city }}</td>
+                        <td class="<?= $cl_col['sm'] ?>">
                             <b>{{ distribuidor.contact_name }}</b>
                             <br>
                             <span class="text-muted">Tel.</span>
@@ -75,11 +75,11 @@
                             <br>
                             {{ distribuidor.zone }}
                         </td>
-                        <td class="<?php echo $cl_col['lg'] ?>">{{ distribuidor.zone }}</td>
-                        <td class="<?php echo $cl_col['lg'] ?>">
+                        <td class="<?= $cl_col['lg'] ?>">{{ distribuidor.zone }}</td>
+                        <td class="<?= $cl_col['lg'] ?>">
                             {{ distribuidor.contact_name }}
                         </td>
-                        <td class="<?php echo $cl_col['lg'] ?>">
+                        <td class="<?= $cl_col['lg'] ?>">
                             {{ distribuidor.phone_number }}
                         </td>
                     </tr>
@@ -96,7 +96,7 @@
             //this.get_list();
         },
         data: {
-            list: <?php echo $list ?>
+            list: <?= $list ?>
         },
         methods: {
             

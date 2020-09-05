@@ -78,9 +78,9 @@
 //VARIABLES
 //---------------------------------------------------------------------------------------------------
 
-    var base_url = '<?php echo base_url() ?>';
+    var base_url = '<?= base_url() ?>';
     var seleccionados = '';
-    var seleccionados_todos = '<?php echo $seleccionados_todos ?>';
+    var seleccionados_todos = '<?= $seleccionados_todos ?>';
     var texto = '';
     var etiqueta_id = 0;
     
@@ -162,11 +162,11 @@
                         <i class="fa fa-minus-circle" id="icono_menos"></i>
                         <i class="fa fa-plus-circle" id="icono_mas" style="display: none"></i>
                     </button>
-                    <?php echo anchor("datos/etiquetas", '<i class="fa fa-plus"></i> Nuevo', 'class="btn btn-info" title=""') ?>
+                    <?= anchor("datos/etiquetas", '<i class="fa fa-plus"></i> Nuevo', 'class="btn btn-info" title=""') ?>
                     <a class="btn btn-warning" title="Eliminar los elementos seleccionados" data-toggle="modal" data-target="#modal_eliminar">
                         <i class="fa fa-trash-o"></i>
                     </a>            
-                    <?php echo anchor("datos/exportar_etiquetas", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-success" title=""') ?>
+                    <?= anchor("datos/exportar_etiquetas", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-success" title=""') ?>
                 </div>
             </div>
         </div>
@@ -174,7 +174,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th width="10px;"><?php echo form_checkbox($att_check_todos) ?></th>
+                    <th width="10px;"><?= form_checkbox($att_check_todos) ?></th>
                     <th width="20px">ID</th>
                     <th>Etiqueta</th>
                     <th>Descripción</th>
@@ -183,25 +183,25 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="<?php echo $clase_form ?>">
-                    <?php echo form_open("datos/guardar_etiqueta/{$valores['id']}", $att_form) ?>
+                <tr class="<?= $clase_form ?>">
+                    <?= form_open("datos/guardar_etiqueta/{$valores['id']}", $att_form) ?>
                     
                     <td></td>
                     
-                    <td><?php echo $valores['id'] ?></td>
+                    <td><?= $valores['id'] ?></td>
                     <td>
-                        <?php echo form_input($att_item); ?>
+                        <?= form_input($att_item); ?>
                     </td>
                     <td>
-                        <?php echo form_input($att_descripcion); ?>
+                        <?= form_input($att_descripcion); ?>
                     </td>
                     <td>
-                        <?php echo form_dropdown('padre_id', $opciones_etiquetas, $valores['padre_id'], 'class="form-control"') ?>
+                        <?= form_dropdown('padre_id', $opciones_etiquetas, $valores['padre_id'], 'class="form-control"') ?>
                     </td>
                     <td>
-                        <?php echo form_submit($att_submit) ?>
+                        <?= form_submit($att_submit) ?>
                     </td>
-                    <?php echo form_close('') ?>
+                    <?= form_close('') ?>
                 </tr>
                 
                 <?php foreach ($etiquetas->result() as $row_etiqueta) : ?>
@@ -221,19 +221,19 @@
                             $clase_nivel = 'subnivel';
                         }
                     ?>
-                    <tr class="<?php echo $clase_row ?> padre_<?php echo $row_etiqueta->padre_id ?> <?php echo $clase_nivel ?> <?php echo $clase_mostrar ?>">
-                        <td><?php echo form_checkbox($att_check) ?></td>
-                        <td class="warning"><?php echo $row_etiqueta->id ?></td>
+                    <tr class="<?= $clase_row ?> padre_<?= $row_etiqueta->padre_id ?> <?= $clase_nivel ?> <?= $clase_mostrar ?>">
+                        <td><?= form_checkbox($att_check) ?></td>
+                        <td class="warning"><?= $row_etiqueta->id ?></td>
                         <td>
                             <span class="suave">
-                                <?php echo str_repeat('---', $repetir) ?>
+                                <?= str_repeat('---', $repetir) ?>
                             </span>
-                            <?php echo $nombre_etiqueta ?>
+                            <?= $nombre_etiqueta ?>
                         </td>
-                        <td><?php echo $row_etiqueta->descripcion ?></td>
-                        <td><?php echo $this->App_model->nombre_item($row_etiqueta->padre_id) ?></td>
+                        <td><?= $row_etiqueta->descripcion ?></td>
+                        <td><?= $this->App_model->nombre_item($row_etiqueta->padre_id) ?></td>
                         <td>
-                            <?php echo anchor("datos/etiquetas/{$row_etiqueta->id}", '<i class="fa fa-pencil"></i>', 'class="a4" title="Editar categoría"') ?>
+                            <?= anchor("datos/etiquetas/{$row_etiqueta->id}", '<i class="fa fa-pencil"></i>', 'class="a4" title="Editar categoría"') ?>
                         </td>
                     </tr>
 
@@ -243,4 +243,4 @@
     </div>
 </div>
 
-<?php echo $this->load->view('app/modal_eliminar'); ?>
+<?= $this->load->view('app/modal_eliminar'); ?>

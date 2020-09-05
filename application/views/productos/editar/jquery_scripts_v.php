@@ -1,8 +1,8 @@
 <script>
 // Variables
 //-----------------------------------------------------------------------------
-    var destino_form = '<?php echo base_url($destino_form) ?>';
-    var producto_id = <?php echo $row->id ?>;
+    var destino_form = '<?= base_url($destino_form) ?>';
+    var producto_id = <?= $row->id ?>;
 
 // Doc Ready
 //-----------------------------------------------------------------------------

@@ -22,7 +22,7 @@
                         <ul>
                             <li class="">
                                 <a href="https://www.facebook.com/districatolicas/" target="_blank">
-                                    <img src="<?php echo URL_IMG ?>app/facebook.png" alt="Logo Facebook" width="32px" style="border-radius: 3px;">
+                                    <img src="<?= URL_IMG ?>app/facebook.png" alt="Logo Facebook" width="32px" style="border-radius: 3px;">
                                 </a>
                             </li>
                             <li class="">
@@ -38,7 +38,7 @@
                             </li>
                             <li class="">
                                 <a href="https://wa.me/573013054053" target="_blank">
-                                    <img src="<?php echo URL_IMG ?>app/whatsapp_logo.png" alt="Logo WhatsApp" width="32px" style="border-radius: 3px;">
+                                    <img src="<?= URL_IMG ?>app/whatsapp_logo.png" alt="Logo WhatsApp" width="32px" style="border-radius: 3px;">
                                 </a>
                             </li>
                         </ul>

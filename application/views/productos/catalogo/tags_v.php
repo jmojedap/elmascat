@@ -20,11 +20,11 @@
                         $clase_signo = 'minus';
                     }
                 ?>
-                <li class="<?php echo $tag_class ?>">
-                    <?php echo anchor("productos/catalogo/?{$get_str}tag={$row_tag->id}", $row_tag->item) ?>
+                <li class="<?= $tag_class ?>">
+                    <?= anchor("productos/catalogo/?{$get_str}tag={$row_tag->id}", $row_tag->item) ?>
                     
                     <?php if ( $tags_n2->num_rows() > 0 ){ ?>
-                        <span class="subDropdown <?php echo $clase_signo ?>"></span>
+                        <span class="subDropdown <?= $clase_signo ?>"></span>
                     <?php } ?>
                     
                     <?php if ( $tags_n2->num_rows() > 0 ){ ?>
@@ -38,8 +38,8 @@
                                     
                                     $busqueda_str_subtag = str_replace('tag=','notag=',$busqueda_str) . "tag={$row_tag_n2->id}";
                                 ?>
-                                <li class="<?php echo $tag_class_n2 ?>">
-                                    <?php echo anchor("productos/catalogo/?{$get_tag}&tag={$row_tag_n2->id}", $row_tag_n2->item) ?>
+                                <li class="<?= $tag_class_n2 ?>">
+                                    <?= anchor("productos/catalogo/?{$get_tag}&tag={$row_tag_n2->id}", $row_tag_n2->item) ?>
                                 </li>
                             <?php endforeach ?>
                         </ul>

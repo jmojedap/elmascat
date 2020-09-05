@@ -71,7 +71,7 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for=""></label>
                 <div class="col-md-8">
-                    <?php echo form_submit($att_submit) ?>
+                    <?= form_submit($att_submit) ?>
                 </div>
             </div>
         
@@ -86,42 +86,42 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="estado">Estado</label>
                 <div class="col-md-8">
-                    <?php echo form_dropdown('estado', $opciones_estado, $row->estado, 'class="form-control chosen-select"') ?>
+                    <?= form_dropdown('estado', $opciones_estado, $row->estado, 'class="form-control chosen-select"') ?>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-md-4 control-label" for="nombre_producto">Título *</label>
                 <div class="col-md-8">
-                    <?php echo form_input($att_nombre_producto) ?>
+                    <?= form_input($att_nombre_producto) ?>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-md-4 control-label" for="referencia">Referencia *</label>
                 <div class="col-md-8">
-                    <?php echo form_input($att_referencia) ?>
+                    <?= form_input($att_referencia) ?>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-md-4 control-label" for="descripcion">Descripción *</label>
                 <div class="col-md-8">
-                    <?php echo form_textarea($att_descripcion) ?>
+                    <?= form_textarea($att_descripcion) ?>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-md-4 control-label" for="descripcion">Palabras clave *</label>
                 <div class="col-md-8">
-                    <?php echo form_input($att_palabras_clave) ?>
+                    <?= form_input($att_palabras_clave) ?>
                 </div>
             </div>
 
             <div class="form-group row" id="form-categoria_id">
                 <label for="categoria_id" class="col-md-4 control-label">Categoría *</label>
                 <div class="col-md-8">
-                    <?php echo form_dropdown('categoria_id', $opciones_categoria, '0' . $row->categoria_id, 'id="campo-tipo_id" class="form-control" required') ?>
+                    <?= form_dropdown('categoria_id', $opciones_categoria, '0' . $row->categoria_id, 'id="campo-tipo_id" class="form-control" required') ?>
                 </div>
             </div>
 
@@ -138,9 +138,9 @@
 
                                 $repeticiones_nivel = 4 * ($row_tag->nivel - 1);
                             ?>
-                            <option value="0<?php echo $row_tag->id ?>" <?php echo $selected ?>>
-                                <?php echo str_repeat('&nbsp;', $repeticiones_nivel) ?>
-                                <?php echo $row_tag->nombre_tag ?>
+                            <option value="0<?= $row_tag->id ?>" <?= $selected ?>>
+                                <?= str_repeat('&nbsp;', $repeticiones_nivel) ?>
+                                <?= $row_tag->nombre_tag ?>
                             </option>
                         <?php endforeach ?>
                     </select>
@@ -154,7 +154,7 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="fabricante_id">Fabricante - Marca</label>
                 <div class="col-md-8">
-                    <?php echo form_dropdown('fabricante_id', $opciones_fabricante, $row->fabricante_id, 'class="form-control chosen-select"') ?>
+                    <?= form_dropdown('fabricante_id', $opciones_fabricante, $row->fabricante_id, 'class="form-control chosen-select"') ?>
                 </div>
             </div>
         </form>

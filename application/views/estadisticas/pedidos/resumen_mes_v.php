@@ -45,13 +45,13 @@
     series: [
         <?php foreach ( $resumen_mes as $year => $query ) { ?>
             {
-                name: '<?php echo $year ?>',
+                name: '<?= $year ?>',
                 data: [
                     <?php foreach ( $query->result() as $row_mes ) { ?>
                         <?php
                             $ventas_millones = $this->Pcrn->dividir($row_mes->sum_valor_total, 1000000);
                         ?>
-                        <?php echo number_format($ventas_millones, 1); ?>,
+                        <?= number_format($ventas_millones, 1); ?>,
                     <?php } ?>
                 ]
             },

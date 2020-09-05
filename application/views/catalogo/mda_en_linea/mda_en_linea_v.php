@@ -30,12 +30,12 @@
     <div class="row mb-2">
         <div class="col-md-12 presentation text-center">
             <p class="mb-2 hidden">
-                <a href="<?php echo base_url("books/demo/minutos-de-amor-abril-2020") ?>" class="link_demo">
+                <a href="<?= base_url("books/demo/minutos-de-amor-abril-2020") ?>" class="link_demo">
                     <i class="fa fa-caret-right"></i> Mira Abril de 2020 en Línea <i class="fa fa-caret-left"></i>
                 </a>
             </p>
             <p>
-                <a href="<?php echo base_url("posts/leer/331/como-comprar-minutos-de-amor-en-linea") ?>" class="link_demo">
+                <a href="<?= base_url("posts/leer/331/como-comprar-minutos-de-amor-en-linea") ?>" class="link_demo">
                     ¿Cómo comprar? Paso a paso
                 </a>
             </p>
@@ -56,7 +56,7 @@
                 v-bind:src="producto_actual.img_src"
                 class="product_img"
                 alt="image producto"
-                onerror="this.src='<?php echo URL_IMG ?>app/500px_producto.png'"
+                onerror="this.src='<?= URL_IMG ?>app/500px_producto.png'"
             >
         </div>
         <div class="col-md-8">

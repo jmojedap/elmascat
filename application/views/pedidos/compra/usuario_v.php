@@ -83,7 +83,7 @@
             Tu cuenta de usuario fue creada con el email: <b>{{ email }}</b>
             y la contraseña que acabaste escribir.
         </div>
-        <a href="<?php echo base_url("pedidos/compra_a/") ?>" class="btn btn-polo-lg">
+        <a href="<?= base_url("pedidos/compra_a/") ?>" class="btn btn-polo-lg">
             CONTINUAR COMPRA <i class="fa fa-arrow-right"></i>
         </a>
     </div>
@@ -93,7 +93,7 @@
             <i class="fa fa-user fa-2x"></i> <br>
             Hola {{ user.display_name }}, ya estás en DistriCatolicas.com
         </div>
-        <a href="<?php echo base_url("pedidos/compra_a/") ?>" class="btn btn-polo-lg">
+        <a href="<?= base_url("pedidos/compra_a/") ?>" class="btn btn-polo-lg">
             CONTINUAR
         </a>
     </div>

@@ -22,14 +22,14 @@
                 <div class="form-group row">
                     <label for="response_code_pol" class="col-md-4 col-form-label text-right">response code pol</label>
                     <div class="col-md-8">
-                        <?php echo form_dropdown('codigo_respuesta_pol', $options_response_code_pol, '01', 'class="form-control"') ?>
+                        <?= form_dropdown('codigo_respuesta_pol', $options_response_code_pol, '01', 'class="form-control"') ?>
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label for="medio_pago_id" class="col-md-4 col-form-label text-right">payment method</label>
                     <div class="col-md-8">
-                        <?php echo form_dropdown('medio_pago_id', $options_payment_method, '04', 'class="form-control"') ?>
+                        <?= form_dropdown('medio_pago_id', $options_payment_method, '04', 'class="form-control"') ?>
                     </div>
                 </div>
 
@@ -37,14 +37,14 @@
                     
 
                     <div class="form-group row">
-                        <label for="" class="col-md-4 col-form-label text-right"><?php echo $field ?></label>
+                        <label for="" class="col-md-4 col-form-label text-right"><?= $field ?></label>
                         <div class="col-md-8">
                             <input
                                 type="text"
-                                name="<?php echo $field ?>"
+                                name="<?= $field ?>"
                                 required
                                 class="form-control"
-                                value="<?php echo $field_value ?>"
+                                value="<?= $field_value ?>"
                                 >
                         </div>
                     </div>

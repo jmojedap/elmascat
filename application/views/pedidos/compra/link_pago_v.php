@@ -55,7 +55,7 @@
                                                     <span class="suave">
                                                         x
                                                     </span>
-                                                    <span class="suave"><?php echo $this->Pcrn->moneda($row_detalle->precio) ?></span>
+                                                    <span class="suave"><?= $this->Pcrn->moneda($row_detalle->precio) ?></span>
                                                     
                                                     <span class="suave">
                                                         <i class="fa fa-caret-right"></i>
@@ -101,7 +101,7 @@
                     <tfoot>
                         <tr class="first last">
                             <td class="a-right last" colspan="2">
-                                <a href="<?php echo base_url("pedidos/editar/edit/{$row->id}") ?>" class="btn btn-polo w3" title="Editar pedido">
+                                <a href="<?= base_url("pedidos/editar/edit/{$row->id}") ?>" class="btn btn-polo w3" title="Editar pedido">
                                     <i class="fa fa-edit"></i><span><span> Editar</span></span>
                                 </a>
                             </td>
@@ -127,12 +127,12 @@
                             <i class="fa fa-map-marker fa-2x"></i>
                         </td>
                         <td>
-                            <?php echo $row->direccion ?><br>
+                            <?= $row->direccion ?><br>
                             <span class="suave">
                                 Celular
                             </span>
-                            <?php echo $row->celular ?><br/>
-                            <?php echo $row->ciudad ?>
+                            <?= $row->celular ?><br/>
+                            <?= $row->ciudad ?>
                         </td>
                     </tr>
                     <tr>
@@ -153,7 +153,7 @@
             </div>
             <?php $this->load->view('pedidos/compra/totales_v'); ?>
             <ul class="checkout">
-                <?php echo form_open($destino_form) ?>
+                <?= form_open($destino_form) ?>
 
                     <?php foreach ($form_data as $key => $valor) : ?>
                         <?= form_hidden($key, $valor) ?>
@@ -170,16 +170,16 @@
                                     <i class="fa fa-info-circle fa-2x"></i>
                                 </p>
                                 <p>
-                                    <?php echo count($datos_faltantes) ?> datos faltantes: <?php echo implode(', ', $datos_faltantes); ?>.
+                                    <?= count($datos_faltantes) ?> datos faltantes: <?= implode(', ', $datos_faltantes); ?>.
                                 </p>
                             </div>
                         <?php } ?>
                     </li>
-                <?php echo form_close('') ?>
+                <?= form_close('') ?>
             </ul>
             
             <?php if ( $row->pais_id != 51 ) { ?>
-                <a class="btn btn-info btn-block" href="<?php echo base_url("pedidos/compra_b_usd/{$row->cod_pedido}") ?>">
+                <a class="btn btn-info btn-block" href="<?= base_url("pedidos/compra_b_usd/{$row->cod_pedido}") ?>">
                     Pagar en Dólares (USD)
                 </a>
             <?php } ?>

@@ -64,7 +64,7 @@
                         >
                 </div>
                 <div class="col-md-4">
-                    <?php echo form_dropdown('tipo_documento_id', $opciones_tipo_documento, '', 'class="form-control" required') ?>
+                    <?= form_dropdown('tipo_documento_id', $opciones_tipo_documento, '', 'class="form-control" required') ?>
                 </div>
             </div>
             
@@ -124,7 +124,7 @@
             <div class="form-group row">
                 <label for="ciudad_id" class="col-md-4 control-label">Ciudad residencia</label>
                 <div class="col-md-8">
-                    <?php echo form_dropdown('ciudad_id', $opciones_ciudad, '', 'class="form-control chosen-select" required') ?>
+                    <?= form_dropdown('ciudad_id', $opciones_ciudad, '', 'class="form-control chosen-select" required') ?>
                 </div>
             </div>
             
@@ -156,14 +156,14 @@
             <div class="form-group row">
                 <label for="rol_id" class="col-md-4 control-label">Rol *</label>
                 <div class="col-md-8">
-                    <?php echo form_dropdown('rol_id', $opciones_rol, '021', 'class="form-control" required') ?>
+                    <?= form_dropdown('rol_id', $opciones_rol, '021', 'class="form-control" required') ?>
                 </div>
             </div>
             
             <div class="form-group row">
                 <label for="sexo" class="col-md-4 control-label">Sexo *</label>
                 <div class="col-md-8">
-                    <?php echo form_dropdown('sexo', $opciones_sexo, '', 'class="form-control" required') ?>
+                    <?= form_dropdown('sexo', $opciones_sexo, '', 'class="form-control" required') ?>
                 </div>
             </div>
             

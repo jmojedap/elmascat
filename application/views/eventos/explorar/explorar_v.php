@@ -24,7 +24,7 @@
         </a>
         
         <div class="hidden btn-group hidden-xs <?= $clases_btn['exportar'] ?>" role="group">
-            <?php echo anchor("{$controlador}/exportar/?{$busqueda_str}", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-success" title="Exportar los ' . $cant_resultados . ' registros a archivo de Excel"') ?>
+            <?= anchor("{$controlador}/exportar/?{$busqueda_str}", '<i class="fa fa-file-excel-o"></i> Exportar', 'class="btn btn-success" title="Exportar los ' . $cant_resultados . ' registros a archivo de Excel"') ?>
         </div>
     </div>
     

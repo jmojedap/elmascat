@@ -12,10 +12,43 @@ class Pedidos extends CI_Controller{
         date_default_timezone_set("America/Bogota");
     }
 
-// EXPLORACIÓN
+//EXPLORACIÓN
 //---------------------------------------------------------------------------------------------------
+
+    /** Exploración de Pedidos */
+    function explore($num_page = 1)
+    {
+        //Identificar filtros de búsqueda
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        //Datos básicos de la exploración
+            $data = $this->Pedido_model->explore_data($filters, $num_page);
+        
+        //Opciones de filtros de búsqueda
+            $data['options_status'] = $this->Item_model->options('categoria_id = 7', 'Todos');
+            $data['options_crpol'] = $this->Item_model->options('categoria_id = 10', 'Todos');   //Codigo Respuesta POL
+            
+        //Arrays con valores para contenido en lista
+            $data['arr_status'] = $this->Item_model->arr_cod('categoria_id = 7');
+            
+        //Cargar vista
+            $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Listado de Pedidos, filtrados por búsqueda, JSON
+     */
+    function get($num_page = 1)
+    {
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        $data = $this->Pedido_model->get($filters, $num_page);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
-    function explorar()
+    function explorar_ant()
     {
         //Cargando
             $this->load->model('Busqueda_model');
@@ -68,30 +101,39 @@ class Pedidos extends CI_Controller{
     }
     
     /**
-     * Exporta el resultado de la búsqueda a un archivo de Excel
+     * Exporta el resultado de la búsqueda a un archivo CSV
+     * 2020-08-28
      */
     function exportar()
     {
-        
         //Cargando
-            $this->load->model('Busqueda_model');
-            $this->load->model('Pcrn_excel');
+            $this->load->model('Search_model');
         
-        //Datos de consulta, construyendo array de búsqueda
-            $busqueda = $this->Busqueda_model->busqueda_array();
-            $resultados_total = $this->Pedido_model->buscar($busqueda); //Para calcular el total de resultados
         
-        //Preparar datos
-            $datos['nombre_hoja'] = 'Pedidos';
-            $datos['query'] = $resultados_total;
-            
-        //Preparar archivo
-            $objWriter = $this->Pcrn_excel->archivo_query($datos);
+            $filters = $this->Search_model->filters();
+            $query = $this->Pedido_model->search($filters); //Para calcular el total de resultados
+
+        //Construyento archivo
+        $content = '';
+
+        //Primera fila, columnas
+            $fields = $query->list_fields();
+            $content .= implode("\t", $fields) . "\n";
+
+        //Registros
+        foreach($query->result() as $row)
+        {
+            foreach($fields as $field) $content .= $row->$field."\t";
+            $content .= "\n";
+        }
+
+        $file_name = date('Ymd_His'). '_pedidos.csv';
+
+        $content = mb_convert_encoding($content, 'UTF-16LE', 'UTF-8');
         
-        $data['objWriter'] = $objWriter;
-        $data['nombre_archivo'] = date('Ymd_His'). '_pedidos.xls'; //save our workbook as this file name
-        
-        $this->load->view('app/descargar_phpexcel_v', $data);
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachment; filename="' . $file_name . '"');
+        echo $content; exit();
     }
     
     /**
@@ -173,7 +215,7 @@ class Pedidos extends CI_Controller{
     /**
      * Información general de un pedido, para imprimir
      */
-    function reporte($pedido_id)
+    function reporte($pedido_id, $tipo_reporte = 'general')
     {
         $data = $this->Pedido_model->basico($pedido_id);    
         $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
@@ -203,8 +245,8 @@ class Pedidos extends CI_Controller{
         
         //Solicitar vista
             $data['head_subtitle'] = $this->Pcrn->moneda($data['row']->valor_total);
-            $data['vista_a'] = 'pedidos/reporte_v';
-            $this->load->view('p_print/main_v', $data);
+            $data['view_a'] = "pedidos/reporte_{$tipo_reporte}_v";
+            $this->load->view('templates/print_bs4/blank_v', $data);
     }
 
     /**

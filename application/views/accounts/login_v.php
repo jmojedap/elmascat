@@ -41,7 +41,7 @@
         </div>
         
         <div class="form-group clearfix">
-            <a href="<?php echo base_url('usuarios/recuperar') ?>">¿Olvidaste los datos de tu cuenta?</a>
+            <a href="<?= base_url('usuarios/recuperar') ?>">¿Olvidaste los datos de tu cuenta?</a>
         </div>
         
         
@@ -57,7 +57,7 @@
 
     <p class="mb-2">¿No tienes una cuenta? <br></p>
     <p>
-        <a class="btn-polo w120p" href="<?php echo base_url('accounts/signup') ?>">Regístrate</a>
+        <a class="btn-polo w120p" href="<?= base_url('accounts/signup') ?>">Regístrate</a>
     </p>
 </div>
 

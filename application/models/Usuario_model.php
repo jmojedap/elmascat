@@ -1077,12 +1077,12 @@ class Usuario_model extends CI_Model{
     
     function pedidos($usuario_id)
     {
-        $this->load->model('Busqueda_model');
+        $this->load->model('Search_model');
         $this->load->model('Pedido_model');
-        $busqueda = $this->Busqueda_model->busqueda_array();
-        $busqueda['condicion'] = "usuario_id = {$usuario_id}";
+        $filters = $this->Search_model->filters();
+        $filters['u'] = $usuario_id;
         
-        $pedidos = $this->Pedido_model->buscar($busqueda);
+        $pedidos = $this->Pedido_model->search($filters);
         
         return $pedidos;
     }

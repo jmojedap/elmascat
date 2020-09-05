@@ -20,7 +20,7 @@
         </p>
 
         <p>
-            Para hacer la solicitud debe haber registrado sus datos personales (<?php echo anchor("usuarios/editarme/edit/{$this->session->userdata('usuario_id')}", 'Editar mis datos') ?>), incluyendo número de documento, dirección, teléfono y 
+            Para hacer la solicitud debe haber registrado sus datos personales (<?= anchor("usuarios/editarme/edit/{$this->session->userdata('usuario_id')}", 'Editar mis datos') ?>), incluyendo número de documento, dirección, teléfono y 
             celular. Uno de nuestros asesores se contactará con usted para continuar con el proceso.
         </p>
         

@@ -79,10 +79,10 @@
                                         if ( $contador_img > 1 ) { $clase_li = "moreview_thumb thumb_{$contador_img}"; }
                                     ?>
                                     <li class="<?= $clase_li ?>">
-                                        <img class="moreview_thumb_image" src="<?= $src ?>" alt="thumbnail mobile" onerror="this.src='<?php echo URL_IMG ?>app/500px_producto.png'">
+                                        <img class="moreview_thumb_image" src="<?= $src ?>" alt="thumbnail mobile" onerror="this.src='<?= URL_IMG ?>app/500px_producto.png'">
                                         <span class="roll-over">Mueva el mouse para hacer zoom</span>
-                                        <img class="moreview_source_image" src="<?= $src ?>" alt="" onerror="this.src='<?php echo URL_IMG ?>app/500px_producto.png'">
-                                        <img  class="zoomImg" src="<?= $src ?>" alt="thumbnail" onerror="this.src='<?php echo URL_IMG ?>app/500px_producto.png'">
+                                        <img class="moreview_source_image" src="<?= $src ?>" alt="" onerror="this.src='<?= URL_IMG ?>app/500px_producto.png'">
+                                        <img  class="zoomImg" src="<?= $src ?>" alt="thumbnail" onerror="this.src='<?= URL_IMG ?>app/500px_producto.png'">
                                     </li>
                                 <?php } ?>
                             </ul>
@@ -136,7 +136,7 @@
                         <div class="short-description">
                             <h2>Descripción</h2>
                             <div class="text-justify">
-                                <?php echo $row->descripcion ?>
+                                <?= $row->descripcion ?>
                             </div>
                         </div>
                         

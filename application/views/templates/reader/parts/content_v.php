@@ -7,7 +7,7 @@
     function reload_book()
     {
         setTimeout(function () {
-            window.location = '<?php echo $reload_url; ?>';
+            window.location = '<?= $reload_url; ?>';
         }, 5000);
     }
 </script>
@@ -20,12 +20,12 @@
         </button>
 
         <?php if ( is_null($this->session->userdata('logged')) ) { ?>
-            <a href="<?php echo base_url('catalogo/productos_digitales/') ?>" class="btn btn-light" title="Volver a catálogo digital">
+            <a href="<?= base_url('catalogo/productos_digitales/') ?>" class="btn btn-light" title="Volver a catálogo digital">
                 <i class="fa fa-arrow-left"></i> <span class="hidden-sm">Volver</span> 
             </a>
         <?php } else { ?>
             <?php if ( $this->session->userdata('logged') ) { ?>
-                <a href="<?php echo base_url('usuarios/books/') ?>" class="btn btn-light" title="Ir a mis libros">
+                <a href="<?= base_url('usuarios/books/') ?>" class="btn btn-light" title="Ir a mis libros">
                     <i class="fa fa-arrow-left"></i> <span class="hidden-sm">Mis libros</span> 
                 </a>
             <?php } ?>
@@ -80,12 +80,12 @@
 
     <div class="" v-show="mode == 'mini'">
         <a href="#" v-for="(mini, mini_key) in pages" class="page_mini" v-on:click="set_page(mini_key)">
-            <img v-bind:src="`<?php echo $url_folder ?>mini/` + mini" onerror="this.src='<?php echo URL_IMG ?>books/sm_nd.png'">
+            <img v-bind:src="`<?= $url_folder ?>mini/` + mini" onerror="this.src='<?= URL_IMG ?>books/sm_nd.png'">
         </a>
     </div>
 
     <div class="section" v-show="mode == 'page'">
-        <!-- <img class="page" v-bind:src="page.src" alt="Página libro" onerror="this.src='<?php echo URL_IMG ?>books/no_cargada.png'">         -->
+        <!-- <img class="page" v-bind:src="page.src" alt="Página libro" onerror="this.src='<?= URL_IMG ?>books/no_cargada.png'">         -->
         <img class="page" v-bind:src="page.src" alt="Página libro" onerror="reload_book();">
     </div>
 </div>

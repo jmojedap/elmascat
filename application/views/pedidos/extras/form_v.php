@@ -1,9 +1,9 @@
 <form accept-charset="utf-8" method="POST" id="extra_form" @submit.prevent="send_form">
-    <input type="hidden" value="<?php echo $row->id ?>" name="pedido_id">
+    <input type="hidden" value="<?= $row->id ?>" name="pedido_id">
     <div class="form-group row">
         <label for="producto_id" class="col-md-4 col-form-label text-right">Extra tipo</label>
         <div class="col-md-8">
-            <?php echo form_dropdown('producto_id', $options_extra, '00', 'class="form-control" v-model="form_values.producto_id"') ?>
+            <?= form_dropdown('producto_id', $options_extra, '00', 'class="form-control" v-model="form_values.producto_id"') ?>
         </div>
     </div>
     <div class="form-group row">

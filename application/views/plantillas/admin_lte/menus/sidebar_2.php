@@ -41,7 +41,7 @@
         $menus['fletes/editar'] = array('fletes');
 
     //Pedidos
-        $menus['pedidos/explorar'] = array('pedidos');
+        $menus['pedidos/explore'] = array('pedidos');
         $menus['pedidos/ver'] = array('pedidos');
         $menus['pedidos/nuevo'] = array('pedidos');
         $menus['pedidos/pol'] = array('pedidos');

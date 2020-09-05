@@ -23,12 +23,12 @@
         }
 ?>
 
-<?php echo form_open("app/buscar/{$controlador}/{$funcion}", $att_form) ?>
+<?= form_open("app/buscar/{$controlador}/{$funcion}", $att_form) ?>
     <div class="form-horizontal">
         <div class="form-group">
             <div class="col-sm-9">
                 <div class="input-group">
-                    <?php echo form_input($att_q) ?>
+                    <?= form_input($att_q) ?>
                     <span class="input-group-btn" title="Mostrar búsqueda avanzada">
                         <button class="btn btn-info" id="alternar_avanzada" type="button">
                             <i class="fa fa-caret-down"></i>
@@ -37,40 +37,40 @@
                 </div>
             </div>
             <div class="col-sm-3">
-                <?php echo form_submit($att_submit) ?>
+                <?= form_submit($att_submit) ?>
             </div>
         </div>
         
-        <div class="form-group <?php echo $clases_filtros['est'] ?>">
+        <div class="form-group <?= $clases_filtros['est'] ?>">
             <label for="est" class="col-sm-3 control-label">Estado</label>
             <div class="col-sm-6">
-                <?php echo form_dropdown('est', $opciones_estado, $busqueda['est'], 'class="form-control" title="Filtrar estado del producto"'); ?>
+                <?= form_dropdown('est', $opciones_estado, $busqueda['est'], 'class="form-control" title="Filtrar estado del producto"'); ?>
             </div>
         </div>
-        <div class="form-group <?php echo $clases_filtros['cat'] ?>">
+        <div class="form-group <?= $clases_filtros['cat'] ?>">
             <label for="cat" class="col-sm-3 control-label">Categoría</label>
             <div class="col-sm-6">
-                <?php echo form_dropdown('cat', $opciones_categoria, $busqueda['cat'], 'class="form-control" title="Filtrar por categoría"'); ?>
+                <?= form_dropdown('cat', $opciones_categoria, $busqueda['cat'], 'class="form-control" title="Filtrar por categoría"'); ?>
             </div>
         </div>
-        <div class="form-group <?php echo $clases_filtros['tag'] ?>">
+        <div class="form-group <?= $clases_filtros['tag'] ?>">
             <label for="cat" class="col-sm-3 control-label">Etiquetas</label>
             <div class="col-sm-6">
-                <?php echo form_dropdown('tag', $opciones_tag, $busqueda['tag'], 'class="form-control chosen-select" title="Filtrar por etiqueta"'); ?>
+                <?= form_dropdown('tag', $opciones_tag, $busqueda['tag'], 'class="form-control chosen-select" title="Filtrar por etiqueta"'); ?>
             </div>
         </div>
-        <div class="form-group <?php echo $clases_filtros['fab'] ?>">
+        <div class="form-group <?= $clases_filtros['fab'] ?>">
             <label for="fab" class="col-sm-3 control-label">Fabricante</label>
             <div class="col-sm-6">
-                <?php echo form_dropdown('fab', $opciones_fabricante, $busqueda['fab'], 'class="form-control chosen-select" title="Filtrar por fabricante del producto"'); ?>
+                <?= form_dropdown('fab', $opciones_fabricante, $busqueda['fab'], 'class="form-control chosen-select" title="Filtrar por fabricante del producto"'); ?>
             </div>
         </div>
-        <div class="form-group <?php echo $clases_filtros['dcto'] ?>">
+        <div class="form-group <?= $clases_filtros['dcto'] ?>">
             <label for="dcto" class="col-sm-3 control-label">Promoción</label>
             <div class="col-sm-6">
-                <?php echo form_dropdown('dcto', $opciones_promocion, $busqueda['dcto'], 'class="form-control chosen-select" title="Filtrar por promoción activa"'); ?>
+                <?= form_dropdown('dcto', $opciones_promocion, $busqueda['dcto'], 'class="form-control chosen-select" title="Filtrar por promoción activa"'); ?>
             </div>
         </div>
     </div>
 
-<?php echo form_close() ?>
+<?= form_close() ?>

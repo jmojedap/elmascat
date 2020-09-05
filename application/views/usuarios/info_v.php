@@ -18,7 +18,7 @@
 <script>
 // Variables
 //-----------------------------------------------------------------------------
-    user_id = '<?php echo $row->id ?>';
+    user_id = '<?= $row->id ?>';
 
 // Document Ready
 //-----------------------------------------------------------------------------
@@ -60,7 +60,7 @@
                 </p>
                 <?php if ( $this->session->userdata('role') <= 1 ) { ?>
                     <p class="text-center">
-                        <a href="<?php echo base_url("admin/ml/{$row->id}") ?>" class="btn btn-primary btn-lg" title="Acceder como este usuario">
+                        <a href="<?= base_url("admin/ml/{$row->id}") ?>" class="btn btn-primary btn-lg" title="Acceder como este usuario">
                             <i class="fa fa-sign-in-alt"></i>
                             Acceder
                         </a>
@@ -142,20 +142,20 @@
                 </tr>
                 <tr>
                     <td class="text-right"><span class="text-muted">Dirección</span></td>
-                    <td><?php echo $row->address ?></td>
+                    <td><?= $row->address ?></td>
                 </tr>
                 <tr>
                     <td class="text-right"><span class="text-muted">Celular</span></td>
                     <td>
                         <?= $row->celular ?>
-                        <a href="https://web.whatsapp.com/send?phone=57<?php echo $row->celular ?>&text=<?= $wa_message ?>" class="btn-success btn btn-xs" target="_blank">
+                        <a href="https://web.whatsapp.com/send?phone=57<?= $row->celular ?>&text=<?= $wa_message ?>" class="btn-success btn btn-xs" target="_blank">
                             <i class="fab fa-whatsapp"></i> Enviar Mensaje
                         </a>
                     </td>
                 </tr>
                 <tr>
                     <td class="text-right"><span class="text-muted">Actualizado</span></td>
-                    <td title="<?php echo $row->editado ?>">
+                    <td title="<?= $row->editado ?>">
                         <?= $this->Pcrn->fecha_formato($row->editado, 'Y-M-d') ?>
                         <span class="text-muted">
                             (<?= $this->Pcrn->tiempo_hace($row->editado) ?>)
@@ -164,7 +164,7 @@
                 </tr>
                 <tr>
                     <td class="text-right"><span class="text-muted">Registrado desde</span></td>
-                    <td title="<?php echo $row->creado ?>">
+                    <td title="<?= $row->creado ?>">
                         <?= $this->Pcrn->fecha_formato($row->creado, 'Y-M-d') ?>
                         <span class="text-muted">
                             (<?= $this->Pcrn->tiempo_hace($row->creado) ?>)

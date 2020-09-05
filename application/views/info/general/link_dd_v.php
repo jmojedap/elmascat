@@ -26,6 +26,6 @@
         </p>
     </div>
     <div class="col-md-2">
-        <a href="<?php echo base_url("info/distribuidores_disponibles") ?>" class="btn btn-block btn-polo">Abrir</a>
+        <a href="<?= base_url("info/distribuidores_disponibles") ?>" class="btn btn-block btn-polo">Abrir</a>
     </div>
 </div>

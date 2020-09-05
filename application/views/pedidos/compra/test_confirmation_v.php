@@ -8,7 +8,7 @@
     $options_codigo_respuesta_pol = $this->Item_model->options('categoria_id = 10');
 ?>
 
-<form action="<?php echo base_url('pedidos/confirmacion_pol/') ?>" accept-charset="utf-8" method="POST">
+<form action="<?= base_url('pedidos/confirmacion_pol/') ?>" accept-charset="utf-8" method="POST">
     <div class="card">
         <div class="card-body">
             <div class="form-group row">
@@ -22,28 +22,28 @@
             <div class="form-group row">
                 <label for="estado_pol" class="col-md-4 col-form-label text-right">estado pol</label>
                 <div class="col-md-8">
-                    <?php echo form_dropdown('estado_pol', $options_estado_pol, '04', 'class="form-control"') ?>
+                    <?= form_dropdown('estado_pol', $options_estado_pol, '04', 'class="form-control"') ?>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="codigo_respuesta_pol" class="col-md-4 col-form-label text-right">código respuesta pol</label>
                 <div class="col-md-8">
-                    <?php echo form_dropdown('codigo_respuesta_pol', $options_codigo_respuesta_pol, '01', 'class="form-control"') ?>
+                    <?= form_dropdown('codigo_respuesta_pol', $options_codigo_respuesta_pol, '01', 'class="form-control"') ?>
                 </div>
             </div>
 
             <?php foreach ( $payu_data as $field => $field_value ) { ?>
 
             <div class="form-group row">
-                <label for="" class="col-md-4 col-form-label text-right"><?php echo $field ?></label>
+                <label for="" class="col-md-4 col-form-label text-right"><?= $field ?></label>
                 <div class="col-md-8">
                     <input
                         type="text"
-                        name="<?php echo $field ?>"
+                        name="<?= $field ?>"
                         required
                         class="form-control"
-                        value="<?php echo $field_value ?>"
+                        value="<?= $field_value ?>"
                         >
                 </div>
             </div>

@@ -5,7 +5,7 @@
             this.get_list();
         },
         data: {
-            app_url: '<?php echo base_url() ?>',
+            app_url: '<?= base_url() ?>',
             list: [],
             form_values_new: { nombre_tag: '', descripcion: '', padre_id: '00'},
             form_values: {nombre_tag: '', descripcion: '', padre_id: '00'},

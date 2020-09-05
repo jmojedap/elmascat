@@ -15,7 +15,7 @@
     <span class="input-group-addon btn btn-default" type="Página anterior" id="btn_explorar_ant">
         <i class="fa fa-caret-left"></i>
     </span>
-    <?php echo form_input($att_num_pagina) ?>
+    <?= form_input($att_num_pagina) ?>
     <span class="input-group-addon btn btn-default" type="Página siguiente" id="btn_explorar_sig">
         <i class="fa fa-caret-right"></i>
     </span>

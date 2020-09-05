@@ -1,6 +1,6 @@
 <script>
-    var year = '<?php echo $year ?>';
-    var month = '<?php echo $month ?>';
+    var year = '<?= $year ?>';
+    var month = '<?= $month ?>';
 
     $(document).ready(function(){
         $('#btn_unlink_no_usados').click(function(){

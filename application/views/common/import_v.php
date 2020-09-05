@@ -20,7 +20,7 @@
                                 placeholder="Nombre de la hoja de cálculo"
                                 title="Nombre de la hoja de cálculo"
                                 required
-                                value="<?php echo $sheet_name ?>"
+                                value="<?= $sheet_name ?>"
                                 >
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                 </p>
                 <p>
                     <i class="fa fa-info-circle text-info"></i>
-                    <?php echo $help_note ?>
+                    <?= $help_note ?>
                 </p>
 
                 <h5>Instrucciones para importar datos con archivo Excel</h5>
@@ -53,15 +53,15 @@
                     <li>Verifique que el primer registro esté ubicado en la <b class="text-success">fila 2</b> de la hoja de cálculo.</li>
                     <?php foreach($help_tips as $tip) : ?>
                         <li>
-                            <?php echo $tip ?>
+                            <?= $tip ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
                 
                 <h5>Descargue el formato ejemplo</h5>
-                <a href="<?php echo $url_file ?>" class="btn btn-success">
+                <a href="<?= $url_file ?>" class="btn btn-success">
                     <i class="fa fa-file-excel"></i>
-                    <?php echo $template_file_name ?>
+                    <?= $template_file_name ?>
                 </a>
 
             </div>

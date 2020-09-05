@@ -15,7 +15,7 @@
 ?>
 
 <script>
-    var post_id = <?php echo $row->id ?>;
+    var post_id = <?= $row->id ?>;
 
     $(document).ready(function(){
         $('#field-contenido').summernote({
@@ -52,18 +52,18 @@
             <div class="col-md-7">
                 <div class="form-group">
                     <label for="resumen">resumen</label>
-                    <textarea name="resumen" id="field-resumen" rows="3" class="form-control"><?php echo $row->resumen ?></textarea>
+                    <textarea name="resumen" id="field-resumen" rows="3" class="form-control"><?= $row->resumen ?></textarea>
                 </div>
 
 
                 <div class="form-group">
                     <label for="contenido" class="form-control-label">contenido</label>
-                    <textarea name="contenido" id="field-contenido" class="form-control"><?php echo $row->contenido ?></textarea>
+                    <textarea name="contenido" id="field-contenido" class="form-control"><?= $row->contenido ?></textarea>
                 </div>
 
                 <div class="form-group">
                     <label for="content_json">contenido json</label>
-                    <textarea name="content_json" id="field-content_json" rows="3" class="form-control"><?php echo $row->content_json ?></textarea>
+                    <textarea name="content_json" id="field-content_json" rows="3" class="form-control"><?= $row->content_json ?></textarea>
                 </div>
 
 
@@ -88,7 +88,7 @@
                             class="form-control"
                             placeholder="post name"
                             title="post name"
-                            value="<?php echo $row->nombre_post ?>"
+                            value="<?= $row->nombre_post ?>"
                             >
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                 <div class="form-group row">
                     <label for="tipo_id" class="col-md-4 col-form-label text-right">ID Tipo</label>
                     <div class="col-md-8">
-                        <?php echo form_dropdown('tipo_id', $options_type, $row->tipo_id, 'class="form-control"') ?>
+                        <?= form_dropdown('tipo_id', $options_type, $row->tipo_id, 'class="form-control"') ?>
                     </div>
                 </div>
 
@@ -111,21 +111,21 @@
                             class="form-control"
                             placeholder="Fecha publicación"
                             title="Fecha publicación"
-                            value="<?php echo $row->publicado ?>"
+                            value="<?= $row->publicado ?>"
                             >
                     </div>
                 </div>
 
                 <?php foreach ( $arr_fields as $field ) { ?>
                     <div class="form-group row">
-                        <label for="<?php echo $field ?>" class="col-md-4 col-form-label text-right"><?php echo str_replace('_',' ',$field) ?></label>
+                        <label for="<?= $field ?>" class="col-md-4 col-form-label text-right"><?= str_replace('_',' ',$field) ?></label>
                         <div class="col-md-8">
                             <input
                                 type="text"
-                                name="<?php echo $field ?>"
+                                name="<?= $field ?>"
                                 class="form-control"
-                                title="<?php echo $field ?>"
-                                value="<?php echo $row->$field ?>"
+                                title="<?= $field ?>"
+                                value="<?= $row->$field ?>"
                                 >
                         </div>
                     </div>

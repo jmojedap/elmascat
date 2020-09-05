@@ -139,9 +139,9 @@
                         </a>
                     <?php } ?>
                 </td>
-                <td class="<?php echo $cl_col['peso'] ?> <?= $cl_peso ?>">
+                <td class="<?= $cl_col['peso'] ?> <?= $cl_peso ?>">
                     <?php if ( $row_resultado->peso_total > 0 ) { ?>
-                        <?php echo $row_resultado->peso_total ?>
+                        <?= $row_resultado->peso_total ?>
                     <?php } ?>
                 </td>
                 <td class="<?= $cl_col['otros'] ?>">

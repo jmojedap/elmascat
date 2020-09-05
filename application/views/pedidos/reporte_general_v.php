@@ -4,38 +4,18 @@
         
         foreach ($detalle->result() as $row_detalle) {
             $peso_total += $row_detalle->cantidad * $row_detalle->peso;
-        }
-        
-    $att_cantidad = array(
-        'id'     => 'cantidad',
-        'name'   => 'cantidad',
-        'class'  => 'form-control',
-        'value'  => '1',
-        'placeholder'   => 'Cantidad',
-        'type' => 'number',
-        'min' => '1',
-        'max' => '10000',
-        'step' => '1'
-    );
-    
-    //Opciones productos
-        $opciones_producto = $this->App_model->opciones_producto('id > 0');
-        
+        }    
 ?>
 
-<script>
-    $(document).ready(function(){
-        window.print();
-    });
-</script>
+<h1><?= $row->cod_pedido ?><small class="ml-3 text-muted"><?= $head_subtitle ?></small></h1>
 
-<table class="table table-default">
+<table class="table table-condensed">
     <tbody>
         
         <tr>
             <td width="25%"><?= $row->nombre . ' ' . $row->apellidos ?></td>
             <td>
-                    <small><?php echo $this->Item_model->nombre(53, $row->tipo_documento_id) ?></small>
+                    <small><?= $this->Item_model->nombre(53, $row->tipo_documento_id) ?></small>
                     <strong><?= $row->no_documento ?></strong>
                     <span> | </span>
 
@@ -185,7 +165,7 @@
 
 <h3>Productos (<?= $detalle->num_rows() ?>)</h3>
         
-<table class="table table-hover table-bordered">
+<table class="table table-bordered">
     <thead>
         
         <th>Ref.</th>
@@ -193,7 +173,7 @@
         <th>Cant.</th>
         <th>Precio</th>
         <th>Total</th>
-        <th width="45px;" class="warning">Web ID</th>
+        <th>Web ID</th>
     </thead>
 
     <tbody>    
@@ -253,3 +233,7 @@
             </tr>
     </tbody>
 </table>
+
+<div class="text-muted text-center">
+    <p>Creado por Pacarina Media Lab &copy; 2020</p>
+</div>

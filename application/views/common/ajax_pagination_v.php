@@ -9,11 +9,11 @@
             id="field-num_page"
             type="number"
             name="num_page"
-            value="<?php echo $num_page; ?>"
+            value="<?= $num_page; ?>"
             min="1"
-            max="<?php echo $max_page; ?>"
+            max="<?= $max_page; ?>"
             class="form-control"
-            title="<?php echo $max_page; ?> páginas en total">
+            title="<?= $max_page; ?> páginas en total">
         <span class="input-group-append">
             <button id="btn_explorar_next" class="btn btn-secondary" type="button" title="Página siguiente">
                 <i class="fa fa-caret-right"></i>

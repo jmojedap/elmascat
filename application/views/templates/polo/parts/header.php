@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-xs-6">
                     <a class="welcome-msg hidden-xs pull-right" href="https://wa.me/573013054053" target="_blank">
-                        <?php echo img(URL_IMG . 'app/whatsapp-logo-vector_16x16.png') ?>
+                        <?= img(URL_IMG . 'app/whatsapp-logo-vector_16x16.png') ?>
                         WhatsApp 301 305 4053
                     </a>
                 </div>
@@ -31,25 +31,25 @@
                         <div class="links">
                             <?php if ( $this->session->userdata('logged') ){ ?>
                                 <div class="myaccount">
-                                    <?php echo anchor("usuarios/mi_perfil", '<span class="hidden-xs">Mi cuenta</span>', 'title="Mi cuenta de usuario"') ?>
+                                    <?= anchor("usuarios/mi_perfil", '<span class="hidden-xs">Mi cuenta</span>', 'title="Mi cuenta de usuario"') ?>
                                 </div>
                                 <div class="check">
-                                    <?php echo anchor("pedidos/carrito", '<span class="hidden-xs">Pagar</span>', 'title="Ir a pagar"') ?>
+                                    <?= anchor("pedidos/carrito", '<span class="hidden-xs">Pagar</span>', 'title="Ir a pagar"') ?>
                                 </div>
                                 <div class="logout">
-                                    <?php echo anchor("app/logout", '<span class="hidden-xs">Salir</span>', 'title="Cerrar sesión"') ?>
+                                    <?= anchor("app/logout", '<span class="hidden-xs">Salir</span>', 'title="Cerrar sesión"') ?>
                                 </div>
                             <?php } else { ?>
                                 <div class="myaccount">
-                                    <a href="<?php echo base_url("accounts/signup") ?>" title="Registrarme">
+                                    <a href="<?= base_url("accounts/signup") ?>" title="Registrarme">
                                         <span class="hidden-xs">Registrarme</span>
                                     </a>
                                 </div>
                                 <div class="check">
-                                    <?php echo anchor("pedidos/carrito", '<span class="hidden-xs">Pagar</span>', 'title="Ir a pagar"') ?>
+                                    <?= anchor("pedidos/carrito", '<span class="hidden-xs">Pagar</span>', 'title="Ir a pagar"') ?>
                                 </div>
                                 <div class="login">
-                                    <?php echo anchor("accounts/login", '<span class="hidden-xs">Ingresar</span>', 'title="Iniciar sesión"') ?>
+                                    <?= anchor("accounts/login", '<span class="hidden-xs">Ingresar</span>', 'title="Iniciar sesión"') ?>
                                 </div>
                             <?php } ?>
                         </div>
@@ -64,20 +64,20 @@
         <div class="row">
             <div class="col-lg-2 col-sm-3 col-md-2"> 
                 <!-- Header Logo --> 
-                <a class="logo" title="Inicio" href="<?php echo base_url() ?>">
-                    <img alt="DistriCatólicas" src="<?php echo URL_IMG ?>app/logo_polo.png">
+                <a class="logo" title="Inicio" href="<?= base_url() ?>">
+                    <img alt="DistriCatólicas" src="<?= URL_IMG ?>app/logo_polo.png">
                 </a> 
                 <!-- End Header Logo --> 
             </div>
             <div class="col-lg-6 col-sm-6 col-md-8"> 
                 <!-- Search-col -->
                 <div class="search-box">
-                    <?php echo form_open("productos/catalogo_redirect/") ?>
-                        <input type="text" placeholder="Buscar..." value="<?php echo $busqueda['q'] ?>" maxlength="70" class="" name="q" id="search" autofocus>
+                    <?= form_open("productos/catalogo_redirect/") ?>
+                        <input type="text" placeholder="Buscar..." value="<?= $busqueda['q'] ?>" maxlength="70" class="" name="q" id="search" autofocus>
                         <button id="submit-button" class="search-btn-bg">
                             <span>Buscar</span>
                         </button>
-                    <?php echo form_close('') ?>
+                    <?= form_close('') ?>
                 </div>
                 <!-- End Search-col --> 
             </div>

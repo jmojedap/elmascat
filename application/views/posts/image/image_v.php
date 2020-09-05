@@ -5,19 +5,19 @@
     if ( $row->imagen_id == 0 ) { $style_image_section = 'display: none;';}
 ?>
 
-<div class="card center_box_750" id="image_section" style="<?php echo $style_image_section ?>">
+<div class="card center_box_750" id="image_section" style="<?= $style_image_section ?>">
     <img
         id="post_image"
         class="card-img-top"
         width="100%"
-        src="<?php echo $att_img['src'] ?>"
-        alt="<?php echo $att_img['alt'] ?>"
-        onerror="<?php echo $att_img['onerror'] ?>"
+        src="<?= $att_img['src'] ?>"
+        alt="<?= $att_img['alt'] ?>"
+        onerror="<?= $att_img['onerror'] ?>"
     >
     <div class="card-body">
         
 
-        <a class="btn btn-info" id="btn_crop" href="<?php echo base_url("posts/cropping/{$row->id}") ?>">
+        <a class="btn btn-info" id="btn_crop" href="<?= base_url("posts/cropping/{$row->id}") ?>">
             <i class="fa fa-crop"></i> Recortar
         </a>
         <button class="btn btn-warning" id="btn_remove_image">

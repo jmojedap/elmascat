@@ -10,8 +10,8 @@
 
 <!--Estilos adicionales-->
 <link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES ?>css/admin_lte_add.css">
-<link rel="stylesheet" href="<?php echo URL_RESOURCES . 'css/bs3_bs4.css' ?>" type="text/css">
-<link rel="stylesheet" href="<?php echo URL_RESOURCES . 'css/style_pml.css' ?>" type="text/css">
+<link rel="stylesheet" href="<?= URL_RESOURCES . 'css/bs3_bs4.css' ?>" type="text/css">
+<link rel="stylesheet" href="<?= URL_RESOURCES . 'css/style_pml.css' ?>" type="text/css">
 
 <!-- Vue.js -->
 <?php $this->load->view('assets/vue') ?>
@@ -20,7 +20,7 @@
 <?php $this->load->view('assets/toastr') ?>
     
 <script>
-    var app_url = '<?php echo base_url() ?>';
+    var app_url = '<?= base_url() ?>';
 </script>
     
     

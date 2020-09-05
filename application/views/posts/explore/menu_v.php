@@ -17,21 +17,21 @@
     sections.explore = {
         'icon': 'fa fa-search',
         'text': 'Explorar',
-        'class': '<?php echo $cl_nav_2['posts_explore'] ?>',
+        'class': '<?= $cl_nav_2['posts_explore'] ?>',
         'cf': 'posts/explore'
     };
 
     sections.import = {
         'icon': 'fa fa-upload',
         'text': 'Importar',
-        'class': '<?php echo $cl_nav_2['posts_import'] ?>',
+        'class': '<?= $cl_nav_2['posts_import'] ?>',
         'cf': 'posts/import'
     };
 
     sections.add = {
         'icon': 'fa fa-plus',
         'text': 'Nuevo',
-        'class': '<?php echo $cl_nav_2['posts_add'] ?>',
+        'class': '<?= $cl_nav_2['posts_add'] ?>',
         'cf': 'posts/add'
     };
     

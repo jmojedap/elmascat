@@ -25,7 +25,7 @@
             <div class="card-body">
                 <h5>¿En qué consiste este proceso?</h5>
                 <p>
-                    <?php echo $help_note ?>
+                    <?= $help_note ?>
                 </p>
 
                 <h5>Instrucciones para importar datos con archivo JSON</h5>
@@ -34,15 +34,15 @@
                     <li>Verifique que el primer registro esté ubicado en la <b class="text-success">fila 2</b> de la hoja de cálculo.</li>
                     <?php foreach($help_tips as $tip) : ?>
                         <li>
-                            <?php echo $tip ?>
+                            <?= $tip ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
                 
                 <h5>Descargue el formato ejemplo</h5>
-                <a href="<?php echo $url_file ?>" class="btn btn-secondary">
+                <a href="<?= $url_file ?>" class="btn btn-secondary">
                     <i class="fa fa-file"></i>
-                    <?php echo $template_file_name ?>
+                    <?= $template_file_name ?>
                 </a>
 
             </div>

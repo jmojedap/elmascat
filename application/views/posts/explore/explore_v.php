@@ -1,4 +1,4 @@
-<script src="<?php echo URL_RESOURCES . 'js/pcrn.js' ?>"></script>
+<script src="<?= URL_RESOURCES . 'js/pcrn.js' ?>"></script>
 
 <div id="app_explore">
     <div class="row">
@@ -7,7 +7,7 @@
         </div>
 
         <div class="col">
-            <a href="<?php echo base_url("groups/export/?{$str_filters}") ?>" class="btn btn-light" title="Exportar registros encontrados a Excel">
+            <a href="<?= base_url("groups/export/?{$str_filters}") ?>" class="btn btn-light" title="Exportar registros encontrados a Excel">
                 <i class="fa fa-download"></i>
             </a>
             <a class="btn btn-light"

@@ -1,9 +1,9 @@
 <?php
     $arr_meta_productos = array(
         /*array('nombre_corto' => 'Junio 2020', 'qty_months' => '1', 'descripcion_corta' => 'Edición de Junio de 2020'),*/
-        array('nombre_corto' => '3 meses', 'qty_months' => '3', 'descripcion_corta' => 'Junio, Julio y Agosto de 2020'),
-        array('nombre_corto' => '6 meses', 'qty_months' => '6', 'descripcion_corta' => 'Junio a Noviembre de 2020'),
-        array('nombre_corto' => '12 meses', 'qty_months' => '12', 'descripcion_corta' => 'Junio de 2020 a Mayo de 2021')
+        array('nombre_corto' => '3 meses', 'qty_months' => '3', 'descripcion_corta' => 'Septiembre, Octubre y Noviembre de 2020'),
+        array('nombre_corto' => '6 meses', 'qty_months' => '6', 'descripcion_corta' => 'Septiembre 2020 a Febrero 2021'),
+        array('nombre_corto' => '12 meses', 'qty_months' => '12', 'descripcion_corta' => 'Septiembre 2020 a Agosto de 2021')
     );
 
     $arr_productos = array();
@@ -38,7 +38,7 @@
             producto_key: 1,
             producto_id: 0,
             producto_actual: {},
-            productos: <?php echo json_encode($arr_productos) ?>
+            productos: <?= json_encode($arr_productos) ?>
         },
         methods: {
             set_current: function(key){
@@ -57,7 +57,7 @@
                 
                 axios.post(app_url + 'pedidos/guardar_detalle/', params)
                 .then(response => {
-                    if ( response.data > 0 ) {
+                    if ( response.data.status == 1 ) {
                         window.location = app_url + 'pedidos/usuario/';
                     }
                 })

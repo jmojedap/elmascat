@@ -36,20 +36,20 @@
                 <?php } ?>
                 
                 <div class="product-image-area">
-                    <a class="product-image" title="<?php echo $row_producto->nombre_producto ?>" href="<?php echo $link_visitar ?>">
+                    <a class="product-image" title="<?= $row_producto->nombre_producto ?>" href="<?= $link_visitar ?>">
                         <div style="overflow: hidden; height: 380px; padding: 1px; background: #e1f5fe;">
                             <img
-                                src="<?php echo URL_UPLOADS . $row_producto->carpeta . '500px_' . $row_producto->nombre_archivo; ?>"
+                                src="<?= URL_UPLOADS . $row_producto->carpeta . '500px_' . $row_producto->nombre_archivo; ?>"
                                 class="img-responsive"
                                 alt="Imagen producto"
-                                onError="this.src='<?php echo URL_IMG . 'app/262px_producto.png' ?>'"
-                                style="<?php echo $img_style ?>"
+                                onError="this.src='<?= URL_IMG . 'app/262px_producto.png' ?>'"
+                                style="<?= $img_style ?>"
                             >
                         </div>
                     </a>
                     <div class="hover_fly">
                         <?php if ( $row_producto->cant_disponibles > 0 ){ ?>
-                            <a class="exclusive ajax_add_to_cart_button" href="" title="Agregar al carrito de compras" data-producto_id="<?php echo $row_producto->id ?>">
+                            <a class="exclusive ajax_add_to_cart_button" href="" title="Agregar al carrito de compras" data-producto_id="<?= $row_producto->id ?>">
                                 <div>
                                     <i class="fa fa-shopping-cart"></i><span>Al carrito</span>
                                 </div>
@@ -60,8 +60,8 @@
                 <div class="info">
                     <div class="info-inner">
                         <div class="item-title">
-                            <a title="<?php echo $row_producto->nombre_producto ?>" href="<?php echo $link_visitar ?>">
-                                <?php echo word_limiter($row_producto->nombre_producto, 16) ?>
+                            <a title="<?= $row_producto->nombre_producto ?>" href="<?= $link_visitar ?>">
+                                <?= word_limiter($row_producto->nombre_producto, 16) ?>
                             </a> 
                         </div>
                         <!--item-title-->
@@ -70,13 +70,13 @@
                                 <?php if ( $en_promocion ) { ?>
                                     <span class="old-price">
                                         <span class="price">
-                                            <?php echo $this->Pcrn->moneda($row_producto->precio); ?>
+                                            <?= $this->Pcrn->moneda($row_producto->precio); ?>
                                         </span>
                                     </span>
                                 <?php } ?>
                                 <p class="special-price">
                                     <span class="price">
-                                        <?php echo $this->Pcrn->moneda($arr_precio['precio']); ?>
+                                        <?= $this->Pcrn->moneda($arr_precio['precio']); ?>
                                     </span>
                                 </p>
                             </div>

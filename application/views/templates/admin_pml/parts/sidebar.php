@@ -59,7 +59,6 @@
                         app_cf = this.elements[i].cf;
                         load_sections('nav_1');
                     }
-
                 }
             },
             nav_1_click_sub: function(i,j){

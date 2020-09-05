@@ -52,7 +52,7 @@
             </li>
             
             <li class="<?= $clases_m0['pedidos'] ?>">
-                <a href="<?= base_url() ?>pedidos/explorar">
+                <a href="<?= base_url() ?>pedidos/explore">
                     <i class="fa fa-shopping-cart"></i> <span>Pedidos</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
             </li>

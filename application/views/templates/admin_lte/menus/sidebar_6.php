@@ -24,7 +24,7 @@
             $menus['productos/variaciones'] = array('productos', '');
             
         //Pedidos
-            $menus['pedidos/explorar'] = array('pedidos');
+            $menus['pedidos/explore'] = array('pedidos');
             $menus['pedidos/ver'] = array('pedidos');
             $menus['pedidos/nuevo'] = array('pedidos');
             $menus['pedidos/pol'] = array('pedidos');
@@ -54,7 +54,7 @@
         
         <ul class="sidebar-menu">
             <li class="<?= $clases_m0['pedidos'] ?>">
-                <a href="<?= base_url() ?>pedidos/explorar">
+                <a href="<?= base_url() ?>pedidos/explore">
                     <i class="fa fa-shopping-cart"></i> <span>Pedidos</span>
                 </a>
             </li>

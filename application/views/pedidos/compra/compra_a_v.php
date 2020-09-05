@@ -1,6 +1,6 @@
 <?php $this->load->view('assets/chosen_jquery'); ?>
 
-<a href="<?php echo base_url("pedidos/carrito") ?>" class="btn btn-polo w120p">
+<a href="<?= base_url("pedidos/carrito") ?>" class="btn btn-polo w120p">
     <i class="fa fa-arrow-left"></i>
     Atrás
 </a>
@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <label for="ciudad_id" class="col-md-4 control-label">Ciudad residencia</label>
                     <div class="col-md-8">
-                        <?php echo form_dropdown('ciudad_id', $options_ciudad, $row->ciudad_id, 'id="ciudad_id" class="form-control input-lg chosen-select_no" v-model="ciudad_id" v-on:change="guardar_lugar"') ?>
+                        <?= form_dropdown('ciudad_id', $options_ciudad, $row->ciudad_id, 'id="ciudad_id" class="form-control input-lg chosen-select_no" v-model="ciudad_id" v-on:change="guardar_lugar"') ?>
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                                 >
                         </div>
                         <div class="col-md-4">
-                            <?php echo form_dropdown('tipo_documento_id', $options_tipo_documento, '', 'class="form-control input-lg" required v-model="`0` + form_values.tipo_documento_id"') ?>
+                            <?= form_dropdown('tipo_documento_id', $options_tipo_documento, '', 'class="form-control input-lg" required v-model="`0` + form_values.tipo_documento_id"') ?>
                         </div>
                     </div>
                     <div class="form-group">
@@ -143,13 +143,13 @@
                         <div class="form-group row">
                             <label for="fecha_nacimiento" class="col-xs-12 col-md-4 control-label">Fecha de nacimiento</label>
                             <div class="col-xs-4 col-md-2">
-                                <?php echo form_dropdown('day', $options_day, '', 'class="form-control input-lg" required v-model="day"') ?>
+                                <?= form_dropdown('day', $options_day, '', 'class="form-control input-lg" required v-model="day"') ?>
                             </div>
                             <div class="col-xs-4 col-md-4">
-                                <?php echo form_dropdown('month', $options_month, '', 'class="form-control input-lg" required v-model="month"') ?>
+                                <?= form_dropdown('month', $options_month, '', 'class="form-control input-lg" required v-model="month"') ?>
                             </div>
                             <div class="col-xs-4 col-md-2">
-                                <?php echo form_dropdown('year', $options_year, '', 'class="form-control input-lg" required v-model="year"') ?>
+                                <?= form_dropdown('year', $options_year, '', 'class="form-control input-lg" required v-model="year"') ?>
                             </div>
                         </div>
                     <?php } ?>
@@ -183,9 +183,9 @@
             //this.get_list();
         },
         data: {
-            cod_pedido: '<?php echo $cod_pedido ?>',
-            ciudad_id: '0<?php echo $row->ciudad_id ?>',
-            form_values: <?php echo json_encode($row); ?>,
+            cod_pedido: '<?= $cod_pedido ?>',
+            ciudad_id: '0<?= $row->ciudad_id ?>',
+            form_values: <?= json_encode($row); ?>,
             year: '01985',
             month: '006',
             day: '015'

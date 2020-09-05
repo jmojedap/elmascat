@@ -16,7 +16,7 @@
                 <h2 class="">Registro de Usuarios</h2>
 
                 
-                <form accept-charset="utf-8" method="POST" id="registro_form" action="<?php echo base_url('app/crear_usuario') ?>" class="form-horizontal">
+                <form accept-charset="utf-8" method="POST" id="registro_form" action="<?= base_url('app/crear_usuario') ?>" class="form-horizontal">
                 
                 hola
                 
@@ -49,7 +49,7 @@
                     title="correo electrónico"
                     >
                 
-                <?php echo form_dropdown('rol_id', $opciones_rol, NULL, 'class="form-control"'); ?>
+                <?= form_dropdown('rol_id', $opciones_rol, NULL, 'class="form-control"'); ?>
 
                 <div class="div2">
                     <?= $captcha['image'] ?>

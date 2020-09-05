@@ -1,12 +1,12 @@
 <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $head_title ?></title>
+    <title><?= $head_title ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Revista Minutos de Amor En Línea">
     <meta content="Revista Minutos de Amor Mayo 2020 PDF" name="keywords" />
     <meta name="author" content="Revista Minutos de Amor">
 
-    <link rel="icon" type="image/png" href="<?php echo URL_IMG ?>app/favicon.png"/>
+    <link rel="icon" type="image/png" href="<?= URL_IMG ?>app/favicon.png"/>
     
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     

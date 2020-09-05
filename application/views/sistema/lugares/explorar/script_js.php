@@ -5,9 +5,9 @@
     var controlador = '<?= $controlador ?>';
     var num_pagina = '<?= $num_pagina ?>';
     var num_pagina_ir = 0;
-    var max_pagina = '<?php echo $max_pagina ?>';
+    var max_pagina = '<?= $max_pagina ?>';
     var seleccionados = '';
-    var seleccionados_todos = '<?php echo $seleccionados_todos ?>';
+    var seleccionados_todos = '<?= $seleccionados_todos ?>';
     var registro_id = 0;
         
 // Document Ready

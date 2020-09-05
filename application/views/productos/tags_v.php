@@ -2,10 +2,10 @@
 //VARIABLES
 //---------------------------------------------------------------------------------------------------
 
-    var base_url = '<?php echo base_url() ?>';
-    var tabla_id = '<?php echo $tabla_id ?>';
-    var elemento_id = '<?php echo $row->id ?>';
-    var cant_activadas = <?php echo $tags_producto->num_rows() ?>;
+    var base_url = '<?= base_url() ?>';
+    var tabla_id = '<?= $tabla_id ?>';
+    var elemento_id = '<?= $row->id ?>';
+    var cant_activadas = <?= $tags_producto->num_rows() ?>;
     //var fila_id = 0;
     
 //DOCUMENT
@@ -92,9 +92,9 @@
 </style>
 
 <div class="alert alert-info">
-    Este <?php echo $elemento_s ?> tiene 
+    Este <?= $elemento_s ?> tiene 
     <b class="" id="cant_activadas">
-        <?php echo $tags_producto->num_rows() ?>
+        <?= $tags_producto->num_rows() ?>
     </b>
         
     etiquetas asignadas.
@@ -127,18 +127,18 @@
                     $repetir = ($row_tag->nivel - 1) * 5;
                         $nombre_tag = str_repeat('&nbsp;', $repetir) . ' ' . $row_tag->nombre_tag;
                     ?>
-                    <tr id="fila_<?php echo $row_tag->id ?>" class="row_tag <?php echo $clase_tr ?> <?php echo $clase_nivel ?>">
+                    <tr id="fila_<?= $row_tag->id ?>" class="row_tag <?= $clase_tr ?> <?= $clase_nivel ?>">
                         <td width="40px">
-                            <span id="quitar_<?php echo $row_tag->id ?>" class="quitar_categoria btn btn-primary btn-xs <?php echo $clase_quitar ?>" data-id="<?php echo $row_tag->id ?>">
+                            <span id="quitar_<?= $row_tag->id ?>" class="quitar_categoria btn btn-primary btn-xs <?= $clase_quitar ?>" data-id="<?= $row_tag->id ?>">
                                 <i class="fa fa-check"></i>
                             </span>
-                            <span id="add_<?php echo $row_tag->id ?>" class="add_categoria btn btn-default btn-xs <?php echo $clase_add ?>" data-id="<?php echo $row_tag->id ?>">
+                            <span id="add_<?= $row_tag->id ?>" class="add_categoria btn btn-default btn-xs <?= $clase_add ?>" data-id="<?= $row_tag->id ?>">
                                 <i class="far fa-circle"></i>
                             </span>
                         </td>
                         <td>
                             
-                            <?php echo $nombre_tag ?>
+                            <?= $nombre_tag ?>
                         </td>
                     </tr>
 

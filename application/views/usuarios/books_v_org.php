@@ -36,16 +36,16 @@
                 <tr>
                     <td>
                         <?php if ( $book->estado == 1 ) { ?>
-                            <a href="<?php echo base_url("books/read/{$book->code}/{$book->meta_id}/{$book->slug}") ?>">
-                                <img src="<?php echo $att_img['src'] ?>" alt="<?php echo $att_img['alt'] ?>" class="cover_book" onerror="this.src='<?php echo URL_IMG ?>app/125px_producto.png'">
+                            <a href="<?= base_url("books/read/{$book->code}/{$book->meta_id}/{$book->slug}") ?>">
+                                <img src="<?= $att_img['src'] ?>" alt="<?= $att_img['alt'] ?>" class="cover_book" onerror="this.src='<?= URL_IMG ?>app/125px_producto.png'">
                             </a>
                         <?php } else { ?>
-                            <img src="<?php echo $att_img['src'] ?>" alt="<?php echo $att_img['alt'] ?>" class="cover_book" onerror="this.src='<?php echo URL_IMG ?>app/125px_producto.png'">
+                            <img src="<?= $att_img['src'] ?>" alt="<?= $att_img['alt'] ?>" class="cover_book" onerror="this.src='<?= URL_IMG ?>app/125px_producto.png'">
                         <?php } ?>
                     </td>
                     <td>
                         <?php if ( $book->estado == 1 ) { ?>
-                            <a href="<?php echo base_url("books/read/{$book->code}/{$book->meta_id}/{$book->slug}") ?>"><?= $book->title ?></a>
+                            <a href="<?= base_url("books/read/{$book->code}/{$book->meta_id}/{$book->slug}") ?>"><?= $book->title ?></a>
                         <?php } else { ?>
                             <b><?= $book->title ?></b>
                         <?php } ?>

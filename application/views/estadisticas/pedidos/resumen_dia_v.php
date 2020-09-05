@@ -19,7 +19,7 @@
         <?php
             $cl_link = $this->Pcrn->clase_activa($lapse_days, $qty_days, 'btn-primary', 'btn-default');
         ?>
-        <a href="<?php echo base_url("pedidos/resumen_dia/{$lapse_days}") ?>" class="btn <?= $cl_link ?> w2">
+        <a href="<?= base_url("pedidos/resumen_dia/{$lapse_days}") ?>" class="btn <?= $cl_link ?> w2">
             <?= $lapse_name ?>
         </a>
     <?php } ?>
@@ -43,7 +43,7 @@
     xAxis: {
         categories: [
             <?php foreach ( $resumen_dia->result() as $row_dia ) { ?>
-                '<?php echo $this->pml->date_format($row_dia->dia, 'd/M'); ?>',
+                '<?= $this->pml->date_format($row_dia->dia, 'd/M'); ?>',
             <?php } ?>
         ]
     },
@@ -75,7 +75,7 @@
                 <?php
                     $ventas_miles = $this->Pcrn->dividir($row_dia->sum_valor_total, 1000);
                 ?>
-                <?php echo intval($ventas_miles); ?>,
+                <?= intval($ventas_miles); ?>,
             <?php } ?>
             ]
         },

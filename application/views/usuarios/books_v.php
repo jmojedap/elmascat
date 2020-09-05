@@ -37,7 +37,7 @@
                     <div class="form-group">
                         <label for="book_id" class="col-md-2 col-form-label text-right">Libro</label>
                         <div class="col-md-8">
-                            <?php echo form_dropdown('book_id', $options_book, '', 'required class="form-control" v-model="book_id"') ?>
+                            <?= form_dropdown('book_id', $options_book, '', 'required class="form-control" v-model="book_id"') ?>
                         </div>
                         <div class="col-md-2">
                             <button class="btn btn-primary btn-block" type="submit">
@@ -57,19 +57,19 @@
         <tbody>
             <tr v-for="(book, key) in books">
                 <td>
-                    <a v-bind:href="`<?php echo base_url("books/read/") ?>` + `/` + book.code + `/` + book.meta_id + `/` + book.slug + `/` + book.format" v-show="book.estado == 1">
+                    <a v-bind:href="`<?= base_url("books/read/") ?>` + `/` + book.code + `/` + book.meta_id + `/` + book.slug + `/` + book.format" v-show="book.estado == 1">
                         <img
                             v-bind:src="book.img_src"
                             class="cover_book"
                             alt="Carátula libro"
-                            onerror="this.src='<?php echo URL_IMG ?>app/125px_producto.png'"
+                            onerror="this.src='<?= URL_IMG ?>app/125px_producto.png'"
                         >
                     </a>
                     <img
                         v-bind:src="book.img_src"
                         class="cover_book"
                         alt="Carátula libro"
-                        onerror="this.src='<?php echo URL_IMG ?>app/125px_producto.png'"
+                        onerror="this.src='<?= URL_IMG ?>app/125px_producto.png'"
                         v-show="book.estado > 1"
                     >
                 </td>
@@ -101,8 +101,8 @@
             this.get_list();
         },
         data: {
-            user_id: <?php echo $row->id ?>,
-            books: <?php echo json_encode($arr_books) ?>,
+            user_id: <?= $row->id ?>,
+            books: <?= json_encode($arr_books) ?>,
             book_id: 0
         },
         methods: {

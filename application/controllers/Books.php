@@ -47,15 +47,8 @@ class Books extends CI_Controller{
         $str_pages = file_get_contents(PATH_CONTENT . "books/{$book_code}/pages_{$format}.json");
         $data['drive_pages'] = $str_pages;
 
-        //$view = 'templates/reader/demo_v';
         $view = 'templates/reader/reader_v'; 
         $this->load->view($view, $data);
-        /*if ( $this->Book_model->readable($meta_id) ) {
-            $view = 'templates/reader/reader_v'; 
-            $this->load->view($view, $data);
-        } else {
-            redirect('app/no_permitido');
-        }*/
     }
 
     /**
@@ -64,7 +57,7 @@ class Books extends CI_Controller{
      */
     function demo()
     {
-        $book_code = '086239668181';
+        $book_code = '095107951418';
         $data = $this->Book_model->book_info($book_code);
 
         $this->load->helper('file');
@@ -86,7 +79,7 @@ class Books extends CI_Controller{
         $this->load->view('templates/reader/reader_v', $data);
     }
 
-    function rename_pages($book_code = '086239668181')
+    function rename_pages($book_code = '095107951418')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
@@ -96,7 +89,7 @@ class Books extends CI_Controller{
 
         foreach ( $pages as $file)
         {
-            $new_name = str_replace('Agosto','',$file);
+            $new_name = str_replace('sept 1','',$file);
             $new_name = str_replace('.jpg','',$new_name);
             $new_name = substr('00' . $new_name,-3) . '_' . random_string('numeric', 6) . '.jpg';
             echo $file . ' > ' . $new_name;
@@ -106,7 +99,7 @@ class Books extends CI_Controller{
         }
     }
 
-    function create_read($book_code = '086239668181')
+    function create_read($book_code = '095107951418')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
@@ -133,7 +126,7 @@ class Books extends CI_Controller{
         }
     }
 
-    function create_drive($book_code = '086239668181')
+    function create_drive($book_code = '095107951418')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
@@ -160,7 +153,7 @@ class Books extends CI_Controller{
         }
     }
 
-    function create_mini($book_code = '086239668181')
+    function create_mini($book_code = '095107951418')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/read/";

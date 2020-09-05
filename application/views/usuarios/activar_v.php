@@ -14,7 +14,7 @@
 <script>
 // Variables
 //-----------------------------------------------------------------------------
-    var cod_activacion = '<?php echo $cod_activacion ?>';
+    var cod_activacion = '<?= $cod_activacion ?>';
 
 // Document Ready
 //-----------------------------------------------------------------------------
@@ -53,9 +53,9 @@
 <div class="row">
     <div class="col-md-4 col-md-offset-4">
         <div class="text-center">
-            <h2 class="resaltar"><?php echo $row->nombre . ' ' . $row->apellidos ?></h2>
-            <h3 class="suave"><?php echo $textos['subtitulo'] ?></h3>
-            <p class="suave"><?php echo $row->username ?></p>
+            <h2 class="resaltar"><?= $row->nombre . ' ' . $row->apellidos ?></h2>
+            <h3 class="suave"><?= $textos['subtitulo'] ?></h3>
+            <p class="suave"><?= $row->username ?></p>
             <p>Establece tu contraseña para DistriCatolicas.com</p>
         </div>
             
@@ -88,7 +88,7 @@
                 </div>
                 <div class="form-group">
                     <button class="btn btn-polo-lg btn-block" type="submit">
-                        <?php echo $textos['boton'] ?>
+                        <?= $textos['boton'] ?>
                     </button>
                 </div>
             </form>
@@ -105,7 +105,7 @@
                 Tu cuenta fue activada correctamente
             </p>
             <p>
-                <a href="<?php echo base_url("usuarios/books") ?>" class="btn btn-success btn-block">
+                <a href="<?= base_url("usuarios/books") ?>" class="btn btn-success btn-block">
                     Continuar
                 </a>
             </p>

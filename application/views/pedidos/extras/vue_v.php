@@ -1,7 +1,7 @@
 <script>
     /*var form_values = {
         post_name: 'Asunto por definir',
-        excerpt: 'Este es el texto de la anotación, no tiene que ser tan larga pero si al menos dejar constancia de la situación, se hizo a las <?php echo date('Y-m-d H:i:s') ?>',
+        excerpt: 'Este es el texto de la anotación, no tiene que ser tan larga pero si al menos dejar constancia de la situación, se hizo a las <?= date('Y-m-d H:i:s') ?>',
         cat_1: ''
     }*/
     var form_values = {
@@ -12,7 +12,7 @@
 
 // Variables
 //-----------------------------------------------------------------------------
-    var arr_extra_types = <?php echo json_encode($arr_extra_types); ?>;
+    var arr_extra_types = <?= json_encode($arr_extra_types); ?>;
 
 // Filtros
 //-----------------------------------------------------------------------------
@@ -43,10 +43,10 @@
             list: [],
             num_page: 1,
             max_page: 1,
-            pedido_id: '<?php echo $row->id ?>',
+            pedido_id: '<?= $row->id ?>',
             form_values: form_values,
             show_add: false,
-            editable: <?php echo $editable; ?>
+            editable: <?= $editable; ?>
         },
         methods: {
             get_list: function(){

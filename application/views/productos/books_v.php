@@ -14,7 +14,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <a href="<?php echo base_url("books/read/{$book->code}/{$book->meta_id}") ?>"><?= $book->title ?></a>
+                        <a href="<?= base_url("books/read/{$book->code}/{$book->meta_id}") ?>"><?= $book->title ?></a>
                         <br>
                         <p><?= $book->resumen ?></p>
                     </td>

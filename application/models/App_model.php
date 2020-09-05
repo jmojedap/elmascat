@@ -95,7 +95,7 @@ class App_model extends CI_Model{
             $menus['fletes/editar'] = array('fletes');
             
         //Pedidos
-            $menus['pedidos/explorar'] = array('pedidos');
+            $menus['pedidos/explore'] = array('pedidos');
             $menus['pedidos/ver'] = array('pedidos');
             $menus['pedidos/nuevo'] = array('pedidos');
             $menus['pedidos/editar'] = array('pedidos');

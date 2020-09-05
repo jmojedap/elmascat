@@ -12,7 +12,7 @@
 // Variables
 //-----------------------------------------------------------------------------
 
-    var base_url = '<?php echo base_url() ?>';
+    var base_url = '<?= base_url() ?>';
     var condiciones_form = 0;
     var referencia_valido = 0;
     var tags_valido = 0;
@@ -152,7 +152,7 @@
     //Autollenado de valores, test
     function autollenado()
     {
-        $('#field-referencia').val('<?php echo date(ymdhis) ?>');
+        $('#field-referencia').val('<?= date(ymdhis) ?>');
         $('#field-nombre_producto').val('El producto');
         $('#field-descripcion').val('La descripción bla');
         $('#field-cant_disponibles').val('112');
@@ -221,14 +221,14 @@
             <div class="form-group row" id="form-group_fabricante">
                 <label for="fabricante_id" class="col-sm-3 control-label">Fabricante - Marca *</label>
                 <div class="col-sm-9">
-                    <?php echo form_dropdown('fabricante_id', $opciones_fabricante, '', 'id="field-fabricante" class="form-control chosen-select"') ?>
+                    <?= form_dropdown('fabricante_id', $opciones_fabricante, '', 'id="field-fabricante" class="form-control chosen-select"') ?>
                 </div>
             </div>
 
             <div class="form-group row" id="form-group-categoria_id">
                 <label for="categoria_id" class="col-sm-3 control-label">Categoría producto *</label>
                 <div class="col-sm-9">
-                    <?php echo form_dropdown('categoria_id', $opciones_categoria, '', 'id="field-categoria_id" class="form-control" required') ?>
+                    <?= form_dropdown('categoria_id', $opciones_categoria, '', 'id="field-categoria_id" class="form-control" required') ?>
                 </div>
             </div>
             
@@ -239,7 +239,7 @@
                     <select id="field-tags" name="tags[]" id="tags" class="form-control chosen-select" multiple>
                         <?php foreach ($opciones_tags as $key => $nombre_tag) : ?>
                             <option value="<?= $key ?>">
-                                <?php echo $nombre_tag ?>
+                                <?= $nombre_tag ?>
                             </option>
                         <?php endforeach ?>
                     </select>

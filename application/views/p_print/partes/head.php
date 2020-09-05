@@ -1,5 +1,5 @@
 <meta charset="UTF-8">
-<title><?= $titulo_pagina ?></title>
+<title><?= $head_title ?></title>
 <link rel="shortcut icon" href="<?= URL_IMG ?>app/icono.png" type="image/ico" />
 
 <!--JQuery-->

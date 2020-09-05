@@ -16,70 +16,201 @@ class Pedido_Model extends CI_Model{
         return $basico;
     }
 
-// Exploración y búsqueda
+// EXPLORE FUNCTIONS - pedidos/explorar
 //-----------------------------------------------------------------------------
     
-    function buscar($busqueda, $per_page = NULL, $offset = NULL)
+    /**
+     * Array con los datos para la vista de exploración
+     */
+    function explore_data($filters, $num_page)
     {
-
-        //Construir búsqueda
-        //Crear array con términos de búsqueda
-            if ( strlen($busqueda['q']) > 2 ){
-                
-                $campos_pedidos = array('nombre', 'apellidos', 'cod_pedido', 'factura', 'no_guia', 'email');
-                
-                $concat_campos = $this->Busqueda_model->concat_campos($campos_pedidos);
-                $palabras = $this->Busqueda_model->palabras($busqueda['q']);
-
-                foreach ($palabras as $palabra) {
-                    $this->db->like("CONCAT({$concat_campos})", $palabra);
-                }
-            }
+        //Data inicial, de la tabla
+            $data = $this->get($filters, $num_page);
         
-        //Especificaciones de consulta
-            $this->db->select('pedido.*');
-            $this->db->order_by('id', 'DESC');
+        //Elemento de exploración
+            $data['controller'] = 'pedidos';                      //Nombre del controlador
+            $data['cf'] = 'pedidos/explore/';                      //Nombre del controlador
+            $data['views_folder'] = 'pedidos/explore/';           //Carpeta donde están las vistas de exploración
             
-        //Otros filtros
-            if ( $busqueda['est'] != '' ) { $this->db->where('estado_pedido', $busqueda['est']); }    //Estado
-            if ( $busqueda['fi'] != '' ) { $this->db->where('creado >=', $busqueda['fi']); }    //Fecha de creación
-            if ( $busqueda['fe1'] != '' )
+        //Vistas
+            $data['head_title'] = 'Pedidos';
+            $data['head_subtitle'] = $data['search_num_rows'];
+            $data['view_a'] = $data['views_folder'] . 'explore_v';
+            //$data['nav_2'] = $data['views_folder'] . 'menu_v';
+        
+        return $data;
+    }
+
+    function get($filters, $num_page)
+    {
+        //Referencia
+            $per_page = 12;                             //Cantidad de registros por página
+            $offset = ($num_page - 1) * $per_page;      //Número de la página de datos que se está consultado
+
+        //Búsqueda y Resultados
+            $data['filters'] = $filters;
+            //$elements = $this->search($data['filters'], $per_page, $offset);    //Resultados para página
+            $list = $this->list($filters, $per_page, $offset);
+        
+        //Cargar datos
+            $data['list'] = $list;
+            $data['str_filters'] = $this->Search_model->str_filters();
+            $data['search_num_rows'] = $this->search_num_rows($data['filters']);
+            $data['max_page'] = ceil($this->pml->if_zero($data['search_num_rows'],1) / $per_page);   //Cantidad de páginas
+
+        return $data;
+    }
+
+    /**
+     * Array Listado elemento resultado de la búsqueda (filtros).
+     * 2020-01-21
+     */
+    function list($filters, $per_page = NULL, $offset = NULL)
+    {
+        $query = $this->search($filters, $per_page, $offset);
+        $list = array();
+
+        foreach ($query->result() as $row)
+        {
+            $condicion = "dato_id = 3005 AND elemento_id = {$row->id}";
+            $confirmacion = $this->confirmacion($row->id);
+            if ( ! is_null($confirmacion) )
             {
-                if ( $busqueda['fe1'] == '01' ) { $this->db->where('peso_total > 0');}
-                if ( $busqueda['fe1'] == '02' ) { $this->db->where('peso_total = 0');}
+                $row->payu_mensaje_respuesta_pol = $confirmacion->mensaje_respuesta_pol;
+                $row->payu_codigo_respuesta_pol = $confirmacion->codigo_respuesta_pol;
+                $row->payu_firma = $confirmacion->firma;
+                $row->firma_pol_confirmacion = $this->firma_pol_confirmacion($row->id, $confirmacion->estado_pol);
+            } else {
+                $row->payu_mensaje_respuesta_pol = '';
+                $row->payu_codigo_respuesta_pol = 0;
+                $row->payu_firma = 0;
+                $row->firma_pol_confirmacion = 0;
             }
-            if ( $busqueda['condicion'] != '' ) { $this->db->where($busqueda['condicion']); }    //Condición especial
+            //$row->confirmacion = $this->Pedido_model->confirmacion($row->id);
+
+            $list[] = $row;
+        }
+
+        return $list;
+    }
+    
+    /**
+     * Query con resultados de posts filtrados, por página y offset
+     * 2020-07-15
+     */
+    function search($filters, $per_page = NULL, $offset = NULL)
+    {
+        //Construir consulta
+            $this->db->select('pedido.id, cod_pedido, pedido.usuario_id, pedido.nombre, pedido.apellidos, pedido.email, estado_pedido, valor_total, pedido.direccion, pedido.ciudad, pedido.celular, pedido.peso_total, pedido.editado, editado_usuario_id, factura, no_guia, codigo_respuesta_pol, usuario.username AS updater_username');
+            //$this->db->join('lugar', 'pedido.lugar_id = lugar.id', 'left');
+            $this->db->join('usuario', 'pedido.editado_usuario_id = usuario.id', 'left');
+        
+        //Orden
+            if ( $filters['o'] != '' )
+            {
+                $order_type = $this->pml->if_strlen($filters['ot'], 'ASC');
+                $this->db->order_by($filters['o'], $order_type);
+            } else {
+                $this->db->order_by('id', 'DESC');
+            }
+            
+        //Filtros
+            $search_condition = $this->search_condition($filters);
+            if ( $search_condition ) { $this->db->where($search_condition);}
             
         //Obtener resultados
-        if ( is_null($per_page) ){
-            $query = $this->db->get('pedido'); //Resultados totales
-        } else {
             $query = $this->db->get('pedido', $per_page, $offset); //Resultados por página
-        }
         
         return $query;
         
     }
-    
-    function editable($pedido_id)
+
+    /**
+     * String con condición WHERE SQL para filtrar post
+     * 2020-08-01
+     */
+    function search_condition($filters)
     {
-        $editable = 1;
-        return $editable;
+        $condition = NULL;
+
+        $condition .= $this->role_filter() . ' AND ';
+
+        //q words condition
+        $words_condition = $this->Search_model->words_condition($filters['q'], array('pedido.nombre', 'pedido.apellidos', 'pedido.email', 'cod_pedido', 'factura'));
+        if ( $words_condition )
+        {
+            $condition .= $words_condition . ' AND ';
+        }
+        
+        //Otros filtros
+        if ( $filters['status'] != '' ) { $condition .= "estado_pedido = {$filters['status']} AND "; }          //Por estado
+        //Filtro por peso
+        if ( $filters['fe1'] != '' )
+        {
+            if ( $filters['fe1'] == 0 ) { $condition .= "peso_total = 0 AND "; }                                    //Sin peso
+            if ( $filters['fe1'] == 1 ) { $condition .= "peso_total > 0 AND "; }                                    //Con peso
+        }
+        //Filtro por Código de Respuesta POL
+        if ( $filters['fe2'] != '' )
+        {
+            if ( $filters['fe2'] == 1 ) { $condition .= "codigo_respuesta_pol = 1 AND "; }                                    
+            if ( $filters['fe2'] == 2 ) { $condition .= "codigo_respuesta_pol > 1 AND "; }                                    
+        }
+        if ( $filters['d1'] != '' ) { $condition .= "pedido.creado >= '{$filters['d1']} 00:00:00' AND "; }             //Creado a partir de
+        if ( $filters['u'] != '' ) { $condition .= "pedido.usuario_id = {$filters['u']} AND "; }                       //Cliente User ID
+        
+        
+        //Quitar cadena final de ' AND '
+        if ( strlen($condition) > 0 ) { $condition = substr($condition, 0, -5);}
+        
+        return $condition;
     }
     
     /**
-     * Determina si un pedido es eliminable o no
-     * @return int
+     * Devuelve la cantidad de registros encontrados en la tabla con los filtros
+     * establecidos en la búsqueda
      */
-    function eliminable()
+    function search_num_rows($filters)
     {
-        $eliminable = 0;
-        if ( $this->session->userdata('rol_id') <= 1 ) 
-        {
-            $eliminable = 1;
-        }
+        $this->db->select('id');
+        $search_condition = $this->search_condition($filters);
+        if ( $search_condition ) { $this->db->where($search_condition);}
+        $query = $this->db->get('pedido'); //Para calcular el total de resultados
 
-        return $eliminable;
+        return $query->num_rows();
+    }
+    
+    /**
+     * Devuelve segmento SQL
+     */
+    function role_filter()
+    {
+        $row_user = $this->Db_model->row_id('usuario', $this->session->userdata('user_id'));
+        $condition = 'id = 0';  //Valor por defecto, ninguna institución, se obtendrían cero pedidos.
+        
+        if ( $row_user->rol_id <= 10 ) {
+            //Usuarios internos
+            $condition = 'pedido.id > 0';
+        } else {
+            $condition = "pedido.usuario_id = {$this->session->userdata('user_id')}";
+        }
+        
+        return $condition;
+    }
+    
+    /**
+     * Array con options para ordenar el listado de post en la vista de
+     * exploración
+     */
+    function order_options()
+    {
+        $order_options = array(
+            '' => '[ Ordenar por ]',
+            'id' => 'ID Pedido',
+            'creado' => 'Fecha de creación'
+        );
+        
+        return $order_options;
     }
     
     function eliminar($pedido_id)

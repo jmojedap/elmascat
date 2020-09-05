@@ -9,7 +9,7 @@
             <td class="text-right">
                 <strong>
                     <span class="money money_total" style="font-size: 150%;">
-                        USD $<?php echo $form_data['valor'] ?>
+                        USD $<?= $form_data['valor'] ?>
                     </span>
                 </strong>
             </td>
@@ -22,7 +22,7 @@
             </td>
             <td class="text-right">
                 <span class="money">
-                    $ <?php echo number_format($row->total_productos/$precio_dolar, 2, '.', ',') ?>
+                    $ <?= number_format($row->total_productos/$precio_dolar, 2, '.', ',') ?>
                 </span>
             </td>
         </tr>
@@ -34,7 +34,7 @@
                 </td>
                 <td class="text-right">
                     <span class="money">
-                        $ <?php echo number_format($arr_extras['gastos_envio']/$precio_dolar, 2, '.', ',') ?>
+                        $ <?= number_format($arr_extras['gastos_envio']/$precio_dolar, 2, '.', ',') ?>
                     </span>
                 </td>
             </tr>

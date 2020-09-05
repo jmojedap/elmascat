@@ -136,7 +136,7 @@
     <table class="table table-responsive table-hover" cellspacing="0">
         <thead>
             <tr>
-                <th width="10px;" class="<?php echo $clases_col['selector'] ?>"><?= form_checkbox($att_check_todos) ?></th>
+                <th width="10px;" class="<?= $clases_col['selector'] ?>"><?= form_checkbox($att_check_todos) ?></th>
                 <th width="45px;">ID</th>
                 <th width="45px;">Imagen</th>
                 <th>Nombre archivo</th>
@@ -166,7 +166,7 @@
 
                 ?>
                 <tr>
-                    <td class="<?php echo $clases_col['selector'] ?>">
+                    <td class="<?= $clases_col['selector'] ?>">
                         <?= form_checkbox($att_check) ?>
                     </td>
                     <td class="warning"><span class="etiqueta primario w1"><?= $row_archivo->id ?></span></td>

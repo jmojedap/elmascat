@@ -102,7 +102,7 @@
                 <td>
                     <?= $link_elemento ?>
                     <br/>
-                    <?php echo $row_resultado->email ?>
+                    <?= $row_resultado->email ?>
                 </td>
                 
                 
@@ -117,7 +117,7 @@
                     <?= $this->App_model->nombre_lugar($row_resultado->ciudad_id, 'CR') ?>
                     <br/>
 
-                    <a href="https://wa.me/57<?php echo $row_resultado->celular ?>" class="btn-success btn btn-xs" target="_blank">
+                    <a href="https://wa.me/57<?= $row_resultado->celular ?>" class="btn-success btn btn-xs" target="_blank">
                         <i class="fab fa-whatsapp"></i> Mensaje
                     </a>
                     
