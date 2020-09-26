@@ -1,12 +1,10 @@
 <?php
     $cl_nav_3['institutional'] = '';
-    $cl_nav_3['student'] = '';
+    $cl_nav_3['person'] = '';
 
     $app_cf_index = $this->uri->segment(3);
-    if ( strlen($app_cf_index) == 0 ) { $app_cf_index = 'institutional'; }
-    
+    if ( strlen($app_cf_index) == 0 ) { $app_cf_index = 'person'; }
     $cl_nav_3[$app_cf_index] = 'active';
-    if ( $app_cf_index == 'crop' ) { $cl_nav_3['image'] = 'active'; }
 ?>
 
 <script>
@@ -17,23 +15,25 @@
     
     sections.institutional = {
         icon: '',
-        text: 'Institucional',
+        text: 'Institución',
         class: '<?= $cl_nav_3['institutional'] ?>',
-        cf: 'users/add/institutional'
+        cf: 'usuarios/add/institutional',
+        anchor: true
     };
 
-    sections.student = {
+    sections.person = {
         icon: '',
-        text: 'Estudiante',
-        class: '<?= $cl_nav_3['student'] ?>',
-        cf: 'users/add/student'
+        text: 'Persona',
+        class: '<?= $cl_nav_3['person'] ?>',
+        cf: 'usuarios/add/person',
+        anchor: true
     };
     
     //Secciones para cada rol
-    sections_role.dvlp = ['institutional'];
-    sections_role.admn = ['institutional'];
-    sections_role.edtr = ['institutional'];
-    sections_role.prpt = ['institutional'];
+    sections_role.dvlp = ['person', 'institutional'];
+    sections_role.admn = ['person', 'institutional'];
+    sections_role.edtr = ['person', 'institutional'];
+    sections_role.prpt = ['person', 'institutional'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
     for ( key_section in sections_role[app_r]) 

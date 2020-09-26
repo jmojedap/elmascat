@@ -1,11 +1,11 @@
 <div id="app_explore">
     <div class="row">
-        <div class="col-md-6 d-none d-md-table-cell d-lg-table-cell">
+        <div class="col-md-6">
             <?php $this->load->view($views_folder . 'search_form_v'); ?>
         </div>
 
         <div class="col">
-            <a href="<?= base_url("{$controller}/exportar/?{$str_filters}") ?>" class="btn btn-light" title="Exportar registros encontrados a Excel">
+            <a href="<?= base_url("{$controller}/exportar/?{$str_filters}") ?>" class="btn btn-light only-lg" title="Exportar registros encontrados a Excel">
                 <i class="fa fa-download"></i>
             </a>
             <button class="btn btn-light"

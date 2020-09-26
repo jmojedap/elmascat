@@ -7,7 +7,7 @@
 
 <ul class="nav nav-tabs">
     <li role="presentation" class="<?= $clases['info'] ?>">
-        <?= anchor("usuarios/info/{$row->id}", 'Información') ?>
+        <?= anchor("usuarios/profile{$row->id}", 'Información') ?>
     </li>
     <li role="presentation" class="<?= $clases['direcciones'] ?>">
         <?= anchor("usuarios/direcciones/{$row->id}", 'Direcciones') ?>

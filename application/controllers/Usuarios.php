@@ -33,6 +33,7 @@ class Usuarios extends CI_Controller{
         
         //Opciones de filtros de búsqueda
             $data['options_role'] = $this->Item_model->options('categoria_id = 58', 'Todos');
+            $data['options_gender'] = $this->Item_model->options('categoria_id = 59 AND id_interno IN (1,2,90)', 'Todos');
             
         //Arrays con valores para contenido en lista
             $data['arr_roles'] = $this->Item_model->arr_cod('categoria_id = 58');
@@ -53,30 +54,6 @@ class Usuarios extends CI_Controller{
 
         $data = $this->Usuario_model->get($filters, $num_page);
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-    
-//---------------------------------------------------------------------------------------------------
-//GESTIÓN DE USUARIOS
-    
-    /**
-     * Exploración y búsqueda de productos, administración
-     */
-    function explorar_ant()
-    {
-        //Datos básicos de la exploración
-            $data = $this->Usuario_model->data_explorar();
-        
-        //Opciones de filtros de búsqueda
-            $data['arr_filtros'] = array('rol', 'sexo');
-            $data['opciones_rol'] = $this->Item_model->opciones('categoria_id = 58', 'Todos');
-            $data['opciones_sexo'] = $this->Item_model->opciones('categoria_id = 59 and item_grupo = 1', 'Todos');
-            
-        //Arrays con valores para contenido en lista
-            $data['arr_roles'] = $this->Item_model->arr_interno('categoria_id = 58');
-            $data['arr_sexos'] = $this->Item_model->arr_interno('categoria_id = 59');
-        
-        //Cargar vista
-            $this->load->view(PTL_ADMIN, $data);
     }
     
     /**
@@ -110,23 +87,56 @@ class Usuarios extends CI_Controller{
     /**
      * Eliminar un grupo de usuarios seleccionados
      */
-    function eliminar_seleccionados()
+    function delete_selected()
     {
-        $str_seleccionados = $this->input->post('seleccionados');
+        $selected = explode(',', $this->input->post('selected'));
+        $data['qty_deleted'] = 0;
         
-        $seleccionados = explode('-', $str_seleccionados);
-        
-        foreach ( $seleccionados as $elemento_id ) {
-            $this->Usuario_model->eliminar($elemento_id);
+        foreach ( $selected as $row_id ) 
+        {
+            $data['qty_deleted'] += $this->Usuario_model->delete($row_id);
         }
-        
-        echo count($seleccionados);
+
+        //Establecer resultado
+        if ( $data['qty_deleted'] > 0 ) { $data['status'] = 1; }
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+    function procesos($usuario_id)
+    {
+        //Datos básicos
+        if ( $this->session->userdata('rol_id') > 2 ) { $usuario_id = $this->session->userdata('usuario_id'); }
+        $data = $this->Usuario_model->basic($usuario_id);
+        
+        //Array data espefícicas
+        $data['vista_b'] = 'usuarios/procesos_v';
+        $data['menu'] = 'usuarios/menu_admin_v';
+        
+        $this->load->view(TPL_ADMIN, $data);
+    }
+    
+    function solicitudes_rol()
+    {
+        //Variables específicas
+            $data['solicitudes'] = $this->Usuario_model->solicitudes();
+
+        //Variables generales
+            $data['titulo_pagina'] = 'Usuarios';
+            $data['subtitulo_pagina'] = 'Solicitudes de cambio de rol';
+            $data['view_a'] = 'usuarios/solicitudes_rol_v';
+            $data['vista_menu'] = 'usuarios/explorar/menu_v';
+
+        $this->load->view(TPL_ADMIN, $data);
+    }
+
+// CREACIÓN DE USUARIOS
+//-----------------------------------------------------------------------------
     
     /**
      * Formulario creación de nuevo usuario
+     * 2020-09-26
      */
-    function add()
+    function add($type = 'person')
     {
         $this->load->helper('string');
         
@@ -134,19 +144,52 @@ class Usuarios extends CI_Controller{
             $data['head_title'] = 'Usuarios';
             $data['head_subtitle'] = 'Nuevo';
             $data['nav_2'] = 'usuarios/explore/menu_v';
+            $data['nav_3'] = 'usuarios/add/menu_v';
             $data['view_a'] = 'usuarios/add/add_v';
         
         $this->load->view(TPL_ADMIN, $data);
     }
-    
-    function insertar()
+
+    /**
+     * AJAX JSON
+     * Valida valores correctos para formulario de creación o edición de usuarios
+     * 2020-09-20
+     */
+    function validate($user_id = NULL)
     {
-        $registro = $this->input->post();
-        $registro['estado'] = 1; //Activo
+        $this->load->model('Validation_model');
+
+        $data = array('status' => 1);   //Valor inicial
         
-        $resultado = $this->Usuario_model->insertar($registro);
+        $validation_email = $this->Validation_model->email($user_id);
+        $validation_id_number = $this->Validation_model->id_number($user_id);
         
-        $this->output->set_content_type('application/json')->set_output(json_encode($resultado));
+        $validation = array_merge($validation_email, $validation_id_number);
+
+        //Comprobar que cada elemento sea válido
+        foreach ( $validation as $value )
+        {
+            if ( $value == FALSE ) { $data = array('status' => 0); }
+        }
+
+        $data['validation'] = $validation;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+    
+    /**
+     * Crear un registro en la tabla usuario
+     * 2020-09-26
+     */
+    function insert()
+    {
+        $arr_row = $this->input->post();
+        $arr_row['estado'] = 2; //Registrado
+        
+        $data = $this->Usuario_model->insert($arr_row);
+        
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     /**
@@ -162,13 +205,13 @@ class Usuarios extends CI_Controller{
         $gc_output = $this->Usuario_model->crud_admin($data['row']);
         
         //Array data espefícicas
-            $data['vista_a'] = 'usuarios/editar_v';
+            $data['view_a'] = 'usuarios/editar_v';
         
         $output = array_merge($data,(array)$gc_output);
-        $this->load->view(PTL_ADMIN, $output);
+        $this->load->view(TPL_ADMIN, $output);
     }
     
-    function info($usuario_id)
+    function profile($usuario_id)
     {
         //Datos básicos
         if ( $this->session->userdata('role') > 6 ) { $usuario_id = $this->session->userdata('user_id'); }
@@ -178,37 +221,9 @@ class Usuarios extends CI_Controller{
         $data['qty_open_posts'] = $this->Db_model->num_rows('evento', "tipo_id = 51 AND usuario_id = {$usuario_id}");
         
         //Array data espefícicas
-        $data['vista_a'] = 'usuarios/info_v';
-        $data['vista_menu'] = 'usuarios/menu_admin_v';
+        $data['view_a'] = 'usuarios/profile_v';
         
-        $this->load->view(PTL_ADMIN, $data);
-    }
-    
-    function procesos($usuario_id)
-    {
-        //Datos básicos
-        if ( $this->session->userdata('rol_id') > 2 ) { $usuario_id = $this->session->userdata('usuario_id'); }
-        $data = $this->Usuario_model->basic($usuario_id);
-        
-        //Array data espefícicas
-        $data['vista_b'] = 'usuarios/procesos_v';
-        $data['menu'] = 'usuarios/menu_admin_v';
-        
-        $this->load->view(PTL_ADMIN, $data);
-    }
-    
-    function solicitudes_rol()
-    {
-        //Variables específicas
-            $data['solicitudes'] = $this->Usuario_model->solicitudes();
-
-        //Variables generales
-            $data['titulo_pagina'] = 'Usuarios';
-            $data['subtitulo_pagina'] = 'Solicitudes de cambio de rol';
-            $data['vista_a'] = 'usuarios/solicitudes_rol_v';
-            $data['vista_menu'] = 'usuarios/explorar/menu_v';
-
-        $this->load->view(PTL_ADMIN, $data);
+        $this->load->view(TPL_ADMIN, $data);
     }
     
 //GESTIÓN DE CUENTAS
@@ -355,7 +370,7 @@ class Usuarios extends CI_Controller{
             //$row_usuario = $this->Pcrn->registro_id('usuario', $usuario_id);
 
             $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'Districatólicas Unidas S.A.S.');
+            $this->email->from('info@districatolicas.com', 'DistriCatolicas.com');
             $this->email->to('jmojedap@gmail.com');
             $this->email->message('Este es el contenido del mensaje');
             $this->email->subject('Subject del mensaje');
@@ -377,10 +392,10 @@ class Usuarios extends CI_Controller{
         $data = $this->Usuario_model->basic($this->session->userdata('usuario_id'));
         
         //Array data espefícicas
-        $data['vista_a'] = 'usuarios/info_v';
+        $data['view_a'] = 'usuarios/profile_v';
         $data['nav_1'] = 'usuarios/menu_personal_v';
         
-        $this->load->view(PTL_ADMIN, $data);
+        $this->load->view(TPL_ADMIN, $data);
     }
     
     function editarme()
@@ -395,16 +410,16 @@ class Usuarios extends CI_Controller{
         //Evita que un usuario edite los datos de otro
         if ( $usuario_id != $this->session->userdata('usuario_id') )
         {
-            $data['vista_a'] = 'app/no_permitido_v';
+            $data['view_a'] = 'app/no_permitido_v';
         }
         
         //Array data espefícicas
-        $data['vista_a'] = 'usuarios/editar_v';
-        $data['vista_menu'] = 'usuarios/menu_personal_v';
+        $data['view_a'] = 'common/editar_v';
+        $data['nav_2'] = 'usuarios/menu_personal_v';
         
         
         $output = array_merge($data,(array)$gc_output);
-        $this->load->view(PTL_ADMIN, $output);
+        $this->load->view(TPL_ADMIN, $output);
     }
     
     /**
@@ -419,8 +434,8 @@ class Usuarios extends CI_Controller{
         $data['resultado'] = $resultado;
         
         //Solicitar vista
-            $data['vista_a'] = 'usuarios/contrasena_v';
-            $this->load->view(PTL_ADMIN, $data);
+            $data['view_a'] = 'usuarios/contrasena_v';
+            $this->load->view(TPL_ADMIN, $data);
         
     }
     
@@ -454,7 +469,6 @@ class Usuarios extends CI_Controller{
         }
         
     }
-    
     
     /**
      * AJAX, devuelve un valor de username sugerido disponible, dados los nombres y apellidos
@@ -501,14 +515,14 @@ class Usuarios extends CI_Controller{
             $data['pedidos'] = $this->Usuario_model->pedidos($usuario_id);
 
         //Variables generales
-        $data['vista_a'] = 'usuarios/pedidos_v';
+        $data['view_a'] = 'usuarios/pedidos_v';
         if ( $this->session->userdata('role') >= 20 )
         {
-            $data['titulo_pagina'] = 'Mis pedidos';
+            $data['head_title'] = 'Mis pedidos';
             $data['nav_2'] = NULL; 
         }
 
-        $this->load->view(PTL_ADMIN, $data);
+        $this->load->view(TPL_ADMIN, $data);
     }
     
     function mis_pedidos()
@@ -536,10 +550,10 @@ class Usuarios extends CI_Controller{
         $data['books'] = $this->Usuario_model->assigned_posts($user_id);
         $data['options_book'] = $this->App_model->opciones_post('tipo_id = 8', 'n', 'Libro');
 
-        $data['vista_a'] = 'usuarios/books_v';
+        $data['view_a'] = 'usuarios/books_v';
         if ( $this->session->userdata('role') >= 20 ) { $data['nav_2'] = NULL; }
 
-        $this->App_model->view(PTL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN, $data);
     }
     
 }

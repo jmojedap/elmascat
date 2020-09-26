@@ -115,7 +115,7 @@
                 <td><?= $link_pedido ?></td>
                 <td class="<?= $cl_col['cliente'] ?>">
                     <?php if ( $row_resultado->usuario_id > 0 ) { ?>
-                        <?= anchor("usuarios/info/{$row_resultado->usuario_id}", $nombre_cliente, 'title="Ver pedidos del cliente"') ?>
+                        <?= anchor("usuarios/profile{$row_resultado->usuario_id}", $nombre_cliente, 'title="Ver pedidos del cliente"') ?>
                         <!-- <a href="<?php //echo base_url("usuarios/books/{$row_resultado->usuario_id}") ?>" class="btn btn-default btn-xs" target="_blank" title="Contenidos asignados">
                             <?php //echo $cant_contenidos ?>
                         </a> -->

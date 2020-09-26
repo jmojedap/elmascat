@@ -27,7 +27,7 @@
                 ?>
                 <tr>
                     <td class="<?= $clases_col['usuario'] ?>">
-                        <?= anchor("usuarios/info/{$row_usuario->id}", $row_usuario->nombre . ' ' . $row_usuario->apellidos, 'class="" title=""') ?>
+                        <?= anchor("usuarios/profile{$row_usuario->id}", $row_usuario->nombre . ' ' . $row_usuario->apellidos, 'class="" title=""') ?>
                     </td>
                     <td class="<?= $clases_col['email'] ?>">
                         <?= $row_usuario->email ?>

@@ -2,9 +2,9 @@
 
 <?php 
     $role_options = $this->Item_model->options('categoria_id = 58', 'Rol de usuario');
-    $gender_options = $this->Item_model->options('categoria_id = 59 AND id_interno <= 2', 'Sexo');
-    $city_options = $this->App_model->opciones_lugar('tipo_id = 4', 'full_name', 'Ciudad');
-    $id_number_type_options = $this->Item_model->options('categoria_id = 53', 'Tipo documento');
+    $sexo_options = $this->Item_model->options('categoria_id = 59 AND id_interno <= 2', 'Sexo');
+    $city_options = $this->App_model->opciones_lugar('tipo_id = 4', 'full_name');
+    $tipo_documento_id_options = $this->Item_model->options('categoria_id = 53', 'Tipo documento');
 ?>
 
 <div id="add_user">
@@ -12,177 +12,114 @@
         <div class="card-body">
             <form id="add_form" accept-charset="utf-8" @submit.prevent="validate_send">
                 <div class="form-group row">
-                    <div class="offset-4 col-md-8">
-                        <button class="btn btn-success btn-block" type="submit">
-                            Crear
-                        </button>
+                    <label for="role" class="col-md-4 col-form-label text-right">Rol</label>
+                    <div class="col-md-8">
+                        <?= form_dropdown('rol_id', $role_options, '021', 'class="form-control" required') ?>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="nombre" class="col-md-4 col-form-label text-right">Nombres y Apellidos</label>
+                    <div class="col-md-4">
+                        <input
+                            name="nombre" class="form-control" placeholder="Nombres"
+                            required
+                            v-model="form_values.nombre"
+                            >
+                    </div>
+                    <div class="col-md-4">
+                        <input
+                            name="apellidos" class="form-control" placeholder="Apellidos"
+                            required
+                            v-model="form_values.apellidos"
+                            >
+                    </div>
+                </div>
+                    
+                <div class="form-group row" id="form-group_no_documento">
+                    <label for="no_documento" class="col-md-4 col-form-label text-right">No. Documento</label>
+                    <div class="col-md-4">
+                        <input
+                            name="no_documento" class="form-control"
+                            placeholder="" title="Solo números, sin puntos, debe tener al menos 5 dígitos"
+                            required pattern=".{5,}[0-9]"
+                            v-bind:class="{ 'is-invalid': validation.id_number_unique == 0 }"
+                            v-model="form_values.no_documento"
+                            v-on:change="validate_form"
+                            >
+                        <span class="invalid-feedback">
+                            El número de documento escrito ya fue registrado para otro usuario
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <?= form_dropdown('tipo_documento_id', $tipo_documento_id_options, '', 'class="form-control" required v-model="form_values.tipo_documento_id"') ?>
+                    </div>
+                </div>
+                
+                <div class="form-group row" id="form-group_email">
+                    <label for="email" class="col-md-4 col-form-label text-right">Correo electrónico</label>
+                    <div class="col-md-8">
+                        <input
+                            name="email" type="email" class="form-control"
+                            placeholder="" title="Dirección de correo electrónico"
+                            v-bind:class="{ 'is-invalid': validation.email_unique == 0 }"
+                            v-model="form_values.email" v-on:change="validate_form"
+                            >
+                        <span class="invalid-feedback">
+                            El correo electrónico ya fue registrado, por favor escriba otro
+                        </span>
                     </div>
                 </div>
                 
                 <div class="form-group row">
-                        <label for="first_name" class="col-md-4 col-form-label text-right">Nombres y Apellidos</label>
-                        <div class="col-md-4">
-                            <input
-                                id="field-first_name"
-                                name="first_name"
-                                class="form-control"
-                                placeholder="Nombres"
-                                title="Nombres del usuario"
-                                required
-                                autofocus
-                                v-model="form_values.first_name"
-                                >
-                        </div>
-                        <div class="col-md-4">
-                            <input
-                                id="field-last_name"
-                                name="last_name"
-                                class="form-control"
-                                placeholder="Apellidos"
-                                title="Apellidos del usuario"
-                                required
-                                accept=""v-model="form_values.last_name"
-                                >
-                        </div>
+                    <label for="password" class="col-md-4 col-form-label text-right">Contraseña</label>
+                    <div class="col-md-8">
+                        <input
+                            name="password" class="form-control"
+                            placeholder="Escriba la contraseña del usuario" title="Debe tener al menos un número y una letra minúscula, y al menos 8 caractéres"
+                            required
+                            pattern="(?=.*\d)(?=.*[a-z]).{8,}"
+                            v-model="form_values.password"
+                            >
                     </div>
-                    
-                    <div class="form-group row" id="form-group_id_number">
-                        <label for="id_number" class="col-md-4 col-form-label text-right">No. Documento</label>
-                        <div class="col-md-4">
-                            <input
-                                id="field-id_number"
-                                name="id_number"
-                                class="form-control"
-                                v-bind:class="{ 'is-invalid': ! validation.id_number_is_unique }"
-                                placeholder="Número de documento"
-                                title="Solo números, sin puntos, debe tener al menos 5 dígitos"
-                                required
-                                pattern=".{5,}[0-9]"
-                                v-model="form_values.id_number"
-                                v-on:change="validate_form"
-                                >
-                            <span class="invalid-feedback">
-                                El número de documento escrito ya fue registrado para otro usuario
-                            </span>
-                        </div>
-                        <div class="col-md-4">
-                            <?= form_dropdown('id_number_type', $id_number_type_options, '', 'class="form-control" required v-model="form_values.id_number_type"') ?>
-                        </div>
+                </div>
+            
+                <div class="form-group row">
+                    <label for="ciudad_id" class="col-md-4 col-form-label text-right">Ciudad residencia</label>
+                    <div class="col-md-8">
+                        <?= form_dropdown('ciudad_id', $city_options, '', 'id="field-ciudad_id" class="form-control form-control-chosen-required" v-model="form_values.ciudad_id"') ?>
                     </div>
-                    
-                    <div class="form-group row" id="form-group_email">
-                        <label for="email" class="col-md-4 col-form-label text-right">Correo electrónico</label>
-                        <div class="col-md-8">
-                            <input
-                                id="field-email"
-                                name="email"
-                                type="email"
-                                class="form-control"
-                                v-bind:class="{ 'is-invalid': ! validation.email_is_unique }"
-                                placeholder="Dirección de correo electrónico"
-                                title="Dirección de correo electrónico"
-                                v-model="form_values.email"
-                                v-on:change="validate_form"
-                                >
-                            <span class="invalid-feedback">
-                                El correo electrónico ya fue registrado, por favor escriba otro
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group row" id="form-group_username">
-                        <label for="username" class="col-md-4 col-form-label text-right">Username</label>
-                        <div class="col-md-8">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <button type="button" class="btn btn-primary" title="Generar username" v-on:click="generate_username">
-                                        <i class="fa fa-magic"></i>
-                                    </button>
-                                </div>
-                                <!-- /btn-group -->
-                                <input
-                                    id="field-username"
-                                    name="username"
-                                    class="form-control"
-                                    v-bind:class="{ 'is-invalid': ! validation.username_is_unique }"
-                                    placeholder="username"
-                                    title="Puede contener letras y números, entre 6 y 25 caractéres, no debe contener espacios ni caracteres especiales"
-                                    required
-                                    pattern="^[A-Za-z0-9_]{6,25}$"
-                                    v-model="form_values.username"
-                                    v-on:change="validate_form"
-                                    >
-                                
-                                <span class="invalid-feedback">
-                                    El username escrito no está disponible, por favor elija otro
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group row">
-                        <label for="password" class="col-md-4 col-form-label text-right">Contraseña</label>
-                        <div class="col-md-8">
-                            <input
-                                id="field-password"
-                                name="password"
-                                class="form-control"
-                                placeholder="Escriba la contraseña del usuario"
-                                title="Debe tener al menos un número y una letra minúscula, y al menos 8 caractéres"
-                                required
-                                v-model="form_values.password"
-                                pattern="(?=.*\d)(?=.*[a-z]).{8,}"
-                                >
-                        </div>
-                    </div>
+                </div>
                 
-                    <div class="form-group row">
-                        <label for="city_id" class="col-md-4 col-form-label text-right">Ciudad residencia</label>
-                        <div class="col-md-8">
-                            <?= form_dropdown('city_id', $city_options, '', 'id="field-city_id" class="form-control form-control-chosen" required') ?>
-                        </div>
+                <div class="form-group row">
+                    <label for="fecha_nacimiento" class="col-md-4 col-form-label text-right">Fecha de nacimiento</label>
+                    <div class="col-md-8">
+                        <input
+                            type="date" name="fecha_nacimiento" class="form-control bs_datepicker"
+                            v-model="form_values.fecha_nacimiento"
+                            >
                     </div>
-                    
-                    <div class="form-group row">
-                        <label for="birth_date" class="col-md-4 col-form-label text-right">Fecha de nacimiento</label>
-                        <div class="col-md-8">
-                            <input
-                                id="field-birth_date"
-                                name="birth_date"
-                                class="form-control bs_datepicker"
-                                required
-                                v-model="form_values.birth_date"
-                                type="date"
-                                >
-                        </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label for="sexo" class="col-md-4 col-form-label text-right">Sexo</label>
+                    <div class="col-md-8">
+                        <?= form_dropdown('sexo', $sexo_options, '', 'class="form-control" required v-model="form_values.sexo"') ?>
                     </div>
-                    
-                    <div class="form-group row">
-                        <label for="role" class="col-md-4 col-form-label text-right">Rol</label>
-                        <div class="col-md-8">
-                            <?= form_dropdown('role', $role_options, '021', 'class="form-control" required') ?>
-                        </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label for="celular" class="col-md-4 col-form-label text-right">Celular</label>
+                    <div class="col-md-8">
+                        <input name="celular" class="form-control">
                     </div>
-                    
-                    <div class="form-group row">
-                        <label for="gender" class="col-md-4 col-form-label text-right">Sexo</label>
-                        <div class="col-md-8">
-                            <?= form_dropdown('gender', $gender_options, '', 'class="form-control" required v-model="form_values.gender"') ?>
-                        </div>
+                </div>
+                <div class="form-group row">
+                <div class="offset-4 col-md-8">
+                        <button class="btn btn-success w120p" type="submit">
+                            Crear
+                        </button>
                     </div>
-                    
-                    <div class="form-group row">
-                        <label for="celular" class="col-md-4 col-form-label text-right">Teléfono / Celular</label>
-                        <div class="col-md-8">
-                            <input
-                                id="field-phone_number"
-                                name="phone_number"
-                                class="form-control"
-                                placeholder="Número celular"
-                                title="Número celular"
-                                >
-                        </div>
-                    </div>
+                </div>
             </form>
         </div>
     </div>

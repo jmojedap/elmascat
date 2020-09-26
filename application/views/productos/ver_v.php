@@ -110,7 +110,7 @@
                                 <?= $this->Pcrn->tiempo_hace($row_edicion->fecha, TRUE) ?>
                             </td>
                             <td>
-                                <?= anchor("usuarios/info/{$row_edicion->usuario_id}", $this->App_model->nombre_usuario($row_edicion->usuario_id, 2)) ?>
+                                <?= anchor("usuarios/profile{$row_edicion->usuario_id}", $this->App_model->nombre_usuario($row_edicion->usuario_id, 2)) ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>

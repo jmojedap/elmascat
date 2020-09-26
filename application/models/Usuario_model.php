@@ -6,9 +6,8 @@ class Usuario_model extends CI_Model{
     {
         $row = $this->Db_model->row_id('usuario', $user_id);
             
-        $data['nombre_completo'] = $row->nombre . " " . $row->apellidos;
-        $data['titulo_pagina'] = $row->nombre . " " . $row->apellidos;
-        $data['nav_2'] = 'usuarios/roles/cliente_v';
+        $data['head_title'] = $row->nombre . " " . $row->apellidos;
+        $data['nav_2'] = 'usuarios/menus/cliente_v';
         $data['row'] = $row;            
         
         return $data;
@@ -109,6 +108,7 @@ class Usuario_model extends CI_Model{
         
         //Otros filtros
         if ( $filters['role'] != '' ) { $condition .= "rol_id = {$filters['role']} AND "; }
+        if ( $filters['gender'] != '' ) { $condition .= "sexo = {$filters['gender']} AND "; }
         
         //Quitar cadena final de ' AND '
         if ( strlen($condition) > 0 ) { $condition = substr($condition, 0, -5);}
@@ -463,27 +463,31 @@ class Usuario_model extends CI_Model{
     }
     
     /**
-     * Después de validar el formulario de registro de usuario, se lo guarda
-     * en la tabla.
+     * Después de validar el formulario de registro de usuario se guarda en la tabla usuario
+     * 2020-09-26
      * 
-     * @param type $registro
-     * @return type
      */
-    function insertar($registro)
+    function insert($arr_row)
     {
         //Encriptar pw
-            $registro['password'] = $this->encriptar_pw($registro['password']);
+            $arr_row['password'] = $this->encriptar_pw($arr_row['password']);
         
         //Datos complementarios
-            $registro['editado'] = date('Y-m-d h:i:s');
-            $registro['creado'] = date('Y-m-d h:i:s');
+            if ( is_null($this->input->post('username')) ) $arr_row['username'] = $arr_row['email'];
+            $arr_row['display_name'] = $arr_row['nombre'] . ' ' . $arr_row['apellidos'];
+            $arr_row['editado'] = date('Y-m-d h:i:s');
+            $arr_row['creado'] = date('Y-m-d h:i:s');
+            $arr_row['updater_id'] = $this->session->userdata('user_id');
+            $arr_row['creator_id'] = $this->session->userdata('user_id');
         
-        $this->db->insert('usuario', $registro);
+        $this->db->insert('usuario', $arr_row);
         
-        $resultado['nuevo_id'] = $this->db->insert_id();
-        $resultado['ejecutado'] = 1;
+        //Rssultado
+        $data['status'] = 0;
+        $data['saved_id'] = $this->db->insert_id();
+        if ( $data['saved_id'] > 0 ) $data['status'] = 1;
         
-        return $resultado;
+        return $data;
     }
     
     /**
@@ -765,21 +769,24 @@ class Usuario_model extends CI_Model{
 //OTRAS
 //---------------------------------------------------------------------------------------------------
     
-    function eliminable()
+    function deleteable()
     {
-        $eliminable = 0;
-        if ( $this->session->userdata('usuario_id') <= 1 ) {
-            $eliminable = 1;
-        }
-
-        return $eliminable;
+        $deleteable = 0;
+        if ( $this->session->userdata('usuario_id') <= 1 ) $deleteable = 1;
+        return $deleteable;
     }
     
-    function eliminar($usuario_id)
+    /**
+     * Eliminar usuario
+     * 2020-09-26
+     */
+    function delete($usuario_id)
     {
-        if ( $this->eliminable($usuario_id) ) {
+        $qty_deleted = 0;
+
+        if ( $this->deleteable($usuario_id) )
+        {
             //Tablas relacionadas
-                
                 //meta
                 $this->db->where('tabla_id', 1000); //Tabla usuario
                 $this->db->where('elemento_id', $usuario_id);
@@ -788,7 +795,11 @@ class Usuario_model extends CI_Model{
             //Tabla principal
                 $this->db->where('id', $usuario_id);
                 $this->db->delete('usuario');
+
+            $qty_deleted = $this->db->affected_rows();
         }
+
+        return $qty_deleted;
     }
     
     /* Esta función genera un string con el username para un registro en la tabla usuario

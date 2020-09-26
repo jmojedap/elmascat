@@ -32,7 +32,7 @@
                     
                 </td>
                 <td>
-                    <a v-bind:href="`<?= base_url("usuarios/info/") ?>/` + element.id">
+                    <a v-bind:href="`<?= base_url("usuarios/profile/") ?>/` + element.id">
                         {{ element.display_name }}
                     </a>
                     <br>
