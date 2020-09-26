@@ -129,7 +129,24 @@ class Usuarios extends CI_Controller{
         $this->load->view(TPL_ADMIN, $data);
     }
 
-// CREACIÓN DE USUARIOS
+
+
+    function profile($usuario_id)
+    {
+        //Datos básicos
+        if ( $this->session->userdata('role') > 6 ) { $usuario_id = $this->session->userdata('user_id'); }
+        $data = $this->Usuario_model->basic($usuario_id);
+
+        $data['qty_login'] = $this->Db_model->num_rows('evento', "tipo_id = 101 AND usuario_id = {$usuario_id}");
+        $data['qty_open_posts'] = $this->Db_model->num_rows('evento', "tipo_id = 51 AND usuario_id = {$usuario_id}");
+        
+        //Array data espefícicas
+        $data['view_a'] = 'usuarios/profile_v';
+        
+        $this->load->view(TPL_ADMIN, $data);
+    }
+
+// CREACIÓN Y EDICIÓN
 //-----------------------------------------------------------------------------
     
     /**
@@ -141,8 +158,7 @@ class Usuarios extends CI_Controller{
         $this->load->helper('string');
         
         //Array data espefícicas
-            $data['head_title'] = 'Usuarios';
-            $data['head_subtitle'] = 'Nuevo';
+            $data['head_title'] = 'Crear usuario';
             $data['nav_2'] = 'usuarios/explore/menu_v';
             $data['nav_3'] = 'usuarios/add/menu_v';
             $data['view_a'] = 'usuarios/add/add_v';
@@ -191,6 +207,17 @@ class Usuarios extends CI_Controller{
         
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+    /**
+     * Formulario edición de un usuario
+     * 2020-09-26
+     */
+    function edit($user_id)
+    {
+        $data = $this->Usuario_model->basic($user_id);   
+        $data['view_a'] = 'usuarios/edit/edit_v';
+        $this->load->view(TPL_ADMIN, $data);
+    }
     
     /**
      * Formulario GroceryCRUD para la edición de los datos de un usuario.
@@ -209,21 +236,6 @@ class Usuarios extends CI_Controller{
         
         $output = array_merge($data,(array)$gc_output);
         $this->load->view(TPL_ADMIN, $output);
-    }
-    
-    function profile($usuario_id)
-    {
-        //Datos básicos
-        if ( $this->session->userdata('role') > 6 ) { $usuario_id = $this->session->userdata('user_id'); }
-        $data = $this->Usuario_model->basic($usuario_id);
-
-        $data['qty_login'] = $this->Db_model->num_rows('evento', "tipo_id = 101 AND usuario_id = {$usuario_id}");
-        $data['qty_open_posts'] = $this->Db_model->num_rows('evento', "tipo_id = 51 AND usuario_id = {$usuario_id}");
-        
-        //Array data espefícicas
-        $data['view_a'] = 'usuarios/profile_v';
-        
-        $this->load->view(TPL_ADMIN, $data);
     }
     
 //GESTIÓN DE CUENTAS

@@ -9,14 +9,14 @@
     $options_payment_channel = $this->Item_model->options('categoria_id = 185', 'Medio de pago DC');
 ?>
 
-<div id="add_user">
+<div id="edit_user">
     <div class="card center_box_750">
         <div class="card-body">
-            <form id="add_form" accept-charset="utf-8" @submit.prevent="validate_send">
+            <form id="edit_form" accept-charset="utf-8" @submit.prevent="validate_send">
                 <div class="form-group row">
                     <label for="role" class="col-md-4 col-form-label text-right">Rol</label>
                     <div class="col-md-8">
-                        <?= form_dropdown('rol_id', $options_role, '021', 'class="form-control" required') ?>
+                        <?= form_dropdown('rol_id', $options_role, '0' . $row->rol_id, 'class="form-control" required') ?>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -71,19 +71,6 @@
                         </span>
                     </div>
                 </div>
-                
-                <div class="form-group row">
-                    <label for="password" class="col-md-4 col-form-label text-right">Contraseña</label>
-                    <div class="col-md-8">
-                        <input
-                            name="password" class="form-control"
-                            placeholder="Escriba la contraseña del usuario" title="Debe tener al menos un número y una letra minúscula, y al menos 8 caractéres"
-                            required
-                            pattern="(?=.*\d)(?=.*[a-z]).{8,}"
-                            v-model="form_values.password"
-                            >
-                    </div>
-                </div>
             
                 <div class="form-group row">
                     <label for="ciudad_id" class="col-md-4 col-form-label text-right">Ciudad residencia</label>
@@ -97,7 +84,7 @@
                     <div class="col-md-8">
                         <input
                             name="city_zone" type="text" class="form-control"
-                            title="Vereda o corregimiento" placeholder=""
+                            title="Vereda o corregimiento" placeholder="" v-model="form_values.city_zone"
                         >
                     </div>
                 </div>
@@ -122,61 +109,33 @@
                 <div class="form-group row">
                     <label for="celular" class="col-md-4 col-form-label text-right">Celular</label>
                     <div class="col-md-8">
-                        <input name="celular" class="form-control">
+                        <input name="celular" class="form-control" v-model="form_values.celular">
                     </div>
                 </div>
                 <hr>
                 <div class="form-group row">
                     <label for="shipping_system" class="col-md-4 col-form-label text-right">Transportadora</label>
                     <div class="col-md-8">
-                        <?= form_dropdown('shipping_system', $options_shipping_system, '', 'class="form-control"') ?>
+                        <?= form_dropdown('shipping_system', $options_shipping_system, '', 'class="form-control" v-model="form_values.shipping_system"') ?>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label for="payment_channel" class="col-md-4 col-form-label text-right">Medio de pago DC</label>
                     <div class="col-md-8">
-                        <?= form_dropdown('payment_channel', $options_payment_channel, '', 'class="form-control"') ?>
+                        <?= form_dropdown('payment_channel', $options_payment_channel, '', 'class="form-control" v-model="form_values.payment_channel"') ?>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="offset-4 col-md-8">
-                        <button class="btn btn-success w120p" type="submit">
-                            Crear
+                        <button class="btn btn-primary w120p" type="submit">
+                            Guardar
                         </button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="modal_created" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Usuario creado</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <i class="fa fa-check"></i>
-                    Usuario creado correctamente
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" v-on:click="go_created">
-                        Abrir usuario
-                    </button>
-                    <button type="button" class="btn btn-secondary" v-on:click="clean_form" data-dismiss="modal">
-                        <i class="fa fa-plus"></i>
-                        Crear otro
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
 </div>
 
 <?php
-$this->load->view('usuarios/add/add_vue_v');
+$this->load->view('usuarios/edit/vue_v');

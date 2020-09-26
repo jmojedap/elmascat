@@ -5,7 +5,7 @@
     $cl_nav_2['usuarios_profile'] = '';
     $cl_nav_2['usuarios_pedidos'] = '';
     $cl_nav_2['usuarios_books'] = '';
-    $cl_nav_2['usuarios_editar'] = '';
+    $cl_nav_2['usuarios_edit'] = '';
     //$cl_nav_2['usuarios_import'] = '';
     
     $cl_nav_2[$app_cf_index] = 'active';
@@ -53,8 +53,8 @@
     sections.edit = {
         icon: 'fa fa-pencil-alt',
         text: 'Editar',
-        class: '<?= $cl_nav_2['usuarios_editar'] ?>',
-        cf: 'usuarios/editar/edit/' + element_id,
+        class: '<?= $cl_nav_2['usuarios_edit'] ?>',
+        cf: 'usuarios/edit/' + element_id,
         anchor: true
     };
 

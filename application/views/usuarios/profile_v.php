@@ -151,6 +151,12 @@
                             <?= $row->telefono ?>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td class="text-right"><span class="text-muted">Transportadora</span></td>
+                        <td><?= $this->Item_model->nombre(183, $row->shipping_system) ?></td>
+                    </tr>
+
                     <tr>
                         <td class="text-right"><span class="text-muted">Actualizado</span></td>
                         <td title="<?= $row->editado ?>">
