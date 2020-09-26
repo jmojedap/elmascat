@@ -32,6 +32,10 @@ class Book_model extends CI_Model{
             $book['head_title'] = 'Revista Minutos de Amor - Septiembre de 2020';
             $book['book_id'] = 315;
         }
+        if ( $book_code == '109507604357' ) {
+            $book['head_title'] = 'Revista Minutos de Amor - Octubre de 2020';
+            $book['book_id'] = 316;
+        }
 
         return $book;
     }

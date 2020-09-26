@@ -1099,8 +1099,8 @@ class Usuario_model extends CI_Model{
         $this->db->join('meta', 'post.id = meta.relacionado_id');
         $this->db->where('meta.dato_id', 100012);   //Asignación de contenido
         $this->db->where('meta.elemento_id', $user_id);
-        $this->db->order_by('post.estado', 'ASC');
-        $this->db->order_by('post.publicado', 'ASC');
+        $this->db->order_by('post.id', 'DESC');
+        //$this->db->order_by('post.', 'DESC');
 
         $posts = $this->db->get('post');
         
