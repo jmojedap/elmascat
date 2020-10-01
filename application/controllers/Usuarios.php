@@ -218,6 +218,17 @@ class Usuarios extends CI_Controller{
         $data['view_a'] = 'usuarios/edit/edit_v';
         $this->load->view(TPL_ADMIN, $data);
     }
+
+    /**
+     * Actualizar registro en la tabla usuario
+     * 2020-09-28
+     */
+    function update($user_id)
+    {
+        $arr_row = $this->input->post();
+        $data = $this->Usuario_model->update($user_id, $arr_row);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
     /**
      * Formulario GroceryCRUD para la edición de los datos de un usuario.
@@ -410,14 +421,16 @@ class Usuarios extends CI_Controller{
         $this->load->view(TPL_ADMIN, $data);
     }
     
+    /**
+     * Editar datos de la cuenta del usuario en sesión
+     * 2020-09-30
+     */
     function editarme()
     {
-        $usuario_id = $this->uri->segment(4);
+        $usuario_id = $this->session->userdata('user_id');
         
         //Datos básicos
         $data = $this->Usuario_model->basic($this->session->userdata('usuario_id'));
-        
-        $gc_output = $this->Usuario_model->crud_basico($data['row']);
         
         //Evita que un usuario edite los datos de otro
         if ( $usuario_id != $this->session->userdata('usuario_id') )
@@ -426,12 +439,10 @@ class Usuarios extends CI_Controller{
         }
         
         //Array data espefícicas
-        $data['view_a'] = 'common/editar_v';
+        $data['view_a'] = 'usuarios/edit/edit_v';
         $data['nav_2'] = 'usuarios/menu_personal_v';
         
-        
-        $output = array_merge($data,(array)$gc_output);
-        $this->load->view(TPL_ADMIN, $output);
+        $this->load->view(TPL_ADMIN, $data);
     }
     
     /**
@@ -454,7 +465,6 @@ class Usuarios extends CI_Controller{
     /* Cambio de contraseña de los demás usuarios */
     function cambiar_contrasena()
     {
-        
         $this->load->library('form_validation');
         
         //Reglas
@@ -479,7 +489,6 @@ class Usuarios extends CI_Controller{
             //La validación falla, retornar al formulario
             $this->contrasena();
         }
-        
     }
     
     /**
@@ -567,5 +576,4 @@ class Usuarios extends CI_Controller{
 
         $this->App_model->view(TPL_ADMIN, $data);
     }
-    
 }

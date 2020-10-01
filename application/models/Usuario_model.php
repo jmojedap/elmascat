@@ -6,7 +6,7 @@ class Usuario_model extends CI_Model{
     {
         $row = $this->Db_model->row_id('usuario', $user_id);
             
-        $data['head_title'] = $row->nombre . " " . $row->apellidos;
+        $data['head_title'] = $row->display_name;
         $data['nav_2'] = 'usuarios/menus/cliente_v';
         $data['row'] = $row;            
         
@@ -76,7 +76,7 @@ class Usuario_model extends CI_Model{
                 $order_type = $this->pml->if_strlen($filters['ot'], 'ASC');
                 $this->db->order_by($filters['o'], $order_type);
             } else {
-                $this->db->order_by('editado', 'DESC');
+                $this->db->order_by('ultimo_login', 'DESC');
             }
             
         //Filtros
@@ -210,214 +210,6 @@ class Usuario_model extends CI_Model{
 // FIN FUNCIONES EXPLORACIÓN
 //-----------------------------------------------------------------------------
 
-    /** 
-     * Devuelve render de formulario grocery crud para la edición
-     * de datos de usuario
-     */
-    function crud_basico()
-    {
-        //Grocery crud
-        $this->load->library('grocery_CRUD');
-        
-        $crud = new grocery_CRUD();
-        $crud->set_table('usuario');
-        $crud->set_subject('usuario');
-        $crud->unset_export();
-        $crud->unset_print();
-        $crud->unset_back_to_list();
-        $crud->unset_delete();
-        $crud->unset_add();
-        $crud->columns('nombre');
-
-        //Títulos de los campos
-            $crud->display_as('nombre', 'Nombre');
-            $crud->display_as('email', 'Correo electrónico');
-            //$crud->display_as('rol_id', 'Perfil');
-            $crud->display_as('no_documento', 'CC o NIT');
-            $crud->display_as('tipo_documento_id', 'Tipo documento');
-            $crud->display_as('dv', 'DV (Dígito verificación)');
-            $crud->display_as('telefono', 'Teléfono');
-            $crud->display_as('address', 'Dirección');
-            $crud->display_as('url', 'Página Web');
-            $crud->display_as('ciudad_id', 'Ciudad Residencia');
-        
-        //Relaciones
-            $crud->set_relation('ciudad_id', 'lugar', '{nombre_lugar} - {region}', 'tipo_id = 4');
-
-        //Formulario Edit
-            $crud->edit_fields(
-                    'nombre',
-                    'apellidos',
-                    'tipo_documento_id',
-                    'no_documento',
-                    'dv',
-                    'email',
-                    'sexo',
-                    'fecha_nacimiento',
-                    'ciudad_id',
-                    'address',
-                    'celular',
-                    'url',
-                    'creado'
-                );
-
-        //Formulario Add
-            $crud->add_fields(
-                    'nombre',
-                    'apellidos',
-                    'tipo_documento_id',
-                    'no_documento',
-                    'dv',
-                    'username',
-                    'email',
-                    'password',
-                    'sexo',
-                    'fecha_nacimiento',
-                    'ciudad_id',
-                    'address',
-                    'celular',
-                    'url',
-                    'creado'
-                );
-            
-        //Opciones rol
-            $opciones_rol = $this->Item_model->arr_interno("categoria_id = 58 AND id_interno >= {$this->session->userdata('rol_id')}");
-            $crud->field_type('rol_id', 'dropdown', $opciones_rol);
-            
-        //Sexo
-            $opciones_sexo = $this->Item_model->opciones("categoria_id = 59 AND item_grupo = 1");
-            $crud->field_type('sexo', 'dropdown', $opciones_sexo);
-            
-        //Tipo documento
-            $opciones_tp_documento = $this->Item_model->opciones("categoria_id = 53");
-            $crud->field_type('tipo_documento_id', 'dropdown', $opciones_tp_documento);
-            
-        //Valores por defecto
-            $crud->field_type('creado', 'hidden', date('Y-m-d H:i:s'));
-            
-        //Procesos
-            $crud->callback_after_insert(array($this, 'gc_after_add'));
-
-        //Reglas de validación
-            $crud->required_fields('nombre', 'apellidos', 'username', 'password');
-            $crud->unique_fields('email', 'no_documento');
-            $crud->set_rules('celular', 'Celular', 'integer|greater_than[3000000000]|less_than[3300000000]');
-            $crud->set_rules('email', 'Correo electrónico', 'valid_email');
-        
-        $output = $crud->render();
-        
-        return $output;
-    }
-    
-    /** 
-     * Devuelve render de formulario grocery crud para la edición
-     * de datos de usuario
-     */
-    function crud_admin()
-    {
-        //Grocery crud
-        $this->load->library('grocery_CRUD');
-        
-        $crud = new grocery_CRUD();
-        $crud->set_table('usuario');
-        $crud->set_subject('usuario');
-        $crud->unset_export();
-        $crud->unset_print();
-        $crud->unset_back_to_list();
-        $crud->unset_delete();
-        $crud->unset_add();
-        $crud->columns('nombre');
-
-        //Títulos de los campos
-            $crud->display_as('nombre', 'Nombre');
-            $crud->display_as('email', 'Correo electrónico');
-            $crud->display_as('rol_id', 'Rol');
-            $crud->display_as('no_documento', 'CC o NIT');
-            $crud->display_as('tipo_documento_id', 'Tipo documento');
-            $crud->display_as('dv', 'DV (Dígito verificación)');
-            $crud->display_as('address', 'Dirección');
-            $crud->display_as('telefono', 'Teléfono');
-            $crud->display_as('url', 'Página Web');
-            $crud->display_as('ciudad_id', 'Ciudad Residencia');
-        
-        //Relaciones
-            $crud->set_relation('ciudad_id', 'lugar', '{nombre_lugar} - {region}', 'tipo_id = 4');
-
-        //Formulario Edit
-            $crud->edit_fields(
-                    'nombre',
-                    'apellidos',
-                    'rol_id',
-                    'tipo_documento_id',
-                    'no_documento',
-                    'dv',
-                    'email',
-                    'sexo',
-                    'fecha_nacimiento',
-                    'ciudad_id',
-                    'address',
-                    'celular',
-                    'url'
-                );
-
-        //Formulario Add
-            $crud->add_fields(
-                    'nombre',
-                    'apellidos',
-                    'rol_id',
-                    'tipo_documento_id',
-                    'no_documento',
-                    'dv',
-                    'username',
-                    'email',
-                    'password',
-                    'sexo',
-                    'fecha_nacimiento',
-                    'ciudad_id',
-                    'address',
-                    'celular',
-                    'url'
-                );
-            
-        //Array opciones
-            $opciones_rol = $this->Item_model->arr_interno("categoria_id = 58 AND id_interno >= {$this->session->userdata('rol_id')}");
-            $crud->field_type('rol_id', 'dropdown', $opciones_rol);
-            
-        //Sexo
-            $opciones_sexo = $this->Item_model->opciones("categoria_id = 59 AND item_grupo = 1");
-            $crud->field_type('sexo', 'dropdown', $opciones_sexo);
-            
-        //Tipo documento
-            $opciones_tp_documento = $this->Item_model->opciones("categoria_id = 53");
-            $crud->field_type('tipo_documento_id', 'dropdown', $opciones_tp_documento);
-            
-        //Valores por defecto
-            $crud->field_type('creado', 'hidden', date('Y-m-d H:i:s'));
-            
-        //Procesos
-            $crud->callback_after_insert(array($this, 'gc_after_add'));
-
-        //Reglas de validación
-            $crud->required_fields('nombre', 'apellidos', 'username', 'password');
-            $crud->unique_fields('email');
-            $crud->set_rules('celular', 'Celular', 'integer|greater_than[3000000000]|less_than[3300000000]');
-            $crud->set_rules('email', 'Correo electrónico', 'valid_email');
-        
-        $output = $crud->render();
-        
-        return $output;
-    }
-    
-    function gc_after_add($post_array,$primary_key)
-    {
-        $registro['password'] = $this->encriptar_pw($post_array['password']);
-
-        $this->db->where('id', $primary_key);
-        $this->db->update('usuario', $registro);
-
-        return true;
-    }
-    
     function verificar_username($username)
     {
         
@@ -447,19 +239,26 @@ class Usuario_model extends CI_Model{
         return $this->db->insert_id();
     }
     
-    function guardar($registro)
+    /**
+     * Actualizar registro tabla usuario
+     * 2020-09-28
+     */
+    function update($user_id, $arr_row)
     {
-        $registro['nombre'] = $this->input->post('nombre');
-        $registro['apellidos'] = $this->input->post('apellidos');
-        $registro['email'] = $this->input->post('email');
-        $registro['celular'] = $this->input->post('celular');
-        $registro['username'] = $this->input->post('email');
-        $registro['creado'] = date('Y-m-d H:i:s');
-        $registro['editado'] = date('Y-m-d H:i:s');
+        $arr_row['display_name'] = $arr_row['nombre'] . ' ' . $arr_row['apellidos'];
+        if ( $arr_row['sexo'] == 90 ) {
+            $arr_row['display_name'] = $arr_row['institution_name'];
+        }
+
+        $arr_row['updater_id'] = $this->session->userdata('user_id');
+        $arr_row['editado'] = date('Y-m-d H:i:s');
+
+        $data['saved_id'] = $this->Db_model->save('usuario', "id = {$user_id}", $arr_row);
+
+        $data['status'] = 0;
+        if ( $data['saved_id'] > 0 ) $data['status'] = 1;
         
-        $usuario_id = $this->Pcrn->insertar_si('usuario', "email = '{$registro['email']}'", $registro);
-        
-        return $usuario_id;
+        return $data;
     }
     
     /**

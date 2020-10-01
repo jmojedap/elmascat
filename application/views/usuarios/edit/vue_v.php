@@ -1,15 +1,21 @@
 <script>    
     var form_values = {
+        rol_id: '0<?= $row->rol_id ?>',
+        institution_name: '<?= $row->institution_name ?>',
         nombre: '<?= $row->nombre ?>',
         apellidos: '<?= $row->apellidos ?>',
         no_documento: '<?= $row->no_documento ?>',
         tipo_documento_id: '0<?= $row->tipo_documento_id ?>',
         email: '<?= $row->email ?>',
-        ciudad_id: '0<?= $row->ciudad_id ?>',
-        city_zone: '<?= $row->city_zone ?>',
         fecha_nacimiento: '<?= $row->fecha_nacimiento ?>',
         sexo: '0<?= $row->sexo ?>',
-        celular: '<?= $row->celular ?>'
+        address: '<?= $row->address ?>',
+        ciudad_id: '0<?= $row->ciudad_id ?>',
+        city_zone: '<?= $row->city_zone ?>',
+        celular: '<?= $row->celular ?>',
+        telefono: '<?= $row->telefono ?>',
+        shipping_system: '0<?= $row->shipping_system ?>',
+        payment_channel: '0<?= $row->payment_channel ?>'
     };
             
     new Vue({

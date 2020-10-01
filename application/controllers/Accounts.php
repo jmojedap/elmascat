@@ -125,6 +125,7 @@ class Accounts extends CI_Controller {
             //Construir registro del nuevo user
                 $arr_row['nombre'] = $this->input->post('nombre');
                 $arr_row['apellidos'] = $this->input->post('apellidos');
+                $arr_row['display_name'] = $this->input->post('nombre') . ' ' . $this->input->post('apellidos');
                 $arr_row['email'] = $this->input->post('email');
                 $arr_row['fecha_nacimiento'] = $this->input->post('fecha_nacimiento');
                 $arr_row['sexo'] = $this->input->post('sexo');

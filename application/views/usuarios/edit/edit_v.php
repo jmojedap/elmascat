@@ -16,7 +16,7 @@
                 <div class="form-group row">
                     <label for="role" class="col-md-4 col-form-label text-right">Rol</label>
                     <div class="col-md-8">
-                        <?= form_dropdown('rol_id', $options_role, '0' . $row->rol_id, 'class="form-control" required') ?>
+                        <?= form_dropdown('rol_id', $options_role, '', 'class="form-control" required v-model="form_values.rol_id"') ?>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -34,6 +34,18 @@
                             required
                             v-model="form_values.apellidos"
                             >
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="institution_name" class="col-md-4 col-form-label text-right">Nombre empresa</label>
+                    <div class="col-md-8">
+                        <input
+                            name="institution_name" type="text" class="form-control"
+                            required
+                            title="Nombre empresa" placeholder="Nombre empresa o institución"
+                            v-model="form_values.institution_name"
+                        >
                     </div>
                 </div>
                     
@@ -73,6 +85,38 @@
                 </div>
             
                 <div class="form-group row">
+                    <label for="sexo" class="col-md-4 col-form-label text-right">Sexo</label>
+                    <div class="col-md-8">
+                        <?= form_dropdown('sexo', $options_sexo, '', 'class="form-control" required v-model="form_values.sexo"') ?>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="fecha_nacimiento" class="col-md-4 col-form-label text-right">Fecha de nacimiento</label>
+                    <div class="col-md-8">
+                        <input
+                            type="date" name="fecha_nacimiento" class="form-control bs_datepicker"
+                            v-model="form_values.fecha_nacimiento"
+                            >
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="form-group row">
+                    <label for="address" class="col-md-4 col-form-label text-right">Dirección completa</label>
+                    <div class="col-md-8">
+                        <input
+                            name="address" type="text" class="form-control"
+                            required
+                            title="Dirección" placeholder="Dirección"
+                            v-model="form_values.address"
+                        >
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
                     <label for="ciudad_id" class="col-md-4 col-form-label text-right">Ciudad residencia</label>
                     <div class="col-md-8">
                         <?= form_dropdown('ciudad_id', $options_ciudad, '', 'id="field-ciudad_id" class="form-control form-control-chosen-required" v-model="form_values.ciudad_id"') ?>
@@ -89,22 +133,7 @@
                     </div>
                 </div>
                 
-                <div class="form-group row">
-                    <label for="fecha_nacimiento" class="col-md-4 col-form-label text-right">Fecha de nacimiento</label>
-                    <div class="col-md-8">
-                        <input
-                            type="date" name="fecha_nacimiento" class="form-control bs_datepicker"
-                            v-model="form_values.fecha_nacimiento"
-                            >
-                    </div>
-                </div>
                 
-                <div class="form-group row">
-                    <label for="sexo" class="col-md-4 col-form-label text-right">Sexo</label>
-                    <div class="col-md-8">
-                        <?= form_dropdown('sexo', $options_sexo, '', 'class="form-control" required v-model="form_values.sexo"') ?>
-                    </div>
-                </div>
                 
                 <div class="form-group row">
                     <label for="celular" class="col-md-4 col-form-label text-right">Celular</label>
@@ -112,7 +141,15 @@
                         <input name="celular" class="form-control" v-model="form_values.celular">
                     </div>
                 </div>
+                <div class="form-group row">
+                    <label for="telefono" class="col-md-4 col-form-label text-right">Otros teléfonos</label>
+                    <div class="col-md-8">
+                        <input name="telefono" class="form-control" v-model="form_values.telefono">
+                    </div>
+                </div>
+
                 <hr>
+
                 <div class="form-group row">
                     <label for="shipping_system" class="col-md-4 col-form-label text-right">Transportadora</label>
                     <div class="col-md-8">
@@ -120,7 +157,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="payment_channel" class="col-md-4 col-form-label text-right">Medio de pago DC</label>
+                    <label for="payment_channel" class="col-md-4 col-form-label text-right">Medio de pago</label>
                     <div class="col-md-8">
                         <?= form_dropdown('payment_channel', $options_payment_channel, '', 'class="form-control" v-model="form_values.payment_channel"') ?>
                     </div>

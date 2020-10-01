@@ -61,7 +61,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 
         <script>
-            const url_app = '<?= base_url() ?>';
             const url_app = '<?= URL_APP ?>';
             const url_api = '<?= URL_API ?>';
         </script>

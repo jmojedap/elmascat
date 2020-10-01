@@ -18,13 +18,3 @@
 
 <!-- Alertas y notificaciones -->
 <?php $this->load->view('assets/toastr') ?>
-    
-<script>
-    var url_app = '<?= URL_APP ?>';
-</script>
-    
-    
-    
-    
-
-    
