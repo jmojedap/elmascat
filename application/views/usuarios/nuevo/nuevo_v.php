@@ -5,9 +5,11 @@
 <?php 
     $opciones_rol = $this->Item_model->opciones('categoria_id = 58', 'Rol de usuario');
     $opciones_sexo = $this->Item_model->opciones('categoria_id = 59 AND id_interno <= 2', 'Sexo');
-    $opciones_ciudad = $this->App_model->opciones_lugar('tipo_id = 4', 'CR', 'Ciudad');
+    $opciones_ciudad = $this->App_model->opciones_lugar('tipo_id = 4', 'full_name', 'Ciudad');
     $opciones_tipo_documento = $this->Item_model->opciones('categoria_id = 53', 'Tipo documento');
 ?>
+
+<?= count($opciones_lugar) ?>
 
 <?php $this->load->view($vista_menu); ?>
 <?php $this->load->view('usuarios/nuevo/js_v'); ?>

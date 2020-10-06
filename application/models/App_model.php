@@ -522,10 +522,9 @@ class App_model extends CI_Model{
     /* Devuelve un array con las opciones de la tabla lugar, limitadas por una condición definida
     * en un formato ($formato) definido
     */
-    function opciones_lugar($condicion, $campo_valor = 'nombre_lugar', $texto_vacio = NULL)
+    function opciones_lugar($condicion, $campo_valor = 'full_name', $texto_vacio = NULL)
     {
-        
-        $this->db->select("CONCAT('0', lugar.id) AS lugar_id, nombre_lugar, CONCAT((nombre_lugar), ' - ', (region)) AS cr, CONCAT((nombre_lugar), ' (', (region), ' - ', (pais),')') AS crp", FALSE); 
+        $this->db->select("CONCAT('0', lugar.id) AS lugar_id, nombre_lugar, CONCAT((nombre_lugar), ' - ', (region)) AS cr, CONCAT((nombre_lugar), ' (', (region), ' - ', (pais),')') AS crp, full_name", FALSE); 
         $this->db->where($condicion);
         $this->db->order_by('lugar.nombre_lugar', 'ASC');
         $query = $this->db->get('lugar');
