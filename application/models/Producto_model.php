@@ -184,6 +184,7 @@ class Producto_Model extends CI_Model{
             if ( $busqueda['est'] != '' ) { $this->db->where('estado', $busqueda['est']); }     //Estado del producto
             if ( $busqueda['fi'] != '' ) { $this->db->where('producto.creado >=', $busqueda['fi']); }     //Fecha inicial mínima en la que fue creado
             if ( $busqueda['dcto'] != '' ) { $this->db->where('promocion_id', $busqueda['dcto']); }     //Descuento aplicado
+            if ( strlen($busqueda['fe1']) ) { $this->db->where("peso <= {$busqueda['fe1']}"); }     //Peso máximo gramos
             
         //Obtener resultados
         if ( is_null($per_page) ){

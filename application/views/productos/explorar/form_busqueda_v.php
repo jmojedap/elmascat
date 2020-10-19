@@ -71,6 +71,13 @@
                 <?= form_dropdown('dcto', $opciones_promocion, $busqueda['dcto'], 'class="form-control chosen-select" title="Filtrar por promoción activa"'); ?>
             </div>
         </div>
+        <div class="form-group <?= $clases_filtros['dcto'] ?>">
+            <label for="dcto" class="col-sm-3 control-label">Peso máximo (g)</label>
+            <div class="col-sm-6">
+                <input name="fe1" type="text" class="form-control" value="<?= $busqueda['fe1'] ?>">
+            </div>
+        </div>
+
     </div>
 
 <?= form_close() ?>

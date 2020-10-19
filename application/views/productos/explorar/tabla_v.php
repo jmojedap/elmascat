@@ -57,6 +57,9 @@
         <th class="<?= $clases_col['cant_ventas'] ?>">
             Ventas
         </th>
+        <th class="<?= $clases_col['peso'] ?>">
+            Peso
+        </th>
         <th class="<?= $clases_col['promocion'] ?>">Promoción</th>
         <th class="<?= $clases_col['descripcion'] ?>">Descripción</th>
         <th class="<?= $clases_col['puntajes'] ?>">Puntajes</th>
@@ -102,6 +105,10 @@
 
                 <td class="text-right <?= $clases_col['cant_ventas'] ?>">
                     <?= $cant_ventas ?>
+                </td>
+
+                <td class="text-right <?= $clases_col['peso'] ?>">
+                    <?= $row_resultado->peso ?>
                 </td>
                 
                 

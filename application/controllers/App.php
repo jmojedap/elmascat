@@ -410,4 +410,15 @@ class App extends CI_Controller{
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
         
     }
+
+    function geoplugin()
+    {
+        $data['head_title'] = 'GeoPlugin';
+        $data['view_a'] = 'app/testing/geoplugin_v';
+
+        $data['location'] = unserialize(file_get_contents('http://www.geoplugin.net/php.gp?ip='.$_SERVER['REMOTE_ADDR']));
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
 }
