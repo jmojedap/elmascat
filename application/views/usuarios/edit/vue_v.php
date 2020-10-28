@@ -2,6 +2,7 @@
     var form_values = {
         rol_id: '0<?= $row->rol_id ?>',
         institution_name: '<?= $row->institution_name ?>',
+        display_name: '<?= $row->display_name ?>',
         nombre: '<?= $row->nombre ?>',
         apellidos: '<?= $row->apellidos ?>',
         no_documento: '<?= $row->no_documento ?>',
@@ -66,7 +67,18 @@
                 .catch(function (error) {
                      console.log(error);
                 });
-            }
+            },
+            set_display_name: function(){
+                this.form_values.display_name = this.form_values.nombre + ' ' + this.form_values.apellidos
+                if ( this.form_values.sexo > 2 )
+                {
+                    this.form_values.display_name = this.form_values.institution_name
+                }
+            },
+            set_display_name_auto: function(){
+                this.set_display_name()
+                //if ( this.form_values.display_name.length == 0 )
+            },
         }
     });
 </script>

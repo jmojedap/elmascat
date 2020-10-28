@@ -247,8 +247,8 @@ class Accounts extends CI_Controller {
         $arr_row = $this->input->post();
         $user_id = $this->session->userdata('user_id');
 
-        $this->load->model('User_model');
-        $data = $this->User_model->update($user_id, $arr_row);
+        $this->load->model('Usuario_model');
+        $data = $this->Usuario_model->update($user_id, $arr_row);
         
         $this->output
         ->set_content_type('application/json')
@@ -318,8 +318,8 @@ class Accounts extends CI_Controller {
     /** Perfil del usuario en sesión */
     function profile()
     {        
-        $this->load->model('User_model');
-        $data = $this->User_model->basic($this->session->userdata('user_id'));
+        $this->load->model('Usuario_model');
+        $data = $this->Usuario_model->basic($this->session->userdata('user_id'));
         
         //Variables específicas
         $data['nav_2'] = 'accounts/menu_v';
@@ -337,8 +337,8 @@ class Accounts extends CI_Controller {
         //Datos básicos
         $user_id = $this->session->userdata('user_id');
 
-        $this->load->model('User_model');
-        $data = $this->User_model->basic($user_id);
+        $this->load->model('Usuario_model');
+        $data = $this->Usuario_model->basic($user_id);
         
         $view_a = "accounts/edit/{$section}_v";
         if ( $section == 'crop' )
@@ -378,9 +378,9 @@ class Accounts extends CI_Controller {
         $data = array('status' => 0, 'message' => 'La imagen no fue asignada');
         if ( $data_upload['status'] )
         {
-            $this->load->model('User_model');
-            $this->User_model->remove_image($user_id);                              //Quitar image actual, si tiene una
-            $data = $this->User_model->set_image($user_id, $data_upload['row']->id);   //Asignar imagen nueva
+            $this->load->model('Usuario_model');
+            $this->Usuario_model->remove_image($user_id);                              //Quitar image actual, si tiene una
+            $data = $this->Usuario_model->set_image($user_id, $data_upload['row']->id);   //Asignar imagen nueva
         }
 
         $this->output
@@ -396,8 +396,8 @@ class Accounts extends CI_Controller {
     {
         $user_id = $this->session->userdata('user_id');
 
-        $this->load->model('User_model');
-        $data = $this->User_model->remove_image($user_id);
+        $this->load->model('Usuario_model');
+        $data = $this->Usuario_model->remove_image($user_id);
         
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }

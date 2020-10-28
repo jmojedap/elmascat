@@ -31,7 +31,7 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <?= anchor("usuarios/mi_perfil", '<i class="fa fa-user"></i> Mi perfil', 'class="btn btn-default btn-flat" title="Ver mi perfil"') ?>
+                                <?= anchor("accounts/edit/password", '<i class="fa fa-user"></i> Mi perfil', 'class="btn btn-default btn-flat" title="Ver mi perfil"') ?>
                             </div>
                             <div class="pull-right">
                                 <?= anchor("app/logout", '<i class="fa fa-sign-out"></i> Cerrar sesión', 'class="btn btn-default btn-flat" title="Cerrar sesión"') ?>

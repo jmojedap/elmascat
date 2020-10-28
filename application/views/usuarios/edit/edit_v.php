@@ -24,28 +24,45 @@
                     <div class="col-md-4">
                         <input
                             name="nombre" class="form-control" placeholder="Nombres"
-                            required
                             v-model="form_values.nombre"
+                            v-on:change="set_display_name_auto"
                             >
                     </div>
                     <div class="col-md-4">
                         <input
                             name="apellidos" class="form-control" placeholder="Apellidos"
-                            required
                             v-model="form_values.apellidos"
+                            v-on:change="set_display_name_auto"
                             >
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label for="institution_name" class="col-md-4 col-form-label text-right">Nombre empresa</label>
+                    <label for="institution_name" class="col-md-4 col-form-label text-right">Nombre Empresa/Institución</label>
                     <div class="col-md-8">
                         <input
                             name="institution_name" type="text" class="form-control"
-                            required
-                            title="Nombre empresa" placeholder="Nombre empresa o institución"
+                            title="Nombre empresa o institución"
                             v-model="form_values.institution_name"
+                            v-on:change="set_display_name_auto"
                         >
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="display_name" class="col-md-4 col-form-label text-right"><strong>Nombre (mostrar como)</strong></label>
+                    <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        <input
+                            name="display_name" type="text" class="form-control"
+                            required
+                            title="Nombre mostrar"
+                            v-model="form_values.display_name"
+                        >
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="button" title="Generar nombre automáticamente" v-on:click="set_display_name"><i class="fa fa-magic"></i></button>
+                        </div>
+                    </div>
                     </div>
                 </div>
                     
@@ -124,7 +141,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="city_zone" class="col-md-4 col-form-label text-right">Vereda / Corregimiento</label>
+                    <label for="city_zone" class="col-md-4 col-form-label text-right">Barrio / Vereda</label>
                     <div class="col-md-8">
                         <input
                             name="city_zone" type="text" class="form-control"

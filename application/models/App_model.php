@@ -285,7 +285,7 @@ class App_model extends CI_Model{
             $row = $this->Pcrn->registro('item', "id = {$item_id}");
         } else {
             //Se hace referencia al id_interno de la categoría > item.id_interno
-            $row = $this->Pcrn->registro('item', "id_interno = {$item_id} AND categoria_id = {$categoria_id}");
+            $row = $this->Pcrn->registro('item', "id_interno = '{$item_id}' AND categoria_id = {$categoria_id}");
         }
 
         //Se muestra un valor dependiendo del formato ($formato) seleccionado

@@ -93,7 +93,7 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="city_zone" class="col-md-4 col-form-label text-right">Vereda / Corregimiento</label>
+                    <label for="city_zone" class="col-md-4 col-form-label text-right">Barrio / Vereda</label>
                     <div class="col-md-8">
                         <input
                             name="city_zone" type="text" class="form-control"
