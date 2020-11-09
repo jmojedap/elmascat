@@ -79,7 +79,7 @@ class Books extends CI_Controller{
         $this->load->view('templates/reader/reader_v', $data);
     }
 
-    function rename_pages($book_code = '109507604357')
+    function rename_pages($book_code = '117667013245')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
@@ -89,7 +89,7 @@ class Books extends CI_Controller{
 
         foreach ( $pages as $file)
         {
-            $new_name = str_replace('Octubre','',$file);
+            $new_name = str_replace('Noviembre','',$file);
             $new_name = str_replace('.jpg','',$new_name);
             $new_name = substr('00' . $new_name,-3) . '_' . random_string('numeric', 6) . '.jpg';
             echo $file . ' > ' . $new_name;
@@ -99,7 +99,7 @@ class Books extends CI_Controller{
         }
     }
 
-    function create_read($book_code = '109507604357')
+    function create_read($book_code = '117667013245')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
@@ -126,7 +126,7 @@ class Books extends CI_Controller{
         }
     }
 
-    function create_drive($book_code = '109507604357')
+    function create_drive($book_code = '117667013245')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
@@ -153,7 +153,7 @@ class Books extends CI_Controller{
         }
     }
 
-    function create_mini($book_code = '109507604357')
+    function create_mini($book_code = '117667013245')
     {
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/read/";
