@@ -423,9 +423,10 @@ class Pedidos extends CI_Controller{
 
         //Opciones formulario
             $data['options_pais'] = $this->App_model->opciones_lugar("tipo_id = 2 AND activo = 1", 'nombre_lugar', 'País');
-            $options_ciudad_grande = $this->App_model->opciones_lugar_poblacion("tipo_id = 4 AND activo = 1 and poblacion > 400000", 'cr', 'Ciudad');
+            //$options_ciudad_grande = $this->App_model->opciones_lugar_poblacion("tipo_id = 4 AND activo = 1 and poblacion > 400000", 'cr', 'Ciudad');
             $options_ciudad_pre = $this->App_model->opciones_lugar("(tipo_id = 4 AND activo = 1) OR (id = 1)", 'cr');
-            $data['options_ciudad'] = array_merge($options_ciudad_grande, $options_ciudad_pre);
+            //$data['options_ciudad'] = array_merge($options_ciudad_grande, $options_ciudad_pre);
+            $data['options_ciudad'] = $options_ciudad_pre;
             $data['options_tipo_documento'] = $this->Item_model->opciones('categoria_id = 53 AND filtro LIKE "%-cliente-%"');
             $data['options_year'] = $this->Evento_model->options_year(1920,2005);
             $data['options_month'] = $this->Evento_model->options_month();

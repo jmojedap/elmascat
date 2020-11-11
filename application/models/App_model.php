@@ -782,10 +782,10 @@ class App_model extends CI_Model{
     {
         $src = URL_IMG . 'usuarios/'. $prefijo . 'usuario.png';
             
-        if ( $row_usuario->imagen_id > 0 )
+        /*if ( $row_usuario->imagen_id > 0 )
         {
             $src = URL_UPLOADS . $row_usuario->carpeta_imagen . $prefijo . $row_usuario->archivo_imagen;
-        }
+        }*/
         
         return $src;
     }
