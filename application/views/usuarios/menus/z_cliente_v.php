@@ -17,7 +17,7 @@
         $arr_menus['info'] = array(
             'icono' => '<i class="fa fa-user"></i>',
             'texto' => 'Información',
-            'link' => "usuarios/info/{$row->id}",
+            'link' => "usuarios/profile{$row->id}",
             'atributos' => 'title="Información general del usuario"'
         );
             

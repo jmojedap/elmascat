@@ -20,7 +20,7 @@
 <?php $this->load->view('assets/toastr') ?>
 
 <script>
-    const app_url = '<?= base_url() ?>';
+    const url_app = '<?= base_url() ?>';
 </script>
 
     

@@ -81,7 +81,7 @@
             <?php
                 //Variables
                     $nombre_elemento = $row_resultado->nombre . ' ' . $row_resultado->apellidos;
-                    $link_elemento = anchor("usuarios/info/$row_resultado->id", $nombre_elemento);
+                    $link_elemento = anchor("usuarios/profile$row_resultado->id", $nombre_elemento);
 
                 //Checkbox
                     $att_check['data-id'] = $row_resultado->id;

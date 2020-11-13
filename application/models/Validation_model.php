@@ -20,11 +20,16 @@ class Validation_model extends CI_Model{
      * lo excluye de la comparación cuando se realiza edición
      * 2019-10-29
      */
-    function email($user_id = null, $type = 'edition')
+    function email($user_id = null)
     {
-        $validation['email_unique'] = $this->Db_model->is_unique('usuario', 'email', $this->input->post('email'), $user_id);
+        //Valores por defecto
+        $validation['email_unique'] = TRUE;
 
-        $validation['email_valid'] = $validation['email_unique'];    //Se validan las dos condiciones
+        //Si tiene algún valor escrito
+        if ( strlen($this->input->post('email')) > 0 )
+        {
+            $validation['email_unique'] = $this->Db_model->is_unique('usuario', 'email', $this->input->post('email'), $user_id);
+        }
 
         return $validation;
     }
@@ -35,7 +40,7 @@ class Validation_model extends CI_Model{
      */
     function id_number($user_id = null)
     {
-        $validation['id_number_unique'] = $this->Db_model->is_unique('usuario', 'id_number', $this->input->post('id_number'), $user_id);
+        $validation['id_number_unique'] = $this->Db_model->is_unique('usuario', 'no_documento', $this->input->post('no_documento'), $user_id);
         return $validation;
     }
 }

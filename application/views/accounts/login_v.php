@@ -75,7 +75,7 @@
                    .then(response => {
                         if ( response.data.status == 1 )
                         {
-                           window.location = app_url + 'app/logged';
+                           window.location = url_app + 'app/logged';
                         } else {
                             this.messages = response.data.messages;
                             this.status = response.data.status;

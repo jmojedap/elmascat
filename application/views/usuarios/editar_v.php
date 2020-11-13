@@ -9,7 +9,7 @@
     });
 </script>
 
-<div class="sep2">
+<div class="container">
     <?= $output ?>
 </div>
 

@@ -50,7 +50,7 @@
         },
         methods: {
             get_list: function(){
-                axios.post(app_url + 'pedidos/extras_get/' + this.pedido_id, $('#search_form').serialize())
+                axios.post(url_app + 'pedidos/extras_get/' + this.pedido_id, $('#search_form').serialize())
                 .then(response => {
                     this.list = response.data.list;
                     this.max_page = response.data.max_page;
@@ -78,7 +78,7 @@
                 //document.getElementById("field-precio").focus();
             },
             send_form: function(){
-                axios.post(app_url + 'pedidos/extras_save/', $('#extra_form').serialize())
+                axios.post(url_app + 'pedidos/extras_save/', $('#extra_form').serialize())
                 .then(response => {
                     console.log(response.data);
                     
@@ -102,7 +102,7 @@
                 this.row_key = key;
             },
             delete_element: function() {
-                axios.get(app_url + 'pedidos/extras_delete/' + this.pedido_id + '/' + this.row_id)
+                axios.get(url_app + 'pedidos/extras_delete/' + this.pedido_id + '/' + this.row_id)
                 .then(response => {
                     console.log(response.data);
                     if ( response.data.status == 1 )

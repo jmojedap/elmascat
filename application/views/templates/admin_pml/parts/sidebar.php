@@ -54,7 +54,7 @@
                     this.elements[i].active = true;
                     $('.treeview-menu').slideUp();
                     if ( this.elements[i].anchor ) {
-                        window.location = app_url + this.elements[i].cf;
+                        window.location = url_app + this.elements[i].cf;
                     } else {
                         app_cf = this.elements[i].cf;
                         load_sections('nav_1');
@@ -71,7 +71,7 @@
                 this.elements[i].subelements[j].active = true;
 
                 if ( this.elements[i].subelements[j].anchor ) {
-                    window.location = app_url + this.elements[i].subelements[j].cf;
+                    window.location = url_app + this.elements[i].subelements[j].cf;
                 } else {
                     //Cargando secciones
                     app_cf = this.elements[i].subelements[j].cf;

@@ -285,7 +285,7 @@ class App_model extends CI_Model{
             $row = $this->Pcrn->registro('item', "id = {$item_id}");
         } else {
             //Se hace referencia al id_interno de la categoría > item.id_interno
-            $row = $this->Pcrn->registro('item', "id_interno = {$item_id} AND categoria_id = {$categoria_id}");
+            $row = $this->Pcrn->registro('item', "id_interno = '{$item_id}' AND categoria_id = {$categoria_id}");
         }
 
         //Se muestra un valor dependiendo del formato ($formato) seleccionado
@@ -310,12 +310,12 @@ class App_model extends CI_Model{
         if ( strlen($lugar_id) > 0 )
         {
             
-            $this->db->select("lugar.id, lugar.nombre_lugar, region, pais"); 
+            $this->db->select("lugar.id, lugar.nombre_lugar, region, pais, full_name"); 
             $this->db->where('lugar.id', $lugar_id);
             $row = $this->db->get('lugar')->row();
 
             if ( $formato == 1 ){
-                $nombre_lugar = $row->nombre_lugar;
+                $nombre_lugar = $row->full_name;
             } elseif ( $formato == 'CR' ) {
                 $nombre_lugar = $row->nombre_lugar . ', ' . $row->region;
             } elseif ( $formato == 'CRP' ) {
@@ -524,6 +524,7 @@ class App_model extends CI_Model{
     */
     function opciones_lugar($condicion, $campo_valor = 'full_name', $texto_vacio = NULL)
     {
+        
         $this->db->select("CONCAT('0', lugar.id) AS lugar_id, nombre_lugar, CONCAT((nombre_lugar), ' - ', (region)) AS cr, CONCAT((nombre_lugar), ' (', (region), ' - ', (pais),')') AS crp, full_name", FALSE); 
         $this->db->where($condicion);
         $this->db->order_by('lugar.nombre_lugar', 'ASC');

@@ -48,40 +48,6 @@ class Pedidos extends CI_Controller{
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
-    function explorar_ant()
-    {
-        //Cargando
-            $this->load->model('Busqueda_model');
-            $this->load->helper('text');
-        
-        //Grupos de consulta, construyendo array de búsqueda
-            $busqueda = $this->Busqueda_model->busqueda_array();
-            $busqueda_str = $this->Busqueda_model->busqueda_str();
-            $resultados_total = $this->Pedido_model->buscar($busqueda); //Para calcular el total de resultados
-            
-        //Generar resultados para mostrar
-            $data['per_page'] = 15; //Cantidad de registros por página
-            $data['offset'] = $this->input->get('per_page');
-            $resultados = $this->Pedido_model->buscar($busqueda, $data['per_page'], $data['offset']);
-        
-        //Variables para vista
-            $data['cant_resultados'] = $resultados_total->num_rows();
-            $data['busqueda'] = $busqueda;
-            $data['busqueda_str'] = $busqueda_str;
-            $data['resultados'] = $resultados;
-            $data['url_paginacion'] = base_url("pedidos/explorar/?{$busqueda_str}");
-            $data['elemento_p'] = 'pedidos';
-            $data['elemento_s'] = 'pedido';
-            $data['controlador'] = 'pedidos';
-        
-        //Solicitar vista
-            $data['titulo_pagina'] = 'Pedidos';
-            $data['subtitulo_pagina'] = $data['cant_resultados'];
-            $data['vista_a'] = 'pedidos/explorar/explorar_v';
-            $data['vista_menu'] = 'pedidos/explorar/menu_v';
-            $this->load->view(PTL_ADMIN, $data);
-    }
-    
     /**
      * AJAX
      * Eliminar un grupo de pedidos seleccionados

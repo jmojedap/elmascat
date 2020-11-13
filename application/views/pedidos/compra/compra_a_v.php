@@ -195,10 +195,10 @@
                 var params = new FormData();
                 params.append('ciudad_id', this.ciudad_id);
                 
-                axios.post(app_url + 'pedidos/guardar_lugar/', params)
+                axios.post(url_app + 'pedidos/guardar_lugar/', params)
                 .then(response => {
                     if ( response.data.status == 1 ) {
-                        window.location = app_url + 'pedidos/compra_a/' + this.cod_pedido;
+                        window.location = url_app + 'pedidos/compra_a/' + this.cod_pedido;
                     }
                 })
                 .catch(function (error) {
@@ -206,10 +206,10 @@
                 });
             },
             send_form: function(){
-                axios.post(app_url + 'pedidos/guardar_pedido/', $('#compra_a_form').serialize())
+                axios.post(url_app + 'pedidos/guardar_pedido/', $('#compra_a_form').serialize())
                 .then(response => {
                     if ( response.data.qty_affected >= 0) {
-                        window.location = app_url + 'pedidos/compra_b'
+                        window.location = url_app + 'pedidos/compra_b'
                     }
                 })
                 .catch(function (error) {

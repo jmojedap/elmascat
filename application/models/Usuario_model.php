@@ -6,339 +6,210 @@ class Usuario_model extends CI_Model{
     {
         $row = $this->Db_model->row_id('usuario', $user_id);
             
-        $data['nombre_completo'] = $row->nombre . " " . $row->apellidos;
-        $data['titulo_pagina'] = $row->nombre . " " . $row->apellidos;
-        $data['nav_2'] = 'usuarios/roles/cliente_v';
+        $data['head_title'] = $row->display_name;
+        $data['nav_2'] = 'usuarios/menus/cliente_v';
         $data['row'] = $row;            
         
         return $data;
     }
     
-    function buscar($busqueda, $per_page = NULL, $offset = NULL)
+// EXPLORE FUNCTIONS - usuarios/explore
+//-----------------------------------------------------------------------------
+    
+    /**
+     * Array con los datos para la vista de exploración
+     */
+    function explore_data($filters, $num_page)
     {
+        //Data inicial, de la tabla
+            $data = $this->get($filters, $num_page);
         
-        $filtro_rol = $this->filtro_rol($this->session->userdata('usuario_id'));
-
-        //Construir búsqueda
-        //Crear array con términos de búsqueda
-            if ( strlen($busqueda['q']) > 2 )
-            {
-                $concat_campos = $this->Busqueda_model->concat_campos(array('nombre', 'apellidos', 'username', 'no_documento', 'email'));
-                $palabras = $this->Busqueda_model->palabras($busqueda['q']);
-
-                foreach ($palabras as $palabra) {
-                    $this->db->like("CONCAT({$concat_campos})", $palabra);
-                }
-            }
-        
-        //Especificaciones de consulta
-            $this->db->where($filtro_rol); //Filtro según el rol de usuario que se tenga
-            $this->db->order_by('editado', 'DESC');
+        //Elemento de exploración
+            $data['controller'] = 'usuarios';                      //Nombre del controlador
+            $data['cf'] = 'usuarios/explore/';                      //Nombre del controlador
+            $data['views_folder'] = 'usuarios/explore/';           //Carpeta donde están las vistas de exploración
             
-        //Otros filtros
-            if ( $busqueda['rol'] != '' ) { $this->db->where('rol_id', $busqueda['rol']); }    //Rol de usuario
-            if ( $busqueda['sexo'] != '' ) { $this->db->where('sexo', $busqueda['sexo']); }    //Sexo
+        //Vistas
+            $data['head_title'] = 'Usuarios';
+            $data['head_subtitle'] = $data['search_num_rows'];
+            $data['view_a'] = $data['views_folder'] . 'explore_v';
+            $data['nav_2'] = $data['views_folder'] . 'menu_v';
+        
+        return $data;
+    }
+
+    /**
+     * Array con listado de usuarios, filtrados por búsqueda y num página, más datos adicionales sobre
+     * la búsqueda, filtros aplicados, total resultados, página máxima.
+     * 2020-08-01
+     */
+    function get($filters, $num_page, $per_page = 10)
+    {
+        //Referencia
+            $offset = ($num_page - 1) * $per_page;      //Número de la página de datos que se está consultado
+
+        //Búsqueda y Resultados
+            $elements = $this->search($filters, $per_page, $offset);    //Resultados para página
+        
+        //Cargar datos
+            $data['filters'] = $filters;
+            $data['list'] = $this->list($filters, $per_page, $offset);    //Resultados para página
+            $data['str_filters'] = $this->Search_model->str_filters();      //String con filtros en formato GET de URL
+            $data['search_num_rows'] = $this->search_num_rows($data['filters']);
+            $data['max_page'] = ceil($this->pml->if_zero($data['search_num_rows'],1) / $per_page);   //Cantidad de páginas
+
+        return $data;
+    }
+    
+    /**
+     * Query de usuarios, filtrados según búsqueda, limitados por página
+     * 2020-08-01
+     */
+    function search($filters, $per_page = NULL, $offset = NULL)
+    {
+        //Construir consulta
+            $this->db->select('usuario.id, username, display_name, address, institution_name, short_note, email, rol_id AS role, image_id, url_image, url_thumbnail, estado AS status, usuario.ciudad_id AS city_id, celular AS phone_number, telefono, sexo AS gender, fecha_nacimiento AS birth_date, no_documento AS id_number, tipo_documento_id AS id_number_type');
+            
+        //Orden
+            if ( $filters['o'] != '' )
+            {
+                $order_type = $this->pml->if_strlen($filters['ot'], 'ASC');
+                $this->db->order_by($filters['o'], $order_type);
+            } else {
+                $this->db->order_by('ultimo_login', 'DESC');
+            }
+            
+        //Filtros
+            $search_condition = $this->search_condition($filters);
+            if ( $search_condition ) { $this->db->where($search_condition);}
             
         //Obtener resultados
-        if ( is_null($per_page) ){
-            $query = $this->db->get('usuario'); //Resultados totales
-        } else {
             $query = $this->db->get('usuario', $per_page, $offset); //Resultados por página
-        }
         
         return $query;
+    }
+
+    /**
+     * String con condición WHERE SQL para filtrar users
+     * 2020-08-01
+     */
+    function search_condition($filters)
+    {
+        $condition = NULL;
+
+        $condition .= $this->role_filter() . ' AND ';
+
+        //q words condition
+        $words_condition = $this->Search_model->words_condition($filters['q'], array('display_name', 'email', 'no_documento', 'short_note'));
+        if ( $words_condition )
+        {
+            $condition .= $words_condition . ' AND ';
+        }
         
+        //Otros filtros
+        if ( $filters['role'] != '' ) { $condition .= "rol_id = {$filters['role']} AND "; }
+        if ( $filters['gender'] != '' ) { $condition .= "sexo = {$filters['gender']} AND "; }
+        
+        //Quitar cadena final de ' AND '
+        if ( strlen($condition) > 0 ) { $condition = substr($condition, 0, -5);}
+        
+        return $condition;
+    }
+
+    /**
+     * Array Listado elemento resultado de la búsqueda (filtros).
+     * 2020-06-19
+     */
+    function list($filters, $per_page = NULL, $offset = NULL)
+    {
+        $query = $this->search($filters, $per_page, $offset);
+        $list = array();
+
+        foreach ($query->result() as $row)
+        {
+            $row->city_name = $this->App_model->nombre_lugar($row->city_id);  //Cantidad de estudiantes*/
+            /*if ( $row->image_id == 0 )
+            {
+                $first_image = $this->first_image($row->id);
+                $row->url_image = $first_image['url'];
+                $row->url_thumbnail = $first_image['url_thumbnail'];
+            }*/
+            $list[] = $row;
+        }
+
+        return $list;
     }
     
     /**
      * Devuelve la cantidad de registros encontrados en la tabla con los filtros
      * establecidos en la búsqueda
-     * 
-     * @param type $busqueda
-     * @return type
      */
-    function cant_resultados($busqueda)
+    function search_num_rows($filters)
     {
-        $resultados = $this->buscar($busqueda); //Para calcular el total de resultados
-        return $resultados->num_rows();
+        $this->db->select('id');
+        $search_condition = $this->search_condition($filters);
+        if ( $search_condition ) { $this->db->where($search_condition);}
+        $query = $this->db->get('usuario'); //Para calcular el total de resultados
+
+        return $query->num_rows();
     }
     
     /**
-     * Devuelve segmento SQL
-     * 
-     * @param type $usuario_id
-     * @return type 
+     * Devuelve segmento SQL, para filtrar listado de usuarios según el rol del usuario en sesión
+     * 2020-08-01
      */
-    function filtro_rol()
+    function role_filter()
     {
+        $role = $this->session->userdata('role');
+        $condition = 'id = 0';  //Valor por defecto, ningún user, se obtendrían cero user.
         
-        $rol_id = $this->session->userdata('rol_id');
-        $condicion = 'id = 0';  //Valor por defecto, ningún usuario, se obtendrían cero usuarios.
-        
-        if ( $rol_id == 0 ) {
-            //Desarrollador, todos los usuarios
-            $condicion = 'id > 0';
-        } else  {
-            $condicion = 'id > 0';
+        if ( $role <= 6 ) 
+        {   //Desarrollador, todos los user
+            $condition = 'usuario.id > 0';
         }
         
-        
-        return $condicion;
-        
+        return $condition;
     }
     
     /**
-     * Array con los datos para la vista de exploración
+     * Array con options para ordenar el listado de user en la vista de
+     * exploración
      * 
-     * @return string
      */
-    function data_explorar()
+    function order_options()
     {
-        //Elemento de exploración
-            $data['elemento_p'] = 'usuarios';    //Nombre del elemento el plural
-            $data['elemento_s'] = 'usuario';      //Nombre del elemento en singular
-            $data['controlador'] = 'usuarios';   //Nombre del controlador
-            $data['funcion'] = 'explorar';      //Función de exploración
-            $data['cf'] = $data['controlador'] . '/' . $data['funcion'] . '/';      //Controlador función
-            $data['carpeta_vistas'] = 'usuarios/';   //Carpeta donde están las vistas de exploración
-            $data['titulo_pagina'] = 'Usuarios';
+        $order_options = array(
+            '' => '[ Ordenar por ]',
+            'id' => 'ID Usuario',
+            'last_name' => 'Apellidos',
+            'id_number' => 'No. documento',
+        );
         
-        //Paginación
-            $data['per_page'] = 20; //Cantidad de registros por página
-            $data['offset'] = $this->input->get('per_page');
-            
-        //Búsqueda y Resultados
-            $this->load->model('Busqueda_model');
-            $data['busqueda'] = $this->Busqueda_model->busqueda_array();
-            $data['busqueda_str'] = $this->Busqueda_model->busqueda_str();
-            $data['resultados'] = $this->Usuario_model->buscar($data['busqueda'], $data['per_page'], $data['offset']);    //Resultados para página
-            $data['cant_resultados'] = $this->Usuario_model->cant_resultados($data['busqueda']);
-            
-        //Otros
-            $data['url_paginacion'] = base_url("{$data['cf']}?{$data['busqueda_str']}");
-            $data['seleccionados_todos'] = '-'. $this->Pcrn->query_to_str($data['resultados'], 'id');   //Para selección masiva de todos los elementos de la página
+        return $order_options;
+    }
 
-        //Visitas
-            $data['subtitulo_pagina'] = $data['cant_resultados'];
-            $data['vista_a'] = $data['carpeta_vistas'] . 'explorar/explorar_v';
-            $data['vista_menu'] = $data['carpeta_vistas'] . 'explorar/menu_v';
-        
-        return $data;
-    }
-    
-    function editable()
-    {
-        return TRUE;
-    }
-    
-    /** 
-     * Devuelve render de formulario grocery crud para la edición
-     * de datos de usuario
+    /**
+     * Opciones de usuario en campos de autollenado, como agregar usuarios a una conversación
+     * 2019-11-13
      */
-    function crud_basico()
+    function autocomplete($filters, $limit = 50)
     {
-        //Grocery crud
-        $this->load->library('grocery_CRUD');
+        //Construir condición de búsqueda
+            $search_condition = $this->search_condition($filters);
         
-        $crud = new grocery_CRUD();
-        $crud->set_table('usuario');
-        $crud->set_subject('usuario');
-        $crud->unset_export();
-        $crud->unset_print();
-        $crud->unset_back_to_list();
-        $crud->unset_delete();
-        $crud->unset_add();
-        $crud->columns('nombre');
-
-        //Títulos de los campos
-            $crud->display_as('nombre', 'Nombre');
-            $crud->display_as('email', 'Correo electrónico');
-            //$crud->display_as('rol_id', 'Perfil');
-            $crud->display_as('no_documento', 'CC o NIT');
-            $crud->display_as('tipo_documento_id', 'Tipo documento');
-            $crud->display_as('dv', 'DV (Dígito verificación)');
-            $crud->display_as('telefono', 'Teléfono');
-            $crud->display_as('address', 'Dirección');
-            $crud->display_as('url', 'Página Web');
-            $crud->display_as('ciudad_id', 'Ciudad Residencia');
+        //Especificaciones de consulta
+            $this->db->select('id, CONCAT((display_name), " (",(username), ")") AS value');
+            if ( $search_condition ) { $this->db->where($search_condition);}
+            $this->db->order_by('display_name', 'ASC');
+            $query = $this->db->get('user', $limit); //Resultados por página
         
-        //Relaciones
-            $crud->set_relation('ciudad_id', 'lugar', '{nombre_lugar} - {region}', 'tipo_id = 4');
-
-        //Formulario Edit
-            $crud->edit_fields(
-                    'nombre',
-                    'apellidos',
-                    'tipo_documento_id',
-                    'no_documento',
-                    'dv',
-                    'email',
-                    'sexo',
-                    'fecha_nacimiento',
-                    'ciudad_id',
-                    'address',
-                    'celular',
-                    'url',
-                    'creado'
-                );
-
-        //Formulario Add
-            $crud->add_fields(
-                    'nombre',
-                    'apellidos',
-                    'tipo_documento_id',
-                    'no_documento',
-                    'dv',
-                    'username',
-                    'email',
-                    'password',
-                    'sexo',
-                    'fecha_nacimiento',
-                    'ciudad_id',
-                    'address',
-                    'celular',
-                    'url',
-                    'creado'
-                );
-            
-        //Opciones rol
-            $opciones_rol = $this->Item_model->arr_interno("categoria_id = 58 AND id_interno >= {$this->session->userdata('rol_id')}");
-            $crud->field_type('rol_id', 'dropdown', $opciones_rol);
-            
-        //Sexo
-            $opciones_sexo = $this->Item_model->opciones("categoria_id = 59 AND item_grupo = 1");
-            $crud->field_type('sexo', 'dropdown', $opciones_sexo);
-            
-        //Tipo documento
-            $opciones_tp_documento = $this->Item_model->opciones("categoria_id = 53");
-            $crud->field_type('tipo_documento_id', 'dropdown', $opciones_tp_documento);
-            
-        //Valores por defecto
-            $crud->field_type('creado', 'hidden', date('Y-m-d H:i:s'));
-            
-        //Procesos
-            $crud->callback_after_insert(array($this, 'gc_after_add'));
-
-        //Reglas de validación
-            $crud->required_fields('nombre', 'apellidos', 'username', 'password');
-            $crud->unique_fields('email', 'no_documento');
-            $crud->set_rules('celular', 'Celular', 'integer|greater_than[3000000000]|less_than[3300000000]');
-            $crud->set_rules('email', 'Correo electrónico', 'valid_email');
-        
-        $output = $crud->render();
-        
-        return $output;
+        return $query;
     }
     
-    /** 
-     * Devuelve render de formulario grocery crud para la edición
-     * de datos de usuario
-     */
-    function crud_admin()
-    {
-        //Grocery crud
-        $this->load->library('grocery_CRUD');
-        
-        $crud = new grocery_CRUD();
-        $crud->set_table('usuario');
-        $crud->set_subject('usuario');
-        $crud->unset_export();
-        $crud->unset_print();
-        $crud->unset_back_to_list();
-        $crud->unset_delete();
-        $crud->unset_add();
-        $crud->columns('nombre');
-
-        //Títulos de los campos
-            $crud->display_as('nombre', 'Nombre');
-            $crud->display_as('email', 'Correo electrónico');
-            $crud->display_as('rol_id', 'Rol');
-            $crud->display_as('no_documento', 'CC o NIT');
-            $crud->display_as('tipo_documento_id', 'Tipo documento');
-            $crud->display_as('dv', 'DV (Dígito verificación)');
-            $crud->display_as('address', 'Dirección');
-            $crud->display_as('telefono', 'Teléfono');
-            $crud->display_as('url', 'Página Web');
-            $crud->display_as('ciudad_id', 'Ciudad Residencia');
-        
-        //Relaciones
-            $crud->set_relation('ciudad_id', 'lugar', '{nombre_lugar} - {region}', 'tipo_id = 4');
-
-        //Formulario Edit
-            $crud->edit_fields(
-                    'nombre',
-                    'apellidos',
-                    'rol_id',
-                    'tipo_documento_id',
-                    'no_documento',
-                    'dv',
-                    'email',
-                    'sexo',
-                    'fecha_nacimiento',
-                    'ciudad_id',
-                    'address',
-                    'celular',
-                    'url'
-                );
-
-        //Formulario Add
-            $crud->add_fields(
-                    'nombre',
-                    'apellidos',
-                    'rol_id',
-                    'tipo_documento_id',
-                    'no_documento',
-                    'dv',
-                    'username',
-                    'email',
-                    'password',
-                    'sexo',
-                    'fecha_nacimiento',
-                    'ciudad_id',
-                    'address',
-                    'celular',
-                    'url'
-                );
-            
-        //Array opciones
-            $opciones_rol = $this->Item_model->arr_interno("categoria_id = 58 AND id_interno >= {$this->session->userdata('rol_id')}");
-            $crud->field_type('rol_id', 'dropdown', $opciones_rol);
-            
-        //Sexo
-            $opciones_sexo = $this->Item_model->opciones("categoria_id = 59 AND item_grupo = 1");
-            $crud->field_type('sexo', 'dropdown', $opciones_sexo);
-            
-        //Tipo documento
-            $opciones_tp_documento = $this->Item_model->opciones("categoria_id = 53");
-            $crud->field_type('tipo_documento_id', 'dropdown', $opciones_tp_documento);
-            
-        //Valores por defecto
-            $crud->field_type('creado', 'hidden', date('Y-m-d H:i:s'));
-            
-        //Procesos
-            $crud->callback_after_insert(array($this, 'gc_after_add'));
-
-        //Reglas de validación
-            $crud->required_fields('nombre', 'apellidos', 'username', 'password');
-            $crud->unique_fields('email');
-            $crud->set_rules('celular', 'Celular', 'integer|greater_than[3000000000]|less_than[3300000000]');
-            $crud->set_rules('email', 'Correo electrónico', 'valid_email');
-        
-        $output = $crud->render();
-        
-        return $output;
-    }
     
-    function gc_after_add($post_array,$primary_key)
-    {
-        $registro['password'] = $this->encriptar_pw($post_array['password']);
+// FIN FUNCIONES EXPLORACIÓN
+//-----------------------------------------------------------------------------
 
-        $this->db->where('id', $primary_key);
-        $this->db->update('usuario', $registro);
-
-        return true;
-    }
-    
     function verificar_username($username)
     {
         
@@ -368,43 +239,54 @@ class Usuario_model extends CI_Model{
         return $this->db->insert_id();
     }
     
-    function guardar($registro)
+    /**
+     * Actualizar registro tabla usuario
+     * 2020-09-28
+     */
+    function update($user_id, $arr_row)
     {
-        $registro['nombre'] = $this->input->post('nombre');
-        $registro['apellidos'] = $this->input->post('apellidos');
-        $registro['email'] = $this->input->post('email');
-        $registro['celular'] = $this->input->post('celular');
-        $registro['username'] = $this->input->post('email');
-        $registro['creado'] = date('Y-m-d H:i:s');
-        $registro['editado'] = date('Y-m-d H:i:s');
+        $arr_row['display_name'] = $arr_row['nombre'] . ' ' . $arr_row['apellidos'];
+        if ( $arr_row['sexo'] == 90 ) {
+            $arr_row['display_name'] = $arr_row['institution_name'];
+        }
+
+        $arr_row['updater_id'] = $this->session->userdata('user_id');
+        $arr_row['editado'] = date('Y-m-d H:i:s');
+
+        $data['saved_id'] = $this->Db_model->save('usuario', "id = {$user_id}", $arr_row);
+
+        $data['status'] = 0;
+        if ( $data['saved_id'] > 0 ) $data['status'] = 1;
         
-        $usuario_id = $this->Pcrn->insertar_si('usuario', "email = '{$registro['email']}'", $registro);
-        
-        return $usuario_id;
+        return $data;
     }
     
     /**
-     * Después de validar el formulario de registro de usuario, se lo guarda
-     * en la tabla.
+     * Después de validar el formulario de registro de usuario se guarda en la tabla usuario
+     * 2020-09-26
      * 
-     * @param type $registro
-     * @return type
      */
-    function insertar($registro)
+    function insert($arr_row)
     {
         //Encriptar pw
-            $registro['password'] = $this->encriptar_pw($registro['password']);
+            $arr_row['password'] = $this->encriptar_pw($arr_row['password']);
         
         //Datos complementarios
-            $registro['editado'] = date('Y-m-d h:i:s');
-            $registro['creado'] = date('Y-m-d h:i:s');
+            if ( is_null($this->input->post('username')) ) $arr_row['username'] = $arr_row['email'];
+            $arr_row['display_name'] = $arr_row['nombre'] . ' ' . $arr_row['apellidos'];
+            $arr_row['editado'] = date('Y-m-d h:i:s');
+            $arr_row['creado'] = date('Y-m-d h:i:s');
+            $arr_row['updater_id'] = $this->session->userdata('user_id');
+            $arr_row['creator_id'] = $this->session->userdata('user_id');
         
-        $this->db->insert('usuario', $registro);
+        $this->db->insert('usuario', $arr_row);
         
-        $resultado['nuevo_id'] = $this->db->insert_id();
-        $resultado['ejecutado'] = 1;
+        //Rssultado
+        $data['status'] = 0;
+        $data['saved_id'] = $this->db->insert_id();
+        if ( $data['saved_id'] > 0 ) $data['status'] = 1;
         
-        return $resultado;
+        return $data;
     }
     
     /**
@@ -686,21 +568,28 @@ class Usuario_model extends CI_Model{
 //OTRAS
 //---------------------------------------------------------------------------------------------------
     
-    function eliminable()
+    function deleteable($usuario_id)
     {
-        $eliminable = 0;
-        if ( $this->session->userdata('usuario_id') <= 1 ) {
-            $eliminable = 1;
-        }
+        $user = $this->Db_model->row_id('usuario', $usuario_id);
 
-        return $eliminable;
+        $deleteable = 0;
+        if ( $this->session->userdata('usuario_id') <= 1 ) $deleteable = 1;
+        if ( $user->rol_id <= 1 ) $deleteable = 0;  //No se pueden eliminar los administradores
+
+        return $deleteable;
     }
     
-    function eliminar($usuario_id)
+    /**
+     * Eliminar usuario
+     * 2020-09-26
+     */
+    function delete($usuario_id)
     {
-        if ( $this->eliminable($usuario_id) ) {
+        $qty_deleted = 0;
+
+        if ( $this->deleteable($usuario_id) )
+        {
             //Tablas relacionadas
-                
                 //meta
                 $this->db->where('tabla_id', 1000); //Tabla usuario
                 $this->db->where('elemento_id', $usuario_id);
@@ -709,7 +598,11 @@ class Usuario_model extends CI_Model{
             //Tabla principal
                 $this->db->where('id', $usuario_id);
                 $this->db->delete('usuario');
+
+            $qty_deleted = $this->db->affected_rows();
         }
+
+        return $qty_deleted;
     }
     
     /* Esta función genera un string con el username para un registro en la tabla usuario

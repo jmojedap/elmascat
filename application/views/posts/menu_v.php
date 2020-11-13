@@ -18,32 +18,32 @@
     var element_id = '<?= $row->id ?>';
     
     sections.explore = {
-        'icon': 'fa fa-arrow-left',
-        'text': 'Explorar',
-        'class': '<?= $cl_nav_2['posts_explore'] ?>',
-        'cf': 'posts/explore/',
+        icon: 'fa fa-arrow-left',
+        text: 'Explorar',
+        class: '<?= $cl_nav_2['posts_explore'] ?>',
+        cf: 'posts/explore/',
         'anchor': true
     };
 
     sections.info = {
-        'icon': 'fa fa-info-circle',
-        'text': 'Información',
-        'class': '<?= $cl_nav_2['posts_info'] ?>',
-        'cf': 'posts/info/' + element_id
+        icon: 'fa fa-info-circle',
+        text: 'Información',
+        class: '<?= $cl_nav_2['posts_info'] ?>',
+        cf: 'posts/info/' + element_id
     };
 
     sections.edit = {
-        'icon': 'fa fa-pencil-alt',
-        'text': 'Editar',
-        'class': '<?= $cl_nav_2['posts_edit'] ?>',
-        'cf': 'posts/edit/' + element_id
+        icon: 'fa fa-pencil-alt',
+        text: 'Editar',
+        class: '<?= $cl_nav_2['posts_edit'] ?>',
+        cf: 'posts/edit/' + element_id
     };
     
     sections.image = {
-        'icon': 'fa fa-image',
-        'text': 'Imagen',
-        'class': '<?= $cl_nav_2['posts_image'] ?>',
-        'cf': 'posts/image/' + element_id
+        icon: 'fa fa-image',
+        text: 'Imagen',
+        class: '<?= $cl_nav_2['posts_image'] ?>',
+        cf: 'posts/image/' + element_id
     };
     
     //Secciones para cada rol

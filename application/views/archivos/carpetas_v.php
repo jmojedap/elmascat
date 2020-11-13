@@ -22,7 +22,7 @@
     function unlink_no_usados(){
         $.ajax({        
             type: 'POST',
-            url: app_url + 'archivos/unlink_no_usados/' + year + '/' + month,
+            url: url_app + 'archivos/unlink_no_usados/' + year + '/' + month,
             success: function(response){
                 toastr['info'](response.message)
             }
@@ -32,7 +32,7 @@
     function unlink_thumbnails(){
         $.ajax({        
             type: 'POST',
-            url: app_url + 'archivos/unlink_thumbnails/' + year + '/' + month,
+            url: url_app + 'archivos/unlink_thumbnails/' + year + '/' + month,
             success: function(response){
                 toastr['info'](response.message)
             }
@@ -42,7 +42,7 @@
     function mod_original(){
         $.ajax({        
             type: 'POST',
-            url: app_url + 'archivos/mod_original/' + year + '/' + month,
+            url: url_app + 'archivos/mod_original/' + year + '/' + month,
             success: function(response){
                 toastr['info'](response.message)
             }

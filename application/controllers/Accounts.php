@@ -85,7 +85,7 @@ class Accounts extends CI_Controller {
     //ML Master Login, 
     function ml($user_id)
     {
-        $username = $this->Db_model->field_id('user', $user_id, 'username');
+        $username = $this->Db_model->field_id('usuario', $user_id, 'username');
         if ( $this->session->userdata('role') <= 1 ) { $this->Account_model->create_session($username, FALSE); }
         
         redirect('app/logged');
@@ -125,6 +125,7 @@ class Accounts extends CI_Controller {
             //Construir registro del nuevo user
                 $arr_row['nombre'] = $this->input->post('nombre');
                 $arr_row['apellidos'] = $this->input->post('apellidos');
+                $arr_row['display_name'] = $this->input->post('nombre') . ' ' . $this->input->post('apellidos');
                 $arr_row['email'] = $this->input->post('email');
                 $arr_row['fecha_nacimiento'] = $this->input->post('fecha_nacimiento');
                 $arr_row['sexo'] = $this->input->post('sexo');
@@ -174,7 +175,7 @@ class Accounts extends CI_Controller {
 
     function activation($activation_key, $activation_type = 'activation')
     {
-        $row_user = $this->Db_model->row('user', "activation_key = '{$activation_key}'");        
+        $row_user = $this->Db_model->row('usuario', "activation_key = '{$activation_key}'");        
         
         //Variables
             $data['activation_key'] = $activation_key;
@@ -222,18 +223,30 @@ class Accounts extends CI_Controller {
     /**
      * AJAX JSON
      * Se validan los datos del usuario en sesión, los datos deben cumplir varios criterios
-     * 
-     * @param type $user_id
+     *
      */
-    function validate($type = 'general')
+    function validate()
     {
+        $this->load->model('Validation_model');
         $user_id = $this->session->userdata('user_id');
 
-        $this->load->model('Account_model');
-        $result = $this->Account_model->validate($user_id, $type);
+        $data = array('status' => 1);   //Valor inicial
         
-        //Enviar result
-        $this->output->set_content_type('application/json')->set_output(json_encode($result));
+        $validation_email = $this->Validation_model->email($user_id);
+        $validation_id_number = $this->Validation_model->id_number($user_id);
+        
+        $validation = array_merge($validation_email, $validation_id_number);
+
+        //Comprobar que cada elemento sea válido
+        foreach ( $validation as $value )
+        {
+            if ( $value == FALSE ) { $data = array('status' => 0); }
+        }
+
+        $data['validation'] = $validation;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
     /**
@@ -246,8 +259,8 @@ class Accounts extends CI_Controller {
         $arr_row = $this->input->post();
         $user_id = $this->session->userdata('user_id');
 
-        $this->load->model('User_model');
-        $data = $this->User_model->update($user_id, $arr_row);
+        $this->load->model('Usuario_model');
+        $data = $this->Usuario_model->update($user_id, $arr_row);
         
         $this->output
         ->set_content_type('application/json')
@@ -261,32 +274,25 @@ class Accounts extends CI_Controller {
     function change_password()
     {
         $conditions = 0;
-        $row_user = $this->Db_model->row_id('user', $this->session->userdata('user_id'));
+        $row_user = $this->Db_model->row_id('usuario', $this->session->userdata('user_id'));
         
         //Valores iniciales para el resultado del proceso
-            $data = array('status' => 0, 'message' => 'La contraseña no fue modificada. ');
+            $data = array('status' => 0, 'error' => '');
         
         //Verificar contraseña actual
             $validar_pw = $this->Account_model->validate_password($row_user->username, $this->input->post('current_password'));
-            if ( $validar_pw['status'] ) {
-                $conditions++;
-            } else {
-                $data['message'] = 'La contraseña actual es incorrecta. ';
-            }
+            if ( $validar_pw['status'] == 0 ) $data['error'] = 'La contraseña actual es incorrecta. ';
         
         //Verificar que contraseña nueva coincida con la confirmación
-            if ( $this->input->post('password') == $this->input->post('passconf') ) {
-                $conditions++;
-            } else {
-                $data['message'] .= 'La contraseña de confirmación no coincide.';
+            if ( $this->input->post('password') != $this->input->post('passconf') ) {
+                $data['error'] .= 'La contraseña de confirmación no coincide. ';
             }
         
-        //Verificar condiciones necesarias
-            if ( $conditions == 2 )
+        //Verificar que no haya errores
+            if ( $data['error'] == '' )
             {
                 $this->Account_model->change_password($row_user->id, $this->input->post('password'));
                 $data['status'] = 1;
-                $data['message'] = 'La contraseña se cambió exitosamente.';
             }
         
         $this->output->set_content_type('application/json')->set_output(json_encode($data));   
@@ -317,8 +323,8 @@ class Accounts extends CI_Controller {
     /** Perfil del usuario en sesión */
     function profile()
     {        
-        $this->load->model('User_model');
-        $data = $this->User_model->basic($this->session->userdata('user_id'));
+        $this->load->model('Usuario_model');
+        $data = $this->Usuario_model->basic($this->session->userdata('user_id'));
         
         //Variables específicas
         $data['nav_2'] = 'accounts/menu_v';
@@ -336,8 +342,8 @@ class Accounts extends CI_Controller {
         //Datos básicos
         $user_id = $this->session->userdata('user_id');
 
-        $this->load->model('User_model');
-        $data = $this->User_model->basic($user_id);
+        $this->load->model('Usuario_model');
+        $data = $this->Usuario_model->basic($user_id);
         
         $view_a = "accounts/edit/{$section}_v";
         if ( $section == 'crop' )
@@ -349,7 +355,7 @@ class Accounts extends CI_Controller {
         }
         
         //Array data espefícicas
-            //$data['valores_form'] = $this->Pcrn->valores_form($data['row'], 'user');
+            //$data['valores_form'] = $this->Pcrn->valores_form($data['row'], 'usuario');
             $data['nav_2'] = 'accounts/menu_v';
             $data['nav_3'] = 'accounts/edit/menu_v';
             $data['view_a'] = $view_a;
@@ -377,9 +383,9 @@ class Accounts extends CI_Controller {
         $data = array('status' => 0, 'message' => 'La imagen no fue asignada');
         if ( $data_upload['status'] )
         {
-            $this->load->model('User_model');
-            $this->User_model->remove_image($user_id);                              //Quitar image actual, si tiene una
-            $data = $this->User_model->set_image($user_id, $data_upload['row']->id);   //Asignar imagen nueva
+            $this->load->model('Usuario_model');
+            $this->Usuario_model->remove_image($user_id);                              //Quitar image actual, si tiene una
+            $data = $this->Usuario_model->set_image($user_id, $data_upload['row']->id);   //Asignar imagen nueva
         }
 
         $this->output
@@ -395,8 +401,8 @@ class Accounts extends CI_Controller {
     {
         $user_id = $this->session->userdata('user_id');
 
-        $this->load->model('User_model');
-        $data = $this->User_model->remove_image($user_id);
+        $this->load->model('Usuario_model');
+        $data = $this->Usuario_model->remove_image($user_id);
         
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
@@ -429,7 +435,7 @@ class Accounts extends CI_Controller {
             $g_userinfo = $this->Account_model->g_userinfo($g_client);
         
         //Check if email already exists in the BD
-            $row_user = $this->Db_model->row('user', "email = '{$g_userinfo['email']}'");
+            $row_user = $this->Db_model->row('usuario', "email = '{$g_userinfo['email']}'");
 
         //Create session or insert new user
             if ( ! is_null($row_user) )

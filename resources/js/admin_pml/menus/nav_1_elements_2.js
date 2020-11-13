@@ -24,7 +24,7 @@ var nav_1_elements = [
         cf: 'usuarios/explorar',
         anchor: true,
         subelements: [],
-        sections: ['usuarios/explore', 'usuarios/profile', 'usuarios/import', 'usuarios/add', 'usuarios/notes']
+        sections: ['usuarios/explore', 'usuarios/profile', 'usuarios/import', 'usuarios/add', 'usuarios/notes', 'usuarios/pedidos', 'usuarios/books', 'usuarios/edit']
     },
     {
         text: 'Datos',

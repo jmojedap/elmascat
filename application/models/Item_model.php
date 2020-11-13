@@ -406,6 +406,13 @@ class Item_model extends CI_Model{
                 $arr_config['order_by'] = 'id_interno';
                 $arr_config['str'] = FALSE;
                 break;
+            case 'id_interno_num_abreviatura':
+                //id_interno, ordenado por id_interno, numérico
+                $arr_config['campo_indice'] = 'id_interno';
+                $arr_config['order_by'] = 'id_interno';
+                $arr_config['str'] = FALSE;
+                $arr_config['campo_valor'] = 'abreviatura';
+                break;
         }
         
         return $arr_config;

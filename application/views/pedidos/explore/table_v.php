@@ -35,7 +35,7 @@
                     
                 </td>
                 <td>
-                    <a v-bind:href="`<?= base_url("usuarios/info/") ?>/` + element.usuario_id">
+                    <a v-bind:href="`<?= base_url("usuarios/profile") ?>/` + element.usuario_id">
                         {{ element.nombre }} {{ element.apellidos }}
                     </a>
                     <br>

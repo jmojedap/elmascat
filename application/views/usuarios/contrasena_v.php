@@ -37,8 +37,8 @@
 
 ?>
 
-<div class="panel panel-default center_box_450">
-    <div class="panel-body">
+<div class="card card-default center_box_450">
+    <div class="card-body">
         <div class="row">   
             <div class="col-md-12">
                 <?= form_open('usuarios/cambiar_contrasena'); ?>
