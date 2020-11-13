@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="nombre" class="col-md-4 col-form-label text-right">Nombres y Apellidos</label>
+                    <label for="nombre" class="col-md-4 col-form-label text-right">Nombres y Apellidos *</label>
                     <div class="col-md-4">
                         <input
                             name="nombre" class="form-control" placeholder="Nombres"
@@ -38,7 +38,7 @@
                 </div>
                     
                 <div class="form-group row" id="form-group_no_documento">
-                    <label for="no_documento" class="col-md-4 col-form-label text-right">No. Documento</label>
+                    <label for="no_documento" class="col-md-4 col-form-label text-right">No. Documento *</label>
                     <div class="col-md-4">
                         <input
                             name="no_documento" class="form-control"

@@ -33,8 +33,9 @@
     //Secciones para cada rol
     sections_role.dvlp = ['basic', 'password'];
     sections_role.admn = ['basic', 'password'];
-    sections_role.prof = ['basic', 'password'];
-    sections_role.hown = ['basic', 'password'];
+    sections_role.edtr = ['basic', 'password'];
+    sections_role.vndd = ['basic', 'password'];
+    sections_role.clbd = ['basic', 'password'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
     for ( key_section in sections_role[app_r]) 

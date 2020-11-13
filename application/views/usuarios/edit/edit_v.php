@@ -52,7 +52,7 @@
                 <div class="form-group row">
                     <label for="display_name" class="col-md-4 col-form-label text-right"><strong>Nombre (mostrar como)</strong></label>
                     <div class="col-md-8">
-                    <div class="input-group mb-3">
+                    <div class="input-group">
                         <input
                             name="display_name" type="text" class="form-control"
                             required
@@ -125,8 +125,7 @@
                     <div class="col-md-8">
                         <input
                             name="address" type="text" class="form-control"
-                            required
-                            title="Dirección" placeholder="Dirección"
+                            title="Dirección"
                             v-model="form_values.address"
                         >
                     </div>
@@ -177,6 +176,16 @@
                     <label for="payment_channel" class="col-md-4 col-form-label text-right">Medio de pago</label>
                     <div class="col-md-8">
                         <?= form_dropdown('payment_channel', $options_payment_channel, '', 'class="form-control" v-model="form_values.payment_channel"') ?>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="notas" class="col-md-4 col-form-label text-right">Notas internas</label>
+                    <div class="col-md-8">
+                        <textarea
+                            name="notas" class="form-control" rows="3"
+                            title="Notas sobre el usuario" placeholder="Notas sobre el usuario"
+                            v-model="form_values.notas"
+                        ></textarea>
                     </div>
                 </div>
                 <div class="form-group row">

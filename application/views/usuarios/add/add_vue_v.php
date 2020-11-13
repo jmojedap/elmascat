@@ -1,5 +1,5 @@
 <script>
-    var random = '16073' + Math.floor(Math.random() * 100000);
+    /*var random = '16073' + Math.floor(Math.random() * 100000);
     var form_values = {
         nombre: 'Henry',
         apellidos: 'Jones',
@@ -12,19 +12,19 @@
         //ciudad_id: '',
         fecha_nacimiento: '1982-12-31',
         sexo: '01'
-    };
+    };*/
     
-    /*var form_values = {
+    var form_values = {
         nombre: '',
         apellidos: '',
         no_documento: '',
         tipo_documento_id: '01',
         email: '',
-        password: 'dc' + Math.floor(Math.random() * 100000),
+        password: 'dc' + Math.floor(Math.random() * 1000000),
         ciudad_id: '0909',
         fecha_nacimiento: '',
         sexo: '01'
-    };*/
+    };
             
     new Vue({
         el: '#add_user',

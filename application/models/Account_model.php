@@ -182,12 +182,12 @@ class Account_model extends CI_Model{
      * Valida datos de un user nuevo o existente, verificando validez respecto
      * a users ya existentes en la base de datos.
      */
-    function validate($user_id = NULL, $type = 'edition')
+    function validate($user_id = NULL)
     {
         $data = array('status' => 1);   //Valor inicial
 
         $this->load->model('Validation_model');
-        $val_email = $this->Validation_model->email($user_id, $type);
+        $val_email = $this->Validation_model->email($user_id);
         
         $validation = array_merge($val_email);
 
@@ -612,7 +612,7 @@ class Account_model extends CI_Model{
 
     function check_email()
     {
-        $data = array('status' => 0, 'user' => array());
+        $data = array('status' => 0, 'usuario' => array());
 
         $row = $this->Db_model->row('usuario', "email = '{$this->input->post('email')}'");
 

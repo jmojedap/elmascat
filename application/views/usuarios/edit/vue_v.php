@@ -16,7 +16,8 @@
         celular: '<?= $row->celular ?>',
         telefono: '<?= $row->telefono ?>',
         shipping_system: '0<?= $row->shipping_system ?>',
-        payment_channel: '0<?= $row->payment_channel ?>'
+        payment_channel: '0<?= $row->payment_channel ?>',
+        notas: '<?= $row->notas ?>'
     };
             
     new Vue({

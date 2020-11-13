@@ -163,7 +163,7 @@ class Usuario_model extends CI_Model{
         $role = $this->session->userdata('role');
         $condition = 'id = 0';  //Valor por defecto, ningún user, se obtendrían cero user.
         
-        if ( $role <= 2 ) 
+        if ( $role <= 6 ) 
         {   //Desarrollador, todos los user
             $condition = 'usuario.id > 0';
         }
@@ -568,10 +568,14 @@ class Usuario_model extends CI_Model{
 //OTRAS
 //---------------------------------------------------------------------------------------------------
     
-    function deleteable()
+    function deleteable($usuario_id)
     {
+        $user = $this->Db_model->row_id('usuario', $usuario_id);
+
         $deleteable = 0;
         if ( $this->session->userdata('usuario_id') <= 1 ) $deleteable = 1;
+        if ( $user->rol_id <= 1 ) $deleteable = 0;  //No se pueden eliminar los administradores
+
         return $deleteable;
     }
     

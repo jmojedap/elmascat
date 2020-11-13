@@ -45,7 +45,7 @@ class Usuarios extends CI_Controller{
     }
 
     /**
-     * Listado de Pedidos, filtrados por búsqueda, JSON
+     * Listado de Usuarios, filtrados por búsqueda, JSON
      */
     function get($num_page = 1)
     {
@@ -129,8 +129,10 @@ class Usuarios extends CI_Controller{
         $this->load->view(TPL_ADMIN, $data);
     }
 
-
-
+    /**
+     * Vista datos generales del usuario
+     * 2020-11-11
+     */
     function profile($usuario_id)
     {
         //Datos básicos
@@ -160,7 +162,6 @@ class Usuarios extends CI_Controller{
         //Array data espefícicas
             $data['head_title'] = 'Crear usuario';
             $data['nav_2'] = 'usuarios/explore/menu_v';
-            $data['nav_3'] = 'usuarios/add/menu_v';
             $data['view_a'] = 'usuarios/add/add_v';
         
         $this->load->view(TPL_ADMIN, $data);
