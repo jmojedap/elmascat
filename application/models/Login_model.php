@@ -203,7 +203,7 @@ class Login_model extends CI_Model{
                 'ultimo_login'    => $row_user->ultimo_login,
                 'src_img'    => $this->App_model->src_img_usuario($row_user, '60px_'),
                 'username'    =>  $row_user->username,
-                'display_name'    =>  $row_user->nombre . ' ' . $row_user->apellidos,
+                'display_name'    =>  $row_user->display_name,
                 'first_name'    =>  $row_user->nombre,
                 'user_id'    =>  $row_user->id,
                 'role'    => $row_user->rol_id,

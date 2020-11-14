@@ -241,15 +241,10 @@ class Usuario_model extends CI_Model{
     
     /**
      * Actualizar registro tabla usuario
-     * 2020-09-28
+     * 2020-11-13
      */
     function update($user_id, $arr_row)
     {
-        $arr_row['display_name'] = $arr_row['nombre'] . ' ' . $arr_row['apellidos'];
-        if ( $arr_row['sexo'] == 90 ) {
-            $arr_row['display_name'] = $arr_row['institution_name'];
-        }
-
         $arr_row['updater_id'] = $this->session->userdata('user_id');
         $arr_row['editado'] = date('Y-m-d H:i:s');
 
@@ -426,7 +421,7 @@ class Usuario_model extends CI_Model{
         $row_usuario = $this->Pcrn->registro_id('usuario', $row_meta->elemento_id);
             
         //Asunto de mensaje
-            $subject = "{$row_usuario->nombre} {$row_usuario->apellidos} solicita rol de Distribuidor";
+            $subject = "{$row_usuario->display_name} solicita rol de Distribuidor";
             $mensaje = $this->Usuario_model->mensaje_autorizacion($row_meta);
         
         //Enviar Email

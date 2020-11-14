@@ -3,6 +3,7 @@
     
     $cl_nav_2['usuarios_explore'] = '';
     $cl_nav_2['usuarios_add'] = '';
+    $cl_nav_2['usuarios_solicitudes_rol'] = '';
     
     $cl_nav_2[$app_cf_index] = 'active';
     if ( $app_cf_index == 'usuarios_import_e' ) { $cl_nav_2['usuarios_import'] = 'active'; }
@@ -27,10 +28,18 @@
         cf: 'usuarios/add',
         anchor: true
     };
+
+    sections.solicitudes_rol = {
+        icon: 'fa fa-user-plus',
+        text: 'Solicitudes',
+        class: '<?= $cl_nav_2['usuarios_solicitudes_rol'] ?>',
+        cf: 'usuarios/solicitudes_rol',
+        anchor: true
+    };
     
     //Secciones para cada rol
-    sections_rol.dvlp = ['explore', 'add'];
-    sections_rol.admn = ['explore', 'add'];
+    sections_rol.dvlp = ['explore', 'add', 'solicitudes_rol'];
+    sections_rol.admn = ['explore', 'add', 'solicitudes_rol'];
     sections_rol.edtr = ['explore', 'add'];
     sections_rol.vndd = ['explore'];
     

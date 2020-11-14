@@ -139,7 +139,7 @@ class Accounts extends CI_Controller {
                 if ( $data['saved_id'] > 0 ) { $data['status'] = 1; }
             
             //Enviar email con código de activación
-                $this->Usuario_model->email_activacion($data['saved_id']);
+                if ( ENV == 'production' ) $this->Usuario_model->email_activacion($data['saved_id']);
         } else {
             $data['validation'] = $res_validation['validation'];
         }

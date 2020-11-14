@@ -31,7 +31,7 @@
                         <div class="links">
                             <?php if ( $this->session->userdata('logged') ){ ?>
                                 <div class="myaccount">
-                                    <?= anchor("usuarios/mi_perfil", '<span class="hidden-xs">Mi cuenta</span>', 'title="Mi cuenta de usuario"') ?>
+                                    <?= anchor("accounts/profile", '<span class="hidden-xs">Mi cuenta</span>', 'title="Mi cuenta de usuario"') ?>
                                 </div>
                                 <div class="check">
                                     <?= anchor("pedidos/carrito", '<span class="hidden-xs">Pagar</span>', 'title="Ir a pagar"') ?>

@@ -146,7 +146,7 @@ class Account_model extends CI_Model{
             $data = array(
                 'logged' =>   TRUE,
                 'username'    =>  $row_user->username,
-                'display_name'    =>  $row_user->nombre . ' ' . $row_user->apellidos,
+                'display_name'    =>  $row_user->display_name,
                 'first_name'    =>  $row_user->nombre,
                 'user_id'    =>  $row_user->id,
                 'role'    => $row_user->rol_id,
@@ -620,7 +620,7 @@ class Account_model extends CI_Model{
         {
             $data['status'] = 1;
             $user['id'] = $row->id;
-            $user['display_name'] = $row->nombre . ' ' . $row->apellidos;
+            $user['display_name'] = $row->display_name;
 
             $data['user'] = $user;
         }

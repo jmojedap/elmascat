@@ -34,7 +34,10 @@
     sections_rol.admn = ['profile', 'edit'];
     sections_rol.edtr = ['profile', 'edit'];
     sections_rol.vndd = ['profile', 'edit'];
-    sections_rol.clbd = ['profile', 'edit'];
+    sections_rol.dmda = ['profile', 'edit'];
+    sections_rol.clte = ['profile', 'edit'];
+    sections_rol.dstr = ['profile', 'edit'];
+    sections_rol.susc = ['profile', 'edit'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
     for ( key_section in sections_rol[app_r]) 

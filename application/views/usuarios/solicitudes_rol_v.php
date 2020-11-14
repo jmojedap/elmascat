@@ -1,13 +1,7 @@
-<?php $this->load->view($vista_menu); ?>
-
 <?php $this->load->view('comunes/resultado_proceso_v'); ?>
 
-<?php
-    
-?>
-
-<div class="bs-caja">
-    <table class="table table-default">
+<div class="table-responsive">
+    <table class="table bg-white">
         <thead>
             <th class="<?= $clases_col['usuario'] ?>">Usuario</th>
             <th class="<?= $clases_col['email'] ?>">E-mail</th>

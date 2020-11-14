@@ -121,10 +121,10 @@ class Usuarios extends CI_Controller{
             $data['solicitudes'] = $this->Usuario_model->solicitudes();
 
         //Variables generales
-            $data['titulo_pagina'] = 'Usuarios';
-            $data['subtitulo_pagina'] = 'Solicitudes de cambio de rol';
+            $data['head_title'] = 'Usuarios';
+            $data['head_subtitle'] = 'Solicitudes de cambio de rol';
             $data['view_a'] = 'usuarios/solicitudes_rol_v';
-            $data['vista_menu'] = 'usuarios/explorar/menu_v';
+            $data['nav_2'] = 'usuarios/explore/menu_v';
 
         $this->load->view(TPL_ADMIN, $data);
     }

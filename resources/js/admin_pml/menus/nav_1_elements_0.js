@@ -33,7 +33,7 @@ var nav_1_elements = [
         cf: 'usuarios/explorar',
         anchor: true,
         subelements: [],
-        sections: ['usuarios/explore', 'usuarios/profile', 'usuarios/import', 'usuarios/add', 'usuarios/notes', 'usuarios/pedidos', 'usuarios/books', 'usuarios/edit']
+        sections: ['usuarios/explore', 'usuarios/profile', 'usuarios/import', 'usuarios/add', 'usuarios/notes', 'usuarios/pedidos', 'usuarios/books', 'usuarios/edit', 'usuarios/solicitudes_rol']
     },
     {
         text: 'Estadísticas',
@@ -118,7 +118,7 @@ var nav_1_elements = [
                 text: 'Base de datos',
                 active: false,
                 icon: 'fa fa-database',
-                cf: 'tablas/item',
+                cf: 'sincro/panel',
                 anchor: true,
                 sections: []
             },
