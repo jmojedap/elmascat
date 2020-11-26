@@ -46,7 +46,7 @@ var nav_1_elements = [
                 active: false,
                 icon: 'fa fa-shopping-cart',
                 cf: 'pedidos/resumen_mes',
-                anchor: false,
+                anchor: true,
                 sections: ['pedidos/resumen_mes']
             }
         ],

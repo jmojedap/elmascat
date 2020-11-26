@@ -1,3 +1,5 @@
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 <?php
     //PlugIn, auto completar
     $this->load->view('assets/biggora_autocomplete');
@@ -39,9 +41,9 @@
             handle: 'span',
             update: function( event, ui ) {
                 console.log(event);
-                /*str_orden = $(this).sortable('serialize');
+                str_orden = $(this).sortable('serialize');
                 console.log(str_orden);
-                reordenar_lista();*/
+                reordenar_lista();
             }
         });
         
@@ -111,8 +113,8 @@
 
 <div class="row">
     <div class="col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-body">
+        <div class="card panel-default">
+            <div class="card-body">
                 <div class="form-group">
                     <input
                         name="q_elementos" id="q_elementos" type="text" class="form-control"
