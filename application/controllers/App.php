@@ -315,4 +315,18 @@ class App extends CI_Controller{
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+    function get_places()
+    {
+        $condition = 'activo = 1 AND ';
+        if ( $this->input->post('type') ) { $condition .= "tipo_id = {$this->input->post('type')} AND "; }
+        if ( $this->input->post('region_id') ) { $condition .= "region_id = {$this->input->post('region_id')} AND "; }
+
+        $condition = substr($condition, 0, -5);
+
+        $data['list'] = $this->App_model->opciones_lugar($condition, $this->input->post('value_field'), $this->input->post('empty_text'));
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
 }

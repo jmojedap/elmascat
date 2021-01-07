@@ -88,6 +88,7 @@ class Pcc {
         $funciones_publicas[] = 'app/basica';
         $funciones_publicas[] = 'app/pronto';
         $funciones_publicas[] = 'app/crear_usuario';
+        $funciones_publicas[] = 'app/get_places';
         
         $funciones_publicas[] = 'busquedas/productos';
         $funciones_publicas[] = 'busquedas/buscar_redirect';
@@ -118,6 +119,8 @@ class Pcc {
         $funciones_publicas[] = 'pedidos/guardar_pedido';  //Ajax
         $funciones_publicas[] = 'pedidos/guardar_lugar';  //Ajax
         $funciones_publicas[] = 'pedidos/set_user';  //Ajax
+        $funciones_publicas[] = 'pedidos/datos_regalo';  //
+        $funciones_publicas[] = 'pedidos/guardar_datos_regalo';  //Ajax
         
         $funciones_publicas[] = 'usuarios/registrado';
         $funciones_publicas[] = 'usuarios/activar';

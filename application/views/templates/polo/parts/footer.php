@@ -95,7 +95,7 @@
                 <h4>Contáctenos</h4>
                 <div class="contacts-info">
                     <address>
-                        <i class="add-icon">&nbsp;</i>Av. Ciudad de Cali No. 72A-41<br>
+                        <i class="add-icon">&nbsp;</i>Av Calle 72 No. 83-96<br>
                         &nbsp;Bogotá D.C. Colombia
                     </address>
                     <div class="phone-footer"><i class="phone-icon">&nbsp;</i> +57 1 745 6922</div>

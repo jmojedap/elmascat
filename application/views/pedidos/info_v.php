@@ -178,7 +178,7 @@
         </div>
     </div>
     <div class="col col-md-4">
-        <div class="card card-default">
+        <div class="card card-default mb-2">
             <div class="card-header">
                 <i class="fa fa-map-marker"></i>
                 Envío
@@ -218,14 +218,39 @@
                             <?= $row->peso_total ?> kg
                         </td>
                     </tr>
-                    
-                    
-                    
-                    
                 </tbody>
                     
             </table>
         </div>
+
+        <?php if ( $row->is_gift ) : ?>
+            <div class="card card-default">
+                <div class="card-header">
+                    <i class="fa fa-gift text-danger"></i>
+                    Este pedido es un regalo
+                    <span class="badge badge-success">Atención</span>
+                </div>
+
+                <table class="table table-condensed">
+                    <tbody>
+                        <tr>
+                            <td>De</td>
+                            <td><?= $arr_meta->regalo->de ?></td>
+                        </tr>
+                        <tr>
+                            <td>Para</td>
+                            <td><?= $arr_meta->regalo->para ?></td>
+                        </tr>
+                        <tr>
+                            <td>Mensaje</td>
+                            <td><?= $arr_meta->regalo->mensaje ?></td>
+                        </tr>
+                    </tbody>
+                        
+                </table>
+            </div>
+        <?php endif; ?>
+
     </div>
     <div class="col col-md-4">
         <div class="card card-default">

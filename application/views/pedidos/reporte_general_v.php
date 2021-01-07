@@ -159,6 +159,28 @@
                 </p>
             </td>
         </tr>
+
+        <?php if ( $row->is_gift == 1 ) : ?>
+            <tr>
+                <td>
+                    Datos de regalo
+                </td>
+                <td>
+                    <p>
+                        <strong>De:</strong>
+                        <?= $arr_meta->regalo->de ?>
+                        &middot;
+                        <strong>Para:</strong>
+                        <?= $arr_meta->regalo->para ?>
+                        &middot;
+                        <strong>Mensaje/Dedicatoria:</strong>
+                        <?= $arr_meta->regalo->mensaje ?>
+
+                    </p>
+                </td>
+            </tr>
+        <?php endif; ?>
+
     </tbody>
     
 </table>

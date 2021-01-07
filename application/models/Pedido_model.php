@@ -101,7 +101,7 @@ class Pedido_Model extends CI_Model{
     function search($filters, $per_page = NULL, $offset = NULL)
     {
         //Construir consulta
-            $this->db->select('pedido.id, cod_pedido, pedido.usuario_id, pedido.nombre, pedido.apellidos, pedido.email, estado_pedido, valor_total, pedido.direccion, pedido.ciudad, pedido.celular, pedido.peso_total, pedido.editado, editado_usuario_id, factura, no_guia, codigo_respuesta_pol, usuario.username AS updater_username');
+            $this->db->select('pedido.id, cod_pedido, pedido.usuario_id, pedido.nombre, pedido.apellidos, pedido.email, estado_pedido, valor_total, pedido.direccion, pedido.ciudad, pedido.celular, pedido.peso_total, pedido.editado, editado_usuario_id, factura, no_guia, codigo_respuesta_pol, usuario.username AS updater_username, is_gift');
             //$this->db->join('lugar', 'pedido.lugar_id = lugar.id', 'left');
             $this->db->join('usuario', 'pedido.editado_usuario_id = usuario.id', 'left');
         
@@ -297,9 +297,6 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Devuelve el detalle de los productos de un pedido, asociado en la tabla pedido_detalle
-     * 
-     * @param type $pedido_id
-     * @return type
      */
     function detalle($pedido_id)
     {
@@ -350,9 +347,6 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Cantidad de productos que tiene un pedido
-     * 
-     * @param type $pedido_id
-     * @return type
      */
     function cant_productos($pedido_id)
     {
@@ -360,6 +354,19 @@ class Pedido_Model extends CI_Model{
         $cant_productos = $this->Pcrn->num_registros('pedido_detalle', $condicion);
         
         return $cant_productos;
+    }
+
+    /**
+     * Array con valores del campo pedido.meta
+     * 2020-12-12
+     */
+    function arr_meta($row)
+    {
+        $regalo = array('de' => '', 'para' => '', 'mensaje' => '');
+        $arr_meta = array('regalo' => $regalo);
+        if ( strlen($row->meta) ) { $arr_meta = json_decode($row->meta); }
+
+        return $arr_meta;
     }
     
     /**
@@ -446,6 +453,30 @@ class Pedido_Model extends CI_Model{
         return $descuentos;
     }
 
+    /**
+     * Revisa que haya disponibilidad de los productos incluidos en un pedido
+     * Compara producto.cant_disponibles >= pedido_detalle.cantidad
+     * 2020-12-26
+     */
+    function verificar_existencias($pedido_id)
+    {
+        $productos = $this->detalle($pedido_id);
+        $data = array('status' => 1, 'error' => '');
+
+        foreach ($productos->result() as $row_detalle)
+        {
+            $producto = $this->Db_model->row_id('producto', $row_detalle->producto_id);
+            if ( $row_detalle->cantidad > $producto->cant_disponibles )
+            {
+                $data['error'] .= 'El producto: "' . $producto->nombre_producto . '" ya no está disponible en la cantidad requerida. ';
+            }
+        }
+
+        if ( strlen($data['error']) > 0 ) $data['status'] = 0;
+
+        return $data;
+    }
+
 //FORMATO
 //---------------------------------------------------------------------------------------------------
     
@@ -480,6 +511,25 @@ class Pedido_Model extends CI_Model{
         return $meta_id;
     }
 
+    function guardar_datos_regalo($pedido_id)
+    {
+        $row = $this->Db_model->row_id('pedido', $pedido_id);
+        $arr_meta = (array) $this->arr_meta($row);
+
+        $arr_meta['regalo']['de'] = $this->input->post('regalo_de');
+        $arr_meta['regalo']['para'] = $this->input->post('regalo_para');
+        $arr_meta['regalo']['mensaje'] = $this->input->post('regalo_mensaje');
+
+        $arr_row['meta'] = json_encode($arr_meta);
+
+        $this->db->where('id', $pedido_id);
+        $this->db->update('pedido', $arr_row);
+
+        $data = array('status' => 1, 'message' => $arr_meta['regalo']);
+        
+        return $data;
+    }
+
 //DATOS
 //---------------------------------------------------------------------------------------------------
     
@@ -512,13 +562,13 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Crea el registro de un pedido
-     * 
-     * @return type
+     * 2020-12-03
      */
     function crear()
     {    
         //Construir registro
             $registro['pais_id'] = 51; //Colombia, por defecto, ver lugar.id
+            $registro['region_id'] = 267; //Bogotá D.C., por defecto, ver lugar.id
             $registro['estado_pedido'] = 1; //Iniciado
             $registro['creado'] = date('Y-m-d H:i:s');
             $registro['editado'] = date('Y-m-d H:i:s');

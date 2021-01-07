@@ -14,6 +14,7 @@
             <th>PayU</th>
             <th>Peso (kg)</th>
             <th>Imprimir</th>
+            <th>Regalo</th>
             <th>Editado</th>
             
             <th width="50px"></th>
@@ -73,6 +74,10 @@
                         <a v-bind:href="`<?= base_url("pedidos/reporte/") ?>` + element.id" class="btn btn-sm btn-light" target="_blank">R</a>
                         <a v-bind:href="`<?= base_url("pedidos/reporte/") ?>` + element.id + `/label`" class="btn btn-sm btn-light" target="_blank">L</a>
                     </div>
+                </td>
+
+                <td>
+                    <i class="fa fa-gift text-success" v-show="element.is_gift == 1"></i>
                 </td>
 
                 <td>

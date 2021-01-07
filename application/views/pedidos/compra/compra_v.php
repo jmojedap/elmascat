@@ -9,6 +9,7 @@
     if ( $step == 'carrito' ) { $cl_steps['carrito'] = 'active'; }
     if ( $step == 'usuario' ) { $cl_steps['datos'] = 'active'; }
     if ( $step == 'compra_a' ) { $cl_steps['datos'] = 'active'; }
+    if ( $step == 'datos_regalo' ) { $cl_steps['datos'] = 'active'; }
     if ( $step == 'compra_b' ) { $cl_steps['verificacion'] = 'active'; }
     if ( $step == 'link_pago' ) { $cl_steps['verificacion'] = 'active'; }
     if ( $step == 'respuesta' ) { $cl_steps['resultado'] = 'active'; }

@@ -163,6 +163,32 @@
                             <?= $row->notas ?>
                         </td>
                     </tr>
+                    <?php if ( $row->is_gift ) : ?>
+                        <tr>
+                            <td width="25px">
+                                <i class="fa fa-gift fa-2x text-primary"></i>
+                            </td>
+                            <td>
+                                <span class="resaltar">Datos para regalo</span>
+                                
+                                <p>
+                                    <strong class="text-primary">De:</strong>
+                                    <?= $arr_meta->regalo->de ?>
+                                    &middot;
+                                    <strong class="text-primary">Para:</strong>
+                                    <?= $arr_meta->regalo->para ?>
+                                    &middot;
+                                    <strong class="text-primary">Mensaje:</strong>
+                                    <?= $arr_meta->regalo->mensaje ?>
+                                </p>
+                                <p>
+                                    <a href="<?= base_url("pedidos/datos_regalo") ?>" class="btn btn-xs btn-primary">
+                                        Editar
+                                    </a>
+                                </p>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -180,9 +206,22 @@
                         <?= form_hidden($key, $valor) ?>
                     <?php endforeach ?>
 
-                    <li>
-                        <?= form_submit($att_submit) ?>
-                    </li>
+                    <?php if ( $disponibles['status'] == 1 ) : ?>
+                        <li>
+                            <button class="btn-polo-lg" type="submit">
+                                IR A PAGAR
+                            </button>
+                        </li>
+                    <?php else : ?>
+                        <div class="alert alert-warning">
+                            <?= $disponibles['error'] ?>
+                            <br>
+                            <a href="<?= base_url("pedidos/carrito") ?>" class="clase">
+                                Volver al carrito
+                            </a>
+                        </div>
+                    <?php endif; ?>
+
                 <?= form_close('') ?>
             </ul>
 

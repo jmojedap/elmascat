@@ -34,6 +34,8 @@
                 <td>
                     <a v-bind:href="`<?= base_url("usuarios/profile/") ?>/` + element.id">
                         {{ element.display_name }}
+                        <span v-if="element.display_name.length == 0">>> SIN NOMBRE <<</span>
+                        
                     </a>
                     <br>
                     {{ element.city_name }}

@@ -26,9 +26,19 @@
                             </div>
                         </div>
                         <div class="form-group" v-show="pais_id == '051'">
-                            <label for="ciudad_id" class="col-md-4 control-label">Ciudad residencia</label>
+                            <label for="region_id" class="col-md-4 control-label">Departamento</label>
                             <div class="col-md-8">
-                                <?= form_dropdown('ciudad_id', $options_ciudad, '', 'id="field-ciudad_id" required class="form-control input-lg" v-model="ciudad_id" v-on:change="cambiar_ciudad"') ?>
+                                <select name="region_id" v-model="region_id" class="form-control input-lg" required v-on:change="get_cities">
+                                    <option v-for="(option_region, region_key) in options_region" v-bind:value="region_key">{{ option_region }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" v-show="pais_id == '051'">
+                            <label for="ciudad_id" class="col-md-4 control-label">Ciudad</label>
+                            <div class="col-md-8">
+                                <select name="ciudad_id" v-model="ciudad_id" class="form-control input-lg" required v-on:change="guardar_lugar">
+                                    <option v-for="(option_ciudad, ciudad_key) in options_ciudad" v-bind:value="ciudad_key">{{ option_ciudad }}</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group" v-show="pais_id != '051'">
@@ -190,12 +200,15 @@
         data: {
             cod_pedido: '<?= $cod_pedido ?>',
             pais_id: '0<?= $row->pais_id ?>',
+            region_id: '0<?= $row->region_id ?>',
             ciudad_id: '0<?= $row->ciudad_id ?>',
             form_values: <?= json_encode($row); ?>,
             ciudad: '<?= $row->ciudad ?>',
             year: '01985',
             month: '006',
-            day: '015'
+            day: '015',
+            options_region: <?= json_encode($options_region) ?>,
+            options_ciudad: <?= json_encode($options_ciudad) ?>
         },
         methods: {
             cambiar_ciudad: function(){
@@ -226,6 +239,36 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            guardar_lugar: function(){
+                var params = new FormData();
+                params.append('ciudad_id', this.ciudad_id);
+                
+                axios.post(url_app + 'pedidos/guardar_lugar/', params)
+                .then(response => {
+                    if ( response.data.status == 1 ) {
+                        window.location = url_app + 'pedidos/compra_a/' + this.cod_pedido;
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            get_cities: function(){
+                form_data = new FormData
+                form_data.append('value_field', 'nombre_lugar')
+                form_data.append('empty_text', 'Seleccione la ciudad')
+                form_data.append('type', '4')
+                form_data.append('region_id', this.region_id)
+                axios.post(url_api + 'app/get_places/', form_data)
+                .then(response => {
+                    this.ciudad_id = ''
+                    this.options_ciudad = response.data.list
+                    //this.guardar_ciudad()
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
             },
         }
     });

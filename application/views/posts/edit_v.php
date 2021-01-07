@@ -10,7 +10,8 @@
         /*'place_id',*/
         'referente_1_id',
         'texto_1',
-        'texto_2'
+        'texto_2',
+        'imagen_id'
     );
 ?>
 

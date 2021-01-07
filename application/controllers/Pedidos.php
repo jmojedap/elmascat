@@ -167,6 +167,7 @@ class Pedidos extends CI_Controller{
         //Variables
             $data['pedido_id'] = $pedido_id;
             $data['comision_pol'] = $this->Pedido_model->comision_pol($pedido_id);
+            $data['arr_meta'] = $this->Pedido_model->arr_meta($data['row']);
             
         //Tipos de precio, promociones
             $this->load->model('Producto_model');
@@ -204,10 +205,12 @@ class Pedidos extends CI_Controller{
             if ( ! is_null($row_meta) ) { $arr_respuesta_pol = json_decode($row_meta->valor, TRUE); }
         
         //Variables
+
             $data['pedido_id'] = $pedido_id;
             $data['comision_pol'] = $this->Pedido_model->comision_pol($pedido_id);
             $data['row_meta'] = $row_meta;
             $data['arr_respuesta_pol'] = $arr_respuesta_pol;
+            $data['arr_meta'] = $this->Pedido_model->arr_meta($data['row']);
         
         //Solicitar vista
             $data['head_subtitle'] = $this->Pcrn->moneda($data['row']->valor_total);
@@ -387,12 +390,15 @@ class Pedidos extends CI_Controller{
         
         $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
 
+        //Identificar region
+            $region_id = 267; //Bogotá
+            if ( $data['row']->region_id > 0 ) $region_id = $data['row']->region_id;
+
+
         //Opciones formulario
             $data['options_pais'] = $this->App_model->opciones_lugar("tipo_id = 2 AND activo = 1", 'nombre_lugar', 'País');
-            //$options_ciudad_grande = $this->App_model->opciones_lugar_poblacion("tipo_id = 4 AND activo = 1 and poblacion > 400000", 'cr', 'Ciudad');
-            $options_ciudad_pre = $this->App_model->opciones_lugar("(tipo_id = 4 AND activo = 1) OR (id = 1)", 'cr');
-            //$data['options_ciudad'] = array_merge($options_ciudad_grande, $options_ciudad_pre);
-            $data['options_ciudad'] = $options_ciudad_pre;
+            $data['options_region'] = $this->App_model->opciones_lugar("tipo_id = 3 AND pais_id = 51", 'nombre_lugar');
+            $data['options_ciudad'] = $this->App_model->opciones_lugar("(tipo_id = 4 AND activo = 1 AND region_id = {$region_id})", 'nombre_lugar');
             $data['options_tipo_documento'] = $this->Item_model->opciones('categoria_id = 53 AND filtro LIKE "%-cliente-%"');
             $data['options_year'] = $this->Evento_model->options_year(1920,2005);
             $data['options_month'] = $this->Evento_model->options_month();
@@ -428,6 +434,8 @@ class Pedidos extends CI_Controller{
         $data = $this->Pedido_model->basico($pedido_id);
         $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
         $data['row_ciudad'] = $this->Pcrn->registro_id('lugar', $data['row']->ciudad_id);
+        $data['arr_meta'] = $this->Pedido_model->arr_meta($data['row']);
+        $data['disponibles'] = $this->Pedido_model->verificar_existencias($pedido_id);
         
         //Extras
             $arr_extras['gastos_envio'] = $this->Pedido_model->valor_extras($pedido_id, 'producto_id IN (1,4)');
@@ -449,6 +457,19 @@ class Pedidos extends CI_Controller{
             $data['view_b'] = 'pedidos/compra/compra_b_v';
             $data['section_id'] = 'cart_items';
             $this->load->view(TPL_FRONT, $data);
+    }
+
+    /**
+     * Revisa que haya disponibilidad de los productos incluidos en un pedido
+     * 2020-12-26
+     */
+    function verificar_existencias()
+    {
+        $pedido_id = $this->session->userdata('pedido_id');
+        $data = $this->Pedido_model->verificar_existencias($pedido_id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     /**
@@ -594,6 +615,33 @@ class Pedidos extends CI_Controller{
     function set_user($user_id)
     {
         $data = $this->Pedido_model->set_user($user_id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+// EMPACAR COMO REGALO
+//-----------------------------------------------------------------------------
+
+    function datos_regalo()
+    {
+        $pedido_id = $this->session->userdata('pedido_id');
+        
+        $data = $this->Pedido_model->basico($pedido_id);
+        $data['arr_meta'] = $this->Pedido_model->arr_meta($data['row']);
+        
+        //Solicitar vista
+            $data['head_title'] = 'Datos para regalo';
+            $data['view_a'] = 'pedidos/compra/compra_v';
+            $data['view_b'] = 'pedidos/compra/datos_regalo_v';
+            $data['section_id'] = 'cart_items';
+            $this->load->view(TPL_FRONT, $data);
+    }
+
+    function guardar_datos_regalo()
+    {
+        $pedido_id = $this->session->userdata('pedido_id');
+        $data = $this->Pedido_model->guardar_datos_regalo($pedido_id);
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
