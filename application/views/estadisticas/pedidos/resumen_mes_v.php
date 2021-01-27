@@ -1,14 +1,14 @@
-<?php $this->load->view($vista_menu); ?>
-
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/series-label.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
 
-<div id="container" style="min-height: 600px;"></div>
+<div class="card">
+    <div id="chart_container" class="card-body" style="min-height: 600px;"></div>
+</div>
 
 <script>
-    Highcharts.chart('container', {
+    Highcharts.chart('chart_container', {
 
     title: {
         text: 'Ventas por mes'

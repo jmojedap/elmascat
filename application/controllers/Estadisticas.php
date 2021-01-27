@@ -19,10 +19,10 @@ class Estadisticas extends CI_Controller{
         $data['inventario_categoria'] = $this->Estadistica_model->inventario_categoria();
 
         //Solicitar vista
-            $data['titulo_pagina'] = 'Ventas';
-            $data['subtitulo_pagina'] = 'por categoría';
-            $data['vista_a'] = 'estadisticas/pedidos/ventas_categoria_v';
-            $data['vista_menu'] = 'estadisticas/pedidos/menu_v';
-            $this->load->view(PTL_ADMIN, $data);
+            $data['head_title'] = 'Ventas';
+            $data['head_subtitle'] = 'por categoría';
+            $data['view_a'] = 'estadisticas/pedidos/ventas_categoria_v';
+            $data['nav_2'] = 'estadisticas/pedidos/menu_v';
+            $this->load->view(TPL_ADMIN, $data);
     }
 }

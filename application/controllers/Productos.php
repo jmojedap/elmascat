@@ -362,6 +362,10 @@ class Productos extends CI_Controller{
         redirect($destination);
     }
     
+    /**
+     * Vista detalles de producto, pública para compradores
+     * 2021-01-27
+     */
     function detalle($producto_id)
     {
         $this->load->model('Archivo_model');
@@ -374,12 +378,15 @@ class Productos extends CI_Controller{
         $data['view_a'] = 'productos/detalle/producto_v';
         $data['arr_precio'] = $this->Producto_model->arr_precio($producto_id);
         $data['arr_tipos_precio'] = $this->Producto_model->arr_tipos_precio();
+        $data['tags'] = $this->Producto_model->tags($producto_id);
         
         //Datos
             $data['imagenes'] = $this->Producto_model->imagenes($producto_id);
             $data['palabras_clave'] = $this->Producto_model->palabras_clave($producto_id);
         
         $this->load->view(TPL_FRONT, $data);
+        //Salida JSON
+        //$this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     
@@ -858,11 +865,47 @@ class Productos extends CI_Controller{
      */
     function books($producto_id)
     {
-        $data = $this->Producto_model->basico($producto_id);
+        /*$data = $this->Producto_model->basico($producto_id);
 
         $data['books'] = $this->Producto_model->assigned_posts($producto_id);
         $data['vista_b'] = 'productos/books_v';
 
+        $this->App_model->view(PTL_ADMIN, $data);*/
+
+        //------
+
+        $this->load->model('Archivo_model');
+        
+
+        $data = $this->Producto_model->basico($producto_id);
+
+        $data['books'] = $this->Producto_model->assigned_posts($producto_id);
+        $data['options_book'] = $this->App_model->opciones_post('tipo_id = 8', 'n', 'Libro');
+
+        $data['vista_b'] = 'productos/books_v';
+
         $this->App_model->view(PTL_ADMIN, $data);
+    }
+
+    /**
+     * Agregar un post a un producto
+     * 2021-01-27
+     */
+    function add_post($producto_id, $post_id)
+    {
+        $data = $this->Producto_model->add_post($producto_id, $post_id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Quitar un post de un producto, segun el meta_id
+     * 2021-01-27
+     */
+    function remove_post($producto_id, $meta_id)
+    {
+        $data = $this->Producto_model->remove_post($producto_id, $meta_id);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 }

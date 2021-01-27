@@ -47,7 +47,7 @@ var nav_1_elements = [
                 icon: 'fa fa-shopping-cart',
                 cf: 'pedidos/resumen_mes',
                 anchor: true,
-                sections: ['pedidos/resumen_mes']
+                sections: ['pedidos/resumen_dia', 'pedidos/resumen_mes', 'pedidos/ventas_departamento', 'pedidos/meta_anual', 'pedidos/productos_top', 'pedidos/efectividad', 'estadisticas/ventas_categoria']
             }
         ],
         sections: []

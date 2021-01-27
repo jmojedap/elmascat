@@ -1186,10 +1186,10 @@ class Producto_Model extends CI_Model{
     
     function tags($producto_id)
     {
-        $select_label = $this->Datos_model->select_tags();   
+        //$select_label = $this->Datos_model->select_tags();   
         $condicion = "id IN (SELECT relacionado_id FROM meta WHERE tabla_id = 3100 AND elemento_id = {$producto_id} AND dato_id = 21)";
         
-        $this->db->select($select_label);
+        $this->db->select('id, item AS nombre_tag, descripcion, filtro, padre_id, slug, ascendencia, orden AS nivel');
         $this->db->where($condicion);
         $tags = $this->db->get('item');
         
@@ -1847,9 +1847,9 @@ class Producto_Model extends CI_Model{
 //-----------------------------------------------------------------------------
 
     /**
-     * Asignar un contenido de la tabla post a un usuario, lo agrega como metadato
-     * en la tabla meta, con el tipo 100012
-     * 2020-04-15
+     * Asignar un contenido de la tabla post a un producto, lo agrega como metadato
+     * en la tabla meta, con el tipo 310012
+     * 2021-01-27
      */
     function add_post($producto_id, $post_id)
     {
@@ -1876,11 +1876,30 @@ class Producto_Model extends CI_Model{
     }
 
     /**
+     * Quita la asignación de un post a un producto
+     * 2021-01-27
+     */
+    function remove_post($producto_id, $meta_id)
+    {
+        $data = array('status' => 0, 'qty_deleted' => 0);
+
+        $this->db->where('id', $meta_id);
+        $this->db->where('elemento_id', $producto_id);
+        $this->db->delete('meta');
+
+        $data['qty_deleted'] = $this->db->affected_rows();
+
+        if ( $data['qty_deleted'] > 0) { $data['status'] = 1; }
+
+        return $data;
+    }
+
+    /**
      * Contenidos digitales asignados a un producto
      */
     function assigned_posts($producto_id)
     {
-        $this->db->select('post.id, nombre_post AS title, code, slug, resumen, post.estado, publicado, meta.id AS meta_id');
+        $this->db->select('post.id, nombre_post AS title, code, slug, resumen, post.estado, publicado, meta.id AS meta_id, post.imagen_id');
         $this->db->join('meta', 'post.id = meta.relacionado_id');
         $this->db->order_by('post.id', 'ASC');
         $this->db->where('meta.dato_id', 310012);   //Asignación de contenido

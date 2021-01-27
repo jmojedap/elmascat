@@ -1,5 +1,3 @@
-<?php $this->load->view($vista_menu) ?>
-
 <?php
     $arr_inventario = $this->Pcrn->query_to_array($inventario_categoria, 'valor', 'categoria_id');
 
@@ -20,7 +18,7 @@
 
 <div class="row">
     <div class="col-md-6">
-        <table class="table bg-blanco">
+        <table class="table bg-white">
             <thead>
                 <th>Categoría</th>
                 <th>Ventas</th>
@@ -58,9 +56,7 @@
         </table>
     </div>
     <div class="col-md-6">
-        <div class="panel">
-            <div id="chart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
-        </div>
+        <div id="chart" style="min-width: 310px; height: 500px; max-width: 100%; margin: 0 auto"></div>
     </div>
 </div>
 

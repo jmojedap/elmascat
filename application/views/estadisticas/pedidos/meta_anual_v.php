@@ -1,4 +1,3 @@
-<?php $this->load->view($vista_menu); ?>
 <?php krsort($arr_metas); ?>
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -10,7 +9,7 @@
     
     $(document).ready(function ()
     {
-        Highcharts.chart('container', {
+        Highcharts.chart('chart_container', {
             colors: ['#1c95d1', '#64b448'],
             chart: {
                 type: 'bar'
@@ -88,9 +87,7 @@
     });
 </script>
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        <div id="container" style=""></div>
-    </div>
+<div class="card">
+    <div id="chart_container" class="card-body" style="height: 600px;"></div>
 </div>
 

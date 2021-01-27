@@ -124,7 +124,7 @@
                         <td>Usuario</td>
                         <td>
                             <?php if ( $row->usuario_id > 0 ) { ?>
-                                <a href="<?= base_url("usuarios/profile{$row->usuario_id}") ?>" class="">
+                                <a href="<?= base_url("usuarios/profile/{$row->usuario_id}") ?>">
                                     <?= $this->App_model->nombre_usuario($row->usuario_id, 'na') ?>
                                 </a>
                             <?php } ?>

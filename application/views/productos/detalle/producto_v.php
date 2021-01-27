@@ -100,8 +100,6 @@
                     <?php } ?>
                     
                     <div class="product-shop col-lg-6 col-sm-6 col-xs-12">
-                        <div class="product-next-prev">
-                            <a class="product-next" href="#"><span></span></a> <a class="product-prev" href="#"><span></span></a> </div>
                         <div class="product-name">
                             <h1><?= $row_variacion->nombre_producto ?></h1>
                         </div>
@@ -170,6 +168,19 @@
                             <?php } ?>
                             
                         </div>
+
+                        <?php if ( $tags->num_rows() > 0 ) : ?>
+                            <hr>
+                            <span class="text-muted">Ver más en: </span>
+                            <?php foreach ( $tags->result() as $tag ) : ?>
+                                <strong>
+                                    <a href="<?= base_url("productos/catalogo/?tag={$tag->id}") ?>" class="text-primary">
+                                        <?= $tag->nombre_tag ?>
+                                    </a>
+                                    <span class="text-muted">/</span>
+                                </strong>
+                            <?php endforeach ?>
+                        <?php endif; ?>
                         
                         <?php if ( $this->session->userdata('rol_id') <= 10 && $this->session->userdata('logged') ) : ?>
                             <div style="margin-top: 10px;">

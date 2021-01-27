@@ -1,5 +1,3 @@
-<?php $this->load->view($vista_menu); ?>
-
 <?php
     $arr_lapses = array(
         7 => '7 d',
@@ -25,11 +23,12 @@
     <?php } ?>
 </div>
 
-
-<div id="container" style="max-height: 850px;"></div>
+<div class="card">
+    <div id="chart_container" class="card-body" style="height: 600px;"></div>
+</div>
 
 <script>
-    Highcharts.chart('container', {
+    Highcharts.chart('chart_container', {
 
     title: {
         text: 'Ventas por día'
