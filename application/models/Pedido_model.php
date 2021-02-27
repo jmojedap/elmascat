@@ -453,12 +453,34 @@ class Pedido_Model extends CI_Model{
         return $descuentos;
     }
 
+// Validación de un pedido
+//-----------------------------------------------------------------------------
+
+    /**
+     * Validación de un pedido antes de ir a pagar
+     * 2021-02-27
+     */
+    function validar($row_pedido)
+    {
+        $validacion['status'] = 1;
+        $validacion['existencias'] = $this->validar_existencias($row_pedido->id);
+        $validacion['datos_completos'] = $this->validar_datos_completos($row_pedido);
+        $validacion['flete'] = $this->validar_flete($row_pedido);
+
+        //Validación general
+        if ( $validacion['existencias']['status'] == 0 ) $validacion['status'] = 0;
+        if ( $validacion['datos_completos']['status'] == 0 ) $validacion['status'] = 0;
+        if ( $validacion['flete']['status'] == 0 ) $validacion['status'] = 0;
+
+        return $validacion;
+    }
+
     /**
      * Revisa que haya disponibilidad de los productos incluidos en un pedido
      * Compara producto.cant_disponibles >= pedido_detalle.cantidad
-     * 2020-12-26
+     * 2021-02-27
      */
-    function verificar_existencias($pedido_id)
+    function validar_existencias($pedido_id)
     {
         $productos = $this->detalle($pedido_id);
         $data = array('status' => 1, 'error' => '');
@@ -473,6 +495,43 @@ class Pedido_Model extends CI_Model{
         }
 
         if ( strlen($data['error']) > 0 ) $data['status'] = 0;
+
+        return $data;
+    }
+
+    /**
+     * Validar que los datos personales y del pedido estén completos
+     * 2021-01-02
+     */
+    function validar_datos_completos($row)
+    {
+        $data['status'] = 1;
+
+        $data['error'] = '';
+        if ( strlen($row->no_documento) == 0 ) $data['error'] .= 'El número de documento no ha sido registrado. ';
+        if ( strlen($row->email) == 0 ) $data['error'] .= 'Falta la dirección de correo electrónico. ';
+        if ( strlen($row->direccion) == 0 ) $data['error'] .= 'Falta la dirección de entrega. ';
+        if ( strlen($row->celular) == 0 ) $data['error'] .= 'Falta el número de celular. ';
+        if ( ! ($row->ciudad_id > 0) ) $data['error'] .= 'Falta la ciudad de entrega. ';
+
+        if ( strlen($data['error']) > 0 ) $data['status'] = 0;
+
+        return $data;
+    }
+
+    /**
+     * Verificar que si el pedido tiene peso tenga un cobro de flete asignado
+     * 2021-02-27
+     */
+    function validar_flete($row)
+    {
+        $valor_flete = $this->Pedido_model->valor_extras($row->id, 'producto_id = 1'); //Extras producto 1 corresponde a flete
+
+        $data = array('status' => 1, 'error' => '');
+
+        if ( $row->peso_total > 0 && $valor_flete == 0) {
+            $data = array('status' => 0, 'error' => 'Los gastos de envío no se han calculado.');
+        }
 
         return $data;
     }
@@ -535,11 +594,11 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Row, de un pedido dado el calor pedido.cod_pedido
-     * 2020-08-12
+     * 2021-02-10
      */
     function row_cod_pedido($cod_pedido) 
     {
-        $row = $this->Pcrn->registro('pedido', "cod_pedido = '{$cod_pedido}'");
+        $row = $this->Db_model->row('pedido', "cod_pedido = '{$cod_pedido}'");
         return $row;
     }
     
@@ -1205,6 +1264,7 @@ class Pedido_Model extends CI_Model{
     /**
      * Tomar y procesar los datos POST que envía PagosOnLine a la página de confirmación
      * url_confirmacion >> 'pedidos/confirmacion_pol'
+     * 2021-02-10
      */
     function confirmacion_pol()
     {
@@ -1212,28 +1272,32 @@ class Pedido_Model extends CI_Model{
         $meta_id = 0;
         $row = $this->row_cod_pedido($this->input->post('ref_venta'));    
 
+        //Si se identificó el pedido
         if ( ! is_null($row) )
         {
             //Guardar array completo de confirmación en la tabla "meta"
                 $meta_id = $this->json_confirmacion($row->id);
 
-            //Actualizar registro de pedido
+            //Si el pedido tiene estado iniciado (1) o pago pendiente (2)
+            if ( $row->estado_pedido <= 2 )
+            {
+                //Actualizar registro de pedido
                 $codigo_respuesta_pol = $this->act_estado($row->id, 110);    //Usuario id=110, PayU Automático
-
-            //Descontar cantidades de producto.cant_disponibles, si codigo_respuesta_pol = 1: Trasnsacción aprobada
+    
+                //Descontar cantidades de producto.cant_disponibles, si codigo_respuesta_pol = 1: Trasnsacción aprobada
                 if ( $codigo_respuesta_pol == 1 )
                 {
                     $this->descontar_disponibles($row->id);     //Restar vendidos de cantidades disponibles
                     $this->assign_posts($row->id);              //Asignar contenidos digitales asociados a los productos comprados
                 }
-
-            //Enviar e-mails a administradores de tienda y al cliente
+    
+                //Enviar e-mails a administradores de tienda y al cliente
                 if ( ENV == 'production' )
                 {
                     $this->email_cliente($row->id);
                     $this->email_admon($row->id);
-                    //if ( $estado_pedido == 3 ) { $this->email_admon($row->id); }
                 }
+            }
         }
 
         return $meta_id;

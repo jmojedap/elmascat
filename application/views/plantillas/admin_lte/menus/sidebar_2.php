@@ -28,8 +28,8 @@
         $menus['productos/importar_existencias_e'] = array('productos', '');
 
     //Estadísticas
-        $menus['pedidos/resumen_mes'] = array('estadisticas', 'estadisticas-pedidos');
-        $menus['pedidos/resumen_mes'] = array('estadisticas', 'estadisticas-pedidos');
+        $menus['estadisticas/resumen_mes'] = array('estadisticas', 'estadisticas-pedidos');
+        $menus['estadisticas/resumen_mes'] = array('estadisticas', 'estadisticas-pedidos');
         $menus['pedidos/ventas_departamento'] = array('estadisticas', 'estadisticas-pedidos');
         $menus['pedidos/meta_anual'] = array('estadisticas', 'estadisticas-pedidos');
         $menus['pedidos/productos_top'] = array('estadisticas', 'estadisticas-pedidos');

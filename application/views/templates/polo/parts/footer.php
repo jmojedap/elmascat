@@ -20,25 +20,19 @@
                 <div class="col-xs-12 col-sm-6 col-md-5">
                     <div class="social">
                         <ul>
-                            <li class="">
+                            <li>
                                 <a href="https://www.facebook.com/districatolicas/" target="_blank">
-                                    <img src="<?= URL_IMG ?>app/facebook.png" alt="Logo Facebook" width="32px" style="border-radius: 3px;">
+                                    <i class="fab fa-facebook fa-3x" style="color: white;"></i>
                                 </a>
                             </li>
-                            <li class="">
+                            <li>
                                 <a href="https://www.instagram.com/districatolicas/" target="_blank">
-                                    <?php
-                                        $att_instagram = array(
-                                            'src' => URL_IMG . 'app/instagram.png',
-                                            'width' => '32px'
-                                        );
-                                    ?>
-                                    <?= img($att_instagram) ?>
+                                    <i class="fab fa-instagram fa-3x" style="color: white;"></i>
                                 </a>
                             </li>
-                            <li class="">
+                            <li>
                                 <a href="https://wa.me/573013054053" target="_blank">
-                                    <img src="<?= URL_IMG ?>app/whatsapp_logo.png" alt="Logo WhatsApp" width="32px" style="border-radius: 3px;">
+                                    <i class="fab fa-whatsapp fa-3x" style="color: white;"></i>
                                 </a>
                             </li>
                         </ul>
@@ -55,7 +49,6 @@
                         <img src="<?= URL_IMG ?>app/logo_polo.png" alt="logo">
                     </a>
                 </div>
-                <p>Realiza tus pagos seguros mediante </p>
                 <div class="payment-accept_">
                     <div style="max-width: 302px;">
                         <img width="100%" src="<?= URL_IMG ?>app/payu_medios_pago.png" alt="payment" class="mb-2"> 
@@ -95,16 +88,15 @@
                 <h4>Contáctenos</h4>
                 <div class="contacts-info">
                     <address>
-                        <i class="add-icon">&nbsp;</i>Av Calle 72 No. 83-96<br>
-                        &nbsp;Bogotá D.C. Colombia
+                        <i class="add-icon fas fa-map-marker-alt">&nbsp;</i>Av Calle 72 No. 83-96 <br> Bogotá D.C. Colombia
                     </address>
-                    <div class="phone-footer"><i class="phone-icon">&nbsp;</i> +57 1 745 6922</div>
+                    <div class="phone-footer"><i class="phone-icon fas fa-phone">&nbsp;</i> +57 1 745 6922</div>
                     <div class="email-footer"><i class="email-icon">&nbsp;</i> <a href="#">info@districatolicas.com</a> </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="footer-bottom text-center">
-        <div class="coppyright"> &copy; 2020 &middot; Desarrollado por <a href="http://www.pacarina.com" target="_blank">Pacarina Media Lab</a> </div>
+        <div class="coppyright"> &copy; 2021 &middot; Desarrollado por <a href="http://www.pacarina.com" target="_blank">Pacarina Media Lab</a> </div>
     </div>
 </footer>

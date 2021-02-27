@@ -65,8 +65,8 @@ class App extends CI_Controller{
     function logged()
     {
         $arr_destinos = array(
-            0 => 'pedidos/resumen_dia/',
-            1 => 'pedidos/resumen_dia/',
+            0 => 'estadisticas/resumen_dia/',
+            1 => 'estadisticas/resumen_dia/',
             2 => 'pedidos/explore',
             6 => 'productos/explorar',
             7 => 'productos/explorar',

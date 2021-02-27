@@ -29,8 +29,8 @@
             $menus['productos/importar_existencias_e'] = array('productos', '');
             
         //Estadísticas
-            $menus['pedidos/resumen_dia'] = array('estadisticas', 'estadisticas-pedidos');
-            $menus['pedidos/resumen_mes'] = array('estadisticas', 'estadisticas-pedidos');
+            $menus['estadisticas/resumen_dia'] = array('estadisticas', 'estadisticas-pedidos');
+            $menus['estadisticas/resumen_mes'] = array('estadisticas', 'estadisticas-pedidos');
             $menus['pedidos/ventas_departamento'] = array('estadisticas', 'estadisticas-pedidos');
             $menus['pedidos/meta_anual'] = array('estadisticas', 'estadisticas-pedidos');
             $menus['pedidos/productos_top'] = array('estadisticas', 'estadisticas-pedidos');
@@ -142,7 +142,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['estadisticas-pedidos'] ?>">
-                        <?= anchor("pedidos/resumen_dia", '<i class="fa fa-shopping-cart"></i> Ventas') ?>
+                        <?= anchor("estadisticas/resumen_dia", '<i class="fa fa-shopping-cart"></i> Ventas') ?>
                     </li>
                 </ul>
             </li>

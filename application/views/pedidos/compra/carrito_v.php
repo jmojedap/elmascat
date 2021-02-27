@@ -129,7 +129,9 @@
                                             <?php } ?>
                                         </td>
                                         <td class="a-center last">
-                                            <?= anchor("pedidos/eliminar_detalle/{$row_detalle->id}", '<span><span>Remove item</span></span>', 'class="button remove-item" title="Quitar producto del carrito"') ?>
+                                            <a href="<?= base_url("pedidos/eliminar_detalle/{$row_detalle->id}") ?>" class="button remove-item" title="Quitar el producto del carrito">
+                                                <i class="fa fa-trash-alt"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endforeach ?>

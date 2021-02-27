@@ -1,27 +1,3 @@
-<?php
-    //Campos del pedido
-        $att_form = array(
-            'class' =>  'form1'
-        );
-        
-        $att_submit = array(
-            'class'  => 'btn-polo-lg',
-            'value'  => 'Ir a pagar'
-        );
-        
-    //Form envío
-    
-    //Verificar si puede ir a pagar
-        $datos_faltantes = 0;
-        if ( strlen($row->no_documento) == 0 ) { $datos_faltantes++; }
-        if ( strlen($row->email) == 0 ) { $datos_faltantes++; }
-        if ( strlen($row->direccion) == 0 ) { $datos_faltantes++; }
-        if ( strlen($row->celular) == 0 ) { $datos_faltantes++; }
-        
-        $att_submit['class'] = 'btn-polo-lg';
-        if ( $datos_faltantes > 0 ) { $att_submit['class'] .= ' hidden'; }
-?>
-
 <div>
     <div class="row wow bounceInUp animated">
         <div class="col col-md-4">
@@ -199,30 +175,44 @@
             </div>
             
             <?php $this->load->view('pedidos/compra/totales_v'); ?>
+
+
             <ul class="checkout">
-                <?= form_open($destino_form, $att_form) ?>
+                <form accept-charset="utf-8" method="POST" action="<?= $destino_form ?>">
 
                     <?php foreach ($form_data as $key => $valor) : ?>
                         <?= form_hidden($key, $valor) ?>
                     <?php endforeach ?>
 
-                    <?php if ( $disponibles['status'] == 1 ) : ?>
-                        <li>
-                            <button class="btn-polo-lg" type="submit">
-                                IR A PAGAR
-                            </button>
-                        </li>
+                    <?php if ( $validacion['status'] == 1 ) : ?>
+                        <button class="btn-polo-lg" type="submit">IR A PAGAR</button>
                     <?php else : ?>
-                        <div class="alert alert-warning">
-                            <?= $disponibles['error'] ?>
-                            <br>
-                            <a href="<?= base_url("pedidos/carrito") ?>" class="clase">
-                                Volver al carrito
-                            </a>
-                        </div>
+                        <?php if ( $validacion['existencias']['status'] == 0 ) : ?>
+                            <div class="alert alert-warning">
+                                <?= $validacion['existencias']['error'] ?>
+                                <br>
+                                <a href="<?= base_url("pedidos/carrito") ?>">Volver al carrito</a>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ( $validacion['datos_completos']['status'] == 0 ) : ?>
+                            <div class="alert alert-warning">
+                                <?= $validacion['datos_completos']['error'] ?>
+                                <br>
+                                <a href="<?= base_url("pedidos/compra_a") ?>">Completar</a>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if ( $validacion['flete']['status'] == 0 ) : ?>
+                            <div class="alert alert-warning">
+                                <?= $validacion['flete']['error'] ?>
+                                <br>
+                                <a href="<?= base_url("pedidos/compra_a") ?>">Volver</a>
+                            </div>
+                        <?php endif; ?>
                     <?php endif; ?>
 
-                <?= form_close('') ?>
+                </form>
             </ul>
 
             <div class="alert alert-info">

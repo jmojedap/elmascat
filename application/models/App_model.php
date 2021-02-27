@@ -178,7 +178,7 @@ class App_model extends CI_Model{
         $arr_select = array(
             'lugar' => 'nombre_lugar',
             'usuario' => 'username',
-            'archivo' => 'CONCAT ((id), " | ", (titulo_archivo), " | ", (nombre_archivo))',
+            'archivo' => 'CONCAT ((id), " - ", (titulo_archivo), " - ", (nombre_archivo))',
         );
 
         if ( array_key_exists($tabla, $arr_select) ) {

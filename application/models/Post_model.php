@@ -526,6 +526,44 @@ class Post_model extends CI_Model{
         return $query;
     }
 
+    /**
+     * Guardar el nuevo orden de una lista de elementos de un post, tabla meta
+     * 2021-02-10
+     */
+    function reordenar_lista($post_id, $lista)
+    {
+        //Resultado inicial
+        $data = array('status' => 0, 'affected_rows' => 0);
+
+        //Actualizar orden en tabla meta
+            foreach ( $lista as $orden => $element_id)
+            {
+                $arr_row['orden'] = $orden;
+
+                $this->db->where('relacionado_id', $post_id);
+                $this->db->where('dato_id', 22);    //Elemento de lista
+                $this->db->where('elemento_id', $element_id);
+                $this->db->update('meta', $arr_row);
+
+                $data['affected_rows'] += $this->db->affected_rows();
+            }
+
+        //Actualizar edición, tabla post
+            if ( $data['affected_rows'] > 0 )
+            {
+                    $arr_row_post['editado'] = date('Y-m-d H:i:s');
+                    $arr_row_post['editor_id'] = $this->session->userdata('user_id');
+                    
+                    $this->db->where('id', $post_id);
+                    $this->db->update('post', $arr_row_post);
+
+                //Marcar resultado
+                    $data['status'] = 1;
+            }
+        
+        return $data;
+    }
+
 // PROMOCIONES
 //-----------------------------------------------------------------------------
     

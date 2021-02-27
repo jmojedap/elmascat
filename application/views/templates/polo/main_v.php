@@ -33,7 +33,6 @@
             </div>
             
             <?php $this->load->view('templates/polo/parts/footer'); ?>
-            <!-- End Footer --> 
         </div>
     </body>
 </html>

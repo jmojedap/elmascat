@@ -289,31 +289,31 @@ a.block-currency:focus {
 }
 .toplinks>div>div.myaccount>a:before {
 	content: '\f007';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 11px;
 	padding-right: 6px
 }
 .toplinks>div>div.wishlist>a:before {
 	content: '\f004';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 11px;
 	padding-right: 6px
 }
 .toplinks>div>div.check>a:before {
 	content: '\f00c';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 11px;
 	padding-right: 6px
 }
 .toplinks>div>div.demo>a:before {
 	content: '\f09e';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks .links div .click-nav ul .clicker:before {
 	content: '\f15b';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-left: 4px;
 	padding-top: 2px;
@@ -323,13 +323,13 @@ a.block-currency:focus {
 }
 .toplinks>div>div.login>a:before {
 	content: '\f090';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 11px;
 	padding-right: 6px
 }
 .toplinks>div>div.logout>a:before {
 	content: '\f08b';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 11px;
 	padding-right: 6px
 }
@@ -1124,7 +1124,7 @@ li.level0 > a:hover > span > .pin-bottom:before, #nav li.level0:hover > a > span
 }
 #nav ul.level1 > li a:before {
 	content: '\f105';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 5px;
 	color: #444;
@@ -1348,7 +1348,7 @@ a.btn-button-st:hover {
 	content: "\f10a";
 }
 .icon-custom-reponsive {
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	display: block;
 	font-size: 70px;
 	background-color: #F0F0F0;
@@ -1361,7 +1361,7 @@ a.btn-button-st:hover {
 	content: "\f13c";
 }
 .icon-custom-CSS3 {
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	display: inline-block;
 	font-size: 60px;
 	background-color: #F0F0F0;
@@ -1374,7 +1374,7 @@ a.btn-button-st:hover {
 	background-color: #F0F0F0;
 	color: #000;
 	display: inline-block;
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 60px;
 	height: 95px;
 	padding: 25px 0 0;
@@ -1385,7 +1385,7 @@ a.btn-button-st:hover {
 	content: "\f031";
 }
 .icon-custom-google-font {
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	display: block;
 	font-size: 70px;
 	background-color: #F0F0F0;
@@ -1398,7 +1398,7 @@ a.btn-button-st:hover {
 	content: "\f00a";
 }
 .icon-custom-grid {
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	display: block;
 	font-size: 70px;
 	background-color: #F0F0F0;
@@ -1598,7 +1598,7 @@ a.btn-button-st:hover {
 	content: "\f0d1";
 }
 .icon-truck {
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	display: inline-block;
 	font-size: 18px;
 	margin: auto;
@@ -1612,7 +1612,7 @@ a.btn-button-st:hover {
 	content: "\f0d6";
 }
 .icon-money {
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	display: inline-block;
 	font-size: 18px;
 	margin: auto;
@@ -1624,7 +1624,7 @@ a.btn-button-st:hover {
 	content: "\f0e6";
 }
 .icon-support {
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	display: inline-block;
 	font-size: 18px;
 	margin: auto;
@@ -1636,7 +1636,7 @@ a.btn-button-st:hover {
 	content: "\f005";
 }
 .icon-dis {
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	display: inline-block;
 	font-size: 18px;
 	margin: auto;
@@ -2040,7 +2040,7 @@ a.btn-button-st:hover {
 	top: -35px;
 }
 .glyphicon-chevron-right:before {
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-style: normal;
 	font-weight: normal;
 	speak: none;
@@ -2051,7 +2051,7 @@ a.btn-button-st:hover {
 	line-height: 22px;
 }
 .glyphicon-chevron-left:before {
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-style: normal;
 	font-weight: normal;
 	speak: none;
@@ -2143,7 +2143,7 @@ a.btn-button-st:hover {
 }
 .col-item .actions-links .add-to-links a.magik-btn-quickview {
 	color: #fff;
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 16px;
 	font-weight: normal;
 	margin: 0;
@@ -2165,7 +2165,7 @@ a.btn-button-st:hover {
 }
 .col-item .actions-links .add-to-links a.link-wishlist {
 	color: #fff;
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 16px;
 	font-weight: normal;
 	margin: 0;
@@ -2177,7 +2177,7 @@ a.btn-button-st:hover {
 	width: 32%;
 }
 .col-item .actions-links .add-to-links a.link-wishlist:hover {
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 16px;
 	font-weight: normal;
 	margin: 0;
@@ -2190,7 +2190,7 @@ a.btn-button-st:hover {
 }
 .col-item .actions-links .add-to-links a.link-compare {
 	color: #fff;
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 16px;
 	font-weight: normal;
 	margin: 0;
@@ -2202,7 +2202,7 @@ a.btn-button-st:hover {
 	width: 32%;
 }
 .col-item .actions-links .add-to-links a.link-compare:hover {
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 16px;
 	font-weight: normal;
 	margin: 0;
@@ -2401,7 +2401,7 @@ div.moreview_description.rtl {
 }
 .moreview-control a.moreview-prev:before {
 	content: "\f106";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 18px;
 }
 .moreview-control a.moreview-next {
@@ -2421,7 +2421,7 @@ div.moreview_description.rtl {
 }
 .moreview-control a.moreview-next:before {
 	content: "\f107";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 18px;
 }
 .moreview .roll-over {
@@ -2635,7 +2635,7 @@ div.moreview_description.rtl {
 }
 .product-view .product-shop .add-to-links .link-wishlist:before {
 	content: "\f004";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 14px;
 	vertical-align: top;
 	text-align: center;
@@ -2655,7 +2655,7 @@ div.moreview_description.rtl {
 }
 .product-view .product-shop .add-to-links .link-compare:before {
 	content: "\f012";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 14px;
 	vertical-align: top;
 	height: 25px;
@@ -2696,7 +2696,7 @@ div.moreview_description.rtl {
 }
 .product-view .email-friend a:before {
 	content: "\f0e0";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 14px;
 }
 .product-view .email-friend a span {
@@ -2816,11 +2816,6 @@ div.moreview_description.rtl {
 .button-down:hover, .button-down:focus {
 	background-image: url(../images/icon_arrow_down.png);
 	background-position: 16px 16px;
-}
-.product-view .product-shop button.button.btn-cart:before {
-	content: "\f07a";
-	font-family: 'FontAwesome';
-	font-size: 18px;
 }
 .product-view .product-shop .icon-plus:before {
 	font-size: 14px;
@@ -3096,7 +3091,7 @@ div.moreview_description.rtl {
 /*detail page view link*/
 a.button.view-all:before {
 	content: "\f06e";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 8px;
 }
@@ -3822,7 +3817,7 @@ fieldset {
 }
 .product-next-prev .product-prev:before {
 	content: "\f104";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 }
 .product-next-prev .product-prev {
 	background: #fff;
@@ -3848,7 +3843,7 @@ fieldset {
 }
 .product-next-prev .product-next:before {
 	content: "\f105";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 }
 .product-next-prev .product-next {
 	background: #fff;
@@ -4347,7 +4342,7 @@ div#mobile-menu ul.submenu {
 }
 #mobile-menu .toggle:before {
 	content: "\f0c9";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 24px;
 	color: #fff;
 	margin: 10px 0;
@@ -4493,7 +4488,7 @@ ul.topnav em:hover {
 	top: 50%;
 }
 .slider-items-products .owl-buttons .owl-next a:before {
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-style: normal;
 	font-weight: normal;
 	speak: none;
@@ -4504,7 +4499,7 @@ ul.topnav em:hover {
 	line-height: 26px;
 }
 .slider-items-products .owl-buttons .owl-prev a:before {
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-style: normal;
 	font-weight: normal;
 	speak: none;
@@ -4587,7 +4582,7 @@ ul.topnav em:hover {
 }
 .block .block-title:before {
 	content: "\f138";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 16px;
 	display: inline-block;
 	margin-right: 8px
@@ -4649,7 +4644,7 @@ ul.topnav em:hover {
 }
 .side-nav-categories .block-title:before {
 	content: '\f0c9';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 14px;
 	margin-right: 3px
 }
@@ -4758,7 +4753,7 @@ ul.topnav em:hover {
 }
 .box-category > ul > li ul > li > a:before {
 	content: '\f105';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 6px;
 	color: #444;
@@ -4788,7 +4783,7 @@ ul.topnav em:hover {
 }
 .side-nav-categories ul#magicat ul li a:before {
 	content: "\f105";
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	line-height: 17px;
 	margin-right: 5px;
 	top: 6px;
@@ -4995,7 +4990,7 @@ ul#magicat li .open-close, .block-layered-nav dt .toggleBtn {
 }
 .block-account .block-content li:before {
 	content: "\f105";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 10px;
 	display: inline-block;
 	position: absolute;
@@ -5048,7 +5043,7 @@ ul#magicat li .open-close, .block-layered-nav dt .toggleBtn {
 }
 .block-layered-nav dd ol li:before {
 	content: '\f105';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 6px;
 	color: #444;
@@ -5365,7 +5360,7 @@ ol#compare-items li {
 }
 ol#compare-items li:before {
 	content: '\f105';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 6px;
 	color: #444;
@@ -5409,7 +5404,7 @@ ol#compare-items li.last {
 }
 .block-viewed li:before {
 	content: '\f105';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 6px;
 	color: #444;
@@ -5417,7 +5412,7 @@ ol#compare-items li.last {
 }
 .block-compared li:before {
 	content: '\f105';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 6px;
 	color: #444;
@@ -5482,7 +5477,7 @@ ol#compare-items li.last {
 }
 .block-compared li:before {
 	content: '\f105';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 6px;
 	color: #444;
@@ -5625,7 +5620,7 @@ ol#compare-items li.last {
 }
 .block-company li:before {
 	content: '\f105';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 6px;
 	color: #444;
@@ -5698,19 +5693,19 @@ ol#compare-items li.last {
 
 .returns:before {
 	content: "\f021";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 .button-subscribe:before {
 	content: "\f0e0";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 5px;
 }
 .button-checkout:before {
 	content: "\f00c";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 5px;
 }
@@ -5720,19 +5715,19 @@ ol#compare-items li.last {
 }
 .button-compare:before {
 	content: "\f074";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 5px;
 }
 .button-clear:before {
 	content: "\f12d";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 5px;
 }
 .button-vote:before {
 	content: "\f164";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 5px;
 }
@@ -5755,7 +5750,7 @@ ol#compare-items li.last {
 }
 .btn-edit:before {
 	content: "\f040";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 5px;
 }
@@ -5764,85 +5759,85 @@ ol#compare-items li.last {
 }
 button.button.continue:before {
 	content: "\f061";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.btn-share:before {
 	content: "\f004";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.btn-add:before {
 	content: "\f067";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.btn-update:before {
 	content: "\f021";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.login:before {
 	content: '\f13e';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.btn-continue:before {
 	content: "\f061";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button#empty_cart_button:before {
 	content: "\f00d";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.coupon:before {
 	content: "\f02b";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.get-quote:before {
 	content: "\f15c";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.new-address:before {
 	content: "\f015";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.create-account:before {
 	content: "\f007";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	padding-right: 8px;
 }
 button.button.submit:before {
 	content: "\f04b";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 11px;
 	padding-right: 8px;
 }
 button.button.view-all:before {
 	content: "\f06e";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 8px;
 }
 .edit-bnt:before {
 	content: "\f040";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 }
 .edit-bnt {
@@ -6154,7 +6149,7 @@ a.button-asc.left span {
 }
 .right-arrow:after {
 	content: "\f107";
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	color: #666;
 	font-size: 12px;
 }
@@ -6450,7 +6445,7 @@ li .list {
 }
 .products-list .actions .add-to-links a.link-wishlist {
 	color: #aaaaaa;
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 14px;
 	font-weight: normal;
 	margin: 0;
@@ -6464,7 +6459,7 @@ li .list {
 }
 .products-list .actions .add-to-links a.link-compare {
 	color: #aaaaaa;
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 14px;
 	font-weight: normal;
 	margin: 0;
@@ -6477,7 +6472,7 @@ li .list {
 	line-height: 20px;
 }
 .products-list .actions .add-to-links a.link-wishlist:hover {
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 14px;
 	font-weight: normal;
 	margin: 0;
@@ -6491,7 +6486,7 @@ li .list {
 	line-height: 20px;
 }
 .products-list .actions .add-to-links a.link-compare:hover {
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 14px;
 	font-weight: normal;
 	margin: 0;
@@ -7369,7 +7364,7 @@ input#coupon_code {
 }
 #shopping-cart-table a.remove-item:before {
 	content: "\f014";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 14px;
 }
 #shopping-cart-table a.remove-item:hover {
@@ -7442,7 +7437,7 @@ button.button.btn-proceed-checkout:hover {
 }
 button.button.btn-proceed-checkout:before {
 	content: "\f00c";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 20px;
 	padding-right: 5px;
 }
@@ -7495,7 +7490,7 @@ button.button.btn-proceed-checkout span {
 }
 #wishlist-table a.remove-item:before {
 	content: "\f014";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 14px;
 }
 #wishlist-table a.remove-item:hover {
@@ -7512,7 +7507,7 @@ button.button.btn-proceed-checkout span {
 	text-decoration: none;
 	float: none;
 	background: none;
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 16px;
 	text-transform: uppercase;
 	display: inline;
@@ -7533,7 +7528,7 @@ button.button.btn-proceed-checkout span {
 	text-decoration: none;
 	float: none;
 	background: none;
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 16px;
 	text-transform: uppercase;
 	display: inline;
@@ -7572,7 +7567,7 @@ button.button.btn-proceed-checkout span {
 }
 #wishlist-table button.button.btn-cart:before {
 	content: "\f07a";
-	font-family: 'FontAwesome';
+	font-family: '"Font Awesome 5 Free"';
 	font-size: 16px
 }
 .my-wishlist .buttons-set2 {
@@ -7652,7 +7647,7 @@ button.button.btn-proceed-checkout span {
 }
 #multiship-addresses-table .btn-remove:before {
 	content: "\f014";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 14px;
 }
 #multiship-addresses-table .btn-remove:hover {
@@ -8022,7 +8017,7 @@ button.subscribe {
 }
 button.subscribe:before {
 	content: "\f0e0";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 5px;
 	font-weight: normal;
@@ -8030,7 +8025,7 @@ button.subscribe:before {
 	/* Social Icons*/
 .social .fb a:before {
 	content: "\f09a";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 }
 .social .fb a {
 	background: #3C5B9B;
@@ -8049,7 +8044,7 @@ button.subscribe:before {
 }
 .social .tw a:before {
 	content: "\f099";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 }
 .social .tw a {
 	background: #359BED;
@@ -8068,7 +8063,7 @@ button.subscribe:before {
 }
 .social .googleplus a:before {
 	content: "\f0d5";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 }
 .social .googleplus a {
 	background: #E33729;
@@ -8087,11 +8082,11 @@ button.subscribe:before {
 }
 .social .rss a:before {
 	content: "\f09e";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 }
 .social .rss a {
 	content: "\f09e";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	background: #FD9F13;
 	font-size: 18px;
 	border-radius: 3px;
@@ -8108,11 +8103,11 @@ button.subscribe:before {
 }
 .social .pintrest a:before {
 	content: "\f0d3";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 }
 .social .pintrest a {
 	content: "\f0d3";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	background: #cb2027;
 	font-size: 18px;
 	border-radius: 3px;
@@ -8129,11 +8124,11 @@ button.subscribe:before {
 }
 .social .linkedin a:before {
 	content: "\f0e1";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 }
 .social .linkedin a {
 	content: "\f0e1";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	background: #027ba5;
 	font-size: 18px;
 	border-radius: 3px;
@@ -8150,7 +8145,7 @@ button.subscribe:before {
 }
 .social .youtube a:before {
 	content: "\f167";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 }
 .social .youtube a {
 	background: #F03434;
@@ -8261,7 +8256,7 @@ button.subscribe:before {
 }
 .footer-middle .links li a:before {
 	content: "\f105";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 12px;
 	display: inline-block;
 	cursor: pointer;
@@ -8270,8 +8265,7 @@ button.subscribe:before {
 	margin-right: 5px;
 }
 .add-icon:before {
-	content: "\f041";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 15px;
 	color: #fff;
 	height: 35px;
@@ -8288,7 +8282,7 @@ button.subscribe:before {
 }
 .email-icon:before {
 	content: "\f0e0";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 14px;
 	color: #fff;
 	height: 35px;
@@ -8305,7 +8299,7 @@ button.subscribe:before {
 }
 .phone-icon:before {
 	content: "\f095";
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 15px;
 	color: #fff;
 	height: 35px;
@@ -8519,7 +8513,7 @@ nav {
 }
 .search-btn-bg:before {
 	content: '\f002';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 15px;
 	padding-right: 6px;
 	color: #565656;
@@ -8744,31 +8738,31 @@ nav {
 }
 .toplinks>div>div.myaccount>a:before {
 	content: '\f007';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks>div>div.wishlist>a:before {
 	content: '\f004';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks>div>div.check>a:before {
 	content: '\f00c';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks>div>div.demo>a:before {
 	content: '\f09e';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks .links div .click-nav ul .clicker:before {
 	content: '\f15b';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-left: 4px;
 	padding-top: 2px;
@@ -8778,13 +8772,13 @@ nav {
 }
 .toplinks>div>div.login>a:before {
 	content: '\f13e';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks>div>div.logout>a:before {
 	content: '\f09c';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
@@ -9113,7 +9107,7 @@ nav {
 }
 .search-btn-bg:before {
 	content: '\f002';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 15px;
 	padding-right: 6px;
 	color: #565656;
@@ -9124,31 +9118,31 @@ nav {
 }
 .toplinks>div>div.myaccount>a:before {
 	content: '\f007';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks>div>div.wishlist>a:before {
 	content: '\f004';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks>div>div.check>a:before {
 	content: '\f00c';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks>div>div.demo>a:before {
 	content: '\f09e';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks .links div .click-nav ul .clicker:before {
 	content: '\f15b';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-left: 4px;
 	padding-top: 2px;
@@ -9158,13 +9152,13 @@ nav {
 }
 .toplinks>div>div.login>a:before {
 	content: '\f13e';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }
 .toplinks>div>div.logout>a:before {
 	content: '\f09c';
-	font-family: FontAwesome;
+	font-family: "Font Awesome 5 Free";
 	font-size: 13px;
 	padding-right: 6px
 }

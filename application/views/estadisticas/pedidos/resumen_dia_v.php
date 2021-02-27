@@ -17,7 +17,7 @@
         <?php
             $cl_link = $this->Pcrn->clase_activa($lapse_days, $qty_days, 'btn-primary', 'btn-default');
         ?>
-        <a href="<?= base_url("pedidos/resumen_dia/{$lapse_days}") ?>" class="btn <?= $cl_link ?> w2">
+        <a href="<?= base_url("estadisticas/resumen_dia/{$lapse_days}") ?>" class="btn <?= $cl_link ?> w2">
             <?= $lapse_name ?>
         </a>
     <?php } ?>

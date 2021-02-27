@@ -34,20 +34,21 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
         <link rel="stylesheet" href="<?php //echo $carpeta_tema . 'css/animate.css'?>" type="text/css">
-        <link rel="stylesheet" href="<?= $carpeta_tema ?>css/style.css" type="text/css">
+        <link rel="stylesheet" href="<?= $carpeta_tema ?>css/style_03.css" type="text/css">
         <link rel="stylesheet" href="<?= $carpeta_tema ?>css/revslider.css" type="text/css">
         <link rel="stylesheet" href="<?= $carpeta_tema ?>css/owl.carousel.css" type="text/css">
         <link rel="stylesheet" href="<?= $carpeta_tema ?>css/owl.theme.css" type="text/css">
 
         <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/style_pml.css' ?>" type="text/css">
-        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/bs3_bs4.css' ?>" type="text/css">
-        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/polo_add_12.css' ?>" type="text/css">
+        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/bs3_bs4_02.css' ?>" type="text/css">
+        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/polo_add_13.css' ?>" type="text/css">
         
         <!-- Google Fonts -->
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,300,700,800,400,600' rel='stylesheet' type='text/css'>
 
         <!--Iconos Font Awesome-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
         
         <!--Javascript-->
         <script type="text/javascript" src="<?= $carpeta_tema ?>js/parallax.js"></script> 

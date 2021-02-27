@@ -336,16 +336,21 @@ class Posts extends CI_Controller{
         $this->App_model->view(TPL_ADMIN, $data);
     }
     
+    /**
+     * Guarda el nuevo orden de los elementos de una lista, tabla meta
+     * 2021-02-10
+     */
     function reordenar_lista($post_id)
     {
         $str_orden = $this->input->post('str_orden');
         
-        parse_str($str_orden);
-        $arr_elementos = $elemento;
+        $parse_result = null;
+        parse_str($str_orden, $parse_result);
+        $lista = $parse_result['element'];
         
-        $cant_elementos = $this->Post_model->reordenar_lista($post_id, $arr_elementos);
+        $data = $this->Post_model->reordenar_lista($post_id, $lista);
+        $data['lista'] = $lista;
         
-        $this->output->set_content_type('application/json')->set_output(json_encode($cant_elementos));
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
-
 }

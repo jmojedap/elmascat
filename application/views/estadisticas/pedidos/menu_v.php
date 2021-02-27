@@ -1,12 +1,12 @@
 <?php
     $app_cf_index = $this->uri->segment(1) . '_' . $this->uri->segment(2);
     
-    $cl_nav_2['pedidos_resumen_dia'] = '';
-    $cl_nav_2['pedidos_resumen_mes'] = '';
-    $cl_nav_2['pedidos_ventas_departamento'] = '';
-    $cl_nav_2['pedidos_meta_anual'] = '';
-    $cl_nav_2['pedidos_productos_top'] = '';
-    $cl_nav_2['pedidos_efectividad'] = '';
+    $cl_nav_2['estadisticas_resumen_dia'] = '';
+    $cl_nav_2['estadisticas_resumen_mes'] = '';
+    $cl_nav_2['estadisticas_ventas_departamento'] = '';
+    $cl_nav_2['estadisticas_meta_anual'] = '';
+    $cl_nav_2['estadisticas_productos_top'] = '';
+    $cl_nav_2['estadisticas_efectividad'] = '';
     $cl_nav_2['estadisticas_ventas_categoria'] = '';
     
     $cl_nav_2[$app_cf_index] = 'active';
@@ -21,48 +21,48 @@
     sections.resumen_dia = {
         icon: '',
         text: 'Día',
-        class: '<?= $cl_nav_2['pedidos_resumen_dia'] ?>',
-        cf: 'pedidos/resumen_dia',
+        class: '<?= $cl_nav_2['estadisticas_resumen_dia'] ?>',
+        cf: 'estadisticas/resumen_dia',
         anchor: true
     };
 
     sections.resumen_mes = {
         icon: '',
         text: 'Mes',
-        class: '<?= $cl_nav_2['pedidos_resumen_mes'] ?>',
-        cf: 'pedidos/resumen_mes',
+        class: '<?= $cl_nav_2['estadisticas_resumen_mes'] ?>',
+        cf: 'estadisticas/resumen_mes',
         anchor: true
     };
 
     sections.ventas_departamento = {
         icon: '',
         text: 'Departamento',
-        class: '<?= $cl_nav_2['pedidos_ventas_departamento'] ?>',
-        cf: 'pedidos/ventas_departamento',
+        class: '<?= $cl_nav_2['estadisticas_ventas_departamento'] ?>',
+        cf: 'estadisticas/ventas_departamento',
         anchor: true
     };
 
     sections.meta_anual = {
         icon: '',
         text: 'Meta anual',
-        class: '<?= $cl_nav_2['pedidos_meta_anual'] ?>',
-        cf: 'pedidos/meta_anual',
+        class: '<?= $cl_nav_2['estadisticas_meta_anual'] ?>',
+        cf: 'estadisticas/meta_anual',
         anchor: true
     };
 
     sections.productos_top = {
         icon: '',
         text: 'Productos top',
-        class: '<?= $cl_nav_2['pedidos_productos_top'] ?>',
-        cf: 'pedidos/productos_top',
+        class: '<?= $cl_nav_2['estadisticas_productos_top'] ?>',
+        cf: 'estadisticas/productos_top',
         anchor: true
     };
 
     sections.efectividad = {
         icon: '',
         text: 'Efectividad',
-        class: '<?= $cl_nav_2['pedidos_efectividad'] ?>',
-        cf: 'pedidos/efectividad',
+        class: '<?= $cl_nav_2['estadisticas_efectividad'] ?>',
+        cf: 'estadisticas/efectividad',
         anchor: true
     };
 

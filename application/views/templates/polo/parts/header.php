@@ -17,7 +17,13 @@
                 <div class="col-xs-3">
                     <div class="welcome-msg hidden-xs"> ¡Bienvenidos a DistriCatólicas! </div>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-3">
+                    <div class="social_links hidden-xs">
+                        <a href="https://www.facebook.com/districatolicas/" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/districatolicas/" target="_blank"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-xs-3">
                     <a class="welcome-msg hidden-xs pull-right" href="https://wa.me/573013054053" target="_blank">
                         <?= img(URL_IMG . 'app/whatsapp-logo-vector_16x16.png') ?>
                         WhatsApp 301 305 4053
@@ -30,14 +36,14 @@
                     <div class="toplinks">
                         <div class="links">
                             <?php if ( $this->session->userdata('logged') ){ ?>
-                                <div class="myaccount">
-                                    <?= anchor("accounts/profile", '<span class="hidden-xs">Mi cuenta</span>', 'title="Mi cuenta de usuario"') ?>
+                                <div>
+                                    <a href="<?= base_url("accounts/profile") ?>" class="hidden-xs" title="Mi cuenta de usuario">Mi cuenta</a>
                                 </div>
-                                <div class="check">
-                                    <?= anchor("pedidos/carrito", '<span class="hidden-xs">Pagar</span>', 'title="Ir a pagar"') ?>
+                                <div>
+                                    <a href="<?= base_url("pedidos/carrito") ?>" class="hidden-xs">Ir a pagar</a>
                                 </div>
-                                <div class="logout">
-                                    <?= anchor("app/logout", '<span class="hidden-xs">Salir</span>', 'title="Cerrar sesión"') ?>
+                                <div>
+                                    <a href="<?= base_url("app/login") ?>" class="hidden-xs">Cerrar sesión</a>
                                 </div>
                             <?php } else { ?>
                                 <div class="myaccount">
@@ -91,7 +97,7 @@
             <div class="col-lg-2 col-sm-3 col-md-2">
                 <div class="top-cart-contain">
                     <a class="btn btn-success" style="background-color: #01e675; border-color: #01e675" href="https://wa.me/573013054053" target="_blank">
-                        <i class="fa fa-whatsapp"></i>
+                        <i class="fab fa-whatsapp"></i>
                         ENVIAR MENSAJE
                     </a>
                 </div>

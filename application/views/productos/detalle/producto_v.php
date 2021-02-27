@@ -68,7 +68,7 @@
             <div class="product-essential">
                 <form action="#" method="post" id="product_addtocart_form">
                     <!-- EVITAR CARGUE DE IMÁGENES GRANDES TEMPORAL 2020-05-07 -->
-                    <?php if ( $imagenes->num_rows() > 1 ) { ?>
+                    <?php if ( $imagenes->num_rows() > 0 ) { ?>
                         <div class="product-img-box col-lg-6 col-sm-6 col-xs-12">
                             <ul class="moreview" id="moreview">
                                 <?php foreach ($imagenes->result() as $row_archivo) { ?>
@@ -158,7 +158,7 @@
                                     <input type="hidden" name="qty">
                                 <?php } ?>
                                     <button id="add-to-cart" class="button btn-cart" title="Agregar al carrito de compras" type="button">
-                                        <span><i class="icon-basket"></i> Al carrito</span>
+                                        <span><i class="fas fa-shopping-cart" style="margin-right: 5px;"></i> Al carrito</span>
                                     </button>
                                 </div>
                             <?php } else { ?>

@@ -1,55 +1,23 @@
-div.div1{
-    margin: 0 0 10px 0;
+/* GENERAL */
+body{
+    font-family: 'Open Sans';
+    font-size: 14px;
 }
 
-div.div2{
-    margin: 10px 0 10px 0;
+.main-container{
+    margin-bottom: 20px;
 }
 
-div.div3{
-    margin: 10px 0px 10px 0px;
-}
+/* CAJAS */
 
-div.casilla{
-    float: left;
-    padding-right: 10px;
-}
 
-div.div4{
-    margin: 10px 15px 10px 0px;
-}
-
-div.div5{
-    border-top: 1px solid #f1f1f1;
-    padding: 5px;
-}
-
-div.div5.actual{
-    background: #ffffd6;
-}
-
-div.sep1{
-    width: 100%;
-    border-bottom: 1px solid #eee;
-}
-
-div.caja1{
-    background: #f7f7f7;
+.box_1{
+    padding: 2em;
+    background-color: #f7f7f7;
     border: 1px solid #eaeaea;
-    padding: 45px;
 }
 
-hr.hr1{
-    border-bottom: 1px solid #eee;
-    border-top: 0px;
-    margin-top: 5px;
-}
-
-input.input1{
-    border: 1px solid #eaeaea;
-    border-radius: 0px;
-}
-
+/* BOTONES */
 .btn-polo {
     border: 1px solid #ddd;
     padding: 10px 7px;
@@ -81,26 +49,6 @@ input.input1{
     color: white;
 }
 
-.input-polo{
-    height: 36px;
-    margin-top: 10px;
-    border: 1px solid #eaeaea;
-    text-align: center;
-}
-
-.input-polo-2{
-    background: #f7f7f7;
-    width: 100%;
-    border: 1px solid #f0f0f0;
-    padding: 10px;
-    border-radius: 0px;
-    margin-bottom: 10px;
-}
-
-.input-polo-2:focus{
-    background: #ffffff;
-}
-
 .btn-polo-lg{
     background: #fdd922;
     border: none;
@@ -119,29 +67,26 @@ input.input1{
     color: #fff;
 }
 
+.btn-primary{
+    background-color: #41ade2;
+    border-color: #41ade2;
+    border-radius: 3px;
+}
+
+.btn-primary:hover{
+    background-color: #1c95d1;
+    border-color: #1c95d1;
+}
+
 
 /* ANCHO de OBJETOS
 ----------------------------------------------------------------------------------------------------*/
 
-.w1{
-    width: 25px;
-}
-
-.w2{
-    width: 50px;
-}
-
-.w3{
-    width: 100px;
-}
-
-.w4{
-    width: 150px;
-}
-
-.w5{
-    width: 200px;
-}
+.w1{ width: 25px; }
+.w2{ width: 50px; }
+.w3{ width: 100px; }
+.w4{ width: 150px; }
+.w5{ width: 200px; }
 
 /* TEXTO
 ----------------------------------------------------------------------------------------------------*/
@@ -173,6 +118,13 @@ img.logo_social{
     border-radius: 3px;
 }
 
+/* FORMULARIOS
+----------------------------------------------------------------------------------------------------*/
+
+.form-control{
+    border-radius: 2px;
+}
+
 /* ADAPTACIÓN BOOTSTRAP
 ----------------------------------------------------------------------------------------------------*/
 
@@ -202,7 +154,7 @@ img.logo_social{
 }
 
 .checkout_steps {
-    font-family: 'Open Sans';
+    font-size: 0.8em;
 }
 
 .checkout_steps {
@@ -215,7 +167,20 @@ img.logo_social{
 }
 
 .checkout_steps .step.active{
-    font-size: 1.2em;
+    font-weight: bold;
     background-color: #fdd922;
     color: #333333;
+}
+
+/* HEADER */
+/*-----------------------------------------------------------------------------*/
+
+.social_links{
+    padding-top: 0.2em;
+    font-size: 1.2em;
+    text-align: right;
+}
+.social_links a{
+    color: white;
+    margin-right: 0.5em;
 }

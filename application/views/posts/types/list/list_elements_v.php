@@ -9,7 +9,6 @@
 <script>
 //VARIABLES
 //---------------------------------------------------------------------------------------------------
-
     var tabla = '<?= $tabla ?>';
     var tabla_id = <?= $tabla_id ?>;
     var relacionado_id = '<?= $row->id ?>';
@@ -37,16 +36,16 @@
             onSelect: agregar_elemento
         });
         
+        // Configura elemento como reordenable
         $('#lista_elementos').sortable({
             handle: 'span',
             update: function( event, ui ) {
-                console.log(event);
                 str_orden = $(this).sortable('serialize');
-                console.log(str_orden);
                 reordenar_lista();
             }
         });
         
+        //Elimina un elemento de la lista
         $('.quitar_elemento').click(function(){
             meta_id = $(this).data('meta_id');
             elemento_id = $(this).data('elemento_id');
@@ -74,23 +73,23 @@
                 dato_id : dato_id,
                 orden : cant_elementos
             },
-            success: function(){
-                window.location = url_app + 'posts/list/' + relacionado_id;
+            success: function(response){
+                //console.log(response);
+                window.location = url_app + 'posts/list_elements/' + relacionado_id;
             }
         });
     }
     
+    //Ejecuta eliminación de un elemento via ajax
     function quitar_elemento()
     {
-        
        $.ajax({
             type: 'POST',
             url: url_app + 'app/eliminar_meta/',
-            data: {
-                meta_id : meta_id
-            },
+            data: { meta_id: meta_id },
             success: function(){
-                $('#elemento_' + elemento_id).hide();
+                console.log('ocultando');
+                $('#element_' + elemento_id).hide('slow');
                 cant_elementos--;
                 $('#cant_elementos').html(cant_elementos);
             }
@@ -104,8 +103,11 @@
         $.ajax({        
             type: 'POST',
             url: url_app + 'posts/reordenar_lista/' + relacionado_id,
-            data: {
-                str_orden : str_orden
+            data: { str_orden : str_orden },
+            success: function(response){
+                if ( response.affected_rows > 0 ) {
+                    toastr['success']('Orden guardado');
+                }
             }
         });
     }
@@ -113,7 +115,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        <div class="card panel-default">
+        <div class="card">
             <div class="card-body">
                 <div class="form-group">
                     <input
@@ -122,13 +124,9 @@
                     >
                 </div>
 
-                <div class="alert alert-info">
-                    La opción de reordenar la lista no está disponible por el momento. (2020-May-20)
-                </div>
-
                 <ul class="handles list" id="lista_elementos">
                     <?php foreach ($elementos_lista->result() as $row_elemento) : ?>
-                        <li id="elemento_<?= $row_elemento->elemento_id ?>">
+                        <li id="element_<?= $row_elemento->elemento_id ?>">
                             <span class="btn btn-light btn-sm">
                                 <i class="fas fa-arrows-alt-v"></i>
                             </span>
