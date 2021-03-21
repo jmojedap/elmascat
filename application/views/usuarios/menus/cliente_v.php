@@ -67,19 +67,19 @@
     };
     
     //Secciones para cada rol
-    sections_rol.dvlp = ['explore', 'profile', 'pedidos', 'books', 'edit'];
-    sections_rol.admn = ['explore', 'profile', 'pedidos', 'books', 'edit'];
-    sections_rol.edtr = ['explore', 'profile', 'pedidos', 'books', 'edit'];
-    sections_rol.vndd = ['explore', 'profile', 'pedidos', 'books'];
+    sections_rol[0] = ['explore', 'profile', 'pedidos', 'books', 'edit'];
+    sections_rol[1] = ['explore', 'profile', 'pedidos', 'books', 'edit'];
+    sections_rol[2] = ['explore', 'profile', 'pedidos', 'books', 'edit'];
+    sections_rol[6] = ['explore', 'profile', 'pedidos', 'books'];
     sections_rol.clbd = ['explore', 'profile', 'pedidos'];
-    sections_rol.clte = ['profile', 'pedidos', 'editarme'];
-    sections_rol.dstr = ['profile', 'pedidos', 'editarme'];
-    sections_rol.susc = ['profile', 'pedidos', 'editarme'];
+    sections_rol[21] = ['profile', 'pedidos', 'editarme'];
+    sections_rol[22] = ['profile', 'pedidos', 'editarme'];
+    sections_rol[23] = ['profile', 'pedidos', 'editarme'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
-    for ( key_section in sections_rol[app_r]) 
+    for ( key_section in sections_rol[app_rid]) 
     {
-        var key = sections_rol[app_r][key_section];   //Identificar elemento
+        var key = sections_rol[app_rid][key_section];   //Identificar elemento
         nav_2.push(sections[key]);    //Agregar el elemento correspondiente
     }
     

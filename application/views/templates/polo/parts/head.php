@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <![endif]-->
         <title><?= $head_title ?></title>
-        <link rel="shortcut icon" href="<?= URL_IMG ?>app/favicon.png" type="image/ico" />
+        <link rel="shortcut icon" href="<?= URL_BRAND ?>favicon.png" type="image/png" />
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Libreria Catolica Bogota Colombia">
@@ -39,9 +39,9 @@
         <link rel="stylesheet" href="<?= $carpeta_tema ?>css/owl.carousel.css" type="text/css">
         <link rel="stylesheet" href="<?= $carpeta_tema ?>css/owl.theme.css" type="text/css">
 
-        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/style_pml.css' ?>" type="text/css">
-        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/bs3_bs4_02.css' ?>" type="text/css">
-        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/polo_add_13.css' ?>" type="text/css">
+        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/pacarina.css' ?>" type="text/css">
+        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/bs3_bs4.css' ?>" type="text/css">
+        <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/polo_add.css' ?>" type="text/css">
         
         <!-- Google Fonts -->
         <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,300,700,800,400,600' rel='stylesheet' type='text/css'>
@@ -62,6 +62,5 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 
         <script>
-            const url_app = '<?= URL_APP ?>';
-            const url_api = '<?= URL_API ?>';
+            const url_app = '<?= URL_APP ?>'; const url_api = '<?= URL_API ?>';
         </script>

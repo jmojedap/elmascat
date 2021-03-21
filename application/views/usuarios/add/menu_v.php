@@ -10,7 +10,7 @@
 <script>
     var sections = [];
     var nav_3 = [];
-    var sections_role = [];
+    var sections_rol = [];
     //var element_id = '<?php //echo $this->uri->segment(3) ?>';
     
     sections.institutional = {
@@ -30,15 +30,15 @@
     };
     
     //Secciones para cada rol
-    sections_role.dvlp = ['person', 'institutional'];
-    sections_role.admn = ['person', 'institutional'];
-    sections_role.edtr = ['person', 'institutional'];
-    sections_role.prpt = ['person', 'institutional'];
+    sections_rol[0] = ['person', 'institutional'];
+    sections_rol[1] = ['person', 'institutional'];
+    sections_rol[2] = ['person', 'institutional'];
+    sections_rol.prpt = ['person', 'institutional'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
-    for ( key_section in sections_role[app_r]) 
+    for ( key_section in sections_rol[app_rid]) 
     {
-        var key = sections_role[app_r][key_section];   //Identificar elemento
+        var key = sections_rol[app_rid][key_section];   //Identificar elemento
         nav_3.push(sections[key]);    //Agregar el elemento correspondiente
     }
 </script>

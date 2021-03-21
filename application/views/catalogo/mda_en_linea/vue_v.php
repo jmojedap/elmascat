@@ -1,9 +1,9 @@
 <?php
     $arr_meta_productos = array(
         /*array('nombre_corto' => 'Junio 2020', 'qty_months' => '1', 'descripcion_corta' => 'Edición de Junio de 2020'),*/
-        array('nombre_corto' => '3 meses', 'qty_months' => '3', 'descripcion_corta' => 'Septiembre, Octubre y Noviembre de 2020'),
-        array('nombre_corto' => '6 meses', 'qty_months' => '6', 'descripcion_corta' => 'Septiembre 2020 a Febrero 2021'),
-        array('nombre_corto' => '12 meses', 'qty_months' => '12', 'descripcion_corta' => 'Septiembre 2020 a Agosto de 2021')
+        array('nombre_corto' => '3 meses', 'qty_months' => '3', 'descripcion_corta' => 'Abril, mayo y junio de 2021'),
+        array('nombre_corto' => '6 meses', 'qty_months' => '6', 'descripcion_corta' => 'Abril a septiembre 2021'),
+        array('nombre_corto' => '12 meses', 'qty_months' => '12', 'descripcion_corta' => 'Abril de 2021 a Marzo de 2022')
     );
 
     $arr_productos = array();

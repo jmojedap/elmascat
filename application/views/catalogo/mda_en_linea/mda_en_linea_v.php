@@ -18,7 +18,7 @@
             </div>
         </div>
         <div class="col-xs-12 hidden-md hidden-lg">
-            <p class="text-center">{{ producto_actual.descripcion_corta }}</p>
+            <p class="text-center">{{ producto_actual.descripcion }}</p>
         </div>
         <div class="col-xs-12 hidden-md hidden-lg text-center">
             <button class="btn-cart btn-block" v-on:click="agregar_producto">

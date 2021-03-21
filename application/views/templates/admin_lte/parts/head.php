@@ -11,7 +11,7 @@
 <!--Estilos adicionales-->
 <link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES ?>css/admin_lte_add.css">
 <link rel="stylesheet" href="<?= URL_RESOURCES . 'css/bs3_bs4.css' ?>" type="text/css">
-<link rel="stylesheet" href="<?= URL_RESOURCES . 'css/style_pml.css' ?>" type="text/css">
+<link rel="stylesheet" href="<?= URL_RESOURCES . 'css/pacarina.css' ?>" type="text/css">
 
 <!-- Vue.js -->
 <?php $this->load->view('assets/vue') ?>

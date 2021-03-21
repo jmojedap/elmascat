@@ -38,16 +38,16 @@
     };
     
     //Secciones para cada rol
-    sections_rol.dvlp = ['explore', 'add', 'solicitudes_rol'];
-    sections_rol.admn = ['explore', 'add', 'solicitudes_rol'];
-    sections_rol.edtr = ['explore', 'add'];
-    sections_rol.vndd = ['explore'];
+    sections_rol[0] = ['explore', 'add', 'solicitudes_rol'];
+    sections_rol[1] = ['explore', 'add', 'solicitudes_rol'];
+    sections_rol[2] = ['explore', 'add'];
+    sections_rol[6] = ['explore'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
-    for ( key_section in sections_rol[app_r]) 
+    for ( key_section in sections_rol[app_rid]) 
     {
         //console.log(sections_rol[rol][key_section]);
-        var key = sections_rol[app_r][key_section];   //Identificar elemento
+        var key = sections_rol[app_rid][key_section];   //Identificar elemento
         nav_2.push(sections[key]);    //Agregar el elemento correspondiente
     }
 </script>

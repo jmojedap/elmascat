@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pml {
 
-    /** ACTUALIZADA 2020-09-03 */
+    /** ACTUALIZADA 2021-03-19 */
     
     /**
      * Converts codeigniter query object in an array
@@ -48,6 +48,49 @@ class Pml {
         
         //Se quita el separador final con substr
         return substr($str, 0, -strlen($separator));
+    }
+
+// TOTALES
+//-----------------------------------------------------------------------------
+
+    /**
+     * Devuelve la sumatoria de un campo en un objeto query
+     * 2021-02-02
+     */
+    function sum_query($query, $field)
+    {
+        $sum = 0;
+        foreach ($query->result() as $row)
+        {
+            $sum += $row->$field;
+        }
+
+        return $sum;
+    }
+
+    /**
+     * Array con suma, promedio, max y min de una variable numérica de un query
+     * 2021-02-04
+     */
+    function field_summary($query, $field)
+    {
+        //Valores iniciales
+        $summary = array('sum' => 0,'avg' => 0,'min' => 0,'max' => 0,'count' => 0);
+        if ( $query->num_rows() > 0 ) { $summary['min'] = $query->row(0)->$field; }
+
+        //Recorrer query
+        foreach ($query->result() as $row)
+        {
+            $summary['sum'] += $row->$field;
+            if ( $row->$field > $summary['max'] ) $summary['max'] = $row->$field * 1;
+            if ( $row->$field < $summary['min'] ) $summary['min'] = $row->$field * 1;
+            if ( ! is_null($row->$field) ) $summary['count'] += 1;
+        }
+
+        //Calculando promedio
+        if ( $summary['count'] > 0 ) $summary['avg'] = $summary['sum'] / $summary['count'];
+
+        return $summary;
     }
     
 // CONTROL FUNCTIONS
@@ -99,6 +142,23 @@ class Pml {
             $if_strlen = $value_else;
         }
         return $if_strlen;
+    }
+
+    /**
+     * Si una variable es NULL, devuelve un value_if
+     * 2021-03-19
+     */
+    function if_null($variable, $value_if = '', $value_else = NULL)
+    {
+        if ( is_null($value_else) ) { $value_else = $variable; }
+        
+        if ( is_null($variable) ) 
+        {
+            $if_null = $value_if;
+        } else {
+            $if_null = $value_else;
+        }
+        return $if_null;
     }
 
     /**

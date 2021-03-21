@@ -87,33 +87,52 @@ define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
 /*
 |--------------------------------------------------------------------------
-|Definidas por Pacarina
+|Definidas por Pacarina Media Lab (Español)
 */
+
+define('NOMBRE_APP', 'DistriCatólicas');            //Nombre de la aplicación
+
+//define('URL_IMG', 'http://localhost/districatolicas/resources/images/');
+define('URL_ASSETS', 'http://localhost/districatolicas/assets/');
+define('URL_RECURSOS', 'http://localhost/districatolicas/resources/20210313/');
+//define('URL_UPLOADS', 'http://www.districatolicas.com/tienda/uploads/');
 
 define('RUTA_IMG', 'recursos/imagenes/');
 define('RUTA_UPLOADS', 'uploads/');
-define('URL_IMG', 'http://localhost/districatolicas/resources/images/');
-define('URL_ASSETS', 'http://localhost/districatolicas/assets/');
-define('URL_RECURSOS', 'http://localhost/districatolicas/resources/');
-define('URL_UPLOADS', 'http://www.districatolicas.com/tienda/uploads/');
+
 define('PTL_ADMIN', 'templates/admin_lte/main_v');       //Vista plantilla de administración
 define('PTL_ADMIN_F', 'plantillas/admin_lte/');                //Folder de la carpeta de la plantilla de administración
 define('PTL_FRONT', 'plantillas/polo/plantilla_v');          //Vista plantilla del front
+
 define('VER_LOCAL', TRUE);                          //Es una versión local
-define('MAX_REG_EXPORT', 5000);                     //Número máximo de registros para exportar en archivo MS-Excel
-define('NOMBRE_APP', 'DistriCatólicas');            //Nombre de la aplicación
+
+/*
+|--------------------------------------------------------------------------
+|Definidas por Pacarina Media Lab
+*/
 
 define('APP_NAME', 'DistriCatólicas');                  //Nombre de la aplicación
-define('PATH_CONTENT', 'content/');                     //Carpeta de contenido de la aplicación
-define('PATH_UPLOADS', 'uploads/');
-define('URL_CONTENT', 'http://localhost/districatolicas/content/');  //URL de la carpeta de contenido de la aplicación
-define('URL_RESOURCES', 'http://localhost/districatolicas/resources/');
+define('APP_DOMAIN', 'districatolicas.com');
+
+define('URL_SYNC', 'https://www.districatolicas.com/tienda/sync/');
 define('URL_APP', 'http://localhost/districatolicas/');
 define('URL_API', 'http://localhost/districatolicas/');
+define('URL_UPLOADS', 'http://localhost/districatolicas/uploads/');
+define('URL_CONTENT', 'http://localhost/districatolicas/content/');  //URL de la carpeta de contenido de la aplicación
+define('URL_RESOURCES', 'http://localhost/districatolicas/resources/20210313/');
+define('URL_IMG', 'http://localhost/districatolicas/resources/20210313/images/');
+define('URL_BRAND', 'http://localhost/districatolicas/resources/20210313/brands/districatolicas/');
+
 define('ENV', 'development');
 
-define('TPL_ADMIN', 'templates/admin_pml/main_v');          //Vista plantilla del front
-define('TPL_FRONT', 'templates/polo/main_v');          //Vista plantilla del front
+define('PATH_CONTENT', 'content/');                     //Carpeta de contenido de la aplicación
+define('PATH_UPLOADS', 'content/uploads/');
+define('PATH_RESOURCES', 'resources/20210313/');
+
+define('MAX_REG_EXPORT', 5000);                     //Número máximo de registros para exportar en archivo MS-Excel
+
+define('TPL_ADMIN', 'templates/admin_pml/main');            //Vista plantilla del front
+define('TPL_FRONT', 'templates/polo/main_v');               //Vista plantilla del front
 
 define('K_RCSK', '6LfwTtgUAAAAAFQYAKdRfPMsTYWHw5SAgX2gwUda');   //ReCaptcha V3 SiteKey
 define('K_RCSC', '6LfwTtgUAAAAAJjKiRm-UTwhA_MnDXpAY_Zm4089');   //ReCaptcha V3 Clave Secreta

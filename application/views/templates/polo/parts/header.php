@@ -90,7 +90,7 @@
 
             <!-- Top Cart -->
             <div class="col-lg-2 col-sm-3 col-md-2">
-                <?php $this->load->view('plantillas/polo/partes/header_top_cart'); ?>
+                <?php $this->load->view('templates/polo/parts/header_top_cart'); ?>
             </div>
             <!-- End Top Cart --> 
             

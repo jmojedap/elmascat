@@ -36,24 +36,26 @@
         icon: 'fa fa-pencil-alt',
         text: 'Editar',
         class: '<?= $cl_nav_2['posts_edit'] ?>',
-        cf: 'posts/edit/' + element_id
+        cf: 'posts/edit/' + element_id,
+        anchor: true
     };
     
     sections.list_elements = {
         icon: 'fa fa-list',
         text: 'Elementos',
         class: '<?= $cl_nav_2['posts_list_elements'] ?>',
-        cf: 'posts/list_elements/' + element_id
+        cf: 'posts/list_elements/' + element_id,
+        anchor: true
     };
     
     //Secciones para cada rol
-    sections_rol.dvlp = ['explore', 'info', 'list_elements', 'edit'];
-    sections_rol.admn = ['info', 'list_elements', 'edit'];
+    sections_rol[0] = ['explore', 'info', 'list_elements', 'edit'];
+    sections_rol[1] = ['info', 'list_elements', 'edit'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
-    for ( key_section in sections_rol[app_r]) 
+    for ( key_section in sections_rol[app_rid]) 
     {
-        var key = sections_rol[app_r][key_section];   //Identificar elemento
+        var key = sections_rol[app_rid][key_section];   //Identificar elemento
         nav_2.push(sections[key]);    //Agregar el elemento correspondiente
     }
     

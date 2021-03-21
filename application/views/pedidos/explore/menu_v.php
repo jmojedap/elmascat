@@ -22,15 +22,15 @@
     };
     
     //Secciones para cada rol
-    sections_rol.dvlp = ['explorar'];
-    sections_rol.admn = ['explorar'];
-    sections_rol.edtr = ['explorar'];
+    sections_rol[0] = ['explorar'];
+    sections_rol[1] = ['explorar'];
+    sections_rol[2] = ['explorar'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
-    for ( key_section in sections_rol[app_r]) 
+    for ( key_section in sections_rol[app_rid]) 
     {
         //console.log(sections_rol[rol][key_section]);
-        var key = sections_rol[app_r][key_section];   //Identificar elemento
+        var key = sections_rol[app_rid][key_section];   //Identificar elemento
         nav_2.push(sections[key]);    //Agregar el elemento correspondiente
     }
 </script>

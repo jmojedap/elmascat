@@ -13,7 +13,7 @@
 <script>
     var sections = [];
     var nav_3 = [];
-    var sections_role = [];
+    var sections_rol = [];
     var element_id = '<?= $this->uri->segment(3) ?>';
     
     sections.basic = {
@@ -31,20 +31,20 @@
     };
     
     //Secciones para cada rol
-    sections_role.dvlp = ['basic', 'password'];
-    sections_role.admn = ['basic', 'password'];
-    sections_role.edtr = ['basic', 'password'];
-    sections_role.vndd = ['basic', 'password'];
-    sections_role.clbd = ['basic', 'password'];
-    sections_role.dmda = ['basic', 'password'];
-    sections_role.clte = ['basic', 'password'];
-    sections_role.dstr = ['basic', 'password'];
-    sections_role.susc = ['basic', 'password'];
+    sections_rol[0] = ['basic', 'password'];
+    sections_rol[1] = ['basic', 'password'];
+    sections_rol[2] = ['basic', 'password'];
+    sections_rol[6] = ['basic', 'password'];
+    sections_rol.clbd = ['basic', 'password'];
+    sections_rol[15] = ['basic', 'password'];
+    sections_rol[21] = ['basic', 'password'];
+    sections_rol[22] = ['basic', 'password'];
+    sections_rol[23] = ['basic', 'password'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
-    for ( key_section in sections_role[app_r]) 
+    for ( key_section in sections_rol[app_rid]) 
     {
-        var key = sections_role[app_r][key_section];   //Identificar elemento
+        var key = sections_rol[app_rid][key_section];   //Identificar elemento
         nav_3.push(sections[key]);    //Agregar el elemento correspondiente
     }
     

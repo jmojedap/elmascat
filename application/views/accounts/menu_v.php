@@ -30,20 +30,20 @@
     };
     
     //Secciones para cada rol
-    sections_rol.dvlp = ['profile', 'edit'];
-    sections_rol.admn = ['profile', 'edit'];
-    sections_rol.edtr = ['profile', 'edit'];
-    sections_rol.vndd = ['profile', 'edit'];
-    sections_rol.dmda = ['profile', 'edit'];
-    sections_rol.clte = ['profile', 'edit'];
-    sections_rol.dstr = ['profile', 'edit'];
-    sections_rol.susc = ['profile', 'edit'];
+    sections_rol[0] = ['profile', 'edit'];
+    sections_rol[1] = ['profile', 'edit'];
+    sections_rol[2] = ['profile', 'edit'];
+    sections_rol[6] = ['profile', 'edit'];
+    sections_rol[15] = ['profile', 'edit'];
+    sections_rol[21] = ['profile', 'edit'];
+    sections_rol[22] = ['profile', 'edit'];
+    sections_rol[23] = ['profile', 'edit'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
-    for ( key_section in sections_rol[app_r]) 
+    for ( key_section in sections_rol[app_rid]) 
     {
         //console.log(sections_rol[rol][key_section]);
-        var key = sections_rol[app_r][key_section];   //Identificar elemento
+        var key = sections_rol[app_rid][key_section];   //Identificar elemento
         nav_2.push(sections[key]);    //Agregar el elemento correspondiente
     }
     
