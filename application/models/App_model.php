@@ -106,7 +106,7 @@ class App_model extends CI_Model{
             $menus['archivos/editar'] = array('archivos', 'archivos-editar');
             
         //Datos
-            $menus['datos/sis_opcion'] = array('ajustes', 'ajustes-parametros');
+            $menus['datos/options'] = array('ajustes', 'ajustes-parametros');
             $menus['datos/categorias'] = array('ajustes', 'ajustes-parametros');
             $menus['datos/palabras_clave'] = array('ajustes', 'ajustes-parametros');
             $menus['datos/listas'] = array('ajustes', 'ajustes-parametros');
@@ -153,13 +153,11 @@ class App_model extends CI_Model{
     }
     
     /**
-     * Devuelve el valor del campo sis_opcion.valor
-     * @param type $opcion_id
-     * @return type
+     * Devuelve el valor del campo sis_option.option_value
      */
     function valor_opcion($opcion_id)
     {
-        $valor_opcion = $this->Pcrn->campo_id('sis_opcion', $opcion_id, 'valor');
+        $valor_opcion = $this->Db_model->field_id('sis_option', $opcion_id, 'option_value');
         return $valor_opcion;
     }
     
@@ -226,7 +224,7 @@ class App_model extends CI_Model{
             case 'usuario';
                 $nombre_elemento = $this->nombre_usuario($elemento_id, $formato);
             case 'archivo';
-                $nombre_elemento = $this->Pcrn->campo_id('archivo', $elemento_id, 'titulo_archivo');
+                $nombre_elemento = $this->Db_model->field_id('archivo', $elemento_id, 'titulo_archivo');
             default:
                 break;
         }
@@ -703,7 +701,7 @@ class App_model extends CI_Model{
     
     function imagenes_carrusel()
     {
-        $lista_id = $this->Pcrn->campo_id('sis_opcion', 104, 'valor');
+        $lista_id = $this->Db_model->field_id('sis_option', 104, 'option_value');
         $select = 'titulo_archivo AS titulo, subtitulo, descripcion, link, CONCAT("' . URL_UPLOADS . '", (carpeta), (nombre_archivo)) AS src';
         
         $this->db->select($select);
@@ -800,6 +798,45 @@ class App_model extends CI_Model{
         );
         
         return $att_img;
+    }
+
+// Procesos del sistema para la aplicación
+//-----------------------------------------------------------------------------
+
+    function processes()
+    {
+        $processes = array(
+            array(
+                'process_name' => 'Actualizar archivos url', 'process_link' => 'archivos/actualizar_url',
+                'description' => 'Actualizar tabla archivo, campos url y url_thumbnail',
+            ),
+            array(
+                'process_name' => 'Actualizar productos imágenes', 'process_link' => 'productos/actualizar_campos_imagenes',
+                'description' => 'Actualizar tabla producto, campos url_image y url_thumbnail',
+            ),
+            array(
+                'process_name' => 'Generar campos tablas en ítem', 'process_link' => 'develop/campos_item',
+                'description' => 'Crea en la tabla item los registros de los campos de todas las tablas de la base de datos',
+            ),
+            array(
+                'process_name' => 'Activación según fletes', 'process_link' => 'develop/sin_fletes',
+                'description' => 'Desactivar cuidades y municipios que no tienen datos de fletes. Activar ciudades que tienen datos de fletes.',
+            ),
+            array(
+                'process_name' => 'Actualizar estado pedidos', 'process_link' => 'pedidos/act_estado_pendientes',
+                'description' => 'Actualizar estado de pedidos que están pendientes de pago pero ya tienen respuesta POL.',
+            ),
+            array(
+                'process_name' => 'Actualizar item.ascendencia', 'process_link' => 'develop/set_ascendencia',
+                'description' => 'Actualiza el campo item.ascendencia para un item específico',
+            ),
+            array(
+                'process_name' => 'Eliminación en cascada', 'process_link' => 'develop/elimiminar_cascada',
+                'description' => 'Elimina los registros huérfanos de tablas relacionadas.',
+            ),
+        );
+
+        return $processes;
     }
     
 }

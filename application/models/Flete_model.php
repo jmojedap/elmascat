@@ -145,7 +145,7 @@ class Flete_model extends CI_Model{
      */
     function costo_fijo($origen_id, $destino_id)
     {
-        $costo_fijo = $this->Pcrn->campo_id('sis_opcion', 20, 'valor');
+        $costo_fijo = $this->Db_model->field_id('sis_option', 20, 'option_value');
         
         $condicion = "origen_id = {$origen_id} AND  destino_id = {$destino_id}";
         $row_flete = $this->Pcrn->registro('flete', $condicion);
@@ -168,7 +168,7 @@ class Flete_model extends CI_Model{
     function costo_variable($origen_id, $destino_id, $peso)
     {
         //Valor por defecto
-            $costo_variable = $this->Pcrn->campo_id('sis_opcion', 21, 'valor');
+            $costo_variable = $this->Db_model->field_id('sis_option', 21, 'option_value');
         
         //Buscando valor
             $array_rangos = $this->array_rangos($origen_id, $destino_id);

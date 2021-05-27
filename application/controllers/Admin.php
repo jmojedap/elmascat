@@ -18,23 +18,89 @@ class Admin extends CI_Controller {
     {
         redirect('sistema/tablas');
     }
+
+// SIS OPTION 2019-06-15
+//---------------------------------------------------------------------------------------------------
+
+    /**
+     * Listas de documentos, creación, edición y eliminación de opciones
+     */
+    function options()
+    {
+        $data['head_title'] = 'Opciones del sistema';
+        $data['nav_2'] = 'system/admin/menu_v';        
+        $data['view_a'] = 'system/admin/options_v';        
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * AJAX - JSON
+     * Listado de las opciones de documentos (posts.type_id = 7022)
+     */
+    function get_options()
+    {
+        $data['options'] = $this->db->get('sis_option')->result();
+
+        $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode($data));
+    }
+
+    /**
+     * AJAX - JSON
+     * Inserta o actualiza una opcione de documentos (posts.type_id = 7022)
+     */
+    function save_option($option_id = 0)
+    {
+        $option_id = $this->Admin_model->save_option($option_id);
+
+        $data = array('status' => 0, 'message' => 'La opción no fue guardada');
+        if ( ! is_null($option_id) ) { $data = array('status' => 1, 'message' => 'Opción guardada: ' . $option_id); }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Elimina una opcione de documentos, registro de la tabla post
+     */
+    function delete_option($option_id)
+    {
+        $data = $this->Admin_model->delete_option($option_id);
+        
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+// Colores
+//-----------------------------------------------------------------------------
+
+    /**
+     * Conjunto de colores de la herramienta
+     * 2020-03-18
+     */
+    function colors()
+    {
+        $data['head_title'] = 'Colores';
+        $data['nav_2'] = 'system/admin/menu_v';
+        $data['view_a'] = 'system/admin/colors_v';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+// Procesos
+//-----------------------------------------------------------------------------
+
+    function processes()
+    {    
+        //Variables
+            $data['processes'] = $this->App_model->processes();
+        
+            $data['head_title'] = 'Procesos del sistema';
+            $data['view_a'] = "system/admin/processes_v";
+            $data['nav_2'] = 'system/admin/menu_v';        
+            $this->App_model->view(TPL_ADMIN, $data);
+    }
         
 //---------------------------------------------------------------------------------------------------
 //PANEL DE CONTROL
-    
-    function sis_opcion()
-    {
-        $gc_output = $this->Admin_model->crud_sis_opcion();
-        
-        //Array data espefícicas
-        $data['titulo_pagina'] = 'Parámetros';
-        $data['subtitulo_pagina'] = 'Opciones generales';
-        $data['vista_menu'] = 'sistema/admin/parametros_menu_v';
-        $data['vista_a'] = 'comunes/gc_v';
-        
-        $output = array_merge($data,(array)$gc_output);
-        $this->load->view(PTL_ADMIN, $output);
-    }
     
     function procesos()
     {
@@ -140,7 +206,7 @@ class Admin extends CI_Controller {
     function ml($usuario_id)
     {
         $this->load->model('Login_model');
-        $username = $this->Pcrn->campo_id('usuario', $usuario_id, 'username');
+        $username = $this->Db_model->field_id('usuario', $usuario_id, 'username');
         if ( $this->session->userdata('rol_id') <= 1 ) { $this->Login_model->crear_sesion($username, FALSE); }
         
         redirect('app/logged');

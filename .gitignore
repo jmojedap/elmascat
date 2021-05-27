@@ -18,6 +18,7 @@ application/logs/*
 
 #pml
 /content/
+/resources/
 /htaccess/
 /system/
 /system_315/

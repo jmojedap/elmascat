@@ -24,20 +24,6 @@ class Catalogo extends CI_Controller{
 //---------------------------------------------------------------------------------------------------
     
     /**
-     * Controla y redirecciona las búsquedas de exploración del catálogo de productos
-     * así se evita el problema de reenvío del formulario al presionar el botón 
-     * "atrás" del browser
-     * 
-     * @param type $elemento
-     */
-    function catalogo_redirect()
-    {
-        $this->load->model('Busqueda_model');
-        $busqueda_str = $this->Busqueda_model->busqueda_str();
-        redirect("productos/catalogo/?{$busqueda_str}");
-    }
-    
-    /**
      * Catálogo de productos, responde a búsquedas y filtros
      */
     function catalogo()
@@ -79,7 +65,7 @@ class Catalogo extends CI_Controller{
         
         //Solicitar vista
             $data['view_a'] = 'productos/catalogo/catalogo_v';
-            $this->load->view(TPL_FRONT, $data);
+            $this->load->view('templates/libreria/main', $data);
     }
     
     /**
@@ -115,7 +101,8 @@ class Catalogo extends CI_Controller{
         $data['metadatos'] = $this->Producto_model->metadatos_valor($producto_id, 'visible');
         $data['variaciones'] = $this->Producto_model->variaciones($producto_id);
         $data['comentarios'] = $this->Producto_model->comentarios($producto_id);
-        $data['view_a'] = 'productos/detalle/producto_v';
+        //$data['view_a'] = 'productos/detalle/producto_v';
+        $data['view_a'] = 'templates/libreria/example';
         $data['arr_precio'] = $this->Producto_model->arr_precio($producto_id);
         $data['arr_tipos_precio'] = $this->Producto_model->arr_tipos_precio();
         
@@ -123,7 +110,7 @@ class Catalogo extends CI_Controller{
             $data['imagenes'] = $this->Producto_model->imagenes($producto_id);
             $data['palabras_clave'] = $this->Producto_model->palabras_clave($producto_id);
         
-        $this->load->view(TPL_FRONT, $data);
+        $this->load->view('templates/libreria/main', $data);
     }
 
 // PRODUCTOS CON CONTENIDOS DIGITALES
@@ -141,7 +128,7 @@ class Catalogo extends CI_Controller{
         $this->db->order_by('precio', 'ASC');
         $data['productos'] = $this->db->get('producto',4);
 
-        $this->load->view(TPL_FRONT, $data);
+        $this->load->view('templates/libreria/main', $data);
     }
 
 }

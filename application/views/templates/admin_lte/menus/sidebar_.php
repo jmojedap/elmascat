@@ -94,7 +94,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['ajustes-parametros'] ?>">
-                        <?= anchor("datos/sis_opcion", '<i class="fa fa-gear"></i> Parámetros') ?>
+                        <?= anchor("datos/sis_option", '<i class="fa fa-gear"></i> Parámetros') ?>
                     </li>
                     <li class="<?= $clases_m1['ajustes-database'] ?>">
                         <?= anchor("develop/tablas/item", '<i class="fa fa-database"></i> Base de datos') ?>

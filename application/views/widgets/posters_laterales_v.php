@@ -1,8 +1,8 @@
 <?php
-    $img_id_1 = $this->Pcrn->campo_id('sis_opcion', 101, 'valor');
+    $img_id_1 = $this->Db_model->field_id('sis_option', 101, 'valor');
     $row_img_1 = $this->App_model->row_img($img_id_1, '');
     
-    $img_id_2 = $this->Pcrn->campo_id('sis_opcion', 102, 'valor');
+    $img_id_2 = $this->Db_model->field_id('sis_option', 102, 'valor');
     $row_img_2 = $this->App_model->row_img($img_id_2, '');
 ?>
 

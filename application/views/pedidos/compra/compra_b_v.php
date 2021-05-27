@@ -149,13 +149,13 @@
                                 
                                 <p>
                                     <strong class="text-primary">De:</strong>
-                                    <?= $arr_meta->regalo->de ?>
+                                    <?= $arr_meta['regalo']['de'] ?>
                                     &middot;
                                     <strong class="text-primary">Para:</strong>
-                                    <?= $arr_meta->regalo->para ?>
+                                    <?= $arr_meta['regalo']['para'] ?>
                                     &middot;
                                     <strong class="text-primary">Mensaje:</strong>
-                                    <?= $arr_meta->regalo->mensaje ?>
+                                    <?= $arr_meta['regalo']['mensaje'] ?>
                                 </p>
                                 <p>
                                     <a href="<?= base_url("pedidos/datos_regalo") ?>" class="btn btn-xs btn-primary">
@@ -215,13 +215,26 @@
                 </form>
             </ul>
 
-            <div class="alert alert-info">
-                <p class="text-center">
+            <div class="alert alert-info text-center">
+                <p>
                     <i class="fa fa-info-circle"></i> <strong>Aviso importante</strong>
                 </p>
-                <p class="text-center">
-                    Debido a la contingencia sanitaria la entrega de tu compra puede tardar
-                    hasta 3 días hábiles en Bogotá y hasta <b>4 días hábiles</b> para el resto del país.
+                <?php
+                    /*
+                    <p class="text-center">
+                        Debido a la contingencia sanitaria la entrega de tu compra puede tardar
+                        hasta 3 días hábiles en Bogotá y hasta <b>4 días hábiles</b> para el resto del país.
+                    </p>
+                    */
+                ?>
+                <p>
+                    Dadas las condiciones actuales de nuestro país los envíos a Bogotá y otras ciudades presentan demoras, en especial la parte sur del país. 
+                </p>
+                <p>
+                    ¡Gracias por tu comprensión!
+                </p>
+                <p>
+                    Seguimos trabajando para prestar el mejor servicio.
                 </p>
             </div>
             

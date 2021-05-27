@@ -3,7 +3,7 @@
         $fecha_nuevo = $this->Pcrn->suma_fecha(date('Y-m-d H:i:s'), '-1 month');
 ?>
 
-<ul class="products-grid">
+<div class="products-grid-2">
     
     <?php foreach ($resultados->result() as $row_producto) : ?>
         <?php
@@ -24,7 +24,7 @@
             $segundos_creado = $this->Pcrn->segundos_lapso($row_producto->creado, $fecha_nuevo);
             if ( $segundos_creado < (2629800) ) { $es_nuevo = 1; }
         ?>
-        <li class="item col-lg-4 col-md-4 col-sm-6 col-xs-6">
+        <div class="">
             <div class="col-item">
                 
                 <?php if ( $en_promocion ) { ?>
@@ -37,7 +37,7 @@
                 
                 <div class="product-image-area">
                     <a class="product-image" title="<?= $row_producto->nombre_producto ?>" href="<?= $link_visitar ?>">
-                        <div style="overflow: hidden; height: 380px; padding: 1px; background: #e1f5fe;">
+                        <div class="product-image-container">
                             <img
                                 src="<?= URL_UPLOADS . $row_producto->carpeta . '500px_' . $row_producto->nombre_archivo; ?>"
                                 class="img-responsive"
@@ -88,6 +88,6 @@
                     <div class="clearfix"> </div>
                 </div>
             </div>
-        </li>
+        </div>
     <?php endforeach ?>
-</ul>
+</div>

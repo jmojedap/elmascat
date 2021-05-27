@@ -467,15 +467,15 @@ class Archivo_model extends CI_Model{
     
     /**
      * Modifica la imagen original con un tamaño específico máximo
+     * 2021-05-07
      * 
-     * @param type $row_archivo
      */
     function mod_original($carpeta, $nombre_archivo)
     {
         $modificado = 0;
         $image_size = getimagesize(RUTA_UPLOADS . $carpeta . $nombre_archivo);
         
-        $ancho = 1500;   //Tamaño 1500px
+        $ancho = 920;   //(1500px hasta 20210507)
         
         $cant_condiciones = 0;
         

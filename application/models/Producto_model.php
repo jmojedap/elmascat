@@ -804,7 +804,7 @@ class Producto_Model extends CI_Model{
         $condicion = "tabla_id = 3100 AND elemento_id = {$producto_id} AND dato_id = 10";
         $meta_id = $this->Pcrn->existe('meta', $condicion);
         if ( $meta_id > 0 ) {
-            $cant_visitas = $this->Pcrn->campo_id('meta', $meta_id, 'valor');
+            $cant_visitas = $this->Db_model->field_id('meta', $meta_id, 'valor');
         }
         
         return $cant_visitas;
@@ -1580,7 +1580,7 @@ class Producto_Model extends CI_Model{
      */
     function pct_fabricante($fabricante_id)
     {
-        $pct_fabricante = $this->Pcrn->campo_id('item', $fabricante_id, 'entero_1');
+        $pct_fabricante = $this->Db_model->field_id('item', $fabricante_id, 'entero_1');
         
         if ( is_null($pct_fabricante) ) { $pct_fabricante = 0; }
         

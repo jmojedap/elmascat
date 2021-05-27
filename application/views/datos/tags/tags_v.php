@@ -1,4 +1,4 @@
-<?php $this->load->view('sistema/admin/parametros_menu_v') ?>
+<?php $this->load->view('productos/explorar/menu_v') ?>
 
 <style>
     .subnivel{

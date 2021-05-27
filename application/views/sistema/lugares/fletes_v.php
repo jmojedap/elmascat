@@ -3,7 +3,7 @@
 
     $kilos = 15;
     
-    $json_fletes = $this->Pcrn->campo_id('flete', 1, 'rangos');
+    $json_fletes = $this->Db_model->field_id('flete', 1, 'rangos');
     
     $arr_fletes = json_decode($json_fletes);
     

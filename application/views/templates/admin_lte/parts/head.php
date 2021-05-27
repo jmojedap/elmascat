@@ -18,3 +18,8 @@
 
 <!-- Alertas y notificaciones -->
 <?php $this->load->view('assets/toastr') ?>
+
+<script>
+    const url_app = '<?= URL_APP ?>';
+    const url_api = '<?= URL_API ?>';
+</script>

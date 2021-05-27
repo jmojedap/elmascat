@@ -364,7 +364,7 @@ class Pedido_Model extends CI_Model{
     {
         $regalo = array('de' => '', 'para' => '', 'mensaje' => '');
         $arr_meta = array('regalo' => $regalo);
-        if ( strlen($row->meta) ) { $arr_meta = json_decode($row->meta); }
+        if ( strlen($row->meta) ) { $arr_meta = json_decode($row->meta, TRUE); }
 
         return $arr_meta;
     }
@@ -573,7 +573,7 @@ class Pedido_Model extends CI_Model{
     function guardar_datos_regalo($pedido_id)
     {
         $row = $this->Db_model->row_id('pedido', $pedido_id);
-        $arr_meta = (array) $this->arr_meta($row);
+        $arr_meta = $this->arr_meta($row);
 
         $arr_meta['regalo']['de'] = $this->input->post('regalo_de');
         $arr_meta['regalo']['para'] = $this->input->post('regalo_para');
@@ -1554,7 +1554,7 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Tras la confirmación POL del pedido, se envía un mensaje de estado del pedido
-     * a los e-mails definidos en la tabla sis_opcion, ID = 25
+     * a los e-mails definidos en la tabla sis_option, ID = 25
      * 
      * @param type $pedido_id
      */
@@ -1563,7 +1563,7 @@ class Pedido_Model extends CI_Model{
         $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
             
         //Destinatarios
-            $str_destinatarios = $this->Pcrn->campo_id('sis_opcion', 25, 'valor');
+            $str_destinatarios = $this->Db_model->field_id('sis_option', 25, 'option_value');
             
         //Asunto de mensaje
             $subject = "Pedido {$row_pedido->cod_pedido}: " . $this->Item_model->nombre(10, $row_pedido->codigo_respuesta_pol);

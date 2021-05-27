@@ -1,6 +1,6 @@
 <?php
 
-    //Key, corresponde al sis_opcion.id asociado a la fecha de actualización de la tabla correspondiente
+    //Key, corresponde al sis_option.id asociado a la fecha de actualización de la tabla correspondiente
     $tablas[13] = 'item';
     
 ?>
@@ -9,7 +9,7 @@
     //Variables
         var json_query = '';
         var cant_sincronizados = 0;
-        var opcion_id = 10; //Ver tabla: sis_opcion.id
+        var opcion_id = 10; //Ver tabla: sis_option.id
         var base_url = '<?= base_url() ?>';
         var sincro_url = '<?= $sincro_url ?>';
         var tabla = '';

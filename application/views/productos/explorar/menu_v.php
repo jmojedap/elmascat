@@ -33,6 +33,13 @@
             'link' => "productos/procesos/",
             'atributos' => 'title="Procesos de productos"'
         );
+
+        $arr_menus['tags'] = array(
+            'icono' => '',
+            'texto' => 'Etiquetas',
+            'link' => "datos/tags/",
+            'atributos' => 'title="Etiquetas de productos"'
+        );
         
         $arr_menus['promociones'] = array(
             'icono' => '',
@@ -43,8 +50,8 @@
         
         
     //Elementos de menú según el rol del visitante
-        $elementos_rol[0] = array('explorar', 'nuevo', 'procesos', 'promociones', 'importar');
-        $elementos_rol[1] = array('explorar', 'nuevo', 'procesos', 'promociones', 'importar');
+        $elementos_rol[0] = array('explorar', 'nuevo', 'tags', 'procesos', 'promociones', 'importar');
+        $elementos_rol[1] = array('explorar', 'nuevo', 'tags', 'procesos', 'promociones', 'importar');
         $elementos_rol[2] = array('explorar', 'nuevo', 'importar');
         $elementos_rol[6] = array('explorar', 'nuevo');
         $elementos_rol[7] = array('explorar', 'nuevo');

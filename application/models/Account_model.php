@@ -78,16 +78,16 @@ class Account_model extends CI_Model{
         //Editar, evento de inicio de sesión
         if ( strlen($this->session->userdata('login_id')) > 0 ) 
         {
-            $row_event = $this->Db_model->row_id('event', $this->session->userdata('login_id'));
+            $row_event = $this->Db_model->row_id('evento', $this->session->userdata('login_id'));
 
-            $arr_row['end'] = date('Y-m-d H:i:s');
-            $arr_row['status'] = 2;    //Cerrado
-            $arr_row['seconds'] = $this->pml->seconds($row_event->start, date('Y-m-d H:i:s'));
+            $arr_row['fin'] = date('Y-m-d H:i:s');
+            $arr_row['estado'] = 2;    //Cerrado
+            $arr_row['segundos'] = $this->pml->seconds($row_event->start, date('Y-m-d H:i:s'));
 
             if ( ! is_null($row_event) ) 
             {
                 //Si el evento existe
-                $this->Db_model->save('event', "id = {$row_event->id}", $arr_row);
+                $this->Db_model->save('evento', "id = {$row_event->id}", $arr_row);
             }
         }
     

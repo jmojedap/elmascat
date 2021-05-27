@@ -308,7 +308,7 @@ class Productos extends CI_Controller{
         //Paginación
             $this->load->library('pagination');
             $config = $this->App_model->config_paginacion(3);
-            $config['per_page'] = 9;
+            $config['per_page'] = 6;
             $config['base_url'] = base_url("productos/catalogo/?{$busqueda_str}");
             $config['total_rows'] = $resultados_total->num_rows();
             $this->pagination->initialize($config);
@@ -908,4 +908,41 @@ class Productos extends CI_Controller{
         $data = $this->Producto_model->remove_post($producto_id, $meta_id);
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+// Procesos masivos
+//-----------------------------------------------------------------------------
+
+    /**
+     * Actualizar tabla producto, campos url_image y url_thumbnail
+     * 2021-05-19
+     */
+    function actualizar_campos_imagenes()
+    {
+        $this->db->select('id, imagen_id');
+        //$this->db->where('url_image = ""');
+        $productos = $this->db->get('producto');
+
+        $qty_updated = 0;
+
+        foreach ( $productos->result() as $producto )
+        {
+            $archivo = $this->Db_model->row_id('archivo', $producto->imagen_id);
+            if ( ! is_null($archivo) )
+            {
+                $arr_row['url_image'] = $archivo->url;
+                $arr_row['url_thumbnail'] = $archivo->url_thumbnail;
+    
+                $this->db->where('id', $producto->id)->update('producto', $arr_row);
+                
+                $qty_updated += $this->db->affected_rows();
+            }
+        }
+
+        $data['status'] = 1;
+        $data['message'] = "Productos actualizados: {$qty_updated}";
+    
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
 }

@@ -25,17 +25,17 @@
 //-----------------------------------------------------------------------------
     nav_1_elements.forEach(element => {
         //Activar elemento actual, si está en las secciones
-        if ( element.sections.includes(app_cf) ) { element.active = true; }
+        if ( element.sections.includes(app_cf) ) { element.active = true }
         //Activar subelemento actual, si está en las secciones
         if ( element.subelements )
         {
             element.subelements.forEach(subelement => {
                 if ( subelement.sections.includes(app_cf) )
                 {
-                    element.active = true;
-                    subelement.active = true;
+                    element.active = true
+                    subelement.active = true
                 }
-            });
+            })
         }
     });
 
@@ -57,7 +57,8 @@ new Vue({
                     this.elements[i].active = true;
                     $('.treeview-menu').slideUp();
                     app_cf = this.elements[i].cf;
-                    load_sections('nav_1');
+                    load_sections('nav_1')
+                    this.hide_sidebar()
                 }
             }
         },
@@ -75,9 +76,18 @@ new Vue({
     
                 //Cargando secciones
                 app_cf = this.elements[i].subelements[j].cf;
-                load_sections('nav_1');
+                load_sections('nav_1')
+                this.hide_sidebar()
             }
-        }
+        },
+        hide_sidebar: function(){
+            setTimeout(() => {
+                //Enable hide menu when clicking on the content-wrapper on small screens
+                if ($(window).width() <= 767 && $("body").hasClass("sidebar-open")) {
+                    $("body").removeClass('sidebar-open');
+                }
+            }, 150);
+        },
     }
 });
 </script>

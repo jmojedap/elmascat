@@ -6,8 +6,8 @@
 ?>
 
 <ul class="nav nav-tabs">
-    <li role="presentation" class="<?= $clases['sis_opcion'] ?>">
-        <?= anchor("datos/sis_opcion", 'General') ?>
+    <li role="presentation" class="<?= $clases['opciones'] ?>">
+        <?= anchor("datos/opciones", 'General') ?>
     </li>
     
     <li role="presentation" class="<?= $clases['categorias'] ?>">

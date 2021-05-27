@@ -302,8 +302,8 @@ class Lugar_model extends CI_Model{
         $row_lugar = $this->Pcrn->registro_id('lugar', $lugar_id);
         
         $registro['slug'] = $this->Pcrn->slug_unico($row_lugar->nombre_lugar, 'lugar');
-        $registro['pais'] = $this->Pcrn->campo_id('lugar', $row_lugar->pais_id, 'nombre_lugar');
-        $registro['region'] = $this->Pcrn->campo_id('lugar', $row_lugar->region_id, 'nombre_lugar');
+        $registro['pais'] = $this->Db_model->field_id('lugar', $row_lugar->pais_id, 'nombre_lugar');
+        $registro['region'] = $this->Db_model->field_id('lugar', $row_lugar->region_id, 'nombre_lugar');
         
         $this->db->where('id', $lugar_id);
         $this->db->update('lugar', $registro);
@@ -319,7 +319,7 @@ class Lugar_model extends CI_Model{
             $nombre_campo = $this->campo_nombre_dependiente($row_lugar->tipo_id);
             $campo_id = $this->campo_id($row_lugar->tipo_id);
             
-            $registro[$nombre_campo] = $this->Pcrn->campo_id('lugar', $lugar_id, 'nombre_lugar');
+            $registro[$nombre_campo] = $this->Db_model->field_id('lugar', $lugar_id, 'nombre_lugar');
             
             
             $this->db->where($campo_id, $lugar_id);

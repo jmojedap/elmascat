@@ -12,7 +12,7 @@
                 <i class="fa fa-check"></i> Registro creado correctamente
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" v-on:click="go_created">
+                <button type="button" class="btn btn-primary w120p" v-on:click="go_created">
                     Abrir
                 </button>
                 <button type="button" class="btn btn-secondary" v-on:click="clean_form" data-dismiss="modal">

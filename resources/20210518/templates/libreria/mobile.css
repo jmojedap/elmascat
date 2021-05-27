@@ -1,0 +1,27 @@
+/* Pantallas pequeñas */
+@media (max-width: 768px) {
+
+	.header-content {
+		padding: 0.5em;
+		gap: 0.5em;
+		width: 100%;
+		grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+		grid-template-areas:
+			"sf sf sf sf sf nt";
+	}
+
+	.main-container{
+		margin-top: 53px;
+	}
+
+	/* Tienda */
+	/*-----------------------------------------------------------------------------*/
+
+	.catalog { 
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.catalog a.product-name{
+		font-size: 0.7em;
+	}
+}

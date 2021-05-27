@@ -1,48 +1,24 @@
 <header class="main-header">
     <!-- Logo -->
-    <a href="<?= base_url() ?>" class="logo fixed-top">
-        <img src="<?= URL_BRAND ?>logo-admin.png" alt="Logo aplicación">
+    <a href="<?= base_url() ?>" class="logo fixed-top" style="background-color: <?= BG_DARK ?>">
+        <?= APP_NAME ?>
     </a>
-    <nav class="navbar fixed-top" role="navigation" style="padding: 0px;">
-        <!-- Sidebar toggle button-->
+    <nav class="navbar fixed-top" role="navigation">
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
-            <i class="fa fa-bars"></i>
-            <span class="sr-only">Toggle navigation</span>
+            <i class="fa fa-bars"></i><span class="sr-only">Toggle navigation</span>
         </a>
+        <h1 id="head_title"><?= substr($head_title, 0, 50) ?></h1>
 
-        <div id="page_titles" class="float-left">
-            <h1 id="head_title"><?= substr($head_title, 0, 50) ?></h1>
-            <h2 id="head_subtitle"><?= $head_subtitle ?></h2>
-        </div>
-
-        <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
-                <!-- User Account: style can be found in dropdown.less -->
-                <li class="dropdown user user-menu nav-item">
-                    <a href="#" data-toggle="dropdown">
-                        <img src="<?= $this->session->userdata('picture') ?>" class="user-image" alt="User Image" onerror="this.src='<?= URL_IMG ?>users/sm_user.png'">
-                    </a>
-                    <ul class="dropdown-menu">
-                        <!-- User image -->
-                        <li class="user-header">
-                            <img src="<?= $this->session->userdata('picture') ?>" class="rounded-circle" alt="User Image" onerror="this.src='<?= URL_IMG ?>users/sm_user.png'">
-                            <p>
-                                <?= $this->session->userdata('display_name') ?>
-                            </p>
-                        </li>
-
-                        <!-- Menu Footer-->
-                        <li class="user-footer">
-                            <div class="float-left">
-                                <?= anchor("accounts/profile", '<i class="fa fa-user"></i> Mi perfil', 'class="btn btn-light" title="Ver mi perfil"') ?>
-                            </div>
-                            <div class="float-right">
-                                <?= anchor("accounts/logout", 'Cerrar sesión', 'class="btn btn-light" title="Cerrar sesión"') ?>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+        <div class="ml-auto">
+            <div class="dropdown">
+                <a href="#" data-toggle="dropdown">
+                    <img src="<?= $this->session->userdata('picture') ?>" class="navbar-user-image" alt="User Image" onerror="this.src='<?= URL_IMG ?>users/sm_user.png'">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="<?= base_url('accounts/profile') ?>">Mi cuenta</a>
+                    <a class="dropdown-item" href="<?= base_url('accounts/logout') ?>">Cerrar sesión</a>
+                </ul>
+            </div>
         </div>
     </nav>
 </header>

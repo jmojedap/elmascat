@@ -280,7 +280,7 @@ class Evento_Model extends CI_Model{
     function guardar_ev_login()
     {
         $row_usuario = $this->Pcrn->registro_id('usuario', $this->session->userdata('usuario_id'));
-        //$nivel = $this->Pcrn->campo_id('grupo', $row_usuario->grupo_id, 'nivel');
+        //$nivel = $this->Db_model->field_id('grupo', $row_usuario->grupo_id, 'nivel');
         
         //Registro, valores generales
             $registro['tipo_id'] = 101;   //Programación de quiz, ver item cantegoria_id = 13

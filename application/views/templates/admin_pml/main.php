@@ -4,11 +4,9 @@
         ini_set('error_reporting', E_ERROR);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
     <head>
         <?php $this->load->view('templates/admin_pml/main/head') ?>
-
-        <?php //$this->load->view('templates/admin_pml/main/routes_script') ?>
     </head>
     <body class="skin-blue">
         <div class="wrapper">
@@ -33,12 +31,6 @@
                     </div>
                 </section>
             </div>
-            
-            <footer class="main-footer text-center">
-                <small>
-                    &copy; 2021 &middot; <a href="https://www.pacarina.com">Pacarina Media Lab</a> &middot; Colombia
-                </small>
-            </footer>
         </div>
     </body>
 </html>

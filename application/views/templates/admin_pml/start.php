@@ -18,7 +18,7 @@
             </a>
         </div>
         <footer class="fixed-bottom start_footer">
-            © 2021 &middot; VeBonit Comunicaciones &middot; Colombia
+            © 2021 &middot; Mi Internet Comunicaciones &middot; Colombia
         </footer>    
     </body>
 </html>

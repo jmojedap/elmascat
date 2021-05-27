@@ -12,32 +12,39 @@ class Admin_model extends CI_Model{
         parent::__construct();
         
     }
-    
-//---------------------------------------------------------------------------------------------------
-    
-    function crud_sis_opcion()
+
+// OPCIONES DE LA APLICACION 2019-06-15
+//-----------------------------------------------------------------------------
+
+    /** Guarda registro de una opción en la tabla sis_option */
+    function save_option($option_id)
     {
-        //Grocery crud
-        $this->load->library('grocery_CRUD');
-        
-        $crud = new grocery_CRUD();
-        $crud->set_table('sis_opcion');
-        $crud->set_subject('opción');
-        $crud->unset_print();
-        $crud->unset_read();
-        $crud->unset_delete();
-        $crud->order_by('id', 'ASC');
+        $arr_row = $this->input->post();
+        $option_id = $this->Db_model->save('sis_option', "id = {$option_id}", $arr_row);
 
-        //Títulos de los campos
-            $crud->display_as('nombre_opcion', 'Nombre opción');
-
-        //Reglas de validación
-            $crud->required_fields('id', 'nombre_opcion', 'valor');
-        
-        $output = $crud->render();
-        
-        return $output;
+        return $option_id;
     }
+
+    /**
+     * Elimina opción, de la tabla posts.
+     */
+    function delete_option($option_id)
+    {
+        $data = array('status' => 0, 'message' => 'La opción no fue eliminada');
+
+        //Tabla post
+            $this->db->where('id', $option_id);
+            $this->db->delete('sis_option');
+
+        if ( $this->db->affected_rows() > 0 ) {
+            $data = array('status' => 1, 'message' => 'Opción eliminada');
+        }
+
+        return $data;
+    }    
+
+// Otros CRUD
+//-----------------------------------------------------------------------------
     
     function crud_tabla($nombre_tabla)
     {

@@ -60,7 +60,7 @@
             $menus['eventos/explorar'] = array('recursos', 'recursos-eventos');
             
         //Datos
-            $menus['admin/sis_opcion'] = array('ajustes', 'ajustes-parametros');
+            $menus['admin/sis_option'] = array('ajustes', 'ajustes-parametros');
             $menus['admin/acl'] = array('ajustes', 'ajustes-parametros');
             $menus['datos/tags'] = array('ajustes', 'ajustes-parametros');
             $menus['datos/palabras_clave'] = array('ajustes', 'ajustes-parametros');
@@ -172,7 +172,7 @@
                 </a>
                 <ul class="treeview-menu">
                     <li class="<?= $clases_m1['ajustes-parametros'] ?>">
-                        <?= anchor('admin/sis_opcion', '<i class="fa fa-sliders-h"></i> Parámetros') ?>
+                        <?= anchor('admin/options', '<i class="fa fa-sliders-h"></i> Parámetros') ?>
                     </li>
                     <li class="<?= $clases_m1['ajustes-lugares'] ?>">
                         <?= anchor("lugares/sublugares/51", '<i class="fa fa-map-marker"></i> Ciudades y lugares') ?>

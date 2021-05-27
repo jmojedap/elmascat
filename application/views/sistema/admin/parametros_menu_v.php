@@ -5,10 +5,10 @@
 
     
     //Atributos de los elementos del menú
-        $arr_menus['sis_opcion'] = array(
+        $arr_menus['options'] = array(
             'icono' => '<i class="fa fa-gear"></i>',
             'texto' => 'General',
-            'link' => "admin/sis_opcion/",
+            'link' => "admin/options/",
             'atributos' => ''
         );
         
@@ -55,8 +55,8 @@
         );
 
     //Elementos de menú para cada rol
-        $elementos_rol[0] = array('sis_opcion', 'acl', 'tags', 'metadatos', 'fabricantes', 'extras', 'estado_pedido');
-        $elementos_rol[1] = array('sis_opcion', 'acl', 'tags', 'metadatos', 'fabricantes', 'extras', 'estado_pedido');
+        $elementos_rol[0] = array('options', 'acl', 'tags', 'metadatos', 'fabricantes', 'extras', 'estado_pedido');
+        $elementos_rol[1] = array('options', 'acl', 'tags', 'metadatos', 'fabricantes', 'extras', 'estado_pedido');
         
     //Definiendo menú mostrar
         $elementos = $elementos_rol[$this->session->userdata('rol_id')];

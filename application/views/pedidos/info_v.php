@@ -235,15 +235,15 @@
                     <tbody>
                         <tr>
                             <td>De</td>
-                            <td><?= $arr_meta->regalo->de ?></td>
+                            <td><?= $arr_meta['regalo']['de'] ?></td>
                         </tr>
                         <tr>
                             <td>Para</td>
-                            <td><?= $arr_meta->regalo->para ?></td>
+                            <td><?= $arr_meta['regalo']['para'] ?></td>
                         </tr>
                         <tr>
                             <td>Mensaje</td>
-                            <td><?= $arr_meta->regalo->mensaje ?></td>
+                            <td><?= $arr_meta['regalo']['mensaje'] ?></td>
                         </tr>
                     </tbody>
                         

@@ -306,5 +306,37 @@ class Archivos extends CI_Controller{
         }
         
     }
+
+// Procesos masivos
+//-----------------------------------------------------------------------------
+
+    /**
+     * Actualizar tabla archivo, campos url y url_thumbnail
+     * 2021-05-19
+     */
+    function actualizar_url()
+    {
+        $this->db->select('id, carpeta, nombre_archivo');
+        //$this->db->where('url_image = ""');
+        $archivos = $this->db->get('archivo');
+
+        $qty_updated = 0;
+
+        foreach ( $archivos->result() as $archivo )
+        {
+            $arr_row['url'] = URL_UPLOADS . $archivo->carpeta . $archivo->nombre_archivo;
+            $arr_row['url_thumbnail'] = URL_UPLOADS . $archivo->carpeta . '500px_' . $archivo->nombre_archivo;
+
+            $this->db->where('id', $archivo->id)->update('archivo', $arr_row);
+            
+            $qty_updated += $this->db->affected_rows();
+        }
+
+        $data['status'] = 1;
+        $data['message'] = "Archivos actualizados: {$qty_updated}";
+    
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
 }

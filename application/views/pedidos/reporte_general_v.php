@@ -168,13 +168,13 @@
                 <td>
                     <p>
                         <strong>De:</strong>
-                        <?= $arr_meta->regalo->de ?>
+                        <?= $arr_meta['regalo']['de'] ?>
                         &middot;
                         <strong>Para:</strong>
-                        <?= $arr_meta->regalo->para ?>
+                        <?= $arr_meta['regalo']['para'] ?>
                         &middot;
                         <strong>Mensaje/Dedicatoria:</strong>
-                        <?= $arr_meta->regalo->mensaje ?>
+                        <?= $arr_meta['regalo']['mensaje'] ?>
 
                     </p>
                 </td>

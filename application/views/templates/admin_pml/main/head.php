@@ -29,8 +29,9 @@
 
         <!-- Tema AdminPML -->
         <link href="<?= URL_RESOURCES ?>templates/admin_pml/css/admin-pml.css" rel="stylesheet" type="text/css" />
+        <link href="<?= URL_RESOURCES ?>templates/admin_pml/css/mobile.css" rel="stylesheet" type="text/css" />
         <link href="<?= URL_RESOURCES ?>templates/admin_pml/css/skins/skin-blue.css" rel="stylesheet" type="text/css" />
-        <script src="<?= URL_RESOURCES ?>templates/admin_pml/js/app.min.js"></script>
+        <script src="<?= URL_RESOURCES ?>templates/admin_pml/js/app.js"></script>
 
         <!-- Recursos PML -->
         <link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES ?>css/pacarina.css">

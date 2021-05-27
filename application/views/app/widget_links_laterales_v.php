@@ -1,6 +1,6 @@
 <?php
     
-    $links_str = $this->Pcrn->campo_id('sis_opcion', 12, 'valor');
+    $links_str = $this->Db_model->field_id('sis_option', 12, 'option_value');
 
     $this->db->where("id IN ({$links_str})");
     $this->db->order_by('id', 'RANDOM');

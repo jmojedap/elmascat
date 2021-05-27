@@ -207,7 +207,7 @@ class Esp extends CI_Model{
     //Contraseña por defecto
     function pw_default()
     {
-        $contrasena = $this->Pcrn->campo_id('sis_opcion', 10, 'valor');
+        $contrasena = $this->Db_model->field_id('sis_option', 10, 'option_value');
         return md5($contrasena);
     }
     

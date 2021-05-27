@@ -20,14 +20,14 @@ class Develop_model extends CI_Model{
         return $data;
     }
     
-    function crud_sis_opcion()
+    function crud_sis_option()
     {
         //Grocery crud
         $this->load->library('grocery_CRUD');
         
         
         $crud = new grocery_CRUD();
-        $crud->set_table('sis_opcion');
+        $crud->set_table('sis_option');
         $crud->set_subject('opción');
         $crud->unset_export();
         $crud->unset_print();

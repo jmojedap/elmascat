@@ -32,9 +32,6 @@
             <label class="sr-only" for="inputPassword">Contraseña</label>
             <input type="password" class="form-control input-lg" id="inputPassword" name="password" placeholder="Contraseña" required>
         </div>
-        <div class="form-group">
-            <label><input type="checkbox" name="rememberme" value="1" checked> Mantener sesión iniciada</label>
-        </div>
         
         <div class="form-group">
             <button type="submit" class="btn btn-polo-lg btn-block">Ingresar</button>

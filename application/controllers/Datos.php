@@ -36,8 +36,7 @@ class Datos extends CI_Controller{
     function tags()
     {
         //Array data vista
-        $data['titulo_pagina'] = 'Parámetros';
-        $data['subtitulo_pagina'] = 'Etiquetas de productos';
+        $data['titulo_pagina'] = 'Etiquetas de productos';
         $data['vista_a'] = 'datos/tags/tags_v';
         
     //Cargar vista

@@ -50,8 +50,6 @@ class App extends CI_Controller{
             if ( $validate_login['status'] )
             {
                 $this->Login_model->crear_sesion($username, TRUE);
-
-                if ( $this->input->post('rememberme') ) { $this->Login_model->rememberme(); }
             }
 
         //Salida JSON

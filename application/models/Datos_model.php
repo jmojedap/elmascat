@@ -16,13 +16,13 @@ class Datos_model extends CI_Model{
     
 //---------------------------------------------------------------------------------------------------
     
-    function crud_sis_opcion()
+    function z_crud_sis_option()
     {
         //Grocery crud
         $this->load->library('grocery_CRUD');
         
         $crud = new grocery_CRUD();
-        $crud->set_table('sis_opcion');
+        $crud->set_table('sis_option');
         $crud->set_subject('opción');
         $crud->unset_print();
         $crud->unset_read();
