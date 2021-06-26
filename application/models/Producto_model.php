@@ -212,7 +212,7 @@ class Producto_Model extends CI_Model{
         $role = $this->session->userdata('role');
         $condition = 'producto.id = 0';  //Valor por defecto, ningún user, se obtendrían cero registros.
         
-        if ( $role <= 2 ) 
+        if ( $role <= 10 ) 
         {   //Desarrollador, todos los registros
             $condition = 'producto.id > 0';
         }
@@ -1222,9 +1222,6 @@ class Producto_Model extends CI_Model{
      * Array con el precio que se le aplica a un producto en el momento de cargarlo 
      * a un pedido, se escoge entre los diferentes precios que puede tener un 
      * producto según sus ofertas o promociones aplicables.
-     * 
-     * @param type $producto_id
-     * @return type
      */
     function arr_precio($producto_id)
     {
@@ -1237,8 +1234,9 @@ class Producto_Model extends CI_Model{
             }
         
         //Se aplica el primer precio en el array, al estar ordenado ASC por precio
-            $arr_precio['promocion_id'] = key($arr_precios);
-            $arr_precio['precio'] = current($arr_precios);
+            $key_first = array_key_first($arr_precios);
+            $arr_precio['promocion_id'] = $key_first;
+            $arr_precio['precio'] = $arr_precios[$key_first];
         
         return $arr_precio;
     }
@@ -1246,16 +1244,14 @@ class Producto_Model extends CI_Model{
     /**
      * Array con los diferentes precios que se le pueden aplicar a un producto
      * 
-     * @param type $producto_id
-     * @return type
      */
     function arr_precios($producto_id)
     {
         $row_producto = $this->row_principal($producto_id);
         
-        //Precios
+        //Precios normal
             $arr_precios[1] = $row_producto->precio;                        //Precio normal
-            $arr_precios[2] = $this->precio_distribuidor($row_producto);    //Precio para distribuidor
+            $arr_precios[2] = $this->precio_distribuidor($row_producto);    //Precio para distribuidor o mayorista
             
         //Precio promoción del producto, el índice es el ID de la promoción
             if ( $row_producto->promocion_id > 0 ) //Si tiene alguna promoción aplicada

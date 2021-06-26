@@ -74,8 +74,8 @@
     sections_rol[0] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books'];
     sections_rol[1] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books'];
     sections_rol[2] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books'];
-    sections_rol[6] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books'];
-    sections_rol[7] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books'];
+    sections_rol[6] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones'];
+    sections_rol[7] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
     for ( key_section in sections_rol[app_rid]) 

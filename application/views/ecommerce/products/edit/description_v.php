@@ -90,6 +90,15 @@
                             </div>
 
                             <div class="form-group row">
+                                <label for="promocion_id" class="col-md-4 col-form-label text-right">Promoción</label>
+                                <div class="col-md-8">
+                                    <select name="promocion_id" v-model="form_values.promocion_id" class="form-control">
+                                        <option v-for="(option_promocion, key_promocion) in options_promocion" v-bind:value="key_promocion">{{ option_promocion }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
                                 <label for="tags" class="col-md-4 col-form-label text-right">Etiquetas</label>
                                 <div class="col-md-8">
                                 <select name="tags[]" id="tags" class="form-control-chosen" multiple>
@@ -144,6 +153,7 @@ var row = <?= json_encode($row) ?>;
 row.estado = '0<?= $row->estado ?>';
 row.categoria_id = '0<?= $row->categoria_id ?>';
 row.fabricante_id = '0<?= $row->fabricante_id ?>';
+row.promocion_id = '0<?= $row->promocion_id ?>';
 
 
 // VueApp
@@ -163,6 +173,7 @@ var edit_description_app = new Vue({
         options_estado: <?= json_encode($options_estado) ?>,
         options_categoria: <?= json_encode($options_categoria) ?>,
         options_fabricante: <?= json_encode($options_fabricante) ?>,
+        options_promocion: <?= json_encode($options_promocion) ?>,
     },
     methods: {
         validate_form: function(){

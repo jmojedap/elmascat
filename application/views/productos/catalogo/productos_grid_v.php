@@ -16,9 +16,10 @@
             $link_visitar = base_url("productos/visitar/{$row_producto->id}/{$row_producto->slug}");
             
             $arr_precio = $this->Producto_model->arr_precio($row_producto->id);
+            $arr_precios = $this->Producto_model->arr_precios($row_producto->id);
             
             $en_promocion = 0;
-            if ( $row_producto->precio > $arr_precio['precio'] ) { $en_promocion = 1; }
+            if ( $row_producto->price > $arr_precio['precio'] ) { $en_promocion = 1; }
             
             $es_nuevo = 0;
             $segundos_creado = $this->Pcrn->segundos_lapso($row_producto->creado, $fecha_nuevo);
@@ -70,7 +71,7 @@
                                 <?php if ( $en_promocion ) { ?>
                                     <span class="old-price">
                                         <span class="price">
-                                            <?= $this->Pcrn->moneda($row_producto->precio); ?>
+                                            <?= $this->Pcrn->moneda($row_producto->price); ?>
                                         </span>
                                     </span>
                                 <?php } ?>

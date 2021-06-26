@@ -66,8 +66,8 @@ class App extends CI_Controller{
             0 => 'estadisticas/resumen_dia/',
             1 => 'estadisticas/resumen_dia/',
             2 => 'pedidos/explore',
-            6 => 'productos/explorar',
-            7 => 'productos/explorar',
+            6 => 'productos/explore',
+            7 => 'productos/explore',
             21 => 'usuarios/books',
             22 => 'usuarios/books',
             23 => 'usuarios/books'

@@ -64,7 +64,7 @@ class Productos extends CI_Controller{
 
     /**
      * JSON
-     * Listado de users, según filtros de búsqueda
+     * Listado de productos, según filtros de búsqueda
      */
     function get($num_page = 1, $per_page = 10)
     {
@@ -224,7 +224,8 @@ class Productos extends CI_Controller{
         //Opciones
             $data['options_estado'] = $this->Item_model->opciones('categoria_id = 8');
             $data['options_categoria'] = $this->Item_model->options('categoria_id = 25');
-            $data['options_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5', 'Todos las marcas');
+            $data['options_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5');
+            $data['options_promocion'] = $this->App_model->opciones_post('tipo_id = 31001', 'n', 'Ninguna');
             
         //Arrays
             $data['arr_precios'] = $this->Producto_model->arr_precios($producto_id);
@@ -732,18 +733,6 @@ class Productos extends CI_Controller{
     
 //CARGUE MASIVO DE PRODUCTOS
 //---------------------------------------------------------------------------------------------------
-    
-    function limpiar()
-    {
-        $consultas[] = 'DELETE FROM producto WHERE 1;';
-        $consultas[] = 'DELETE FROM meta WHERE 1;';
-        
-        foreach ($consultas as $sql) {
-            $this->db->query($sql);
-        }
-        
-        echo 'Listo';
-    }
     
     /**
      * Formulario para cargue de archivo excel, cargue de productos

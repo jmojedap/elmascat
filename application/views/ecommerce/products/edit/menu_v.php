@@ -41,6 +41,8 @@
     sections_rol[0] = ['description', 'valores', 'metadata'];
     sections_rol[1] = ['description', 'valores', 'metadata'];
     sections_rol[2] = ['description', 'valores', 'metadata'];
+    sections_rol[6] = ['description', 'valores', 'metadata'];
+    sections_rol[7] = ['description', 'valores', 'metadata'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
     for ( key_section in sections_rol[app_rid]) 

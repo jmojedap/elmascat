@@ -73,15 +73,14 @@ class Tienda extends CI_Controller{
     {        
         //Datos básicos
         $data = $this->Tienda_model->basic($product_id);
-        $data['images'] = $this->Product_model->images($product_id);
-        $data['cat_1_name'] = $this->Item_model->name(25, $data['row']->cat_1);
-        $data['cat_2_name'] = $this->Item_model->name(25, $data['row']->cat_2);
+        $data['images'] = $this->Producto_model->images($product_id);
+        $data['cat_1_name'] = $this->Item_model->name(25, $data['row']->categoria_id);
+        //$data['cat_2_name'] = $this->Item_model->name(25, $data['row']->cat_2);
         
         //Variables específicas
-        $data['head_subtitle'] = 'Información general';
         $data['view_a'] = 'ecommerce/tienda/producto_v';
         
-        $this->App_model->view(TPL_FRONT, $data);
+        $this->App_model->view('templates/libreria/main', $data);
     }
 
 // PROCESO DE PAGO

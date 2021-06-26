@@ -35,7 +35,7 @@
     sections_rol[1] = ['basic', 'password'];
     sections_rol[2] = ['basic', 'password'];
     sections_rol[6] = ['basic', 'password'];
-    sections_rol.clbd = ['basic', 'password'];
+    sections_rol[7] = ['basic', 'password'];
     sections_rol[15] = ['basic', 'password'];
     sections_rol[21] = ['basic', 'password'];
     sections_rol[22] = ['basic', 'password'];

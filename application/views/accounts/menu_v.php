@@ -34,6 +34,7 @@
     sections_rol[1] = ['profile', 'edit'];
     sections_rol[2] = ['profile', 'edit'];
     sections_rol[6] = ['profile', 'edit'];
+    sections_rol[7] = ['profile', 'edit'];
     sections_rol[15] = ['profile', 'edit'];
     sections_rol[21] = ['profile', 'edit'];
     sections_rol[22] = ['profile', 'edit'];

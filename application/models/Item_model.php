@@ -240,11 +240,6 @@ class Item_model extends CI_Model{
     
     /**
      * Devuelve el nombre de un item con el formato correspondiente.
-     * 
-     * @param type $categoria_id
-     * @param type $id_interno
-     * @param type $campo
-     * @return type
      */
     function nombre($categoria_id, $id_interno, $campo = 'item')
     {
@@ -472,6 +467,27 @@ class Item_model extends CI_Model{
 
 // Arrays
 //-----------------------------------------------------------------------------
+
+    /**
+     * Devuelve el name de un item con el formato correspondiente.
+     * 
+     */
+    function name($category_id, $cod, $field = 'item')
+    {
+        $name = 'ND';
+        
+        $this->db->select("{$field} as field");
+        $this->db->where('id_interno', $cod);
+        $this->db->where('categoria_id', $category_id);
+        $query = $this->db->get('item');
+        
+        if ( $query->num_rows() > 0 ) 
+        {
+            $name = $query->row()->field;
+        }
+        
+        return $name;
+    }
     
     /**
      * Devuelve un array con índice y value para una categoría específica de items
