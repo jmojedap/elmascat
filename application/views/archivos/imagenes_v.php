@@ -150,7 +150,7 @@
                 <?php
                     //Variables
                         $nombre_archivo = $row_archivo->titulo_archivo;
-                        $link_archivo = anchor("archivos/editar/{$row_archivo->id}", $nombre_archivo);
+                        $link_archivo = anchor("archivos/edit/{$row_archivo->id}", $nombre_archivo);
                         $editable = $this->Archivo_model->editable($row_archivo->id);
 
                     //Checkbox
@@ -173,7 +173,7 @@
                     <td>
                         <div class="thumbnail">
                             <div class="miniatura">
-                                <?= anchor("archivos/editar/{$row_archivo->id}", img($att_img)) ?>
+                                <?= anchor("archivos/edit/{$row_archivo->id}", img($att_img)) ?>
                             </div>
                         </div>
                         
@@ -190,7 +190,7 @@
                     <td class="<?= $clases_col['carpeta'] ?>"><?= word_limiter($row_archivo->carpeta, 10) ?></td>
                     <td class="<?= $clases_col['botones'] ?>">
                         <?php if ( $editable ){ ?>
-                            <?= anchor("archivos/editar/{$row_archivo->id}", '<i class="fa fa-edit"></i>', 'class="btn btn-sm btn-light" title=""') ?>
+                            <?= anchor("archivos/edit/{$row_archivo->id}", '<i class="fa fa-edit"></i>', 'class="btn btn-sm btn-light" title=""') ?>
                         <?php } ?>
                     </td>
                 </tr>

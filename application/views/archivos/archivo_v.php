@@ -12,10 +12,10 @@
             'atributos' => 'title="Explorar imágene"'
         );
             
-        $arr_menus['editar'] = array(
+        $arr_menus['edit'] = array(
             'icono' => '<i class="fa fa-pencil"></i>',
             'texto' => 'Editar',
-            'link' => "archivos/editar/{$row->id}",
+            'link' => "archivos/edit/{$row->id}",
             'atributos' => 'title="Editar registro de imagen"'
         );
         
@@ -27,9 +27,9 @@
         );
         
     //Elementos de menú según el rol del visitante
-        $elementos_rol[0] = array('explorar', 'editar', 'cambiar');
-        $elementos_rol[1] = array('explorar', 'editar', 'cambiar');
-        $elementos_rol[2] = array('explorar', 'editar', 'cambiar');
+        $elementos_rol[0] = array('explorar', 'edit', 'cambiar');
+        $elementos_rol[1] = array('explorar', 'edit', 'cambiar');
+        $elementos_rol[2] = array('explorar', 'edit', 'cambiar');
         
     //Definiendo menú mostrar, según el rol del visitante
         $elementos = $elementos_rol[$this->session->userdata('rol_id')];

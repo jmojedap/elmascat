@@ -3,7 +3,7 @@
         <ul class="nav nav-tabs nav-tabs-line" role="tablist">
             <?php if ( isset($back_link) ) : ?>
                 <li class="nav-item">
-                    <a href="<?= base_url($back_link) ?>" class="nav-link"> 
+                    <a href="<?= $back_link ?>" class="nav-link"> 
                         <i class="fa fa-arrow-left"></i>
                     </a>
                 </li>
@@ -24,7 +24,7 @@
         <div class="d-flex">
             <?php if ( isset($back_link) ) : ?>
                 <div class="mr-2">
-                    <a href="<?= base_url($back_link) ?>" class="btn-circle"> 
+                    <a href="<?= $back_link ?>" class="btn-circle"> 
                         <i class="fa fa-arrow-left"></i>
                     </a>
                 </div>

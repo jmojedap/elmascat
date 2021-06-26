@@ -12,7 +12,7 @@
             $menus['usuarios/solicitudes_rol'] = array('usuarios');
         
         //Productos
-            $menus['productos/explorar'] = array('productos');
+            $menus['productos/explore'] = array('productos');
             $menus['productos/nuevo'] = array('productos');
             $menus['productos/editar'] = array('productos');
             $menus['productos/ver'] = array('productos');
@@ -46,7 +46,7 @@
         
         <ul class="sidebar-menu">
             <li class="<?= $clases_m0['productos'] ?>">
-                <a href="<?= base_url() ?>productos/explorar">
+                <a href="<?= base_url() ?>productos/explore">
                     <i class="fa fa-book"></i> <span>Productos</span>
                 </a>
             </li>

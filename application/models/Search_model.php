@@ -53,13 +53,13 @@ class Search_model extends CI_Model{
             'fe1',      //Filtro especial 1
             'fe2',      //Filtro especial 2
             'fe3',       //Filtro especial 3
-            'i',        //Institución
-            'g',        //Grupo
-            'level',    //Nivel o grado escolar
+            'tag',      //Etiqueta
             'o',        //Order by
             'ot',       //Order type
             'clt',      //Cliente
-
+            'fab',      //Fabricante o marca
+            'dcto',     //Descuento o promoción
+            'promo',     //Con algún descuento activo
         );
         
         return $search_indexes;

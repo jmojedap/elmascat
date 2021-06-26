@@ -5,60 +5,63 @@ class Post_model extends CI_Model{
     {
         $row = $this->Db_model->row_id('post', $post_id);
 
-        $data['post_id'] = $post_id;
         $data['row'] = $row;
-        $data['att_img'] = $this->att_img($row);
+        $data['type_folder'] = $this->type_folder($row->tipo_id);
         $data['head_title'] = $data['row']->nombre_post;
-        $data['view_a'] = 'posts/post_v';
-        $data['nav_2'] = 'posts/menu_v';
-
-        //Listas
-        if ( $data['row']->tipo_id == 22  )
-        {
-            $data['nav_2'] = 'posts/types/list/menu_v';
-        }
+        $data['view_a'] = $this->views_folder . 'post_v';
+        $data['nav_2'] = $data['type_folder'] . 'menu_v';
+        $data['back_link'] = $this->url_controller . 'explore';
 
         return $data;
+    }
+
+    /**
+     * Nombre de la vista con el formulario para la edición del post. Puede cambiar dependiendo
+     * del tipo (type_id).
+     * 2021-06-09
+     */
+    function type_folder($type_id)
+    {
+        $type_folder = $this->views_folder;
+        $special_types = array(10,22,31001);
+
+        if ( in_array($type_id, $special_types) ) { $type_folder = "{$this->views_folder}/types/{$type_id}/"; }
+
+        return $type_folder;
     }
 
 // CRUD
 //-----------------------------------------------------------------------------
-    
-    /**
-     * Insertar un registro en la tabla post.
-     * 2020-02-22
-     */
-    function insert($arr_row = NULL)
+
+    function save()
     {
-        if ( is_null($arr_row) ) { $arr_row = $this->arr_row('insert'); }
-
-        $data = array('status' => 0);
-        
-        //Insert in table
-            $this->db->insert('post', $arr_row);
-            $data['saved_id'] = $this->db->insert_id();
-
-        if ( $data['saved_id'] > 0 ) { $data['status'] = 1; }
-        
+        $arr_row = $this->arr_row();
+        $data['saved_id'] = $this->Db_model->save_id('post', $arr_row);
         return $data;
     }
 
     /**
-     * Actualiza un registro en la tabla post
-     * 2020-02-22
+     * Array from Post, adding edition data
+     * 2021-06-12
      */
-    function update($post_id)
+    function arr_row()
     {
-        $data = array('status' => 0);
-
-        //Guardar
-            $arr_row = $this->Db_model->arr_row($post_id);
-            $saved_id = $this->Db_model->save('post', "id = {$post_id}", $arr_row);
-
-        //Actualizar resultado
-            if ( $saved_id > 0 ){ $data = array('status' => 1); }
+        $arr_row = $this->input->post();
         
-        return $data;
+        $arr_row['editor_id'] = $this->session->userdata('user_id');
+        $arr_row['usuario_id'] = $this->session->userdata('user_id');
+        $arr_row['editado'] = date('Y-m-d H:i:s');
+        $arr_row['creado'] = date('Y-m-d H:i:s');
+        
+        if ( isset($arr_row['id']) )
+        {
+            unset($arr_row['usuario_id']);
+            unset($arr_row['creado']);
+        } else {
+            $arr_row['slug'] = $this->Db_model->unique_slug($arr_row['nombre_post'], 'post');
+        }
+
+        return $arr_row;
     }
     
     function deletable()
@@ -251,23 +254,6 @@ class Post_model extends CI_Model{
     function editable()
     {
         return TRUE;
-    }
-
-// VALIDATION
-//-----------------------------------------------------------------------------
-
-    function arr_row($process = 'update')
-    {
-        $arr_row = $this->input->post();
-        $arr_row['editor_id'] = $this->session->userdata('user_id');
-        
-        if ( $process == 'insert' )
-        {
-            $arr_row['slug'] = $this->Db_model->unique_slug($arr_row['nombre_post'], 'post');
-            $arr_row['usuario_id'] = $this->session->userdata('user_id');
-        }
-        
-        return $arr_row;
     }
 
 // GESTIÓN DE IMAGEN

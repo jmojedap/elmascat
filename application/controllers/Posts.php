@@ -2,6 +2,14 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Posts extends CI_Controller{
+
+// Variables generales
+//-----------------------------------------------------------------------------
+    public $views_folder = 'posts/';
+    public $url_controller = URL_APP . 'posts/';
+
+// Constructor
+//-----------------------------------------------------------------------------
     
     function __construct() 
     {
@@ -83,6 +91,12 @@ class Posts extends CI_Controller{
         $this->App_model->view(TPL_ADMIN, $data);
     }
 
+    function save()
+    {
+        $data = $this->Post_model->save();
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
     /**
      * Crea un nuevo registro en la tabla post
      * 2019-11-29
@@ -101,6 +115,20 @@ class Posts extends CI_Controller{
         //Datos básicos
         $data = $this->Post_model->basic($post_id);
         $data['view_a'] = 'posts/info_v';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Información detallada del post desde la perspectiva de base de datos
+     * 2020-08-18
+     */
+    function details($post_id)
+    {        
+        //Datos básicos
+        $data = $this->Post_model->basic($post_id);
+        $data['back_link'] = $this->url_controller . 'explore';
+        $data['view_a'] = 'common/row_details_v';
+
         $this->App_model->view(TPL_ADMIN, $data);
     }
 
@@ -143,9 +171,7 @@ class Posts extends CI_Controller{
         $data['options_type'] = $this->Item_model->options('categoria_id = 33', 'Todos');
         
         //Array data espefícicas
-            $data['nav_2'] = 'posts/menu_v';
-            $data['head_subtitle'] = 'Editar';
-            $data['view_a'] = $this->edit_view($data['row']);
+            $data['view_a'] = $data['type_folder'] . 'edit_v';
         
         $this->App_model->view(TPL_ADMIN, $data);
     }
@@ -330,8 +356,8 @@ class Posts extends CI_Controller{
             $data['elementos_lista'] = $elementos_lista;
             
         //Array data espefícicas
-            $data['nav_2'] = 'posts/types/list/menu_v';
-            $data['view_a'] = 'posts/types/list/list_elements_v';
+            $data['nav_2'] = $data['type_folder'] . 'menu_v';
+            $data['view_a'] = $data['type_folder'] . 'list_elements_v';
         
         $this->App_model->view(TPL_ADMIN, $data);
     }

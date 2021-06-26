@@ -1,7 +1,6 @@
 <?php
     $app_cf_index = $this->uri->segment(1) . '_' . $this->uri->segment(2);
-    
-    $cl_nav_2['posts_explore'] = '';
+
     $cl_nav_2['posts_info'] = '';
     $cl_nav_2['posts_edit'] = '';
     $cl_nav_2['posts_image'] = '';
@@ -16,14 +15,6 @@
     var nav_2 = [];
     var sections_rol = [];
     var element_id = '<?= $row->id ?>';
-    
-    sections.explore = {
-        icon: 'fa fa-arrow-left',
-        text: 'Explorar',
-        class: '<?= $cl_nav_2['posts_explore'] ?>',
-        cf: 'posts/explore/',
-        'anchor': true
-    };
 
     sections.info = {
         icon: 'fa fa-info-circle',
@@ -47,7 +38,7 @@
     };
     
     //Secciones para cada rol
-    sections_rol[0] = ['explore', 'info', 'image', 'edit'];
+    sections_rol[0] = ['info', 'image', 'edit'];
     sections_rol[1] = ['info', 'image', 'edit'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú

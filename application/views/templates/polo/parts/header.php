@@ -43,7 +43,7 @@
                                     <a href="<?= base_url("pedidos/carrito") ?>" class="hidden-xs">Ir a pagar</a>
                                 </div>
                                 <div>
-                                    <a href="<?= base_url("app/login") ?>" class="hidden-xs">Cerrar sesión</a>
+                                    <a href="<?= base_url("app/logout") ?>" class="hidden-xs">Cerrar sesión</a>
                                 </div>
                             <?php } else { ?>
                                 <div class="myaccount">
@@ -79,7 +79,7 @@
                 <!-- Search-col -->
                 <div class="search-box">
                     <?= form_open("productos/catalogo_redirect/") ?>
-                        <input type="text" placeholder="Buscar..." value="<?= $busqueda['q'] ?>" maxlength="70" class="" name="q" id="search" autofocus>
+                        <input type="text" placeholder="Buscar..." value="<?= $filters['q'] ?>" maxlength="70" class="" name="q" id="search" autofocus>
                         <button id="submit-button" class="search-btn-bg">
                             <span>Buscar</span>
                         </button>

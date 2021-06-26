@@ -124,8 +124,12 @@
                             $clase_nivel = 'nivel_1';
                         }
                         
-                    $repetir = ($row_tag->nivel - 1) * 5;
-                        $nombre_tag = str_repeat('&nbsp;', $repetir) . ' ' . $row_tag->nombre_tag;
+                        $repetir = 0;
+                        if ( $row_tag->nivel > 0 ) $repetir = ($row_tag->nivel - 1) * 5;
+
+                        echo $repetir;
+
+                        $nombre_tag = str_repeat('&nbsp;', $repetir) . ' ' . $row_tag->nombre_tag . ' ' . $repetir;
                     ?>
                     <tr id="fila_<?= $row_tag->id ?>" class="row_tag <?= $clase_tr ?> <?= $clase_nivel ?>">
                         <td width="40px">

@@ -36,10 +36,10 @@
                 <?php } ?>
                 
                 <div class="product-image-area">
-                    <a class="product-image" title="<?= $row_producto->nombre_producto ?>" href="<?= $link_visitar ?>">
+                    <a class="product-image" title="<?= $row_producto->name ?>" href="<?= $link_visitar ?>">
                         <div class="product-image-container">
                             <img
-                                src="<?= URL_UPLOADS . $row_producto->carpeta . '500px_' . $row_producto->nombre_archivo; ?>"
+                                src="<?= $row_producto->url_thumbnail; ?>"
                                 class="img-responsive"
                                 alt="Imagen producto"
                                 onError="this.src='<?= URL_IMG . 'app/262px_producto.png' ?>'"
@@ -60,8 +60,8 @@
                 <div class="info">
                     <div class="info-inner">
                         <div class="item-title">
-                            <a title="<?= $row_producto->nombre_producto ?>" href="<?= $link_visitar ?>">
-                                <?= word_limiter($row_producto->nombre_producto, 16) ?>
+                            <a title="<?= $row_producto->name ?>" href="<?= $link_visitar ?>">
+                                <?= word_limiter($row_producto->name, 16) ?>
                             </a> 
                         </div>
                         <!--item-title-->

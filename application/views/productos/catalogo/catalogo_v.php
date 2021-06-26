@@ -31,7 +31,7 @@
 
 <div class="row">
     <section class="col-main col-sm-9 col-sm-push-3 wow bounceInUp animated animated" style="visibility: visible;">
-        <?php if ( strlen($busqueda_str) == 0 ){ ?>
+        <?php if ( strlen($str_filters) == 0 ){ ?>
             <?php $this->load->view('productos/catalogo/carrusel_v'); ?>
         <?php } ?>
         

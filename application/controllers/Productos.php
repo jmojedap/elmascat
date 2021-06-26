@@ -2,6 +2,14 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Productos extends CI_Controller{
+
+// Variables generales
+//-----------------------------------------------------------------------------
+    public $views_folder = 'ecommerce/products/';
+    public $url_controller = URL_ADMIN . 'productos/';
+
+// Constructor
+//-----------------------------------------------------------------------------
     
     function __construct() {
         parent::__construct();
@@ -12,61 +20,87 @@ class Productos extends CI_Controller{
         date_default_timezone_set("America/Bogota");
     }
 
-//CRUD
-//---------------------------------------------------------------------------------------------------
-    
     function index()
     {
         $this->catalogo();
         //$this->inicio();
     }
-    
+
+//EXPLORE
+//---------------------------------------------------------------------------------------------------
+
     /**
-     * Exploración y búsqueda de productos, administración
+     * Exploración y búsqueda de productos
+     * 2021-02-24
      */
-    function explorar()
-    {
-        $this->load->helper('text_helper');
-     
+    function explore($num_page = 1)
+    {        
+        //Identificar filtros de búsqueda
+            $this->load->model('Search_model');
+            $filters = $this->Search_model->filters();
+
         //Datos básicos de la exploración
-            $data = $this->Producto_model->data_explorar();
+            $data = $this->Producto_model->explore_data($filters, $num_page);
         
         //Opciones de filtros de búsqueda
-            $data['arr_filtros'] = array('est', 'cat', 'fab', 'dcto', 'tag');
-            $data['opciones_estado'] = $this->Item_model->opciones('categoria_id = 8', 'Todos');
-            $data['opciones_tag'] = $this->Item_model->opciones_id('categoria_id = 21', 'Filtrar por etiqueta');
-            $data['opciones_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5', 'Fabricante/Editorial');
-            $data['opciones_promocion'] = $this->App_model->opciones_post('tipo_id = 31001 AND estado = 1', 'n', 'Todas');
-            $data['opciones_categoria'] = $this->Item_model->opciones('categoria_id = 25', 'Todas las categorías');
+            $data['options_estado'] = $this->Item_model->options('categoria_id = 8', 'Todos');
+            $data['options_tag'] = $this->Item_model->opciones_id('categoria_id = 21', 'Todas');
+            $data['options_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5', 'Fabricante/Editorial');
+            $data['options_promocion'] = $this->App_model->opciones_post('tipo_id = 31001 AND estado = 1', 'n', 'Todas');
+            $data['options_categoria'] = $this->Item_model->options('categoria_id = 25', 'Todas las categorías');
             
         //Arrays con valores para contenido en lista
-            $data['arr_estados'] = $this->Item_model->arr_interno('categoria_id = 8');
-            $data['arr_tags'] = $this->Item_model->arr_interno('categoria_id = 25');
-        
+            $data['arr_estados'] = $this->Item_model->arr_cod('categoria_id = 8');
+            $data['arr_tags'] = $this->Item_model->arr_cod('categoria_id = 25');
+            //$data['arr_id_number_types'] = $this->Item_model->arr_item('category_id = 53', 'cod_abr');
+
+        //Promociones
+            $promociones = $this->db->get_where('post', 'tipo_id = 31001');
+            $data['arr_promociones'] = $this->pml->query_to_array($promociones, 'nombre_post', 'id');
+            
         //Cargar vista
-            $this->load->view(PTL_ADMIN, $data);
+            $this->App_model->view(TPL_ADMIN, $data);
     }
-    
+
     /**
-     * AJAX
-     * Eliminar un conjunto de productos seleccionados
+     * JSON
+     * Listado de users, según filtros de búsqueda
      */
-    function eliminar_seleccionados()
+    function get($num_page = 1, $per_page = 10)
     {
-        $str_seleccionados = $this->input->post('seleccionados');
-        
-        $seleccionados = explode('-', $str_seleccionados);
-        $cant_eliminados = 0;
-        
-        foreach ( $seleccionados as $elemento_id ) 
-        {
-            $cant_eliminados += $this->Producto_model->eliminar($elemento_id);
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        //Consultas previas, tags
+        if ( $filters['tag'] != '' ) {
+            $this->load->model('Datos_model');
+            $tag_id = (int) $filters['tag'];
+            $filters['fe2'] = $this->Datos_model->descendencia($tag_id, 'string');
         }
-        
-        $this->output
-        ->set_content_type('application/json')
-        ->set_output($cant_eliminados);
+
+        $data = $this->Producto_model->get($filters, $num_page, $per_page);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+
+    /**
+     * AJAX JSON
+     * Eliminar un conjunto de users seleccionados
+     * 2021-06-10
+     */
+    function delete_selected()
+    {
+        $selected = explode(',', $this->input->post('selected'));
+        $data['qty_deleted'] = 0;
+        
+        foreach ( $selected as $row_id ) $data['qty_deleted'] += $this->Producto_model->delete($row_id);
+        
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+//CRUD
+//---------------------------------------------------------------------------------------------------
     
     /**
      * Exporta el resultado de la búsqueda a un archivo de Excel
@@ -92,22 +126,70 @@ class Productos extends CI_Controller{
         $data['objWriter'] = $objWriter;
         $data['nombre_archivo'] = date('Ymd_His'). '_productos.xls'; //save our workbook as this file name
         
-        $this->load->view('app/descargar_phpexcel_v', $data);
+        $this->App_model->view('app/descargar_phpexcel_v', $data);
             
+    }
+
+    /**
+     * Vista información general del producto
+     * 2021-06-23
+     */
+    function info($producto_id)
+    {
+        $data = $this->Producto_model->basico($producto_id);
+        $data['metadatos'] = $this->Producto_model->metadatos_valor($producto_id);
+        $data['ediciones'] =  $this->Producto_model->meta($producto_id, 'dato_id = 30');
+
+        $data['view_a'] = $this->views_folder. 'info_v';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    function details($producto_id)
+    {
+        $data = $this->Producto_model->basico($producto_id);
+        $data['view_a'] = 'common/row_details_v';
+        $data['nav_2'] = $this->views_folder . 'menu_v';
+        $this->App_model->view(TPL_ADMIN, $data);
     }
     
     /**
      * Formulario para la creación de un nuevo producto
+     * 2021-06-02
      */
-    function nuevo()
+    function add()
     {
-        //Variables generales
-            $data['titulo_pagina'] = 'Productos';
-            $data['subtitulo_pagina'] = 'Nuevo';
-            $data['vista_a'] = 'productos/nuevo_v';
-            $data['vista_menu'] = 'productos/explorar/menu_v';
+        //Opciones formulario
+            $data['options_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5', 'Todos las marcas');
+            $data['options_categoria'] = $this->Item_model->options('categoria_id = 25');
 
-        $this->load->view(PTL_ADMIN, $data);
+        //Variables generales
+            $data['head_title'] = 'Productos';
+            $data['view_a'] = $this->views_folder .  'add_v';
+            $data['nav_2'] = $this->views_folder . 'explore/menu_v';
+
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    function validate($producto_id = NULL)
+    {
+        //Reglas
+        $validation['referencia_unique'] = $this->Db_model->is_unique('producto', 'referencia', $this->input->post('referencia'), $producto_id);
+
+        //Resultado
+        $data = array('status' => 1, 'message' => 'Los datos de producto son válidos');
+        foreach ( $validation as $value )
+        {
+            if ( $value == FALSE )  //Si alguno de los valores no es válido
+            {
+                $data['status'] = 0;
+                $data['message'] = 'Los datos del producto NO son válidos';
+            }
+        }
+
+        $data['validation'] = $validation;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     function editar_reciente()
@@ -121,9 +203,8 @@ class Productos extends CI_Controller{
      * del registro en la tabla producto (descripcion y valores), 
      * metadatos (tabla meta), e imágenes (tabla meta).
      * 
-     * @param type $producto_id
      */
-    function editar($producto_id, $seccion = 'descripcion')
+    function edit($producto_id, $section = 'description')
     {
         //Cargue
             $this->load->model('Datos_model');
@@ -135,44 +216,39 @@ class Productos extends CI_Controller{
         //Array data espefícicas
             $data['producto_id'] = $producto_id;
             $data['tags_activas'] = $this->Producto_model->tags_activas($producto_id);
-            $data['imagenes'] = $this->Producto_model->imagenes($producto_id);
             $data['metacampos'] = $this->Meta_model->metacampos(3100, 'editable');  //Tabla ID, ver sis_tabla;
-            $data['subtitulo_pagina'] = 'Editar';
-            $data['vista_b'] = 'productos/editar/editar_v';
+            $data['view_a'] = "{$this->views_folder}edit/{$section}_v";
+            $data['nav_3'] = $this->views_folder . 'edit/menu_v';
+            $data['section'] = $section;
+
+        //Opciones
+            $data['options_estado'] = $this->Item_model->opciones('categoria_id = 8');
+            $data['options_categoria'] = $this->Item_model->options('categoria_id = 25');
+            $data['options_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5', 'Todos las marcas');
             
+        //Arrays
             $data['arr_precios'] = $this->Producto_model->arr_precios($producto_id);
             $data['arr_tipos_precio'] = $this->Producto_model->arr_tipos_precio($producto_id);
             $data['arr_precio'] = $this->Producto_model->arr_precio($producto_id);
             
         //Destino para formulario
-            $data['destino_form'] = "productos/guardar/{$producto_id}";
-            if ( $seccion == 'especificaciones' ) { $data['destino_form'] = "productos/guardar_metadatos/{$producto_id}"; }
+            $data['form_destination'] = "productos/guardar/{$producto_id}";
+            if ( $section == 'especificaciones' ) { $data['form_destination'] = "productos/guardar_metadatos/{$producto_id}"; }
 
-        $this->load->view(PTL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN, $data);
     }
     
     /**
      * AJAX JSON
-     * Recibe datos post de productos/nuevo, crea un producto nuevo, y le agrega
-     * las categorías definidas.
+     * Recibe datos post de productos/nuevo, crea un producto nuevo
+     * 2021-06-03
      */
-    function insertar()
+    function insert()
     {
-        $registro = $this->input->post();
-        unset($registro['tags']);
+        $arr_row = $this->input->post();
+        $data = $this->Producto_model->insert($arr_row);
         
-        $resultado = $this->Producto_model->insertar($registro);
-        
-        //Si se insertó, se le agregan las categorías
-        if ( $resultado['nuevo_id'] > 0 ) 
-        {
-            $tags = $this->input->post('tags');
-            $this->Producto_model->act_tags($resultado['nuevo_id'], $tags);
-        }
-        
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode($resultado));
+        $this->output->set_content_type('application/json')->set_output(json_encode($resultado));
     }
     
     /**
@@ -180,14 +256,14 @@ class Productos extends CI_Controller{
      * Actualizar datos de un producto y redirigir a la vista de formulario de
      * edición mostrando resultado de la actualización.
      */
-    function guardar($producto_id)
+    function update($producto_id)
     {
         
         //Guardar datos en tabla producto
-            $resultado = $this->Producto_model->guardar($producto_id);
+            $data = $this->Producto_model->update($producto_id);
             
         //Si se guardó, ejecutar los demás procesos
-            if ( $resultado['ejecutado'] ) 
+            if ( $data['saved_id'] > 0 ) 
             {
                 //Actualizar los datos de las variaciones del producto, que hereden sus cambios
                     $this->Producto_model->act_variaciones($producto_id);    
@@ -204,15 +280,14 @@ class Productos extends CI_Controller{
             }
 
         //Resultado
-           $this->output
-           ->set_content_type('application/json')
-           ->set_output(json_encode($resultado));
+           $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     /**
      * JSON AJAX
      * Actualizar datos de un producto y redirigir a la vista de formulario de
      * edición mostrando resultado de la actualización.
+     * 2021-06-18
      */
     function guardar_metadatos($producto_id)
     {
@@ -220,18 +295,14 @@ class Productos extends CI_Controller{
             $this->Producto_model->guardar_metadatos($producto_id);
         
         //Resultado
-            $resultado['ejecutado'] = 1;
-            $resultado['mensaje'] = 'Los datos de especificaciones del producto se guardaron correctamente';
-            $resultado['type'] = 'success';
+            $data['saved_id'] = $producto_id;
+            $data['message'] = 'Los datos de especificaciones del producto se guardaron correctamente';
         
         //Crear registro de edición en la tabla meta
             $this->Producto_model->meta_editado($producto_id);
             $this->Producto_model->act_meta($producto_id);
         
-        $this->output
-        ->set_content_type('application/json')
-        ->set_output(json_encode($resultado));
-        
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     function ver($producto_id)
@@ -247,7 +318,7 @@ class Productos extends CI_Controller{
             $data['tags'] = $this->Producto_model->tags($producto_id);
             $data['ediciones'] =  $this->Producto_model->meta($producto_id, 'dato_id = 30');
         
-        $this->load->view(PTL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN, $data);
     }
     
     function guardar_comentario($producto_id)
@@ -282,7 +353,7 @@ class Productos extends CI_Controller{
     {
         $data['head_title'] = 'DistriCatólicas';
         $data['view_a'] = 'cache/productos_catalogo';
-        $this->load->view(TPL_FRONT, $data);
+        $this->App_model->view(TPL_FRONT, $data);
     }
     
     /**
@@ -294,34 +365,34 @@ class Productos extends CI_Controller{
         //Cargue inicial
             $this->load->helper('text');
             $this->load->model('Archivo_model');
-            $this->load->model('Busqueda_model');
+            $this->load->model('Search_model');
         
         //Datos de consulta, construyendo array de búsqueda
-            $busqueda = $this->Busqueda_model->busqueda_array();
-            $busqueda_str = $this->Busqueda_model->busqueda_str();
-            $resultados_total = $this->Producto_model->catalogo($busqueda); //Para calcular el total de resultados
+            $filters = $this->Search_model->filters();
+            $str_filters = $this->Search_model->str_filters();
+            $resultados_total = $this->Producto_model->catalogo($filters); //Para calcular el total de resultados
             
         //Guardar búsqueda
             $this->load->model('Evento_model');
-            $this->Evento_model->guardar_ev_busqueda($busqueda);    
+            $this->Evento_model->guardar_ev_busqueda($filters);    
         
         //Paginación
             $this->load->library('pagination');
             $config = $this->App_model->config_paginacion(3);
             $config['per_page'] = 6;
-            $config['base_url'] = base_url("productos/catalogo/?{$busqueda_str}");
+            $config['base_url'] = base_url("productos/catalogo/?{$str_filters}");
             $config['total_rows'] = $resultados_total->num_rows();
             $this->pagination->initialize($config);
             
         //Generar resultados para mostrar
             $offset = $this->input->get('per_page');
-            $resultados = $this->Producto_model->catalogo($busqueda, $config['per_page'], $offset);
+            $resultados = $this->Producto_model->catalogo($filters, $config['per_page'], $offset);
         
         //Variables
             $data['head_title'] = NOMBRE_APP;
             $data['cant_resultados'] = $config['total_rows'];
-            $data['busqueda'] = $busqueda;
-            $data['busqueda_str'] = $busqueda_str;
+            $data['filters'] = $filters;
+            $data['str_filters'] = $str_filters;
             $data['resultados'] = $resultados;
             $data['tags'] = $this->App_model->tags();
             $data['fabricantes'] = $this->Producto_model->fabricantes();
@@ -329,16 +400,13 @@ class Productos extends CI_Controller{
         //Solicitar vista
             $data['view_a'] = 'productos/catalogo/catalogo_v';
             //$data['view_a'] = 'cache/productos_catalogo';
-            $this->load->view(TPL_FRONT, $data);
+            $this->App_model->view(TPL_FRONT, $data);
     }
     
     /**
      * REDIRECT
      * Registra la visita de un usuario a un producto, y lo redirige a la vista
      * principal del producto: productos/detalle
-     * 
-     * @param type $producto_id
-     * @param type $slug
      */
     function visitar($producto_id, $slug = '')
     {   
@@ -381,10 +449,9 @@ class Productos extends CI_Controller{
         $data['tags'] = $this->Producto_model->tags($producto_id);
         
         //Datos
-            $data['imagenes'] = $this->Producto_model->imagenes($producto_id);
             $data['palabras_clave'] = $this->Producto_model->palabras_clave($producto_id);
         
-        $this->load->view(TPL_FRONT, $data);
+        $this->App_model->view(TPL_FRONT, $data);
         //Salida JSON
         //$this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
@@ -431,71 +498,82 @@ class Productos extends CI_Controller{
     function descargas()
     {
         //Solicitar vista
-            $data['titulo_pagina'] = 'Productos';
-            $data['subtitulo_pagina'] = 'Descargas';
-            $data['vista_a'] = 'productos/explorar/menu_v';
+            $data['head_title'] = 'Productos';
+            $data['view_a'] = $this->views_folder .  'explorar/menu_v';
             $data['vista_b'] = 'productos/descargas_v';
-            $this->load->view(PTL_ADMIN, $data);
+            $this->App_model->view(TPL_ADMIN, $data);
     }
     
-//GESTIÓN DE IMÁGENES
-//---------------------------------------------------------------------------------------------------
-    
-    function z_editar_img($producto_id)
+// IMÁGENES DEL PRODUCTO
+//-----------------------------------------------------------------------------
+
+    function images($product_id)
     {
-        $data = $this->Producto_model->basico($producto_id);
-        
-        $data['imagenes'] = $this->Producto_model->imagenes($producto_id);
-        
-        $data['vista_b'] = 'productos/editar_img_v';
-        $this->load->view(PTL_ADMIN, $data);
+        $data = $this->Producto_model->basico($product_id);
+
+        $data['images'] = $this->Producto_model->images($product_id);
+
+        //$data['file_form_action'] = 'send_file_form';
+
+        $data['view_a'] = $this->views_folder . 'images/images_v';
+        $data['nav_2'] = $this->views_folder . 'menu_v';
+        $this->App_model->view(TPL_ADMIN, $data);
     }
-    
+
     /**
-     * POST REDIRECT
-     * Recibe datos de productos/editar/$producto_id/imagenes
-     * 
-     * Carga y asigna una imagen al producto
-     * @param type $producto_id
+     * AJAX JSON
+     * Imágenes de un producto
+     * 2020-07-07
      */
-    function agregar_img($producto_id)
+    function get_images($product_id)
     {
-        $this->output->enable_profiler(TRUE);
-        $this->load->model('Archivo_model');
-        $resultado = $this->Archivo_model->cargar();
-        
-        //Cargue exitoso, se crea registro asociado
-            if ( $resultado['ejecutado'] ) 
-            {
-                $this->Producto_model->asociar_img($producto_id, $resultado['row_archivo']->id);
-            }
-            
-        $this->session->set_flashdata('mensaje', $resultado['mensaje']);
-        redirect("productos/editar/{$producto_id}/imagenes");
+        $images = $this->Producto_model->images($product_id);
+        $data['images'] = $images->result();
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
-    
+
     /**
-     * AJAX eliminar imagen
-     * @param type $meta_id
+     * Asocia una imagen a un producto, lo carga en la tabla file, y lo asocia en la tabla
+     * products_meta
+     * 2020-07-06
      */
-    function eliminar_img($meta_id)
+    function add_image($product_id)
     {
-        
-        $row_meta = $this->App_model->eliminar_meta($meta_id);
-        
-        //Eliminar archivo y registro de la tabla archivo
-            $this->load->model('Archivo_model');
-            $this->Archivo_model->eliminar($row_meta->relacionado_id);
-        
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(1);
+        //Cargue
+        $this->load->model('File_model');
+        $data_upload = $this->File_model->upload();
+
+        $data = $data_upload;
+        if ( $data_upload['status'] )
+        {
+            $data['meta_id'] = $this->Producto_model->add_image($product_id, $data_upload['row']->id);   //Asociar en la tabla products_meta
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
-    
-    function establecer_img($producto_id, $archivo_id)
+
+    /**
+     * Establecer imagen principal de un producto
+     * 2020-07-07
+     */
+    function set_main_image($product_id, $meta_id)
     {
-        $this->Producto_model->establecer_img($producto_id, $archivo_id);
-        redirect("productos/editar/{$producto_id}/imagenes");
+        $data = $this->Producto_model->set_main_image($product_id, $meta_id);
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Elimina una imagen de un producto, elimina el registro de la tabla file
+     * y sus archivos relacionados
+     * 2020-07-08
+     */
+    function delete_image($product_id, $meta_id)
+    {
+        $data['qty_deleted'] = $this->Producto_model->delete_image($product_id, $meta_id);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
 //GESTIÓN DE ETIQUETAS DE PRODUCTO
@@ -518,8 +596,8 @@ class Productos extends CI_Controller{
             $data['tags_producto'] = $tags_producto;
         
         //Solicitar vista
-            $data['vista_b'] = 'productos/tags_v';
-            $this->load->view(PTL_ADMIN, $data);
+            $data['view_a'] = $this->views_folder . 'tags_v';
+            $this->App_model->view(TPL_ADMIN, $data);
     }
     
 //GESTIÓN DE VARIACIONES
@@ -548,8 +626,8 @@ class Productos extends CI_Controller{
             $data['destino_form'] = $destino_form;
         
         //Solicitar vista
-            $data['vista_b'] = 'productos/variaciones_v';
-            $this->load->view(PTL_ADMIN, $data);
+            $data['view_a'] = $this->views_folder . 'variaciones_v';
+            $this->App_model->view(TPL_ADMIN, $data);
     }
     
     function crear_variacion($producto_id)
@@ -616,11 +694,10 @@ class Productos extends CI_Controller{
     function procesos()
     {
         //Solicitar vista
-            $data['titulo_pagina'] = 'Productos';
-            $data['subtitulo_pagina'] = 'Procesos masivos';
-            $data['vista_menu'] = 'productos/explorar/menu_v';
-            $data['vista_a'] = 'productos/procesos_v';
-            $this->load->view(PTL_ADMIN, $data);
+            $data['head_title'] = 'Productos';
+            $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
+            $data['view_a'] = $this->views_folder .  'procesos_v';
+            $this->App_model->view(TPL_ADMIN, $data);
     }
     
     function ejecutar_proceso($cod_proceso)
@@ -648,9 +725,7 @@ class Productos extends CI_Controller{
             $data = $this->Producto_model->act_meta_masivo();
         }
         
-        $this->output
-        ->set_content_type('application/json')
-        ->set_output(json_encode($data));
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
 
@@ -676,11 +751,10 @@ class Productos extends CI_Controller{
     function importar()
     {
         //Solicitar vista
-            $data['titulo_pagina'] = 'Productos';
-            $data['subtitulo_pagina'] = 'Cargar';
-            $data['vista_menu'] = 'productos/explorar/menu_v';
-            $data['vista_a'] = 'productos/cargar_v';
-            $this->load->view(PTL_ADMIN, $data);
+            $data['head_title'] = 'Productos';
+            $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
+            $data['view_a'] = $this->views_folder .  'cargar_v';
+            $this->App_model->view(TPL_ADMIN, $data);
     }
     
     /**
@@ -724,13 +798,15 @@ class Productos extends CI_Controller{
         $destino = "productos/explorar/{$filtro}";
         redirect($destino);
     }
+
+// Actualizar datos de productos mediante archivo de excel
+//-----------------------------------------------------------------------------
     
     /**
      * Mostrar formulario de importación de existencais de productos mediante 
      * archivo MS Excel. El resultado del formulario se envía a 
      * 'productos/importar_existencias_e'
      * 
-     * @param type $programa_id
      */
     function actualizar_datos()
     {
@@ -757,12 +833,12 @@ class Productos extends CI_Controller{
             $data['url_archivo'] = base_url("assets/formatos_cargue/{$nombre_archivo}");
             
         //Variables generales
-            $data['titulo_pagina'] = 'Productos';
-            $data['subtitulo_pagina'] = 'Actualizar datos';
-            $data['vista_a'] = 'comunes/importar_v';
-            $data['vista_menu'] = 'productos/explorar/menu_v';
+            $data['head_title'] = 'Productos';
+            $data['view_a'] = 'comunes/importar_v';
+            //$data['view_a'] = 'common/import_v';
+            $data['nav_2'] = $this->views_folder . 'explore/menu_v';
         
-        $this->load->view(PTL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN, $data);
     }
     
     /**
@@ -792,11 +868,11 @@ class Productos extends CI_Controller{
             $data['destino_volver'] = "productos/explorar/";
         
         //Cargar vista
-            $data['titulo_pagina'] = 'Productos';
-            $data['subtitulo_pagina'] = 'Resultado importación';
-            $data['vista_a'] = 'comunes/resultado_importacion_v';
-            $data['vista_menu'] = 'productos/explorar/menu_v';
-            $this->load->view(PTL_ADMIN, $data);
+            $data['head_title'] = 'Productos';
+            $data['view_a'] = 'comunes/resultado_importacion_v';
+            $data['nav_2'] = $this->views_folder . 'explore/menu_v';
+        
+        $this->App_model->view(TPL_ADMIN, $data);
     }
     
     function guardar_ev_actualizar_datos($estado)
@@ -830,30 +906,32 @@ class Productos extends CI_Controller{
             $data['head_includes'] = $head_includes;
 
         //Array data espefícicas
-            $data['subtitulo_pagina'] = 'Editar detalles';
+            $data['subhead_title'] = 'Editar detalles';
             $data['vista_b'] = 'comunes/gc_v';
 
         
         $output = array_merge($data,(array)$output);
-        $this->load->view(PTL_ADMIN, $output);
+        $this->App_model->view(TPL_ADMIN, $output);
     }
     
 // PROMOCIONES
 //-----------------------------------------------------------------------------
     
+    /**
+     * Vista Grocery Crud, promociones de productos
+     */
     function promociones()
     {
         $this->load->model('Post_model');
         $gc_output = $this->Post_model->crud_promociones();
         
         //Array data espefícicas
-        $data['titulo_pagina'] = 'Productos';
-        $data['subtitulo_pagina'] = 'Promociones';
-        $data['vista_a'] = 'comunes/gc_v';
-        $data['vista_menu'] = 'productos/explorar/menu_v';
+        $data['head_title'] = 'Productos';
+        $data['view_a'] = 'common/gc_v';
+        $data['nav_2'] = $this->views_folder . 'explore/menu_v';
         
         $output = array_merge($data,(array)$gc_output);
-        $this->load->view(PTL_ADMIN, $output);
+        $this->App_model->view(TPL_ADMIN, $output);
     }
 
 // CONTENIDOS ASIGNADOS
@@ -864,16 +942,7 @@ class Productos extends CI_Controller{
      * 2020-04-15
      */
     function books($producto_id)
-    {
-        /*$data = $this->Producto_model->basico($producto_id);
-
-        $data['books'] = $this->Producto_model->assigned_posts($producto_id);
-        $data['vista_b'] = 'productos/books_v';
-
-        $this->App_model->view(PTL_ADMIN, $data);*/
-
-        //------
-
+    {        
         $this->load->model('Archivo_model');
         
 
@@ -882,9 +951,9 @@ class Productos extends CI_Controller{
         $data['books'] = $this->Producto_model->assigned_posts($producto_id);
         $data['options_book'] = $this->App_model->opciones_post('tipo_id = 8', 'n', 'Libro');
 
-        $data['vista_b'] = 'productos/books_v';
+        $data['view_a'] = 'productos/books_v';
 
-        $this->App_model->view(PTL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN, $data);
     }
 
     /**
@@ -935,7 +1004,11 @@ class Productos extends CI_Controller{
                 $this->db->where('id', $producto->id)->update('producto', $arr_row);
                 
                 $qty_updated += $this->db->affected_rows();
+
+                //Actualizar archivo como principal
+                $this->db->query("UPDATE archivo SET integer_1 = 1 WHERE id = {$archivo->id}");
             }
+
         }
 
         $data['status'] = 1;

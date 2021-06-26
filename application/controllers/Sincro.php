@@ -29,7 +29,6 @@ class Sincro extends CI_Controller {
      */
     function panel($metodo_id = 0)
     {
-        
         //Procesos iniciales
             $condicion = $this->Develop_model->condicion_sincro();
             $arr_estado_tablas = $this->Develop_model->arr_estado_tablas($condicion);
@@ -39,7 +38,7 @@ class Sincro extends CI_Controller {
             $data['metodo_id'] = $metodo_id;    //Método de sincronización.
             $data['tablas'] = $this->Develop_model->tablas($condicion);
             $data['limit'] = 20000;             //Número máximo de registros a transferir por ciclo
-            $data['sincro_url'] = $this->Db_model->field_id('sis_option', 2, 'value');
+            $data['sincro_url'] = $this->Db_model->field_id('sis_option', 2, 'option_value');
             
         //Se puede sincronizar solo si es versión local, backup
             $vista_a = 'app/mensaje_v';

@@ -39,7 +39,7 @@
                                     $busqueda_str_subtag = str_replace('tag=','notag=',$busqueda_str) . "tag={$row_tag_n2->id}";
                                 ?>
                                 <li class="<?= $tag_class_n2 ?>">
-                                    <?= anchor("productos/catalogo/?{$get_tag}&tag={$row_tag_n2->id}", $row_tag_n2->item) ?>
+                                    <?= anchor("productos/catalogo/?tag={$row_tag_n2->id}", $row_tag_n2->item) ?>
                                 </li>
                             <?php endforeach ?>
                         </ul>

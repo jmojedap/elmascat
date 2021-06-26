@@ -94,7 +94,7 @@ define('NOMBRE_APP', 'DistriCatólicas');            //Nombre de la aplicación
 
 //define('URL_IMG', 'https://www.districatolicas.com/tienda/resources/images/');
 define('URL_ASSETS', 'https://www.districatolicas.com/tienda/assets/');
-define('URL_RECURSOS', 'https://www.districatolicas.com/tienda/resources/20210518/');
+define('URL_RECURSOS', 'https://www.districatolicas.com/tienda/resources/20210620/');
 //define('URL_UPLOADS', 'http://www.districatolicas.com/tienda/uploads/');
 
 define('RUTA_IMG', 'recursos/imagenes/');
@@ -116,12 +116,13 @@ define('APP_DOMAIN', 'districatolicas.com');
 
 define('URL_SYNC', 'https://www.districatolicas.com/tienda/sync/');
 define('URL_APP', 'https://www.districatolicas.com/tienda/');
+define('URL_ADMIN', 'https://www.districatolicas.com/tienda/');
 define('URL_API', 'https://www.districatolicas.com/tienda/');
 define('URL_UPLOADS', 'https://www.districatolicas.com/tienda/uploads/');
 define('URL_CONTENT', 'https://www.districatolicas.com/tienda/content/');  //URL de la carpeta de contenido de la aplicación
-define('URL_RESOURCES', 'https://www.districatolicas.com/tienda/resources/20210518/');
-define('URL_IMG', 'https://www.districatolicas.com/tienda/resources/20210518/images/');
-define('URL_BRAND', 'https://www.districatolicas.com/tienda/resources/20210518/brands/districatolicas/');
+define('URL_RESOURCES', 'https://www.districatolicas.com/tienda/resources/20210620/');
+define('URL_IMG', 'https://www.districatolicas.com/tienda/resources/20210620/images/');
+define('URL_BRAND', 'https://www.districatolicas.com/tienda/resources/20210620/brands/districatolicas/');
 
 define('BG_DARK', '#1c95d1');
 
@@ -129,7 +130,7 @@ define('ENV', 'production');
 
 define('PATH_CONTENT', 'content/');                         //Carpeta de contenido de la aplicación
 define('PATH_UPLOADS', 'content/uploads/');
-define('PATH_RESOURCES', 'resources/20210518/');
+define('PATH_RESOURCES', 'resources/20210620/');
 
 define('MAX_REG_EXPORT', 5000);                             //Número máximo de registros para exportar en archivo MS-Excel
 

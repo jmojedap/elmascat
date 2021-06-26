@@ -1,5 +1,6 @@
 <?php
-    $src = URL_UPLOADS . $row_archivo->carpeta . '500px_' . $row_archivo->nombre_archivo;
+    $src = URL_UPLOADS . $image->carpeta . '262px_' . $image->nombre_archivo;
+    $src = $
     $src_alt = URL_IMG . 'app/250px_producto.png';   //Imagen alternativa
     list($tamano_img['ancho'], $tamano_img['alto'], $tamano_img['tipo'], $tamano_img['atributos']) = getimagesize($src);
 
@@ -24,12 +25,14 @@
 ?>
 
 <script>
-//Variables
+// Variables
+//-----------------------------------------------------------------------------
     var base_url = '<?= base_url() ?>';
     var producto_id = <?= $row_variacion->id ?>;
     var cantidad = 1;
 
-//Document ready
+// Document Ready
+//-----------------------------------------------------------------------------
 
     $(document).ready(function(){
         $('.mini_img').click(function(){
@@ -43,7 +46,8 @@
     });
 
 
-//Funciones
+// Funciones
+//-----------------------------------------------------------------------------
 
     //Ajax
     function guardar_detalle(){
@@ -68,21 +72,20 @@
             <div class="product-essential">
                 <form action="#" method="post" id="product_addtocart_form">
                     <!-- EVITAR CARGUE DE IMÁGENES GRANDES TEMPORAL 2020-05-07 -->
-                    <?php if ( $imagenes->num_rows() > 0 ) { ?>
+                    <?php if ( $images->num_rows() > 0 ) { ?>
                         <div class="product-img-box col-lg-6 col-sm-6 col-xs-12">
                             <ul class="moreview" id="moreview">
-                                <?php foreach ($imagenes->result() as $row_archivo) { ?>
+                                <?php foreach ($images->result() as $image) { ?>
                                     <?php 
                                         $contador_img++;
-                                        $src = $row_archivo->url_carpeta . $row_archivo->nombre_archivo;
                                         $clase_li = "moreview_thumb thumb_{$contador_img} moreview_thumb_active";
                                         if ( $contador_img > 1 ) { $clase_li = "moreview_thumb thumb_{$contador_img}"; }
                                     ?>
                                     <li class="<?= $clase_li ?>">
-                                        <img class="moreview_thumb_image" src="<?= $src ?>" alt="thumbnail mobile" onerror="this.src='<?= URL_IMG ?>app/500px_producto.png'">
+                                        <img class="moreview_thumb_image" src="<?= $image->url ?>" alt="thumbnail mobile" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
                                         <span class="roll-over">Mueva el mouse para hacer zoom</span>
-                                        <img class="moreview_source_image" src="<?= $src ?>" alt="" onerror="this.src='<?= URL_IMG ?>app/500px_producto.png'">
-                                        <img  class="zoomImg" src="<?= $src ?>" alt="thumbnail" onerror="this.src='<?= URL_IMG ?>app/500px_producto.png'">
+                                        <img class="moreview_source_image" src="<?= $image->url ?>" alt="" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
+                                        <img  class="zoomImg" src="<?= $image->url ?>" alt="thumbnail" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
                                     </li>
                                 <?php } ?>
                             </ul>
@@ -93,9 +96,8 @@
                         </div>
                     <?php } else { ?>
                         <div class="product-img-box col-lg-6 col-sm-6 col-xs-12">
-                            <div style="max-height: 540px; max-width: 560px;" class="text-center">
-                                <?= img($att_img) ?>
-                            </div>
+                            <img id="img_producto" alt="Imagen producto" src="<?= $row->url_image ?>" class="w100pc"
+                                onError="this.src='<?= URL_IMG . 'app/250px_producto.png' ?>'">
                         </div>
                     <?php } ?>
                     
@@ -184,7 +186,7 @@
                         
                         <?php if ( $this->session->userdata('rol_id') <= 10 && $this->session->userdata('logged') ) : ?>
                             <div style="margin-top: 10px;">
-                                <?= anchor("productos/editar/{$row->id}", '<i class="fa fa-pencil"></i> Editar', 'class="btn btn-warning" title="Editar producto"') ?>      
+                                <?= anchor("productos/edit/{$row->id}", '<i class="fa fa-pencil"></i> Editar', 'class="btn btn-warning" title="Editar producto"') ?>      
                             </div>
                         <?php endif ?>
                     </div>

@@ -304,13 +304,12 @@ class Admin extends CI_Controller {
         foreach ( $query->result() as $row_item ) {
             $this->Admin_model->set_ascendencia($row_item->id);
         }
+
+        $data['status'] = 1;
+        $data['message'] = 'Actualización de campo ejecutada';
         
-        $data['mensaje'] = 'Actualización de campo ejecutada';
-        $data['clase_alert'] = 'success';
-        $data['titulo_pagina'] = 'Procesos';
-        $data['vista_a'] = 'sistema/admin/procesos_v';
-        
-        $this->load->view(PTL_ADMIN, $data);
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
 //PROCESOS MASIVOS DE DEPURACIÓN O ACTUALIZACIÓN

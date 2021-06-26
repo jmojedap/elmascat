@@ -21,7 +21,7 @@ class Usuarios extends CI_Controller{
         redirect('usuarios/explore');
     }
 
-    /** Exploración de Pedidos */
+    /** Exploración de Usuarios */
     function explore($num_page = 1)
     {
         //Identificar filtros de búsqueda

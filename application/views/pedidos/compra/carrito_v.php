@@ -66,14 +66,12 @@
                                         $row_producto = $this->Pcrn->registro_id('producto', $row_detalle->producto_id);
 
                                         $pct_descuento = 100 - $this->Pcrn->int_percent($row_detalle->precio, $row_detalle->precio_nominal);
-
-                                        $att_img = $this->Producto_model->att_img($row_detalle->producto_id, 500);
-                                        $att_img['width'] = 75;
-                                        $att_imt['alt'] = $row_detalle->nombre_producto;
                                     ?>
                                     <tr class="last even">
                                         <td class="image">
-                                            <?= anchor("productos/detalle/{$row_detalle->producto_id}", img($att_img), 'class="product-image" title="' . $row_detalle->nombre_producto . '"') ?>
+                                            <a href="<?= URL_APP . "productos/detalle/{$row_detalle->producto_id}" ?>">
+                                                <img src="<?= $row_detalle->url_thumbnail ?>" alt="Imagen producto en carrito" class="product-image" width="75">
+                                            </a>
                                         </td>
                                         <td>
                                             <h2 class="product-name">

@@ -24,6 +24,7 @@
                 <div class="card mw750p">
                     <div class="card-body">
                         <h3>{{ curr_process.process_name }}</h3>
+                        <p>{{ curr_process.process_link }}</p>
                         <div class="mb-2" v-html="curr_process.description"></div>
                         <div class="mb-2">
                             <button class="btn btn-primary btn-lg" v-on:click="run_process">
@@ -40,6 +41,20 @@
             </div>
         </div>
     </div>
+    <!-- <table class="table bg-white">
+        <thead>
+            <th>title</th>
+            <th>link</th>
+            <th>description</th>
+        </thead>
+        <tbody>
+            <tr v-for="(process, key) in processes">
+                <td>{{ process.process_name }}</td>
+                <td>{{ process.process_link }}</td>
+                <td>{{ process.description }}</td>
+            </tr>
+        </tbody>
+    </table> -->
 </div>
 
 <script>
@@ -49,7 +64,7 @@ var processes_app = new Vue({
         this.set_process(0)
     },
     data: {
-        processes: <?= json_encode($processes) ?>,
+        processes: <?= json_encode($processes->result()) ?>,
         curr_process: [],
         curr_key: 0,
         loading: false,

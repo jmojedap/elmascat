@@ -12,10 +12,10 @@
         },
         methods: {
             send_form: function() {
-                axios.post(url_app + 'posts/insert/', $('#add_form').serialize())
+                axios.post(url_app + 'posts/save/', $('#add_form').serialize())
                 .then(response => {
                     console.log('status: ' + response.data.message);
-                    if ( response.data.status == 1 )
+                    if ( response.data.saved_id > 0 )
                     {
                         this.row_id = response.data.saved_id;
                         this.clean_form();

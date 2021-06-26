@@ -53,7 +53,7 @@ class Archivos extends CI_Controller{
 // EDITAR
 //-----------------------------------------------------------------------------
     
-    function editar($archivo_id)
+    function edit($archivo_id)
     {
         $data = $this->Archivo_model->basico($archivo_id);
         
@@ -63,7 +63,7 @@ class Archivos extends CI_Controller{
         
         //Variables generales
             $data['archivo_id'] = $archivo_id;
-            $data['subtitulo_pagina'] = $data['row']->nombre_archivo;
+            $data['titulo_pagina'] = $data['row']->nombre_archivo;
             $data['vista_a'] = 'archivos/archivo_v';
             $data['vista_b'] = 'archivos/editar_v';
             
@@ -183,6 +183,16 @@ class Archivos extends CI_Controller{
         
         echo count($seleccionados);
     }
+
+    /**
+     * Elimina un registro de la tabla file, y los archivos asociados en el servidor
+     * 2020-07-24
+     */
+    function delete($file_id)
+    {
+        $data = $this->Archivo_model->delete($file_id);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
     function carpetas($year, $month, $offset = 0)
     {
@@ -205,11 +215,10 @@ class Archivos extends CI_Controller{
             $data['years'] = range(2015, 2022);
         
         //Solicitar vista
-            $data['titulo_pagina'] = "Archivos :: {$year}/{$data['nombre_mes']}";
-            $data['subtitulo_pagina'] = $cant_archivos;
-            $data['vista_menu'] = 'archivos/explorar_menu_v';
-            $data['vista_a'] = 'archivos/carpetas_v';
-            $this->load->view(PTL_ADMIN, $data);
+            $data['head_title'] = "Archivos :: {$year}/{$data['nombre_mes']}";
+            $data['nav_2'] = 'archivos/explore/menu_v';
+            $data['view_a'] = 'archivos/carpetas_v';
+            $this->App_model->view(TPL_ADMIN, $data);
     }
     
     /**
@@ -270,41 +279,27 @@ class Archivos extends CI_Controller{
      * 
      * @param type $archivo_id
      */
-    function cargar($archivo_id = NULL)
+    function add($archivo_id = NULL)
     {
         //Array data espefícicas
             $data['archivo_id'] = $archivo_id;
-            $data['titulo_pagina'] = 'Archivos';
-            $data['subtitulo_pagina'] = 'Cargar archivo';
-            $data['vista_menu'] = 'archivos/explorar_menu_v';
-            $data['vista_a'] = 'archivos/cargar_v';
+            $data['head_title'] = 'Cargar archivo';
+            $data['nav_2'] = 'archivos/explore/menu_v';
+            $data['view_a'] = 'archivos/add_v';
         
         //Cargar vista
-            $this->load->view(PTL_ADMIN, $data);
+            $this->App_model->view(TPL_ADMIN, $data);
     }
     
     /**
-     * Ejecutar cargue, realiza el cargue del archivo
-     *
-     * @param type $archivo_id
+     * AJAX JSON
+     * Carga un archivo en la ruta "content/uploads/{year}/}{month}/"
+     * Crea registro de ese arhivo en la tabla file
      */
-    function cargar_e()
+    function upload()
     {
-        $resultado = $this->Archivo_model->cargar();
-        $this->session->set_flashdata('resultado', $resultado);
-        
-        if ( $resultado['ejecutado'] )
-        {
-            //Se cargó
-            $archivo_id = $resultado['row_archivo']->id;
-            //$this->Archivo_model->crear_miniaturas($archivo_id);   //Crear miniaturas de la imagen
-            //$this->Archivo_model->mod_original_id($archivo_id);    //Mofificar imagen original después de crear miniaturas
-            redirect("archivos/editar/{$archivo_id}");
-        } else {
-            //No se cargó
-            redirect('archivos/cargar');
-        }
-        
+        $data = $this->Archivo_model->upload();
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
 // Procesos masivos
@@ -335,6 +330,40 @@ class Archivos extends CI_Controller{
         $data['status'] = 1;
         $data['message'] = "Archivos actualizados: {$qty_updated}";
     
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Actualiza los campos archivo: table_id, related_1, para los archivos relacionados con productos
+     * 2021-05-28
+     */
+    function actualizar_campos_related()
+    {
+        $data = array('status' => 1, 'message' => 'No se actualizaron registros de archivos');
+        $qty_updated = 0;
+        
+        $this->db->where('dato_id', 1); //Imagen asociada
+        $this->db->where('tabla_id', 3100); //Tabla producto
+        $relacionados = $this->db->get('meta');
+
+        $arr_row['table_id'] = 3100;    //Tabla producto
+
+        foreach( $relacionados->result() as $meta)
+        {
+            $arr_row['related_1'] = $meta->elemento_id;
+
+            $this->db->where('id', $meta->relacionado_id);
+            $this->db->update('archivo', $arr_row);
+            
+            $qty_updated += $this->db->affected_rows();
+        }
+
+        //Verificar resultado
+        if ( $qty_updated > 0 ) {
+            $data = array('status' => 1, 'message' => "Archivos actualizados: {$qty_updated}");
+        }
+
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }

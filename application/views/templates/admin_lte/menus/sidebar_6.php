@@ -13,7 +13,7 @@
             $menus['usuarios/books'] = array('usuarios');
         
         //Productos
-            $menus['productos/explorar'] = array('productos');
+            $menus['productos/explore'] = array('productos');
             $menus['productos/nuevo'] = array('productos');
             $menus['productos/editar'] = array('productos');
             $menus['productos/ver'] = array('productos');

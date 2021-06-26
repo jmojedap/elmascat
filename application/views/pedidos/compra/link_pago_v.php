@@ -97,7 +97,7 @@
                     </tr>
                 </thead>
                 
-                <?php if ( $this->session->userdata('rol') <= 1 ) { ?>
+                <?php if ( $this->session->userdata('logged') && $this->session->userdata('role') <= 1 ) { ?>
                     <tfoot>
                         <tr class="first last">
                             <td class="a-right last" colspan="2">

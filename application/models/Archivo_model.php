@@ -171,26 +171,30 @@ class Archivo_model extends CI_Model{
     
     /**
      * Crea el registro del archivo en la tabla archivo
-     * @param type $upload_data
+     * 2021-06-18
      */
     function crear_registro($upload_data)
     {
         //Construir registro
-            $registro['nombre_archivo'] = $upload_data['file_name'];
-            $registro['ext'] = $upload_data['file_ext'];
-            $registro['palabras_clave'] = $this->input->post('palabras_clave');
-            $registro['titulo_archivo'] = str_replace($upload_data['file_ext'], '', $upload_data['client_name']);  //Para quitar la extensión y punto
-            $registro['carpeta'] = date('Y/m/');
-            $registro['type'] = $upload_data['file_type'];
-            $registro['es_imagen'] = $upload_data['is_image'];    //Definir si es imagen o no
-            $registro['meta'] = json_encode($upload_data);
-            $registro['editado'] = date('Y-m-d H:i:s');
-            $registro['editor_id'] = $this->session->userdata('usuario_id');
-            $registro['creado'] = date('Y-m-d H:i:s');
-            $registro['creador_id'] = $this->session->userdata('usuario_id');
+            $arr_row['nombre_archivo'] = $upload_data['file_name'];
+            $arr_row['ext'] = $upload_data['file_ext'];
+            $arr_row['palabras_clave'] = $this->input->post('palabras_clave');
+            $arr_row['titulo_archivo'] = str_replace($upload_data['file_ext'], '', $upload_data['client_name']);  //Para quitar la extensión y punto
+            $arr_row['carpeta'] = date('Y/m/');
+            $arr_row['url'] = URL_UPLOADS . $arr_row['carpeta'] . $upload_data['file_name'];
+            $arr_row['url_thumbnail'] = URL_UPLOADS . $arr_row['carpeta'] . '500px_' . $upload_data['file_name'];
+            $arr_row['type'] = $upload_data['file_type'];
+            $arr_row['es_imagen'] = $upload_data['is_image'];    //Definir si es imagen o no
+            $arr_row['meta'] = json_encode($upload_data);
+            $arr_row['table_id'] = ( ! is_null($this->input->post('table_id')) ) ? $this->input->post('table_id') : 0;
+            $arr_row['related_1'] = ( ! is_null($this->input->post('related_1')) ) ? $this->input->post('related_1') : 0;
+            $arr_row['editado'] = date('Y-m-d H:i:s');
+            $arr_row['editor_id'] = $this->session->userdata('usuario_id');
+            $arr_row['creado'] = date('Y-m-d H:i:s');
+            $arr_row['creador_id'] = $this->session->userdata('usuario_id');
             
         //Insertar
-            $this->db->insert('archivo', $registro);
+            $this->db->insert('archivo', $arr_row);
             
         //Registro
             $row_registro = $this->Pcrn->registro_id('archivo', $this->db->insert_id());
@@ -223,56 +227,121 @@ class Archivo_model extends CI_Model{
     
 // ELIMINACIÓN
 //-----------------------------------------------------------------------------
+
+    /**
+     * Determina si un archivo puede ser o no eliminado por el usuario en sesión
+     * 2021-01-27
+     */
+    function deleteable($file_id)
+    {
+        $deleteable = false;
+
+        //Administradores pueden eliminar
+        if ( in_array($this->session->userdata('role'), array(1,2,3)) ){
+            $deleteable = true; 
+        } else {
+            $row = $this->Db_model->row_id('archivo', $file_id);
+
+            //Si es el usuario creador
+            if ( $row->creador_id == $this->session->userdata('user_id') ) { $deleteable = true; }
+
+            //Si es el usuario asociado
+            if ( $row->table_id == 1000 && $row->related_1 == $this->session->userdata('user_id') ) { $deleteable = true; }
+        }
+
+        return $deleteable;
+    }
     
     /**
-     * Elimina archivo, miniaturas y el el registro en la tabla archivo.
-     * @param type $archivo_id
+     * Elimina file del servidor y sus miniaturas y el el registro en la tabla files
+     * 2021-02-20
      */
-    function eliminar($archivo_id)
+    function delete($file_id)
     {   
-        //Eliminar archivos del servidor
-            $row_archivo = $this->Pcrn->registro_id('archivo', $archivo_id);
-            if ( ! is_null($row_archivo) ) 
-            {
-                $this->unlink($row_archivo->carpeta, $row_archivo->nombre_archivo);
-            }
-        
-        //Eliminar registros de la base de datos
-            $this->eliminar_registros($archivo_id);
-    }
-    
-    /**
-     * Elimina de la BD los registros asociados al archivo
-     */
-    function eliminar_registros($archivo_id)
-    {
-        //Desvincular registro de archivos con otros elementos
-            $this->desvincular($archivo_id);
-        
-        //Tabla archivo
-            if ( $archivo_id > 0 )
-            {
-                $this->db->where('id', $archivo_id);
-                $this->db->delete('archivo');
-            }
-    }
-    
-    /**
-     * Elimina los registros que relacionan al archivo con otros elementos de la
-     * base de datos. Tambien edita los campos de registros referentes al 
-     * archivo_id
-     */
-    function desvincular($archivo_id)
-    {
-        //Imagen de perfil de usuario   INACTIVA
-            $registro['imagen_id'] = NULL;
-            $this->db->where('imagen_id', $archivo_id);
-            $this->db->update('usuario', $registro);
+        $qty_deleted = 0;
+
+        if ( $this->deleteable($file_id) )
+        {
+            //Eliminar files del servidor
+                $row_file = $this->Db_model->row_id('archivo', $file_id);
+                if ( ! is_null($row_file) ) 
+                {
+                    $this->unlink($row_file->carpeta, $row_file->nombre_archivo);
+                }
             
-        //Eliminar metadatos
-            $this->db->where('dato_id IN (1, 3)');              //Meta tipo imagen (1) y archivo relacionado (3)
-            $this->db->where('relacionado_id', $archivo_id);
-            $this->db->delete('meta');
+            //Eliminar registros de la base de datos
+                $qty_deleted = $this->delete_rows($file_id);
+        }
+
+        return $qty_deleted;
+    }
+    
+    /**
+     * Elimina de la BD los registros asociados al file
+     */
+    function delete_rows($file_id)
+    {
+        $qty_deleted = 0;
+
+        //Desvincular registro de files con otros elementos
+            $this->delete_related_rows($file_id);
+        
+        //Tabla file
+            if ( $file_id > 0 )
+            {
+                $this->db->where('id', $file_id);
+                $this->db->delete('archivo');
+
+                $qty_deleted = $this->db->affected_rows();
+            }
+
+        return $qty_deleted;
+    }
+    
+    /**
+     * Elimina los registros que relacionan al file con otros elementos de la
+     * base de datos. Tambien edita los fields de registros referentes al 
+     * file_id
+     * 2021-06-10
+     */
+    function delete_related_rows($file_id)
+    {
+        //Prepara registro
+            $arr_row['image_id'] = 0;
+            $arr_row['url_image'] = '';
+            $arr_row['url_thumbnail'] = '';
+
+        //Prepara registro producto
+            $arr_row_producto['imagen_id'] = 0;
+            $arr_row_producto['url_image'] = '';
+            $arr_row_producto['url_thumbnail'] = '';
+
+        //Actualizar registros en tablas tablas
+            $this->db->where('image_id', $file_id)->update('usuario', $arr_row);
+            //$this->db->where('image_id', $file_id)->update('posts', $arr_row);
+            $this->db->where('imagen_id', $file_id)->update('producto', $arr_row_producto);
+    }
+
+    /**
+     * Elimina un archivo y sus miniaturas del servidor
+     */
+    function unlink($folder, $file_name)
+    {
+        $qty_unlinked = 0;
+
+        $files[] = PATH_UPLOADS . "{$folder}{$file_name}";
+        $files[] = PATH_UPLOADS . "{$folder}500px_{$file_name}";
+
+        foreach ( $files as $file_path )
+        {
+            if ( file_exists($file_path) ) 
+            {
+                unlink($file_path);
+                $qty_unlinked++;
+            }
+        }
+        
+        return $qty_unlinked;
     }
 
 //DATOS
@@ -325,24 +394,26 @@ class Archivo_model extends CI_Model{
         
         return $row_img;        
     }
-    
-//UPLOADS
+
+// UPLOAD
+//-----------------------------------------------------------------------------
+
+// CARGUE
 //---------------------------------------------------------------------------------------------------
     
     /**
      * Realiza el upload de un archivo al servidor, crea el registro asociado en
      * la tabla "archivo".
-     * 
-     * @return type
+     * 2021-06-18
      */
-    function cargar($archivo_id = NULL)
+    function upload($archivo_id = NULL)
     {
         $config_upload = $this->config_upload();
         $this->load->library('upload', $config_upload);
         
         $row_archivo = $this->Pcrn->registro_id('archivo', $archivo_id);
 
-        if ( $this->upload->do_upload('archivo') )  //El archivo se cargó
+        if ( $this->upload->do_upload('file_field') )  //El archivo se cargó
         {
             //Identificar registro en la tabla "archivo"
                 if ( is_null($archivo_id) ) { $row_archivo = $this->crear_registro($this->upload->data()); }
@@ -355,42 +426,17 @@ class Archivo_model extends CI_Model{
                 }
             
             //Array resultado
-                $resultado = $this->res_cargue_base(TRUE);
-                $resultado['upload_data'] = $this->upload->data();
-                $resultado['row_archivo'] = $row_archivo;
+                $data['status'] = 1;
+                $data['upload_data'] = $this->upload->data();
+                $data['row'] = $row_archivo;
         }
         else    //No se cargó
         {
-            $resultado = $this->res_cargue_base(FALSE);
-            $resultado['html'] = $this->upload->display_errors('<div role="alert" class="alert alert-danger"><i class="fa fa-warning"></i> ', '</div>');
+            $data = array('status' => 0, 'message' => 'El archivo no fue cargado');
+            $data['html'] = $this->upload->display_errors('<div role="alert" class="alert alert-danger"><i class="fa fa-warning"></i> ', '</div>');
         }
         
-        return $resultado;
-    }
-    
-    /**
-     * Array base del resultado del proceso de cargue de archivo
-     * 
-     * @param type $ejecutado
-     * @return string
-     */
-    function res_cargue_base($ejecutado)
-    {
-        //Valor principal
-            $resultado['ejecutado'] = $ejecutado;
-            
-        //Valores por defecto, no se cargó
-            $resultado['mensaje'] = 'El archivo no fue cargado';
-            $resultado['clase'] = 'alert alert-danger';
-        
-        //Si se ejecutó el cargue
-            if ( $ejecutado )
-            {
-                $resultado['mensaje'] = 'Archivo cargado';
-                $resultado['clase'] = 'alert alert-success';
-            }
-        
-        return $resultado;
+        return $data;
     }
     
     /**
@@ -599,29 +645,6 @@ class Archivo_model extends CI_Model{
         }
         
         return $arr_eliminados;
-    }
-    
-    /**
-     * Elimina un archivo y sus miniaturas
-     * 
-     * @param type $carpeta
-     * @param type $nombre_archivo
-     */
-    function unlink($carpeta, $nombre_archivo)
-    {
-        $cant_eliminados = 0;
-        $prefijos = $this->prefijos();  //Prefijos de miniaturas
-        
-        foreach( $prefijos as $prefijo )
-        {
-            $ruta = RUTA_UPLOADS . "{$carpeta}{$prefijo}{$nombre_archivo}";
-            if (file_exists($ruta) ) { 
-                unlink($ruta);
-                $cant_eliminados++;
-            }
-        }
-        
-        return $cant_eliminados;
     }
     
     /**

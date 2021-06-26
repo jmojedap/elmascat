@@ -1,9 +1,9 @@
 <?php 
-    $clases_menu['oferta'] = '';
+    $clases_menu['promo'] = 'link_especial';
     
-    if ( $this->input->get('ofrt') == 1 ) { $clases_menu['oferta'] = 'active'; }
+    if ( $this->input->get('ofrt') == 1 ) { $clases_menu['promo'] = 'active'; }
     
-    $clases_menu['novedades'] = '';
+    $clases_menu['novedades'] = 'link_yellow ';
     $mktime = strtotime(date('Ymd') . ' -3 months');
     $fi_novedades = date('Ymd', $mktime);    //Creados hace menos de tres meses
     if ( strlen($this->input->get('fi')) > 0 ) { $clases_menu['novedades'] = 'active'; }
@@ -29,7 +29,7 @@
     <li class="level0 parent drop-menu"><a href="<?= base_url() ?>">inicio</a></li>
     
     <li class="level0 parent drop-menu" title="Productos en oferta">
-        <a href="<?= base_url("productos/catalogo/?ofrt=1") ?>" class="<?= $clases_menu['oferta'] ?>">
+        <a href="<?= URL_APP . "productos/catalogo/?promo=1" ?>" class="<?= $clases_menu['promo'] ?>">
             Ofertas
         </a>
     </li>

@@ -26,7 +26,7 @@
         $arr_menus['cargar'] = array(
             'icono' => '<i class="fa fa-upload"></i>',
             'texto' => 'Cargar',
-            'link' => "archivos/cargar/",
+            'link' => "archivos/add/",
             'atributos' => 'title="Cargar archivo"'
         );
         

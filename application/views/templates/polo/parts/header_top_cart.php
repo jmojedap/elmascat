@@ -1,7 +1,6 @@
 <?php
     if ( ! is_null($this->session->userdata('pedido_id')) ) 
     {
-        //$this->load->model('Pedido_model');
         $pedido_id = $this->session->userdata('pedido_id');
         $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
         
@@ -34,13 +33,11 @@
                     <div class="block-subtitle">Item(s) agregados recientemente</div>
                     <ul id="cart-sidebar" class="mini-products-list">
                         <?php foreach ($detalle->result() as $row_detalle) : ?>
-                            <?php
-                                $att_img = $this->App_model->att_img($row_detalle->producto_id, 500);
-                                $att_img['width'] = 80;
-                            ?>
                             <?php if ( $i <= 3 ){ ?>
                                 <li class="item even">
-                                    <?= anchor("productos/detalle/{$row_detalle->producto_id}", img($att_img), 'class="product-image" title="' . $row_detalle->nombre_producto . '"') ?>
+                                    <a href="<?= URL_APP . "productos/detalle/{$row_detalle->producto_id}" ?>" class="product-image" title="<?= $row_detalle->nombre_producto ?>">
+                                        <img src="<?= $row_detalle->url_thumbnail ?>" alt="Imagen producto" style="width: 80px;">
+                                    </a>
                                     <div class="detail-item">
                                         <div class="product-details">
                                             <p class="product-name">

@@ -8,18 +8,17 @@ class Producto_Model extends CI_Model{
         
         //Imagen principal
         $basico['row'] = $row;
-        $basico['row_variacion'] = $this->Pcrn->registro_id('producto', $producto_id);
+        $basico['row_variacion'] = $this->Db_model->row_id('producto', $producto_id);
         $basico['elemento_s'] = 'producto';
         $basico['elemento_p'] = 'productos';
         $basico['tabla_id'] = 3100;
         $basico['cant_visitas'] = $this->cant_visitas($producto_id);
-        $basico['cant_pedidos'] = $this->Pcrn->num_registros('pedido_detalle', "producto_id = {$producto_id}");
-        $basico['imagenes'] = $this->imagenes($producto_id);
-        $basico['row_archivo'] = $this->Pcrn->registro_id('archivo', $row->imagen_id);
-        $basico['titulo_pagina'] = $row->nombre_producto;
-        $basico['vista_a'] = 'productos/producto_v';
+        $basico['cant_pedidos'] = $this->Db_model->num_rows('pedido_detalle', "producto_id = {$producto_id}");
+        $basico['images'] = $this->images($producto_id);
         $basico['head_title'] = $row->nombre_producto;
         $basico['view_a'] = 'productos/producto_v';
+        $basico['nav_2'] = $this->views_folder . 'menu_v';
+        $basico['back_link'] = $this->url_controller . 'explore';
         
         return $basico;
     }
@@ -42,20 +41,204 @@ class Producto_Model extends CI_Model{
         
         return $row_principal;
     }
+
+// EXPLORE FUNCTIONS - products/explore
+//-----------------------------------------------------------------------------
     
-    function producto_id()
+    /**
+     * Array con los datos para la vista de exploración
+     */
+    function explore_data($filters, $num_page, $per_page = 10)
     {
-        $producto_id = 0;
+        //Data inicial, de la tabla
+            $data = $this->get($filters, $num_page, $per_page);
         
-        $this->db->order_by('id', 'DESC');
-        $query = $this->db->get('producto');
+        //Elemento de exploración
+            $data['controller'] = 'productos';                       //Nombre del controlador
+            $data['cf'] = 'productos/explore/';                      //Nombre del controlador
+            $data['views_folder'] = 'ecommerce/products/explore/'; //Carpeta donde están las vistas de exploración
+            $data['num_page'] = $num_page;                          //Número de la página
+            
+        //Vistas
+            $data['head_title'] = 'Productos';
+            $data['view_a'] = $data['views_folder'] . 'explore_v';
+            $data['nav_2'] = $data['views_folder'] . 'menu_v';
         
-        if ( $query->num_rows() > 0 ) {
-            $producto_id = $query->row()->id;
+        return $data;
+    }
+
+    /**
+     * Array con listado de products, filtrados por búsqueda y num página, más datos adicionales sobre
+     * la búsqueda, filtros aplicados, total resultados, página máxima.
+     * 2020-08-01
+     */
+    function get($filters, $num_page, $per_page = 8)
+    {
+        //Load
+            $this->load->model('Search_model');
+
+        //Búsqueda y Resultados
+            $data['filters'] = $filters;
+            $offset = ($num_page - 1) * $per_page;      //Número de la página de datos que se está consultado
+            $elements = $this->search($filters, $per_page, $offset);    //Resultados para página
+        
+        //Cargar datos
+            $data['filters'] = $filters;
+            $data['list'] = $this->list($filters, $per_page, $offset);      //Resultados para página
+            $data['str_filters'] = $this->Search_model->str_filters();      //String con filtros en formato GET de URL
+            $data['search_num_rows'] = $this->search_num_rows($data['filters']);
+            $data['max_page'] = ceil($this->pml->if_zero($data['search_num_rows'],1) / $per_page);   //Cantidad de páginas
+
+        return $data;
+    }
+
+    /**
+     * Segmento Select SQL, con diferentes formatos, consulta de usuarios
+     * 2020-12-12
+     */
+    function select($format = 'general')
+    {
+        $arr_select['general'] = 'producto.id, nombre_producto as name, referencia AS code, slug, descripcion AS description, promocion_id, puntaje AS priority, puntaje_auto AS priority_auto, 
+            palabras_clave AS keywords, precio AS price, cant_disponibles AS stock, imagen_id AS image_id, url_image, url_thumbnail, 
+            estado AS status, producto.tipo_id AS type_id, creado AS created_at, editado AS updated_at';
+
+        //$arr_select['export'] = 'usuario.id, username, usuario.email, nombre, apellidos, sexo, rol_id, estado, no_documento, tipo_documento_id, institucion_id, grupo_id';
+
+        return $arr_select[$format];
+    }
+    
+    /**
+     * Query de products, filtrados según búsqueda, limitados por página
+     * 2021-05-28
+     */
+    function search($filters, $per_page = NULL, $offset = NULL)
+    {
+        //Construir consulta
+            $this->db->select($this->select());
+            
+        //Orden
+            if ( $filters['o'] != '' )
+            {
+                $order_type = $this->pml->if_strlen($filters['ot'], 'ASC');
+                $this->db->order_by($filters['o'], $order_type);
+            }
+
+            $this->db->order_by('puntaje', 'DESC');
+            $this->db->order_by('puntaje_auto', 'DESC');
+            
+        //Filtros
+            $search_condition = $this->search_condition($filters);
+            if ( $search_condition ) { $this->db->where($search_condition);}
+            
+        //Obtener resultados
+            $query = $this->db->get('producto', $per_page, $offset); //Resultados por página
+        
+        return $query;
+    }
+
+    /**
+     * String con condición WHERE SQL para filtrar products
+     * 2020-08-01
+     */
+    function search_condition($filters)
+    {
+        $condition = NULL;
+
+        $condition .= $this->role_filter() . ' AND ';
+
+        //q words condition
+        $words_condition = $this->Search_model->words_condition($filters['q'], array('referencia', 'nombre_producto', 'descripcion', 'palabras_clave'));
+        if ( $words_condition )
+        {
+            $condition .= $words_condition . ' AND ';
         }
         
-        return $producto_id;
+        //Otros filtros
+        if ( $filters['status'] != '' ) { $condition .= "estado = {$filters['status']} AND "; }
+        if ( $filters['cat'] != '' ) { $condition .= "categoria_id = {$filters['cat']} AND "; }
+        if ( $filters['fab'] != '' ) { $condition .= "fabricante_id = {$filters['fab']} AND "; }
+        if ( $filters['dcto'] != '' ) { $condition .= "promocion_id = {$filters['dcto']} AND "; }   //Descuento o promoción
+        if ( $filters['promo'] != '' ) { $condition .= "promocion_id > 0 AND "; }   //Tiene algúna oferta o descuento
+        if ( $filters['fe1'] != '' ) { $condition .= "peso <= {$filters['fe1']} AND "; }   //Peso máximo
+        if ( $filters['tag'] != '' ) {
+            $condition .= "producto.id IN (SELECT elemento_id FROM meta WHERE tabla_id = 3100 AND dato_id = 21 AND relacionado_id IN ({$filters['tag']}) ) AND ";
+        }
+        
+        //Quitar cadena final de ' AND '
+        if ( strlen($condition) > 0 ) { $condition = substr($condition, 0, -5);}
+        
+        return $condition;
     }
+
+    /**
+     * Array Listado elemento resultado de la búsqueda (filtros).
+     * 2020-06-19
+     */
+    function list($filters, $per_page = NULL, $offset = NULL)
+    {
+        $query = $this->search($filters, $per_page, $offset);
+        $list = array();
+
+        foreach ($query->result() as $row)
+        {
+            $sql_ventas = 'SELECT id FROM pedido WHERE codigo_respuesta_pol = 1';
+            $row->qty_sold = $this->Db_model->num_rows('pedido_detalle', "producto_id = {$row->id} AND pedido_id IN ({$sql_ventas})");  //Cantidad de estudiantes*/
+            $list[] = $row;
+        }
+
+        return $list;
+    }
+    
+    /**
+     * Devuelve la cantidad de registros encontrados en la tabla con los filtros
+     * establecidos en la búsqueda
+     */
+    function search_num_rows($filters)
+    {
+        $this->db->select('id');
+        $search_condition = $this->search_condition($filters);
+        if ( $search_condition ) { $this->db->where($search_condition);}
+        $query = $this->db->get('producto'); //Para calcular el total de resultados
+
+        return $query->num_rows();
+    }
+    
+    /**
+     * Devuelve segmento SQL, para filtrar listado de usuarios según el rol del usuario en sesión
+     * 2020-08-01
+     */
+    function role_filter()
+    {
+        $role = $this->session->userdata('role');
+        $condition = 'producto.id = 0';  //Valor por defecto, ningún user, se obtendrían cero registros.
+        
+        if ( $role <= 2 ) 
+        {   //Desarrollador, todos los registros
+            $condition = 'producto.id > 0';
+        }
+        
+        return $condition;
+    }
+    
+    /**
+     * Array con options para ordenar el listado de user en la vista de
+     * exploración
+     * 
+     */
+    function order_options()
+    {
+        $order_options = array(
+            '' => '[ Ordenar por ]',
+            'id' => 'ID Producto',
+            'name' => 'Nombre',
+            'price' => 'Precio',
+        );
+        
+        return $order_options;
+    }
+
+// DATOS
+//-----------------------------------------------------------------------------
     
     /**
      * Igual a la función busqueda, pero agrega una restricción, producto debe
@@ -64,500 +247,69 @@ class Producto_Model extends CI_Model{
      */
     function catalogo($busqueda, $per_page = NULL, $offset = NULL)
     {
-        $busqueda['etd'] = 1;   //Solo productos activos
-        $query = $this->buscar($busqueda, $per_page, $offset);
+        $busqueda['status'] = 1;   //Solo productos activos
+        $query = $this->search($busqueda, $per_page, $offset);
         return $query;
-    }
-    
-    /**
-     * Array con los datos para la vista de exploración
-     * 
-     * @return string
-     */
-    function data_explorar()
-    {
-        //Elemento de exploración
-            $data['elemento_p'] = 'productos';    //Nombre del elemento el plural
-            $data['elemento_s'] = 'producto';      //Nombre del elemento en singular
-            $data['controlador'] = 'productos';   //Nombre del controlador
-            $data['funcion'] = 'explorar';      //Función de exploración
-            $data['cf'] = $data['controlador'] . '/' . $data['funcion'] . '/';      //Controlador función
-            $data['carpeta_vistas'] = 'productos/';   //Carpeta donde están las vistas de exploración
-            $data['titulo_pagina'] = 'Productos';
-        
-        //Paginación
-            $data['per_page'] = 20; //Cantidad de registros por página
-            $data['offset'] = $this->input->get('per_page');
-            
-        //Búsqueda y Resultados
-            $this->load->model('Busqueda_model');
-            $data['busqueda'] = $this->Busqueda_model->busqueda_array();
-            $data['busqueda_str'] = $this->Busqueda_model->busqueda_str();
-            $data['resultados'] = $this->Producto_model->buscar($data['busqueda'], $data['per_page'], $data['offset']);    //Resultados para página
-            $data['cant_resultados'] = $this->Producto_model->cant_resultados($data['busqueda']);
-            
-        //Otros
-            $data['url_paginacion'] = base_url("{$data['cf']}?{$data['busqueda_str']}");
-            $data['seleccionados_todos'] = '-'. $this->Pcrn->query_to_str($data['resultados'], 'id');   //Para selección masiva de todos los elementos de la página
-
-        //Visitas
-            $data['subtitulo_pagina'] = $data['cant_resultados'];
-            $data['vista_a'] = $data['carpeta_vistas'] . 'explorar/explorar_v';
-            $data['vista_menu'] = $data['carpeta_vistas'] . 'explorar/menu_v';
-        
-        return $data;
-    }
-    
-    function buscar($busqueda, $per_page = NULL, $offset = NULL)
-    {
-        
-        //Consultas previas
-            $descendencia = '0';
-            if ( $busqueda['tag'] != '' ) 
-            {
-                $this->load->model('Datos_model');
-                $tag_id = (int) $busqueda['tag'];
-                $descendencia = $this->Datos_model->descendencia($tag_id, 'string');
-            }
-
-        //Construir búsqueda
-        //Crear array con términos de búsqueda
-            if ( strlen($busqueda['q']) > 2 )
-            {
-                $palabras = $this->Busqueda_model->palabras($busqueda['q']);
-                
-                $campos = array('producto.id', 'nombre_producto', 'producto.palabras_clave', 'producto.referencia', 'producto.meta', 'producto.descripcion');
-                $concat_campos = $this->Busqueda_model->concat_campos($campos);
-
-                foreach ($palabras as $palabra) 
-                {
-                    $this->db->like("CONCAT({$concat_campos})", $palabra);
-                }
-            }
-            
-        //Especificaciones de consulta
-            $this->db->select('producto.*, archivo.nombre_archivo, archivo.carpeta, cant_disponibles');
-            $this->db->where('producto.tipo_id', 1); //Producto padre, que no sea una variación
-            $this->db->join('archivo', 'producto.imagen_id = archivo.id', 'LEFT');
-            
-        //Filtros por rol y estado login
-            if ( $this->session->userdata('logged') ) 
-            {
-                //Logueado
-                if ( ! in_array($this->session->userdata('rol_id'), array(0,1,2)) )
-                {
-                    $this->db->where('precio > 0');
-                }
-            } else {
-                //Para clientes sin loguear
-                $this->db->where('precio > 0');
-            }
-            
-        //Orden
-            $order_type = 'DESC';
-            if ( $busqueda['ot'] != '' ) 
-            {
-                $order_type = $busqueda['ot'];
-            }
-            
-            if ( $busqueda['o'] != '' ) 
-            {
-                $this->db->order_by($busqueda['o'], $order_type);
-            }
-            
-            $this->db->order_by('puntaje', 'DESC');
-            $this->db->order_by('puntaje_auto', 'DESC');
-            
-        //Otros filtros
-            if ( $busqueda['e'] != '' ) { $this->db->where('editado', $busqueda['e']); }        //Editado
-            if ( $busqueda['tag'] != '' ) 
-            {
-                $this->db->where("producto.id IN (SELECT elemento_id FROM meta WHERE tabla_id = 3100 AND dato_id = 21 AND relacionado_id IN({$descendencia}) )");
-            }
-            
-            if ( $busqueda['cat'] != '' ) { $this->db->where('categoria_id', $busqueda['cat']); }       //Categoría del producto
-            if ( $busqueda['fab'] != '' ) { $this->db->where('fabricante_id', $busqueda['fab']); }      //Fabricante del producto
-            if ( $busqueda['prc_min'] != '' ) { $this->db->where("precio >= {$busqueda['prc_min']}"); }    //Precio mínimo
-            if ( $busqueda['prc_max'] != '' ) { $this->db->where("precio <= {$busqueda['prc_max']}"); }    //Precio máximo
-            if ( $busqueda['etd'] != '' ) { $this->db->where('estado', $busqueda['etd']); }     //Estado del producto
-            if ( $busqueda['ofrt'] == 1 ) { $this->db->where('promocion_id <> 0'); }         //Producto en oferta
-            if ( $busqueda['est'] != '' ) { $this->db->where('estado', $busqueda['est']); }     //Estado del producto
-            if ( $busqueda['fi'] != '' ) { $this->db->where('producto.creado >=', $busqueda['fi']); }     //Fecha inicial mínima en la que fue creado
-            if ( $busqueda['dcto'] != '' ) { $this->db->where('promocion_id', $busqueda['dcto']); }     //Descuento aplicado
-            if ( strlen($busqueda['fe1']) ) { $this->db->where("peso <= {$busqueda['fe1']}"); }     //Peso máximo gramos
-            
-        //Obtener resultados
-        if ( is_null($per_page) ){
-            $query = $this->db->get('producto'); //Resultados totales
-        } else {
-            $query = $this->db->get('producto', $per_page, $offset); //Resultados por página
-        }
-        
-        return $query;
-        
-    }
-    
-    /**
-     * Devuelve la cantidad de registros encontrados en la tabla con los filtros
-     * establecidos en la búsqueda
-     * 
-     * @param type $busqueda
-     * @return type
-     */
-    function cant_resultados($busqueda)
-    {
-        $data = $this->buscar($busqueda); //Para calcular el total de resultados
-        return $data->num_rows();
-    }
-    
-    function crud_editar()
-    {
-        //Grocery crud
-        $this->load->library('grocery_CRUD');
-        
-        $crud = new grocery_CRUD();
-        $crud->set_table('producto');
-        $crud->set_subject('producto');
-        $crud->unset_export();
-        $crud->unset_print();
-        $crud->unset_back_to_list();
-        $crud->unset_delete();
-        
-        //Títulos
-            $crud->display_as('descripcion', 'Descripción');
-            $crud->display_as('peso', 'Peso (gramos)');
-            $crud->display_as('ancho', 'Ancho (cm)');
-            $crud->display_as('alto', 'Alto (cm)');
-            $crud->display_as('fabricante_id', 'Fabricante');
-            $crud->display_as('iva', 'Valor IVA');
-            $crud->display_as('iva_porcentaje', '% IVA');
-            
-        //Campos
-            $crud->edit_fields(
-                    'referencia',
-                    'nombre_producto',
-                    'descripcion',
-                    'precio_base',
-                    'iva_porcentaje',
-                    'iva',
-                    'precio',
-                    'cant_disponibles',
-                    'peso',
-                    'ancho',
-                    'alto',
-                    //'grosor',
-                    'fabricante_id',
-                    'usuario_id',
-                    'editado'
-                );
-            
-            $crud->add_fields(
-                    'referencia',
-                    'nombre_producto',
-                    'descripcion',
-                    'precio_base',
-                    'iva_porcentaje',
-                    'iva',
-                    'precio',
-                    'cant_disponibles',
-                    'peso',
-                    'ancho',
-                    'alto',
-                    //'grosor',
-                    'fabricante_id',
-                    'usuario_id',
-                    'editado',
-                    'creado'
-                );
-        //Relaciones
-            $crud->set_relation('fabricante_id', 'item', 'item', 'tag_id = 5');
-            
-        //Reglas
-            $crud->required_fields('nombre_producto', 'desrcipcion', 'precio_base', 'iva', 'precio', 'peso', 'cant_disponibles', 'referencia');
-            $crud->set_rules('precio', 'Precio', 'is_natural');
-            $crud->set_rules('cant_disponibles', 'Cant Disponibles', 'is_natural');
-            //$crud->set_rules('peso', 'Peso', 'greater_than[0]');
-            $crud->set_rules('alto', 'Alto', 'greater_than[0]');
-            $crud->set_rules('ancho', 'Ancho', 'greater_than[0]');
-            //$crud->set_rules('grosor', 'Grosor', 'is_natural');
-        
-        //Valores por defecto
-            $crud->field_type('creado', 'hidden', date('Y-m-d H:i:s'));
-            $crud->field_type('editado', 'hidden', date('Y-m-d H:i:s'));
-            $crud->field_type('usuario_id', 'hidden', $this->session->userdata('usuario_id'));
-            
-                        
-        //Formato
-            $crud->unset_texteditor('descripcion');
-        
-        $output = $crud->render();
-        
-        return $output;
-    }
-    
-    /** 
-     * Devuelve render de formulario grocery crud para la edición
-     * de datos de producto
-     */
-    function crud_nuevo()
-    {
-        //Grocery crud
-        $this->load->library('grocery_CRUD');
-        
-        $crud = new grocery_CRUD();
-        $crud->set_table('producto');
-        $crud->set_subject('producto');
-        $crud->unset_export();
-        $crud->unset_print();
-        $crud->unset_back_to_list();
-        $crud->unset_delete();
-        $crud->unset_edit();
-        
-        //Títulos
-            $crud->display_as('descripcion', 'Descripción');
-            $crud->display_as('peso', 'Peso (gramos)');
-            $crud->display_as('ancho', 'Ancho (cm)');
-            $crud->display_as('alto', 'Alto (cm)');
-            $crud->display_as('fabricante_id', 'Fabricante');
-            $crud->display_as('iva', 'Valor IVA');
-            $crud->display_as('iva_porcentaje', '% IVA');
-            $crud->display_as('precio', 'Precio venta');
-            $crud->display_as('costo', 'Costo compra o fabricación');
-            
-        //Campos
-            $crud->add_fields(
-                    'referencia',
-                    'nombre_producto',
-                    'descripcion',
-                    'precio',
-                    'iva_porcentaje',
-                    'costo',
-                    'cant_disponibles',
-                    'peso',
-                    'iva',
-                    'precio_base',
-                    'estado',
-                    'usuario_id',
-                    'editado',
-                    'creado'
-                );
-        //Relaciones
-            $crud->set_relation('fabricante_id', 'item', 'item', 'tag_id = 5');
-            
-        //Redirigir después de enviar el mensaje
-            $controller = 'productos';
-            $function = 'editar_reciente';
-            $crud->set_lang_string('insert_success_message',
-                                    'El producto ha sido creado<br/>Por favor espere mientras se abre la página de edición de productos.
-                                    <script type="text/javascript">
-                                    window.location = "'.site_url($controller.'/'.$function).'";
-                                    </script>
-                                    <div style="display:none">
-                                    '
-            );
-            
-        //Reglas
-            $crud->required_fields('nombre_producto', 'descripcion', 'precio_base', 'iva_porcentaje', 'costo', 'iva', 'precio', 'peso', 'cant_disponibles', 'referencia');
-            $crud->set_rules('precio', 'Precio', 'is_natural|required');
-            $crud->set_rules('cant_disponibles', 'Cant Disponibles', 'is_natural|required');
-            $crud->set_rules('peso', 'Peso', 'greater_than[-1]|required');
-            $crud->unique_fields(array('referencia'));
-        
-        //Valores por defecto
-            $crud->field_type('estado', 'hidden', 1);
-            $crud->field_type('creado', 'hidden', date('Y-m-d H:i:s'));
-            $crud->field_type('editado', 'hidden', date('Y-m-d H:i:s'));
-            $crud->field_type('usuario_id', 'hidden', $this->session->userdata('usuario_id'));
-                        
-        //Formato
-            $crud->unset_texteditor('descripcion');
-            
-        //Procesos
-            $crud->callback_after_insert(array($this, 'gc_after_insert'));
-        
-        $output = $crud->render();
-        
-        return $output;
-    }
-    
-    function gc_after_insert($post_array,$primary_key)
-    {
-        $registro['slug'] = $this->Pcrn->slug_unico($post_array['nombre_producto'], 'producto');
-        
-        $this->db->where('id', $primary_key);
-        $this->db->update('producto', $registro);
-    }
-    
-    function crud_meta($producto_id)
-    {
-        //Grocery crud
-        $this->load->library('grocery_CRUD');
-        
-        $crud = new grocery_CRUD();
-        $crud->set_table('meta');
-        $crud->set_subject('meta');
-        $crud->unset_export();
-        $crud->unset_print();
-        $crud->unset_back_to_list();
-        //$crud->unset_delete();
-        $crud->unset_read();
-        
-        //Filtros
-            $crud->where('tabla_id', 3100); //Tabla producto
-            $crud->where('elemento_id', $producto_id);
-            $crud->where('dato_id >= 31000');
-            $crud->where('dato_id < 31010');
-        
-        //Títulos
-            $crud->display_as('dato_id', 'Dato');
-            $crud->display_as('fecha', 'Editado');
-            $crud->display_as('usuario_id', 'Por');
-            
-        //Campos
-            $crud->columns(
-                    'dato_id',
-                    'valor',
-                    'fecha'
-                );
-            
-            $crud->edit_fields(
-                    'tabla_id',
-                    'elemento_id',
-                    'dato_id',
-                    'valor',
-                    'fecha',
-                    'usuario_id'
-                );
-            
-            $crud->add_fields(
-                    'tabla_id',
-                    'elemento_id',
-                    'dato_id',
-                    'valor',
-                    'fecha',
-                    'usuario_id'
-                );
-            
-        //Relaciones
-            //$crud->set_relation('usuario_id', 'usuario', 'username');
-            
-        //Reglas
-            $crud->required_fields('dato_id', 'valor');
-        
-        //Array opciones de datos
-            $arr_config = $this->App_model->arr_config_item();
-            $arr_config['condicion'] = "tag_id = 2 AND filtro LIKE '%3100%'";
-            $opciones_item = $this->Item_model->opciones('tag_id = 2', 'Elija el campo');
-            
-        //Valores por defecto
-            $crud->field_type('tabla_id', 'hidden', 3100);    //Tabla producto
-            $crud->field_type('elemento_id', 'hidden', $producto_id);
-            $crud->field_type('dato_id', 'dropdown', $opciones_item);
-            $crud->field_type('fecha', 'hidden', date('Y-m-d H:i:s'));
-            $crud->field_type('usuario_id', 'hidden', $this->session->userdata('usuario_id'));
-            
-                        
-        //Formato
-            $crud->callback_column('dato_id', array($this,'gc_nombre_dato'));
-            $crud->unset_texteditor('valor');
-        
-        $output = $crud->render();
-        
-        return $output;
-    }
-    
-    function gc_nombre_dato($value)
-    {
-        $nombre_dato = $this->Pcrn->campo('item', "tag_id = 2 AND id_interno = {$value}", 'item');
-        return $nombre_dato;
     }
     
     /**
      * Insertar un registro en la tabla.
-     * 
-     * @param type $registro
-     * @return type
+     * 2021-06-03
      */
-    function insertar($registro)
+    function insert($arr_row)
     {
         //Completar registro
-            $registro['usuario_id'] = $this->session->userdata('usuario_id');
-            $registro['creado'] = date('Y-m-d H:i:s');
-            $registro['editado'] = date('Y-m-d H:i:s');
+            $arr_row['usuario_id'] = $this->session->userdata('usuario_id');
+            $arr_row['creado'] = date('Y-m-d H:i:s');
+            $arr_row['editado'] = date('Y-m-d H:i:s');
         
         //Insertar
-            $this->db->insert('producto', $registro);
-            $producto_id = $this->db->insert_id();
-
-        //Preparar resultado
-            $resultado['ejecutado'] = 1;
-            $resultado['mensaje'] = 'El producto fue creado correctamente';
-            $resultado['type'] = 'success';
-            $resultado['nuevo_id'] = $producto_id;
+            $this->db->insert('producto', $arr_row);
+            $data['saved_id'] = $this->db->insert_id();
         
-        return $resultado;
+        return $data;
     }
     
     /**
      * Actualizar los datos de un registro en la tabla producto
-     * 
-     * @param type $producto_id
-     * @return type
+     * 2021-06-03
      */
-    function guardar($producto_id)
+    function update($producto_id)
     {
-        //Resultado por defecto, valor inicial.
-            $this->load->model('Esp');
-            $resultado = $this->Esp->res_inicial('El producto no fue actualizado.');
-        
         //Construir registro            
-            $registro = $this->registro_actualizar();
+            $arr_row = $this->input->post();
             
-        //Verificar referencia única
-            $cant_referencias = 0;
-            if ( isset($registro['referencia']) ) 
-            {
-                $cant_referencias = $this->Pcrn->num_registros('producto', "id <> {$producto_id} AND referencia = '{$registro['referencia']}'");
-                if ( $cant_referencias > 0 ) 
-                {
-                    $resultado['mensaje'] .= " Ya existe un producto la referencia '{$registro['referencia']}'.";
-                }
-            }
-            
-        //Guardar si cumple la condición
-            if ( $cant_referencias == 0 ) 
-            {
-                //Guardar
-                    $this->Pcrn->guardar('producto', "id = {$producto_id}", $registro);
-                    
-                //Modificar resultado
-                    $resultado['ejecutado'] = 1;
-                    $resultado['mensaje'] = 'Los datos del producto fueron actualizados.';
-                    $resultado['type'] = 'success';
-            }
+        //Quitar del input datos que no son campos de la tabla producto
+            unset($arr_row['tags']);
         
-        return $resultado;
+            $arr_row['editado'] = date('Y-m-d H:i:s');
+            $arr_row['editor_id'] = $this->session->userdata('user_id');
+        
+        //Guardar
+            $this->Db_model->save('producto', "id = {$producto_id}", $arr_row);
+            $data['saved_id'] = $producto_id;
+        
+        return $data;
     }
     
     /**
      * Devuelve array con los valores post del formulario para actualizar el
      * registro en la tabla producto
-     * 
-     * @return type
+     * 2021-06-03
      */
-    function registro_actualizar() 
+    function arr_row_update() 
     {
         //Construir registro            
-            $registro = $this->input->post();
+            $arr_row = $this->input->post();
             
         //Quitar del input datos que no son campos de la tabla producto
-            unset($registro['tags']);
+            unset($arr_row['tags']);
             
         //Valores predeterminados
-            $registro['editado'] = date('Y-m-d H:i:s');
-            $registro['usuario_id'] = $this->session->userdata('usuario_id');
+            $arr_row['editado'] = date('Y-m-d H:i:s');
+            $arr_row['usuario_id'] = $this->session->userdata('usuario_id');
             
-        return $registro;
+        return $arr_row;
     }
     
     /**
@@ -623,40 +375,59 @@ class Producto_Model extends CI_Model{
         return $editable;
     }
     
-    function eliminable($producto_id)
+// Eliminación de productos
+//-----------------------------------------------------------------------------
+
+    /**
+     * Verificar si un producto se puede eliminar o no
+     * 2021-06-10
+     */
+    function deleteable($producto_id)
     {
-        $eliminable = FALSE;
-        if ( $this->session->userdata('rol_id') <= 1  ) { $eliminable = TRUE; }
+        $deleteable = FALSE;
+        if ( in_array($this->session->userdata('role'), array(0,1))  ) $deleteable = TRUE;
+
+        //En cuántos pedidos está incluido el producto
+        $qty_orders = $this->Db_model->num_rows('pedido_detalle', "producto_id = {$producto_id}");
+
+        //Si está en algún pedido no se puede eliminar
+        if ( $qty_orders > 0 ) $deleteable = FALSE;
         
-        return $eliminable;
+        return $deleteable;
     }
     
-    function eliminar($producto_id)
+    /**
+     * Eliminar producto
+     * 2021-06-10
+     */
+    function delete($producto_id)
     {
-        $eliminado = 0;
+        $qty_deleted = 0;
         
-        if ( $this->eliminable($producto_id) ) 
+        if ( $this->deleteable($producto_id) ) 
         {
             //Tabla meta
                 $this->db->where('tabla_id', 2);    //Tabla producto
                 $this->db->where('elemento_id', $producto_id);
                 $this->db->delete('meta');
 
-            //Tabla principal
-                $this->db->where('id', $producto_id);
-                $this->db->delete('producto');
+            //Tabla producto
+                $this->db->where('id', $producto_id)->delete('producto');
                 
-            $eliminado = $this->db->affected_rows();
+            $qty_deleted = $this->db->affected_rows();
         }
         
-        return $eliminado;
+        return $qty_deleted;
     }
+
+// Otros
+//-----------------------------------------------------------------------------
     
     /**
      * Array con atributos para describir el estado de publicación producto
      * @return array
      */
-    function arr_estados()
+    function z_arr_estados()
     {
         $arr_estados = array(
             1 => array(
@@ -689,6 +460,7 @@ class Producto_Model extends CI_Model{
     function metadatos_valor($producto_id, $filtro = NULL)
     {
         $this->db->select('item AS nombre_metadato, meta.valor');
+        $this->db->where('tabla_id', 3100); //producto
         $this->db->where('elemento_id', $producto_id);
         $this->db->where('item.categoria_id = 2');  //Metadatos
         $this->db->where('valor IS NOT NULL');  //
@@ -1038,112 +810,53 @@ class Producto_Model extends CI_Model{
         return $str_meta;
     }
     
-    
-//GESTIÓN DE IMÁGENES
-//---------------------------------------------------------------------------------------------------
+// IMAGES
+//-----------------------------------------------------------------------------
 
-    function imagenes($producto_id)
-    {
-        //Select
-            $select = 'meta.id AS meta_id, CONCAT( ("'. URL_UPLOADS . '"), (archivo.carpeta) ) AS url_carpeta, archivo.id AS archivo_id, archivo.*';
-        
-        //Consulta
-        $this->db->select($select);
-        $this->db->where('dato_id', 1);
-        $this->db->where('elemento_id', $producto_id);
-        $this->db->join('meta', 'archivo.id = meta.relacionado_id');
-        $imagenes = $this->db->get('archivo');
-        
-        return $imagenes;
-    }
-    
-    function image_src($row_producto)
-    {
-        $ancho = '250';
-        $row_archivo = $this->Pcrn->registro_id('archivo', $row_producto->imagen_id);
-        $image_src = URL_UPLOADS . $row_archivo->carpeta . $ancho . 'px_' . $row_archivo->nombre_archivo;
-        
-        return $image_src;
-    }
-    
-    function att_img($producto_id, $ancho)
-    {
-        $row_producto = $this->Pcrn->registro_id('producto', $producto_id);
-        $row_archivo = $this->Pcrn->registro_id('archivo', $row_producto->imagen_id);
-        $src_alt = URL_IMG . 'app/' . $ancho . 'px_producto.png';   //Imagen alternativa
-        
-        $att_img['src'] = URL_UPLOADS . $row_archivo->carpeta . $ancho . 'px_' . $row_archivo->nombre_archivo;
-        $att_img['alt'] = $row_producto->nombre_producto;
-        $att_img['title'] = $row_producto->nombre_producto;
-        $att_img['onError'] = "this.src='" . $src_alt . "'"; //Imagen alternativa
-        
-        return $att_img;
-        
-    }
-    
     /**
-     * Relaciona un producto con un registro de archivo
-     * Tabla meta
-     * 
-     * @param type $producto_id
-     * @param type $archivo_id
-     * @return type
+     * Imágenes asociadas al producto
+     * 2021-02-24
      */
-    function asociar_img($producto_id, $archivo_id)
+    function images($product_id)
     {
-        //Construir registro
-            $registro['tabla_id'] = 3100;  //Tabla producto
-            $registro['elemento_id'] = $producto_id; //
-            $registro['dato_id'] = 1;   //Es una imagen, ver item.id_interno, donde tag_id = 2
-            $registro['editado'] = date('Y-m-d H:i:s');
-            $registro['relacionado_id'] = $archivo_id;
-            
-        //Insertar
-            $this->db->insert('meta', $registro);
-            
-        //Si es la primera imagen, se establece como principal
-            $this->establecer_img_si($producto_id, $archivo_id);
-        
-        return $this->db->insert_id();
+        $this->db->select('archivo.id, archivo.titulo_archivo AS title, url, url_thumbnail, archivo.integer_1 AS main');
+        $this->db->where('es_imagen', 1);
+        $this->db->where('table_id', 3100);           //Tabla products
+        $this->db->where('related_1', $product_id);   //Relacionado con el product
+        $images = $this->db->get('archivo');
+
+        return $images;
     }
-    
+
     /**
-     * Establecer imagen principal de un producto
-     * 
-     * @param type $producto_id
-     * @param type $archivo_id
+     * Establecer una imagen asociada a un product como la imagen principal (tabla file)
+     * 2021-02-24
      */
-    function establecer_img($producto_id, $archivo_id)
+    function set_main_image($product_id, $file_id)
     {
-        $registro['imagen_id'] = $archivo_id;
-        $this->db->where('id', $producto_id);
-        $this->db->update('producto', $registro);
-    }
-    
-    /**
-     * Establecer imagen principal de un producto si no tiene una asignada
-     * 
-     * @param type $producto_id
-     * @param type $archivo_id
-     */
-    function establecer_img_si($producto_id, $archivo_id)
-    {
-        $resultado = 0;
-        
-        $row_producto = $this->Pcrn->registro_id('producto', $producto_id);
-        
-        $cant_condiciones = 0;
-        
-        if ( strlen($row_producto->imagen_id) ) { $cant_condiciones++; }
-        
-        //Si cumple alguna de las condiciones
-        if ( $cant_condiciones == 1 ) 
+        $data = array('status' => 0);
+
+        $row_file = $this->Db_model->row_id('archivo', $file_id);
+        if ( ! is_null($row_file) )
         {
-            $this->establecer_img($producto_id, $archivo_id); 
-            $resultado = 1;
+            //Quitar otro principal
+            $this->db->query("UPDATE archivo SET integer_1 = 0 WHERE table_id = 3100 AND related_1 = {$product_id} AND integer_1 = 1");
+
+            //Poner nuevo principal
+            $this->db->query("UPDATE archivo SET integer_1 = 1 WHERE id = {$file_id} AND related_1 = {$product_id}");
+
+            //Actualizar registro en tabla products
+            $arr_row['imagen_id'] = $row_file->id;
+            $arr_row['url_image'] = $row_file->url;
+            $arr_row['url_thumbnail'] = $row_file->url_thumbnail;
+
+            $this->db->where('id', $product_id);
+            $this->db->update('producto', $arr_row);
+
+            $data['status'] = 1;
         }
-        
-        return $resultado;
+
+        return $data;
     }
     
 //GESTIÓN DE PALABRAS CLAVE
@@ -1232,7 +945,7 @@ class Producto_Model extends CI_Model{
     }
     
     /**
-     * Actualiza el listado de categorías asiganadas a un producto en la tabla meta
+     * Actualiza el listado de categorías asignadas a un producto en la tabla meta
      * 
      * @param type $producto_id
      * @param type $tags
@@ -1909,5 +1622,4 @@ class Producto_Model extends CI_Model{
         
         return $posts;
     }
-    
 }

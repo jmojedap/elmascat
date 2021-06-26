@@ -731,10 +731,8 @@ class App_model extends CI_Model{
     
     /**
      * Devuelve el detalle de los productos de un pedido, asociado en la tabla pedido_detalle
-     * Igual a 
+     * Igual a Pedido_model->detalle
      * 
-     * @param type $pedido_id
-     * @return type
      */
     function detalle_pedido($pedido_id)
     {
@@ -742,19 +740,6 @@ class App_model extends CI_Model{
         $query = $this->Pedido_model->detalle($pedido_id);
         
         return $query;
-    }
-    
-    /*function row_img($archivo_id)
-    {
-        return $this->Pcrn->registro_id('archivo', $archivo_id);
-    }*/
-    
-    function att_img($producto_id, $ancho = 125)
-    {
-        $this->load->model('Producto_model');
-        $att_img = $this->Producto_model->att_img($producto_id, $ancho);
-        
-        return $att_img;
     }
     
 // GENERAL
@@ -805,7 +790,7 @@ class App_model extends CI_Model{
 
     function processes()
     {
-        $processes = array(
+        /*$processes = array(
             array(
                 'process_name' => 'Actualizar archivos url', 'process_link' => 'archivos/actualizar_url',
                 'description' => 'Actualizar tabla archivo, campos url y url_thumbnail',
@@ -813,6 +798,10 @@ class App_model extends CI_Model{
             array(
                 'process_name' => 'Actualizar productos imágenes', 'process_link' => 'productos/actualizar_campos_imagenes',
                 'description' => 'Actualizar tabla producto, campos url_image y url_thumbnail',
+            ),
+            array(
+                'process_name' => 'Actualizar archivos related productos', 'process_link' => 'archivos/actualizar_campos_related',
+                'description' => 'Actualiza los campos archivo: table_id, related_1, para los archivos relacionados con productos',
             ),
             array(
                 'process_name' => 'Generar campos tablas en ítem', 'process_link' => 'develop/campos_item',
@@ -834,7 +823,11 @@ class App_model extends CI_Model{
                 'process_name' => 'Eliminación en cascada', 'process_link' => 'develop/elimiminar_cascada',
                 'description' => 'Elimina los registros huérfanos de tablas relacionadas.',
             ),
-        );
+        );*/
+
+        $this->db->select('id, nombre_post AS process_name, contenido AS description, texto_2 AS module, texto_1 AS process_link');
+        $this->db->where('tipo_id', 10);
+        $processes = $this->db->get('post');
 
         return $processes;
     }

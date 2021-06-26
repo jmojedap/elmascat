@@ -185,10 +185,10 @@ class Pedido_Model extends CI_Model{
      */
     function role_filter()
     {
-        $row_user = $this->Db_model->row_id('usuario', $this->session->userdata('user_id'));
+        $user = $this->Db_model->row_id('usuario', $this->session->userdata('user_id'));
         $condition = 'id = 0';  //Valor por defecto, ninguna institución, se obtendrían cero pedidos.
         
-        if ( $row_user->rol_id <= 10 ) {
+        if ( $user->rol_id <= 10 ) {
             //Usuarios internos
             $condition = 'pedido.id > 0';
         } else {
@@ -300,7 +300,7 @@ class Pedido_Model extends CI_Model{
      */
     function detalle($pedido_id)
     {
-        $this->db->select('pedido_detalle.*, producto.nombre_producto, producto.peso, producto.fabricante_id');
+        $this->db->select('pedido_detalle.*, producto.nombre_producto, producto.peso, producto.fabricante_id, producto.url_thumbnail');
         $this->db->where('pedido_id', $pedido_id);
         $this->db->where('pedido_detalle.tipo_id', 1); //Productos
         $this->db->join('producto', 'producto.id = pedido_detalle.producto_id');
@@ -1094,12 +1094,11 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Array con roles de usuario que permiten el descuento para distribuidores
-     * 
-     * @return int
+     * 2021-06-03
      */
     function arr_roles_distribuidor()
     {
-        $arr_roles = array(22);
+        $arr_roles = array(15,22);
         return $arr_roles;
     }
 

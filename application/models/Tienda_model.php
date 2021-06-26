@@ -5,7 +5,7 @@ class Tienda_model extends CI_Model{
     {
         $data['product_id'] = $product_id;
         $data['row'] = $this->Db_model->row_id('producto', $product_id);
-        $data['head_title'] = $data['row']->name;
+        $data['head_title'] = $data['row']->nombre_producto;
 
         return $data;
     }
@@ -112,7 +112,7 @@ class Tienda_model extends CI_Model{
         $condition .= $this->role_filter() . ' AND ';
 
         //q words condition
-        $words_condition = $this->Search_model->words_condition($filters['q'], array('referencia', 'nombre', 'descripcion', 'palabras_clave'));
+        $words_condition = $this->Search_model->words_condition($filters['q'], array('referencia', 'nombre_producto', 'descripcion', 'palabras_clave'));
         if ( $words_condition )
         {
             $condition .= $words_condition . ' AND ';

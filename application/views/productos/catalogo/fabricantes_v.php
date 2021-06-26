@@ -19,7 +19,7 @@
                     }
                 ?>
                 <li class="<?= $clase_cat ?>">
-                    <?= anchor("productos/catalogo/?{$get_str}fab={$row_fabricante->id}", $row_fabricante->nombre_fabricante) ?>
+                    <?= anchor("productos/catalogo/?fab={$row_fabricante->id}", $row_fabricante->nombre_fabricante) ?>
                 </li>
             <?php endforeach ?>
         </ul>
