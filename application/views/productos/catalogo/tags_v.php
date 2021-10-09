@@ -21,7 +21,7 @@
                     }
                 ?>
                 <li class="<?= $tag_class ?>">
-                    <?= anchor("productos/catalogo/?{$get_str}tag={$row_tag->id}", $row_tag->item) ?>
+                    <?= anchor("productos/catalogo/?tag={$row_tag->id}", $row_tag->item) ?>
                     
                     <?php if ( $tags_n2->num_rows() > 0 ){ ?>
                         <span class="subDropdown <?= $clase_signo ?>"></span>

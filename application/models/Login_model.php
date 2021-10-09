@@ -212,13 +212,16 @@ class Login_model extends CI_Model{
             
         //$data específico
             //Seguridad, utilizada en hooks/acceso
-            $data['acl'] = $this->acl($row_user);
+            //$data['acl'] = $this->acl($row_user);
         
         //Devolver array
             return $data;
     }
     
-    function acl($row_usuario)
+    /**
+     * Función desactivada
+     */
+    function z_acl($row_usuario)
     {
         $this->db->where("roles LIKE  '%-{$row_usuario->rol_id}-%'");
         $query = $this->db->get('sis_acl');

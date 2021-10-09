@@ -7,7 +7,7 @@
         if ( strlen($row->celular) == 0 ) { $datos_faltantes[] = 'Número de celular'; }
 ?>
 
-<div style="margin-bottom: 20px;">
+<div style="margin-bottom: 20px;" id="link_pago_app">
     <div class="row wow bounceInUp animated">
         <div class="col col-md-4">
             <div class="cart ">
@@ -187,3 +187,35 @@
         </div>
     </div>
 </div>
+
+<script>
+// Variables
+//-----------------------------------------------------------------------------
+var arr_extras_pedidos = <?= json_encode($arr_extras_pedidos) ?>;
+
+// Filters
+//-----------------------------------------------------------------------------
+Vue.filter('currency', function (value) {
+    if (!value) return ''
+    value = '$' + new Intl.NumberFormat().format(value)
+    return value
+})
+
+Vue.filter('name_extra_pedido', function (value) {
+    if (!value) return ''
+    value = arr_extras_pedidos[value]
+    return value
+})
+
+// VueApp
+//-----------------------------------------------------------------------------
+var link_pago_app = new Vue({
+    el: '#link_pago_app',
+    data: {
+        order: <?= json_encode($row) ?>,
+        extras: <?= json_encode($extras->result()) ?>,
+        loading: false,
+    },
+    methods: {}
+});
+</script>

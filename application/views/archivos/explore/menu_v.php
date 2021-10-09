@@ -1,7 +1,8 @@
 <?php
     $app_cf_index = $this->uri->segment(1) . '_' . $this->uri->segment(2);
     
-    $cl_nav_2['archivos_explore'] = '';
+    $cl_nav_2['archivos_imagenes'] = '';
+    $cl_nav_2['archivos_carpetas'] = '';
     $cl_nav_2['archivos_import'] = '';
     $cl_nav_2['archivos_add'] = '';
     
@@ -38,8 +39,8 @@
     
     //Secciones para cada rol
     sections_role[0] = ['imagenes', 'add', 'carpetas'];
-    sections_role[1] = ['explore', 'add'];
-    sections_role[2] = ['explore', 'add'];
+    sections_role[1] = ['imagenes', 'add'];
+    sections_role[2] = ['imagenes', 'add'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
     for ( key_section in sections_role[app_rid]) 

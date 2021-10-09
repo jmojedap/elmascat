@@ -287,8 +287,8 @@ class Usuario_model extends CI_Model{
     /**
      * Envía e-mail de activación o restauración de cuenta
      * 
-     * @param type $usuario_id
-     * @param type $tipo_activacion
+     * @param int $usuario_id
+     * @param string $tipo_activacion
      */
     function email_activacion($usuario_id, $tipo_activacion = 'activar')
     {
@@ -319,9 +319,9 @@ class Usuario_model extends CI_Model{
     /**
      * Devuelve texto de la vista que se envía por email a un usuario para activación o restauración de su cuenta
      * 
-     * @param type $usuario_id
-     * @param type $tipo_activacion
-     * @return type
+     * @param int $usuario_id
+     * @param string $tipo_activacion
+     * @return string $mensaje
      */
     function mensaje_activacion($usuario_id, $tipo_activacion)
     {

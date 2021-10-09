@@ -24,6 +24,7 @@
         <div id="view_a">
             <?php $this->load->view($view_a) ?>
         </div>
+        <div style="height: 60px;"></div>
     </div>
 
     <?php $this->load->view('templates/libreria/main/footer') ?>

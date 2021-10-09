@@ -18,209 +18,162 @@
         $contador_img = 0;  //Contador de imágenes
 
     //Cantidad disponibles
-    $qty_disponibles = $row_variacion->cant_disponibles;
-    if ( $row->cant_disponibles == 0 ) { $qty_disponibles = 'agotado'; }
-    if ( $row->cant_disponibles > 100 ) { $qty_disponibles = '100+'; }
+    $stock_status = 'Disponible';
+    if ( $row->cant_disponibles == 0 ) { $stock_status = 'Agotado'; }
     
 ?>
 
-<script>
-// Variables
-//-----------------------------------------------------------------------------
-    var base_url = '<?= base_url() ?>';
-    var producto_id = <?= $row_variacion->id ?>;
-    var cantidad = 1;
-
-// Document Ready
-//-----------------------------------------------------------------------------
-
-    $(document).ready(function(){
-        $('.mini_img').click(function(){
-            $('#img_producto').attr('src', $(this).data('src'));
-        });
-        
-        $('#add-to-cart').click(function(){
-            cantidad = $('#qty').val();
-            guardar_detalle();
-        });
-    });
-
-
-// Funciones
-//-----------------------------------------------------------------------------
-
-    //Ajax
-    function guardar_detalle(){
-        $.ajax({        
-            type: 'POST',
-            url: base_url + 'pedidos/guardar_detalle',
-            data: {
-                producto_id : producto_id,
-                cantidad : cantidad
-            },
-            success: function(response){
-                console.log(response);
-                window.location = base_url + 'pedidos/carrito';
-            }
-        });
-    }
-</script>
-
-<div class="col-main">
-    <div class="row">
-        <div class="product-view">
-            <div class="product-essential">
-                <form action="#" method="post" id="product_addtocart_form">
-                    <!-- EVITAR CARGUE DE IMÁGENES GRANDES TEMPORAL 2020-05-07 -->
-                    <?php if ( $images->num_rows() > 0 ) { ?>
-                        <div class="product-img-box col-lg-6 col-sm-6 col-xs-12">
-                            <ul class="moreview" id="moreview">
-                                <?php foreach ($images->result() as $image) { ?>
-                                    <?php 
-                                        $contador_img++;
-                                        $clase_li = "moreview_thumb thumb_{$contador_img} moreview_thumb_active";
-                                        if ( $contador_img > 1 ) { $clase_li = "moreview_thumb thumb_{$contador_img}"; }
-                                    ?>
-                                    <li class="<?= $clase_li ?>">
-                                        <img class="moreview_thumb_image" src="<?= $image->url ?>" alt="thumbnail mobile" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
-                                        <span class="roll-over">Mueva el mouse para hacer zoom</span>
-                                        <img class="moreview_source_image" src="<?= $image->url ?>" alt="" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
-                                        <img  class="zoomImg" src="<?= $image->url ?>" alt="thumbnail" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
-                                    </li>
-                                <?php } ?>
-                            </ul>
-                            <div class="moreview-control">
-                                <a href="javascript:void(0)" class="moreview-prev"></a>
-                                <a href="javascript:void(0)" class="moreview-next"></a>
+<div id="product_details_app">
+    <div class="col-main">
+        <div class="row">
+            <div class="product-view">
+                <div class="product-essential">
+                    <form action="#" method="post" id="product_addtocart_form">
+                        <!-- EVITAR CARGUE DE IMÁGENES GRANDES TEMPORAL 2020-05-07 -->
+                        <?php if ( $images->num_rows() > 0 ) { ?>
+                            <div class="product-img-box col-lg-6 col-sm-6 col-xs-12">
+                                <ul class="moreview" id="moreview">
+                                    <?php foreach ($images->result() as $image) { ?>
+                                        <?php 
+                                            $contador_img++;
+                                            $clase_li = "moreview_thumb thumb_{$contador_img} moreview_thumb_active";
+                                            if ( $contador_img > 1 ) { $clase_li = "moreview_thumb thumb_{$contador_img}"; }
+                                        ?>
+                                        <li class="<?= $clase_li ?>">
+                                            <img class="moreview_thumb_image" src="<?= $image->url ?>" alt="thumbnail mobile" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
+                                            <span class="roll-over">Mueva el mouse para hacer zoom</span>
+                                            <img class="moreview_source_image" src="<?= $image->url ?>" alt="" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
+                                            <img  class="zoomImg" src="<?= $image->url ?>" alt="thumbnail" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
+                                        </li>
+                                    <?php } ?>
+                                </ul>
+                                <div class="moreview-control">
+                                    <a href="javascript:void(0)" class="moreview-prev"></a>
+                                    <a href="javascript:void(0)" class="moreview-next"></a>
+                                </div>
                             </div>
-                        </div>
-                    <?php } else { ?>
-                        <div class="product-img-box col-lg-6 col-sm-6 col-xs-12">
-                            <img id="img_producto" alt="Imagen producto" src="<?= $row->url_image ?>" class="w100pc"
-                                onError="this.src='<?= URL_IMG . 'app/250px_producto.png' ?>'">
-                        </div>
-                    <?php } ?>
-                    
-                    <div class="product-shop col-lg-6 col-sm-6 col-xs-12">
-                        <div class="product-name">
-                            <h1><?= $row_variacion->nombre_producto ?></h1>
-                        </div>
-                        
-                        <p class="availability in-stock">
-                            Disponibles:
-                            <span>
-                                <?= $qty_disponibles ?>
-                                
-                            </span>
-                        </p>
-                        
-                        <div class="price-block">
-                            <div class="price-box">
-                                <p class="special-price">
-                                    <span class="price">
-                                        <?= $this->Pcrn->moneda($arr_precio['precio']) ?>
-                                    </span>
-                                </p>
-                                <?php if ( $row->precio > $arr_precio['precio'] ) { ?>
-                                    <p class="old-price">
-                                        <span class="price">
-                                            <?= $this->Pcrn->moneda($row->precio) ?>
-                                        </span>
-                                    </p>
-                                    <br/>
-                                    <i class="fa fa-check correcto"></i>
-                                    <?= $arr_tipos_precio[$arr_precio['promocion_id']] ?>
-                                <?php } ?>
+                        <?php } else { ?>
+                            <div class="product-img-box col-lg-6 col-sm-6 col-xs-12">
+                                <img id="img_producto" alt="Imagen producto" src="<?= $row->url_image ?>" class="w100pc"
+                                    onError="this.src='<?= URL_IMG . 'app/250px_producto.png' ?>'">
                             </div>
-                        </div>
-                        <div class="short-description">
-                            <h2>Descripción</h2>
-                            <div class="text-justify">
-                                <?= $row->descripcion ?>
-                            </div>
-                        </div>
-                        
-                        <?php if ( $variaciones->num_rows() > 0 ){ ?>
-                            <?php $this->load->view('productos/detalle/variaciones_v'); ?>
                         <?php } ?>
                         
-                        <div class="add-to-box">
-                            <?php if ( $row->cant_disponibles > 0 ){ ?>
-                                <div class="add-to-cart">
-                                <?php if ( $row->peso > 0 ) { ?>    
-                                    <label for="qty">Cantidad:</label>
-                                    <div class="pull-left">
-                                        <div class="custom pull-left">
-                                            <button onClick="var result = document.getElementById('qty'); var qty = result.value; if( !isNaN( qty ) &amp;&amp; qty &gt; 0 ) result.value--;return false;" class="reduced items-count" type="button"><i class="fa fa-minus">&nbsp;</i></button>
-                                            <input type="text" class="input-text qty" title="Qty" value="1" max="<?= $row->cant_disponibles ?>" maxlength="12" id="qty" name="qty">
-                                            <button onClick="var result = document.getElementById('qty'); var qty = result.value; if( !isNaN( qty )) result.value++;return false;" class="increase items-count" type="button"><i class="fa fa-plus">&nbsp;</i></button>
+                        <div class="product-shop col-lg-6 col-sm-6 col-xs-12">
+                            <div class="product-name">
+                                <h1><?= $row_variacion->nombre_producto ?></h1>
+                            </div>
+                            
+                            <p class="availability in-stock"><?= $stock_status ?></p>
+                            
+                            <div class="price-block">
+                                <div class="price-box">
+                                    <div class="special-price">
+                                        <span class="price">$ {{ precio | currency }}</span>
+                                        <span class="old-price" v-if="precio_nominal > precio">
+                                            <span class="price">$ {{ precio_nominal | currency }}</span>
+                                        </span>
+                                        
+                                        <div v-if="precio_nominal > precio">
+                                            <i class="fa fa-check correcto"></i>
+                                            {{ arr_precio.promocion_id | name_tipo_precio }}
                                         </div>
                                     </div>
-                                <?php } else { ?>
-                                    <input type="hidden" name="qty">
-                                <?php } ?>
-                                    <button id="add-to-cart" class="button btn-cart" title="Agregar al carrito de compras" type="button">
-                                        <span><i class="fas fa-shopping-cart" style="margin-right: 5px;"></i> Al carrito</span>
-                                    </button>
                                 </div>
-                            <?php } else { ?>
-                                <div class="alert alert-warning">
-                                    <i class="fa fa-info-circle"></i> Este producto se encuentra agotado
-                                </div>
+                                <p v-if="wholesale_price_available()">
+                                    <span class="wholesale_price">$ {{ arr_precios[3] | currency }}</span>
+                                    al comprar 3 o más
+                                </p>
+                            </div>
+                            
+                            <?php if ( $variaciones->num_rows() > 0 ){ ?>
+                                <?php $this->load->view('productos/detalle/variaciones_v'); ?>
                             <?php } ?>
                             
-                        </div>
+                            <div class="add-to-box">
+                                <div v-if="product.cant_disponibles > 0">
+                                    <div class="add-to-cart" v-if="product.peso > 0">
+                                        <div v-show="!in_shopping_cart">
+                                            <div class="pull-left">
+                                                <div class="custom pull-left">
+                                                    <button v-on:click="sum_quantity(-1)" class="reduced items-count" type="button"><i class="fa fa-minus">&nbsp;</i></button>
+                                                    <input type="number" class="input-text qty" title="Cantidad" v-model="quantity" v-bind:max="product.cant_disponibles" min="0">
+                                                    <button v-on:click="sum_quantity(1)" class="increase items-count" type="button"><i class="fa fa-plus">&nbsp;</i></button>
+                                                </div>
+                                            </div>
+                                            <button class="button btn-cart" title="Agregar al carrito de compras" type="button" v-on:click="add_to_cart">
+                                                <span><i class="fas fa-shopping-cart" style="margin-right: 5px;"></i> Al carrito</span>
+                                            </button>
+                                        </div>
+                                        <a class="btn btn-success w100pc btn-lg" href="<?= URL_APP . 'pedidos/carrito' ?>" v-show="in_shopping_cart">
+                                            <i class="fa fa-shopping-cart"></i> Ir al carrito
+                                        </a>
+                                    </div>
+                                </div>
+                                <div v-else>
+                                    <div class="alert alert-warning">
+                                        <i class="fa fa-info-circle"></i> Este producto se encuentra agotado
+                                    </div>
+                                </div>
+                            </div>
 
-                        <?php if ( $tags->num_rows() > 0 ) : ?>
-                            <hr>
-                            <span class="text-muted">Ver más en: </span>
-                            <?php foreach ( $tags->result() as $tag ) : ?>
-                                <strong>
-                                    <a href="<?= base_url("productos/catalogo/?tag={$tag->id}") ?>" class="text-primary">
-                                        <?= $tag->nombre_tag ?>
-                                    </a>
-                                    <span class="text-muted">/</span>
-                                </strong>
-                            <?php endforeach ?>
-                        <?php endif; ?>
-                        
-                        <?php if ( $this->session->userdata('rol_id') <= 10 && $this->session->userdata('logged') ) : ?>
-                            <div style="margin-top: 10px;">
-                                <?= anchor("productos/edit/{$row->id}", '<i class="fa fa-pencil"></i> Editar', 'class="btn btn-warning" title="Editar producto"') ?>      
+                            <div class="short-description">
+                                <h2>Descripción</h2>
+                                <div class="product-description"><?= $row->descripcion ?></div>
                             </div>
-                        <?php endif ?>
-                    </div>
-                </form>
-            </div>
-            <div class="product-collateral">
-                <div class="col-sm-12 wow bounceInUp animated">
-                    
-                    <ul id="product-detail-tab" class="nav nav-tabs product-tabs">
-                        <li class="active">
-                            <a href="#product_tabs_description" data-toggle="tab"> Detalles </a> 
-                        </li>
-                        <li>
-                            <a href="#comentarios_tabs" data-toggle="tab">Comentarios</a>
-                        </li>
+
+                            <?php if ( $tags->num_rows() > 0 ) : ?>
+                                <hr>
+                                <span class="text-muted">Ver más en: </span>
+                                <?php foreach ( $tags->result() as $tag ) : ?>
+                                    <strong>
+                                        <a href="<?= base_url("productos/catalogo/?tag={$tag->id}") ?>" class="text-primary">
+                                            <?= $tag->nombre_tag ?>
+                                        </a>
+                                        <span class="text-muted">/</span>
+                                    </strong>
+                                <?php endforeach ?>
+                            <?php endif; ?>
+                            
+                            <?php if ( $this->session->userdata('role') <= 10 && $this->session->userdata('logged') ) : ?>
+                                <div style="margin-top: 10px;">
+                                    <?= anchor("productos/edit/{$row->id}", '<i class="fa fa-pencil"></i> Editar', 'class="btn btn-warning" title="Editar producto"') ?>      
+                                </div>
+                            <?php endif ?>
+                        </div>
+                    </form>
+                </div>
+                <div class="product-collateral">
+                    <div class="col-sm-12 wow bounceInUp animated">
                         
-                    </ul>
-                    
-                    <div id="productTabContent" class="tab-content">
-                        <div class="tab-pane fade in active" id="product_tabs_description">
-                            <div class="std">
-                                <?php $this->load->view('productos/detalle/producto_detalles_v'); ?>
+                        <ul id="product-detail-tab" class="nav nav-tabs product-tabs">
+                            <li class="active">
+                                <a href="#product_tabs_description" data-toggle="tab"> Detalles </a> 
+                            </li>
+                            <li>
+                                <a href="#comentarios_tabs" data-toggle="tab">Comentarios</a>
+                            </li>
+                            
+                        </ul>
+                        
+                        <div id="productTabContent" class="tab-content">
+                            <div class="tab-pane fade in active" id="product_tabs_description">
+                                <div class="std">
+                                    <?php $this->load->view('productos/detalle/producto_detalles_v'); ?>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-pane fade" id="comentarios_tabs">
+                                <div class="std">
+                                    <?php $this->load->view('productos/detalle/comentarios_v'); ?>
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="tab-pane fade" id="comentarios_tabs">
-                            <div class="std">
-                                <?php $this->load->view('productos/detalle/comentarios_v'); ?>
-                            </div>
-                        </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<?php $this->load->view('productos/detalle/vue_v') ?>

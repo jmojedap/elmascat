@@ -101,20 +101,20 @@ class Archivo_model extends CI_Model{
         return $archivo_id;
     }
     
-    function actualizar($archivo_id, $registro)
+    function actualizar($archivo_id, $arr_row)
     {
         //Datos adicionales
-            $registro['editor_id'] = $this->session->userdata('usuario_id');
+            $arr_row['editor_id'] = $this->session->userdata('user_id');
         
         //Actualizar
             $this->db->where('id', $archivo_id);
-            $this->db->update('archivo', $registro);
+            $this->db->update('archivo', $arr_row);
             
         //Cargar resultado
-            $resultado['clase'] = 'alert alert-info';
-            $resultado['mensaje'] = 'El archivo fue modificado.';
+            $data['saved_id'] = $archivo_id;
+            $data['message'] = 'El archivo fue modificado.';
 
-        return $resultado;
+        return $data;
     }
     
     /**

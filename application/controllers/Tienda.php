@@ -2,6 +2,14 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Tienda extends CI_Controller{
+
+// Variables generales
+//-----------------------------------------------------------------------------
+    public $views_folder = 'ecommerce/tienda/';
+    public $url_controller = URL_ADMIN . 'tienda/';
+
+// Constructor
+//-----------------------------------------------------------------------------
     
     function __construct() 
     {
@@ -76,9 +84,12 @@ class Tienda extends CI_Controller{
         $data['images'] = $this->Producto_model->images($product_id);
         $data['cat_1_name'] = $this->Item_model->name(25, $data['row']->categoria_id);
         //$data['cat_2_name'] = $this->Item_model->name(25, $data['row']->cat_2);
+        $data['metadatos'] = $this->Producto_model->metadatos_valor($product_id, 'visible');
+        $data['tags'] = $this->Producto_model->tags($product_id);
+        $data['best_price'] = $this->Producto_model->arr_precio($product_id);
         
         //Variables específicas
-        $data['view_a'] = 'ecommerce/tienda/producto_v';
+        $data['view_a'] = 'ecommerce/tienda/producto/producto_v';
         
         $this->App_model->view('templates/libreria/main', $data);
     }

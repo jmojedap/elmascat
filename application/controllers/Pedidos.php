@@ -68,38 +68,21 @@ class Pedidos extends CI_Controller{
     
     /**
      * Exporta el resultado de la búsqueda a un archivo CSV
-     * 2020-08-28
+     * 2021-09-15
      */
     function exportar()
     {
         //Cargando
             $this->load->model('Search_model');
-        
-        
+
             $filters = $this->Search_model->filters();
             $query = $this->Pedido_model->search($filters); //Para calcular el total de resultados
 
-        //Construyento archivo
-        $content = '';
+        //Contenido del archivo
+        $data['file_name'] = date('Ymd_His'). '_pedidos.csv';
+        $data['content'] = $this->pml->content_query_to_csv($query);
 
-        //Primera fila, columnas
-            $fields = $query->list_fields();
-            $content .= implode("\t", $fields) . "\n";
-
-        //Registros
-        foreach($query->result() as $row)
-        {
-            foreach($fields as $field) $content .= $row->$field."\t";
-            $content .= "\n";
-        }
-
-        $file_name = date('Ymd_His'). '_pedidos.csv';
-
-        $content = mb_convert_encoding($content, 'UTF-16LE', 'UTF-8');
-        
-        header('Content-Type: application/csv');
-        header('Content-Disposition: attachment; filename="' . $file_name . '"');
-        echo $content; exit();
+        $this->load->view('app/export_csv_v', $data);
     }
     
     /**
@@ -317,6 +300,21 @@ class Pedidos extends CI_Controller{
 
 // PROCESO DE PAGO
 //---------------------------------------------------------------------------------------------------
+
+    /**
+     * Información general del pedido
+     * 2021-09-22
+     */
+    function get_info($order_code)
+    {
+        $pedido = $this->Pedido_model->row_by_code($order_code);
+        $data['order'] = $pedido;
+        $data['products'] = $this->Pedido_model->detalle($pedido->id)->result();
+        $data['extras'] = $this->Pedido_model->extras($pedido->id)->result();
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
     /**
      * Vista del listado de productos que están en el carrito de compras, listos
@@ -327,23 +325,25 @@ class Pedidos extends CI_Controller{
         $this->load->model('Producto_model');
         
         
-        if ( ! is_null($this->session->userdata('pedido_id')) ) 
+        if ( ! is_null($this->session->userdata('order_code')) ) 
         {
-            $pedido_id = $this->session->userdata('pedido_id');
-            $this->Pedido_model->act_totales($pedido_id);
+            $pedido = $this->Pedido_model->row_by_code($this->session->userdata('order_code'));
+            $this->Pedido_model->act_totales($pedido->id);
             
-            $data = $this->Pedido_model->basico($pedido_id);
+            $data = $this->Pedido_model->basico($pedido->id);
             
-            $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
-            $data['rol_comprador'] = $this->Pedido_model->rol_comprador($pedido_id);
-            $data['extras'] = $this->Pedido_model->extras($pedido_id);
-            $data['pedido_id'] = $this->session->userdata('pedido_id');
+            $data['order'] = $pedido;
+            $data['products'] = $this->Pedido_model->detalle($pedido->id);
+            $data['rol_comprador'] = $this->Pedido_model->rol_comprador($pedido->id);
+            $data['extras'] = $this->Pedido_model->extras($pedido->id);
+            $data['pedido_id'] = $pedido->id;
             $data['arr_tipos_precio'] = $this->Producto_model->arr_tipos_precio();
-            $data['descuentos'] = $this->Pedido_model->descuentos($pedido_id);
+            $data['descuentos'] = $this->Pedido_model->descuentos($pedido->id);
+            $data['arr_extras_pedidos'] = $this->Item_model->arr_item(6, 'id_interno_num');
             
             $data['destino_form'] = "pedidos/compra_a/{$data['row']->cod_pedido}";
             $data['view_a'] = 'pedidos/compra/compra_v';
-            $data['view_b'] = 'pedidos/compra/carrito_v';
+            $data['view_b'] = 'pedidos/compra/carrito/carrito_v';
         } else {
             $data['view_a'] = 'pedidos/carrito_vacio_v';
         }
@@ -353,22 +353,33 @@ class Pedidos extends CI_Controller{
             $this->load->view(TPL_FRONT, $data);
     }
 
+    /**
+     * Identificar y crear usuario si no existe.
+     * 2021-09-27
+     */
     function usuario()
     {
-        $pedido_id = $this->session->userdata('pedido_id');
-        $data = $this->Pedido_model->basico($pedido_id);
+        $order_code = $this->session->userdata('order_code');
+        $order = $this->Pedido_model->row_by_code($order_code);
+        $data = $this->Pedido_model->basico($order->id);
 
         if ( $data['row']->usuario_id > 0 )
         {
             redirect('pedidos/compra_a');
         } else {
+            $this->load->model('Evento_model');
+
             //Variables
                 $data['recaptcha_sitekey'] = K_RCSK;    //config/constants.php
+                $data['qty_digital_products'] = $this->Pedido_model->qty_digital_products($order->id);
+                $data['options_year'] = $this->Evento_model->options_year(1920,2005);
+                $data['options_month'] = $this->Evento_model->options_month();
+                $data['options_day'] = $this->Evento_model->options_day();
 
             //Solicitar vista
-                $data['head_title'] = 'Datos de entrega';
+                $data['head_title'] = 'Tus datos';
                 $data['view_a'] = 'pedidos/compra/compra_v';
-                $data['view_b'] = 'pedidos/compra/usuario_v';
+                $data['view_b'] = 'pedidos/compra/usuario/usuario_v';
                 $this->load->view(TPL_FRONT, $data);
         }
     }
@@ -384,16 +395,18 @@ class Pedidos extends CI_Controller{
         $this->load->model('Usuario_model');
         $this->load->model('Evento_model');
         
-        $pedido_id = $this->session->userdata('pedido_id');
+        $order_code = $this->session->userdata('order_code');
+        $order = $this->Pedido_model->row_by_code($order_code);
         
-        $data = $this->Pedido_model->basico($pedido_id);
+        $data = $this->Pedido_model->basico($order->id);
         
-        $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
+        $data['detalle'] = $this->Pedido_model->detalle($order->id);
+        $data['extras'] = $this->Pedido_model->extras($order->id);
+        $data['arr_extras_pedidos'] = $this->Item_model->arr_item(6, 'id_interno_num');
 
         //Identificar region
             $region_id = 267; //Bogotá
             if ( $data['row']->region_id > 0 ) $region_id = $data['row']->region_id;
-
 
         //Opciones formulario
             $data['options_pais'] = $this->App_model->opciones_lugar("tipo_id = 2 AND activo = 1", 'nombre_lugar', 'País');
@@ -404,22 +417,19 @@ class Pedidos extends CI_Controller{
             $data['options_month'] = $this->Evento_model->options_month();
             $data['options_day'] = $this->Evento_model->options_day();
             $data['row_usuario'] = $this->Db_model->row_id('usuario', $data['row']->usuario_id);
-        
-        //Extras
-            $arr_extras['gastos_envio'] = $this->Pedido_model->valor_extras($pedido_id, 'producto_id IN (1,4)');
-            $data['arr_extras'] = $arr_extras;
 
         //Si tiene peso o no, cambian los datos solicitados
             $data['view_b'] = 'pedidos/compra/compra_a_v';
-            if ( $data['row']->peso_total == 0 ) {
+            /*if ( $data['row']->peso_total == 0 ) {
                 $data['view_b'] = 'pedidos/compra/compra_a_sin_peso_v';
-            }
+            }*/
         
         //Solicitar vista
             $data['head_title'] = 'Datos de entrega';
             $data['view_a'] = 'pedidos/compra/compra_v';
             $data['section_id'] = 'cart_items';
             $this->load->view(TPL_FRONT, $data);
+            //$this->output->enable_profiler(TRUE);
     }
     
     /**
@@ -429,25 +439,25 @@ class Pedidos extends CI_Controller{
     function compra_b()
     {
         $this->load->model('Producto_model');
-        $pedido_id = $this->session->userdata('pedido_id');
+
+        $order_code = $this->session->userdata('order_code');
+        $order = $this->Pedido_model->row_by_code($order_code);
         
-        $data = $this->Pedido_model->basico($pedido_id);
-        $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
+        $data = $this->Pedido_model->basico($order->id);
+        $data['products'] = $this->Pedido_model->detalle($order->id);
+        $data['extras'] = $this->Pedido_model->extras($order->id);
         $data['row_ciudad'] = $this->Db_model->row_id('lugar', $data['row']->ciudad_id);
         $data['arr_meta'] = $this->Pedido_model->arr_meta($data['row']);
         $data['validacion'] = $this->Pedido_model->validar($data['row']);
-        
-        //Extras
-            $arr_extras['gastos_envio'] = $this->Pedido_model->valor_extras($pedido_id, 'producto_id IN (1,4)');
-            $data['arr_extras'] = $arr_extras;
+        $data['arr_extras_pedidos'] = $this->Item_model->arr_item(6, 'id_interno_num');
         
         //Datos para el formulario que se envía a PagosOnLine
-            $data['form_data'] = $this->Pedido_model->form_data_pol($pedido_id);
+            $data['form_data'] = $this->Pedido_model->form_data_pol($order->id);
             $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Donde se envían los datos para el pago
             
             if ( $this->input->get('prueba') == 1 )
             {
-                $data['form_data'] = $this->Pedido_model->form_data_pol($pedido_id, 1);
+                $data['form_data'] = $this->Pedido_model->form_data_pol($order->id, 1);
                 $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Página para transacciones de prueba
             }
         
@@ -510,30 +520,27 @@ class Pedidos extends CI_Controller{
      */
     function link_pago($cod_pedido)
     {
-        $row = $this->Pedido_model->row_cod_pedido($cod_pedido);
+        $order = $this->Pedido_model->row_by_code($cod_pedido);
         $this->load->model('Producto_model');
-        $pedido_id = $row->id;
         
-        $data = $this->Pedido_model->basico($pedido_id);
-        $data['detalle'] = $this->Pedido_model->detalle($pedido_id);
-        $data['row_ciudad'] = $this->Pcrn->registro_id('lugar', $data['row']->ciudad_id);
-        
-        //Extras
-            $arr_extras['gastos_envio'] = $this->Pedido_model->valor_extras($pedido_id, 'producto_id IN (1,4)');
-            $data['arr_extras'] = $arr_extras;
+        $data = $this->Pedido_model->basico($order->id);
+        $data['detalle'] = $this->Pedido_model->detalle($order->id);
+        $data['extras'] = $this->Pedido_model->extras($order->id);
+        $data['arr_extras_pedidos'] = $this->Item_model->arr_item(6, 'id_interno_num');
+        $data['row_ciudad'] = $this->Db_model->row_id('lugar', $data['row']->ciudad_id);
         
         //Datos para el formulario que se envía a PagosOnLine
-            $data['form_data'] = $this->Pedido_model->form_data_pol($pedido_id);
+            $data['form_data'] = $this->Pedido_model->form_data_pol($order->id);
             $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Donde se envían los datos para el pago
             
             if ( $this->input->get('prueba') == 1 )
             {
-                $data['form_data'] = $this->Pedido_model->form_data_pol($pedido_id, 1);
+                $data['form_data'] = $this->Pedido_model->form_data_pol($order->id, 1);
                 $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Página para transacciones de prueba
             }
         
         //Solicitar vista
-            $data['head_title'] = 'Pagar pedido: ' . $row->cod_pedido;
+            $data['head_title'] = 'Pagar pedido: ' . $order->cod_pedido;
             $data['view_a'] = 'pedidos/compra/compra_v';
             $data['view_b'] = 'pedidos/compra/link_pago_v';
             $this->load->view(TPL_FRONT, $data);
@@ -546,7 +553,7 @@ class Pedidos extends CI_Controller{
      */
     function reiniciar($cod_pedido)
     {
-        $row = $this->Pedido_model->row_cod_pedido($cod_pedido);
+        $row = $this->Pedido_model->row_by_code($cod_pedido);
         $data['qty_affected'] = $this->Pedido_model->act_cod_pedido($row->id);
 
         //Salida JSON
@@ -560,24 +567,20 @@ class Pedidos extends CI_Controller{
      */
     function guardar_pedido()
     {
-        $pedido_id = $this->session->userdata('pedido_id');
-        $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
+        $order_code = $this->session->userdata('order_code');
+        $order = $this->Pedido_model->row_by_code($order_code);
 
+        $data['status'] = 1;
         $data['qty_affected'] = 0;
         
-        if ( ! is_null($row_pedido) ) 
+        if ( ! is_null($order) ) 
         {
             //Construir registro y guardar
             $arr_row = $this->input->post();
-			unset($arr_row['fecha_nacimiento']);      //No cargar datos de registro de usuario
-            unset($arr_row['year']);      //No cargar datos de registro de usuario
-            unset($arr_row['month']);     //No cargar datos de registro de usuario
-            unset($arr_row['day']);       //No cargar datos de registro de usuario
-            unset($arr_row['sexo']);                //No cargar datos de registro de usuario
-            $data['qty_affected'] =  $this->Pedido_model->act_pedido($pedido_id, $arr_row);
+            $data['qty_affected'] =  $this->Pedido_model->act_pedido($order->id, $arr_row);
 
             //Validar usuario comprador
-            $this->Pedido_model->set_user_data($pedido_id);
+            $this->Pedido_model->set_user_data($order->id);
         }
 
         //Salida JSON
@@ -588,10 +591,11 @@ class Pedidos extends CI_Controller{
      * Abandona un pedido actual quitándolo de las variables de sesión
      * No elimina el pedido ni su detalle
      */
-    function abandonar()
+    function cancel()
     {
-        $this->Pedido_model->abandonar();
-        redirect('productos/catalogo');
+        $data = $this->Pedido_model->cancel();
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     /**
@@ -600,7 +604,7 @@ class Pedidos extends CI_Controller{
      */
     function retomar($cod_pedido)
     {
-        $this->Pedido_model->retomar($cod_pedido);
+        $data['status'] = $this->Pedido_model->retomar($cod_pedido);
         redirect('pedidos/carrito');
     }
     
@@ -614,7 +618,13 @@ class Pedidos extends CI_Controller{
 
     function set_user($user_id)
     {
-        $data = $this->Pedido_model->set_user($user_id);
+        $data = array('status' => 0, 'message' => 'Usuario no asignado');
+        $order_code = $this->session->userdata('order_code');
+        $row_order = $this->Pedido_model->row_by_code($order_code);
+
+        if ( ! is_null($row_order) ) {
+            $data = $this->Pedido_model->set_user($row_order, $user_id);
+        }
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -624,11 +634,47 @@ class Pedidos extends CI_Controller{
 //---------------------------------------------------------------------------------------------------
 
     /**
+     * Agrega un producto a una compra, si la compra no está definida crea una y la agrega 
+     * a variables de sesión
+     * 2021-05-06
+     */
+    function add_product($product_id, $quantity = 1, $order_code = null)
+    { 
+        //Resultado por defecto
+        $data = array('status' => 0, 'message' => 'Compra no identificada');
+
+        //No hay order_code definida
+        if ( is_null($order_code) ) 
+        {
+            //Crear nueva order, y ponerla en variables de sesión
+            $data_order = $this->Pedido_model->crear();
+            $this->session->set_userdata('order_code', $data_order['order_code']);
+            $order_code = $data_order['order_code'];
+        }
+
+        //Registro de compra
+        $row_order = $this->Pedido_model->row_by_code($order_code);
+        $editable = $this->Pedido_model->editable($row_order);
+
+        //Código de compra existe
+        if ( $editable )
+        {
+            $data = $this->Pedido_model->add_product($product_id, $quantity, $row_order->id);
+        } else {
+            $this->Pedido_model->unset_session();
+            $data = array('status' => 2, 'message' => 'La compra no puede modificarse, ya fue procesada');
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
      * AJAX
      * Crea o edita un registro en la tabla pedido_detalle, corresponde listado de productos de un pedido
      * 2020-08-12
      */
-    function guardar_detalle()
+    function z_guardar_detalle()
     {
         //Valores iniciales
             $data = array('status' => 0, 'message' => 'Producto no agregado');
@@ -688,22 +734,25 @@ class Pedidos extends CI_Controller{
     
     /**
      * Elimina un producto del pedido
-     * 2020-08-12
+     * 2021-09-24
      */
-    function eliminar_detalle($elemento_id)
+    function remove_product($product_id, $order_code = '')
     {
-        $pedido_id = $this->session->userdata('pedido_id');
-        
-        $row = $this->Db_model->row_id('pedido', $pedido_id);
+        //Resultado por defecto
+        $data = array('status' => 0, 'message' => 'Compra no identificada');
 
-        //Se modifica solo si está en estado iniciado (1)
-        if ( $row->estado_pedido == 1 )
+        $row_order = $this->Pedido_model->row_by_code($order_code);
+        $editable = $this->Pedido_model->editable($row_order);
+
+        if ( $editable )
         {
-            $this->Pedido_model->eliminar_detalle($elemento_id);
-            $this->Pedido_model->act_totales($pedido_id);
+            $data = $this->Pedido_model->remove_product($product_id, $row_order);
+        } else {
+            $this->Pedido_model->unset_session();
+            $data = array('status' => 2, 'message' => 'La compra no puede modificarse, ya fue procesada');
         }
-        
-        redirect("pedidos/carrito");
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     /**
@@ -712,12 +761,13 @@ class Pedidos extends CI_Controller{
      */
     function guardar_lugar()
     {
-        $pedido_id = $this->session->userdata('pedido_id');
+        $order_code = $this->session->userdata('order_code');
+        $order = $this->Pedido_model->row_by_code($order_code);
         
-        $this->Pedido_model->guardar_lugar();
-        $this->Pedido_model->act_totales($pedido_id);
-
-        $data['status'] = 1;
+        $data = $this->Pedido_model->guardar_lugar();
+        if ( $data['status'] ) {
+            $this->Pedido_model->act_totales($order->id);
+        }
         
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -728,10 +778,13 @@ class Pedidos extends CI_Controller{
 
     function datos_regalo()
     {
-        $pedido_id = $this->session->userdata('pedido_id');
+        $order_code = $this->session->userdata('order_code');
+        $order = $this->Pedido_model->row_by_code($order_code);
         
-        $data = $this->Pedido_model->basico($pedido_id);
+        $data = $this->Pedido_model->basico($order->id);
         $data['arr_meta'] = $this->Pedido_model->arr_meta($data['row']);
+        $data['extras'] = $this->Pedido_model->extras($order->id);
+        $data['arr_extras_pedidos'] = $this->Item_model->arr_item(6, 'id_interno_num');
         
         //Solicitar vista
             $data['head_title'] = 'Datos para regalo';
@@ -743,8 +796,8 @@ class Pedidos extends CI_Controller{
 
     function guardar_datos_regalo()
     {
-        $pedido_id = $this->session->userdata('pedido_id');
-        $data = $this->Pedido_model->guardar_datos_regalo($pedido_id);
+        $order = $this->Pedido_model->row_by_code($this->session->userdata('order_code'));
+        $data = $this->Pedido_model->guardar_datos_regalo($order->id);
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -785,10 +838,10 @@ class Pedidos extends CI_Controller{
      */
     function respuesta()
     {
-        $this->Pedido_model->abandonar(); //Se abandona el pedido de las variables de sesión
+        $this->Pedido_model->cancel(); //Se abandona el pedido de las variables de sesión
         
         $arr_respuesta_pol = $this->Pedido_model->arr_respuesta_pol();
-        $row_pedido = $this->Pedido_model->row_cod_pedido($arr_respuesta_pol['ref_venta']);
+        $row_pedido = $this->Pedido_model->row_by_code($arr_respuesta_pol['ref_venta']);
         
         $this->load->model('Producto_model');
         $pedido_id = $row_pedido->id;
@@ -810,10 +863,10 @@ class Pedidos extends CI_Controller{
     function respuesta_print()
     {
         //$this->output->enable_profiler(TRUE);
-        $this->Pedido_model->abandonar(); //Se abandona el pedido de las variables de sesión
+        $this->Pedido_model->cancel(); //Se abandona el pedido de las variables de sesión
         
         $arr_respuesta_pol = $this->Pedido_model->arr_respuesta_pol();
-        $row_pedido = $this->Pedido_model->row_cod_pedido($arr_respuesta_pol['ref_venta']);
+        $row_pedido = $this->Pedido_model->row_by_code($arr_respuesta_pol['ref_venta']);
         
         $this->load->model('Producto_model');
         $pedido_id = $row_pedido->id;
@@ -865,7 +918,7 @@ class Pedidos extends CI_Controller{
         
         if ( strlen($cod_pedido) > 0 ) 
         {
-            $row_pedido = $this->Pedido_model->row_cod_pedido($cod_pedido);
+            $row_pedido = $this->Pedido_model->row_by_code($cod_pedido);
             $pedido_id = NULL;
         }
         

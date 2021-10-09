@@ -22,7 +22,7 @@
                     console.log(response.data)
                     //Ir a la vista de la imagen
                     if ( response.data.status == 1 ) {
-                        window.location = url_app + 'archivos/editar/' + response.data.row.id
+                        window.location = url_app + 'archivos/edit/' + response.data.row.id
                     }
                     //Mostrar respuesta html, si existe
                     if ( response.data.html ) { $('#upload_response').html(response.data.html) }

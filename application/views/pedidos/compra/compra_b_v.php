@@ -1,5 +1,5 @@
-<div>
-    <div class="row wow bounceInUp animated">
+<div id="compra_b_app">
+    <div class="row">
         <div class="col col-md-4">
             <div class="cart ">
                 <div class="page-title">
@@ -22,13 +22,13 @@
                                 <tfoot>
                                     <tr class="first last">
                                         <td class="a-right last">
-                                            <?= anchor("pedidos/carrito/", '<i class="fa fa-shopping-cart"></i><span><span> Editar</span></span>', 'class="btn btn-polo w3" title="Editar datos de entrega"') ?>
+                                            <?= anchor("pedidos/carrito/", '<i class="fa fa-shopping-cart"></i><span><span> Editar</span></span>', 'class="btn btn-polo w3" title="Editar productos"') ?>
                                         </td>
                                     </tr>
                                 </tfoot>
                                 
                                 <tbody>
-                                    <?php foreach ($detalle->result() as $row_detalle) : ?>
+                                    <?php foreach ($products->result() as $row_detalle) : ?>
                                         <?php
                                             $precio_especial = FALSE;
                                             if ( $row_detalle->precio_nominal > $row_detalle->precio ) { $precio_especial = TRUE; }
@@ -99,7 +99,7 @@
                 <tfoot>
                     <tr class="first last">
                         <td class="a-right last" colspan="2">
-                            <?= anchor("pedidos/compra_a/{$row->cod_pedido}", '<i class="fa fa-edit"></i><span><span> Editar</span></span>', 'class="btn btn-polo w3" title="Editar productos del carrito"') ?>
+                            <?= anchor("pedidos/compra_a/{$row->cod_pedido}", '<i class="fa fa-edit"></i><span><span> Editar</span></span>', 'class="btn btn-polo w3" title="Editar datos de compra"') ?>
                         </td>
                     </tr>
                 </tfoot>
@@ -131,14 +131,16 @@
                             <?= $row->ciudad ?>
                         </td>
                     </tr>
-                    <tr>
-                        <td width="25px">
-                            <i class="fa fa-info-circle fa-2x text-primary"></i>
-                        </td>
-                        <td>
-                            <?= $row->notas ?>
-                        </td>
-                    </tr>
+                    <?php if ( strlen($row->notas) > 0 ) : ?>
+                        <tr>
+                            <td width="25px">
+                                <i class="fa fa-info-circle fa-2x text-primary"></i>
+                            </td>
+                            <td>
+                                <?= $row->notas ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                     <?php if ( $row->is_gift ) : ?>
                         <tr>
                             <td width="25px">
@@ -217,24 +219,11 @@
 
             <div class="alert alert-info text-center">
                 <p>
-                    <i class="fa fa-info-circle"></i> <strong>Aviso importante</strong>
-                </p>
-                <?php
-                    /*
-                    <p class="text-center">
-                        Debido a la contingencia sanitaria la entrega de tu compra puede tardar
-                        hasta 3 días hábiles en Bogotá y hasta <b>4 días hábiles</b> para el resto del país.
-                    </p>
-                    */
-                ?>
-                <p>
-                    Dadas las condiciones actuales de nuestro país los envíos a Bogotá y otras ciudades presentan demoras, en especial la parte sur del país. 
+                    <i class="fa fa-info-circle"></i> <strong>Recuerda</strong>
                 </p>
                 <p>
-                    ¡Gracias por tu comprensión!
-                </p>
-                <p>
-                    Seguimos trabajando para prestar el mejor servicio.
+                    Para pagos en Efectivo con Códigos de pago: 
+                    Algunos productos de tu pedido podrían dejar de estar disponibles si pasa mucho tiempo entre la creación de tu pedido y el momento del pago.
                 </p>
             </div>
             
@@ -243,11 +232,41 @@
                     Pagar en Dólares (USD)
                 </a>
             <?php } ?>
-            
-            
         </div>
     </div>
 </div>
+
+<script>
+// Variables
+//-----------------------------------------------------------------------------
+var arr_extras_pedidos = <?= json_encode($arr_extras_pedidos) ?>;
+
+// Filters
+//-----------------------------------------------------------------------------
+Vue.filter('currency', function (value) {
+    if (!value) return ''
+    value = '$' + new Intl.NumberFormat().format(value)
+    return value
+})
+
+Vue.filter('name_extra_pedido', function (value) {
+    if (!value) return ''
+    value = arr_extras_pedidos[value]
+    return value
+})
+
+// VueApp
+//-----------------------------------------------------------------------------
+var compra_b_app = new Vue({
+    el: '#compra_b_app',
+    data: {
+        order: <?= json_encode($row) ?>,
+        extras: <?= json_encode($extras->result()) ?>,
+        loading: false,
+    },
+    methods: {}
+});
+</script>
 
 <div class="pull-right">
     <img src="<?= URL_IMG ?>app/positivessl_trust_seal_md_167x42.png" alt="payment"> 

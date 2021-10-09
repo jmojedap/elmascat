@@ -5,7 +5,7 @@
         </div>
 
         <div class="col">
-            <a href="<?= base_url("{$controller}/exportar/?{$str_filters}") ?>" class="btn btn-light only-lg" title="Exportar registros encontrados a Excel">
+            <a v-bind:href="`<?= base_url("{$controller}/exportar/?") ?>` + str_filters" class="btn btn-light only-lg" title="Exportar registros encontrados a Excel">
                 <i class="fa fa-download"></i>
             </a>
             <button class="btn btn-light"
@@ -19,12 +19,15 @@
         </div>
         
         <div class="col mb-2">
+            <a class="btn text-muted">
+                {{ search_num_rows }} resultados &middot; Pág {{ num_page }} / {{ max_page }}
+            </a>
             <?php $this->load->view('common/vue_pagination_v'); ?>
         </div>
     </div>
 
     <div id="elements_table">
-        <?php $this->load->view($views_folder . 'table_v'); ?>
+        <?php $this->load->view($views_folder . 'list_v'); ?>
         <?php $this->load->view($views_folder . 'detail_v'); ?>
     </div>
 

@@ -68,14 +68,21 @@
         cf: 'productos/edit/' + element_id,
         anchor: true
     };
-    
+
+    sections.detalle = {
+        icon: '',
+        text: 'Vista previa',
+        class: '<?= $cl_nav_2['productos_detalle'] ?>',
+        cf: 'productos/detalle/' + element_id,
+        anchor: true
+    };
     
     //Secciones para cada rol
-    sections_rol[0] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books'];
-    sections_rol[1] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books'];
-    sections_rol[2] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books'];
-    sections_rol[6] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones'];
-    sections_rol[7] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones'];
+    sections_rol[0] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books', 'detalle'];
+    sections_rol[1] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books', 'detalle'];
+    sections_rol[2] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books', 'detalle'];
+    sections_rol[6] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'detalle'];
+    sections_rol[7] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'detalle'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
     for ( key_section in sections_rol[app_rid]) 

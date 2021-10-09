@@ -20,21 +20,24 @@
         icon: '',
         text: 'General',
         class: '<?= $cl_nav_3['edit_description'] ?>',
-        cf: 'productos/edit/' + element_id + '/description'
+        cf: 'productos/edit/' + element_id + '/description',
+        anchor: true,
     };
     
     sections.valores = {
         icon: '',
         text: 'Valores',
         class: '<?= $cl_nav_3['edit_valores'] ?>',
-        cf: 'productos/edit/' + element_id + '/valores'
+        cf: 'productos/edit/' + element_id + '/valores',
+        anchor: true,
     };
 
     sections.metadata = {
         icon: '',
         text: 'Especificaciones',
         class: '<?= $cl_nav_3['edit_metadata'] ?>',
-        cf: 'productos/edit/' + element_id + '/metadata'
+        cf: 'productos/edit/' + element_id + '/metadata',
+        anchor: true,
     };
     
     //Secciones para cada rol

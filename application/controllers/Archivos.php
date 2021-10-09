@@ -72,13 +72,13 @@ class Archivos extends CI_Controller{
         $this->load->view(PTL_ADMIN, $data);
     }
     
-    function editar_e($archivo_id)
+    function update()
     {
-        $registro = $this->input->post();
-        $resultado = $this->Archivo_model->actualizar($archivo_id, $registro);
-        $this->session->set_flashdata('resultado', $resultado);
+        $arr_row = $this->input->post();
+        $data = $this->Archivo_model->actualizar($arr_row['id'], $arr_row);
         
-        redirect("archivos/editar/{$archivo_id}");
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
 // CAMBIAR ARCHIVO
@@ -178,7 +178,7 @@ class Archivos extends CI_Controller{
         
         foreach ( $seleccionados as $elemento_id )
         {
-            $this->Archivo_model->eliminar($elemento_id);
+            $this->Archivo_model->delete($elemento_id);
         }
         
         echo count($seleccionados);

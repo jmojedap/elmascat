@@ -33,7 +33,8 @@
 
     .detalle_product .price{
         font-size: 2em;
-        color: #1C95D1;
+        color: #d00404;
+        font-weight: bold;
     }
 
     .detalle_product .main_image {
@@ -110,7 +111,8 @@
                 <div class="card-body">
                     <h1>{{ product.nombre_producto }}</h1>
                     <p class="price">
-                        {{ product.precio | currency }}
+                        {{ best_price.precio | currency }}
+                        <span>{{ product.precio }}</span>
                     </p>
                     <div v-if="product.cant_disponibles > 0">
                         <button class="btn btn-main w100pc btn-lg" type="button" v-on:click="add_to_cart" v-show="!in_shopping_cart">
@@ -123,17 +125,25 @@
                     </div>
                     <hr>
                     <p v-html="product.descripcion"></p>
+
+                    <?php if ( $tags->num_rows() > 0 ) : ?>
+                        <hr>
+                        <p class="text-muted">Productos similares en: </p>
+                        <p>
+                        <?php foreach ( $tags->result() as $tag ) : ?>
+                            <strong>
+                                <a href="<?= URL_APP . "tienda/productos/?tag={$tag->id}" ?>" class="text-primary">
+                                    <?= $tag->nombre_tag ?>
+                                </a>
+                                <span class="text-muted">/</span>
+                            </strong>
+                        <?php endforeach ?>
+                        </p>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
-        <div class="product_details">
-            <h2>Características principales</h2>
-            <table class="table">
-                <thead>
-                    <th>hola    </th>
-                </thead>
-            </table>
-        </div>
+        <?php $this->load->view($this->views_folder . 'producto/detalles_v') ?>
     </div>
 </div>
 
@@ -155,6 +165,7 @@ var product_app = new Vue({
     },
     data: {
         product: <?= json_encode($row) ?>,
+        best_price: <?= json_encode($best_price) ?>,
         image_key: 0,
         images: <?= json_encode($images->result()) ?>,
         curr_image: {},

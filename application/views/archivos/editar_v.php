@@ -1,21 +1,6 @@
-<?php $this->load->view('assets/chosen_jquery'); ?>
+<?php $this->load->view('assets/toastr'); ?>
 
 <?php
-    $att_form = array(
-        'class' => 'form-horizontal'
-    );
-
-    $att_titulo_archivo = array(
-        'id'     => 'campo-titulo_archivo',
-        'name'   => 'titulo_archivo',
-        'required'   => TRUE,
-        'type'   => 'text',
-        'class'  => 'form-control',
-        'value'  => $row->titulo_archivo,
-        'placeholder'   => 'Escriba el título para el archivo',
-        'title'   => 'Escriba un título para el archivo'
-    );
-    
     $att_subtitulo = array(
         'id'     => 'campo-subtitulo',
         'name'   => 'subtitulo',
@@ -65,72 +50,110 @@
     );
 ?>
 
+<div id="archivo_edit">
 
-
-<div class="row">
-    <div class="col col-sm-8">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <?= form_open($destino_form, $att_form) ?>
-                    <div class="form-group">
-                        <label for="titulo_archivo" class="col-sm-3 control-label">Título archivo</label>
-                        <div class="col-sm-9">
-                            <?= form_input($att_titulo_archivo); ?>
-                        </div>
-                    </div>
+    <div class="row">
+        <div class="col col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form accept-charset="utf-8" method="POST" id="archivo_form" @submit.prevent="send_form" class="form-horizontal">
+                        <fieldset v-bind:disabled="loading">
+                            <input type="hidden" name="id" value="<?= $row->id ?>">
+                            
+                            <div class="form-group">
+                                <label for="titulo_archivo" class="col-sm-3 control-label">Título archivo</label>
+                                <div class="col-sm-9">
+                                    <input
+                                        name="titulo_archivo" type="text" class="form-control"
+                                        required
+                                        title="Escriba el título para el archivo" placeholder="Escriba el título para el archivo"
+                                        v-model="form_values.titulo_archivo"
+                                    >
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="subtitulo" class="col-sm-3 control-label">Subtítulo</label>
+                                <div class="col-sm-9">
+                                    <?= form_input($att_subtitulo); ?>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="palabras_clave" class="col-sm-3 control-label">Palabras clave *</label>
+                                <div class="col-sm-9">
+                                    <?= form_input($att_palabras_clave); ?>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="descripcion" class="col-sm-3 control-label">Descripción</label>
+                                <div class="col-sm-9">
+                                    <?= form_textarea($att_descripcion); ?>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="link" class="col-sm-3 control-label">Link</label>
+                                <div class="col-sm-9">
+                                    <?= form_input($att_link); ?>
+                                </div>
+                            </div>
+        
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-9">
+                                    <?= form_submit($att_submit) ?>
+                                </div>
+                            </div>
+                            
+                        </fieldset>
+                    </form>
                     
-                    <div class="form-group">
-                        <label for="subtitulo" class="col-sm-3 control-label">Subtítulo</label>
-                        <div class="col-sm-9">
-                            <?= form_input($att_subtitulo); ?>
-                        </div>
-                    </div>
                     
-                    <div class="form-group">
-                        <label for="palabras_clave" class="col-sm-3 control-label">Palabras clave *</label>
-                        <div class="col-sm-9">
-                            <?= form_input($att_palabras_clave); ?>
-                        </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="sep1">
+                        <?= img($att_img) ?>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="descripcion" class="col-sm-3 control-label">Descripción</label>
-                        <div class="col-sm-9">
-                            <?= form_textarea($att_descripcion); ?>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="link" class="col-sm-3 control-label">Link</label>
-                        <div class="col-sm-9">
-                            <?= form_input($att_link); ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-9">
-                            <?= form_submit($att_submit) ?>
-                        </div>
-                    </div>
-                <?= form_close('') ?>
+                    <?= anchor("archivos/cambiar/{$row->id}", 'Cambiar', 'class="btn btn-default" title="Cambiar esta imagen"') ?>
+                </div>
                 
             </div>
-        </div>    
-        <?php $this->load->view('comunes/resultado_proceso_v'); ?>
-    </div>
-    
-    <div class="col col-sm-4">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div class="sep1">
-                    <?= img($att_img) ?>
-                </div>
-                <?= anchor("archivos/cambiar/{$row->id}", 'Cambiar', 'class="btn btn-default" title="Cambiar esta imagen"') ?>
-            </div>
-            
         </div>
     </div>
 </div>
 
+<script>
+// Variables
+//-----------------------------------------------------------------------------
+    var row = <?= json_encode($row) ?>;
 
-
+// VueApp
+//-----------------------------------------------------------------------------
+var archivo_edit = new Vue({
+    el: '#archivo_edit',
+    data: {
+        form_values: row,
+        loading: false,
+    },
+    methods: {
+        send_form: function(){
+            this.loading = true
+            var form_data = new FormData(document.getElementById('archivo_form'))
+            axios.post(url_api + 'archivos/update/', form_data)
+            .then(response => {
+                if ( response.data.saved_id > 0 ) {
+                    toastr['success']('Guardado')
+                }
+                this.loading = false
+            })
+            .catch( function(error) {console.log(error)} )
+        },
+    }
+})
+</script>

@@ -5,8 +5,8 @@
     
     $clases_menu['novedades'] = 'link_yellow ';
     $mktime = strtotime(date('Ymd') . ' -3 months');
-    $fi_novedades = date('Ymd', $mktime);    //Creados hace menos de tres meses
-    if ( strlen($this->input->get('fi')) > 0 ) { $clases_menu['novedades'] = 'active'; }
+    $fi_novedades = date('Y-m-d', $mktime);    //Creados hace menos de tres meses
+    if ( strlen($this->input->get('d1')) > 0 ) { $clases_menu['novedades'] = 'active'; }
 
     if ( $this->uri->segment(4) == 'pagos-pse' ) { $clases_menu['pagos_pse'] = 'active'; }
     if ( $this->uri->segment(4) == 'sobre-nosotros' ) { $clases_menu['sobre_nosotros'] = 'active'; }
@@ -35,7 +35,7 @@
     </li>
     
     <li class="level0 parent drop-menu" title="Nuevos productos">
-        <a href="<?= base_url("productos/catalogo/?fi={$fi_novedades}") ?>" class="<?= $clases_menu['novedades'] ?>">
+        <a href="<?= base_url("productos/catalogo/?d1={$fi_novedades}") ?>" class="<?= $clases_menu['novedades'] ?>">
             Novedades
         </a>
     </li>

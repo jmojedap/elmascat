@@ -1,16 +1,14 @@
 <?php
-    if ( ! is_null($this->session->userdata('pedido_id')) ) 
+    if ( ! is_null($this->session->userdata('order_code')) ) 
     {
-        $pedido_id = $this->session->userdata('pedido_id');
-        $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
+        $order_code = $this->session->userdata('order_code');
+        $row_pedido = $this->Db_model->row('pedido', "cod_pedido = '{$order_code}'");
         
-        $detalle = $this->App_model->detalle_pedido($pedido_id);
+        $detalle = $this->App_model->detalle_pedido($row_pedido->id);
     }
-
-    $carpeta_ejemplo = URL_ASSETS . 'polo/blue/';
     
-    $cant_productos = 0;
-    if ( ! is_null($this->session->userdata('cant_productos')) ) { $cant_productos = $this->session->userdata('cant_productos'); }
+    $order_qty_items = 0;
+    if ( ! is_null($this->session->userdata('order_qty_items')) ) { $order_qty_items = $this->session->userdata('order_qty_items'); }
     
     //Contador productos, para limitar listado
         $i = 1;
@@ -23,12 +21,12 @@
                 <i class="glyphicon glyphicon-shopping-cart"></i>
                 <div class="cart-box">
                     <span class="title">carrito</span>
-                    <span id="cart-total"><?= $cant_productos ?> item </span>
+                    <span id="cart-total"><?= $order_qty_items ?> item </span>
                 </div>
             </a>
         </div>
         <div>
-            <?php if ( ! is_null($this->session->userdata('pedido_id')) ){ ?>
+            <?php if ( ! is_null($this->session->userdata('order_code')) ){ ?>
                 <div class="top-cart-content arrow_box">
                     <div class="block-subtitle">Item(s) agregados recientemente</div>
                     <ul id="cart-sidebar" class="mini-products-list">

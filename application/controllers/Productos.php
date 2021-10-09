@@ -48,6 +48,7 @@ class Productos extends CI_Controller{
             $data['options_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5', 'Fabricante/Editorial');
             $data['options_promocion'] = $this->App_model->opciones_post('tipo_id = 31001 AND estado = 1', 'n', 'Todas');
             $data['options_categoria'] = $this->Item_model->options('categoria_id = 25', 'Todas las categorías');
+            $data['options_order_by'] = $this->Producto_model->options_order_by();
             
         //Arrays con valores para contenido en lista
             $data['arr_estados'] = $this->Item_model->arr_cod('categoria_id = 8');
@@ -249,7 +250,7 @@ class Productos extends CI_Controller{
         $arr_row = $this->input->post();
         $data = $this->Producto_model->insert($arr_row);
         
-        $this->output->set_content_type('application/json')->set_output(json_encode($resultado));
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     /**
@@ -380,7 +381,7 @@ class Productos extends CI_Controller{
         //Paginación
             $this->load->library('pagination');
             $config = $this->App_model->config_paginacion(3);
-            $config['per_page'] = 6;
+            $config['per_page'] = 9;
             $config['base_url'] = base_url("productos/catalogo/?{$str_filters}");
             $config['total_rows'] = $resultados_total->num_rows();
             $this->pagination->initialize($config);
@@ -402,6 +403,8 @@ class Productos extends CI_Controller{
             $data['view_a'] = 'productos/catalogo/catalogo_v';
             //$data['view_a'] = 'cache/productos_catalogo';
             $this->App_model->view(TPL_FRONT, $data);
+
+            //$this->output->enable_profiler(TRUE);
     }
     
     /**
@@ -426,6 +429,7 @@ class Productos extends CI_Controller{
         if ( in_array($producto_id, array(17206, 17205, 17204)) )
         {
             $destination = 'catalogo/productos_digitales';
+            $destination = 'productos/';
         }
         
         redirect($destination);
@@ -444,17 +448,16 @@ class Productos extends CI_Controller{
         $data['metadatos'] = $this->Producto_model->metadatos_valor($producto_id, 'visible');
         $data['variaciones'] = $this->Producto_model->variaciones($producto_id);
         $data['comentarios'] = $this->Producto_model->comentarios($producto_id);
-        $data['view_a'] = 'productos/detalle/producto_v';
         $data['arr_precio'] = $this->Producto_model->arr_precio($producto_id);
+        $data['arr_precios'] = $this->Producto_model->arr_precios($producto_id);
         $data['arr_tipos_precio'] = $this->Producto_model->arr_tipos_precio();
         $data['tags'] = $this->Producto_model->tags($producto_id);
+        $data['view_a'] = 'productos/detalle/producto_v';
         
         //Datos
             $data['palabras_clave'] = $this->Producto_model->palabras_clave($producto_id);
         
         $this->App_model->view(TPL_FRONT, $data);
-        //Salida JSON
-        //$this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
     
     

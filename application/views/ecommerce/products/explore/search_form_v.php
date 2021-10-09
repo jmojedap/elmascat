@@ -57,7 +57,7 @@
                     <option v-for="(option_fab, key_fab) in options_fabricante" v-bind:value="key_fab">{{ option_fab }}</option>
                 </select>
             </div>
-            <label for="fab" class="col-md-3 col-form-label">Etiqueta</label>
+            <label for="fab" class="col-md-3 col-form-label">Marca/Editorial</label>
         </div>
 
         <div class="form-group row">
@@ -76,6 +76,22 @@
                 >
             </div>
             <label for="fe1" class="col-md-3 col-form-label">Peso máximo (g)</label>
+        </div>
+
+        <!-- Variables de ordenamiento de registros -->
+        <div class="form-group row">
+            <div class="col-md-3">
+                <select name="ot" v-model="filters.ot" class="form-control">
+                    <option value="ASC">Ascendente</option>
+                    <option value="DESC">Descendente</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <select name="o" v-model="filters.o" class="form-control">
+                    <option v-for="(option_order_by, key_order_by) in options_order_by" v-bind:value="key_order_by">{{ option_order_by }}</option>
+                </select>
+            </div>
+            <label for="order_by" class="col-md-3 col-form-label">Ordenar por</label>
         </div>
 
         <!-- Botón ejecutar y limpiar filtros -->

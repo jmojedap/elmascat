@@ -359,7 +359,7 @@
                         <td class="warning"><span class="etiqueta primario w1"><?= $row_detalle->producto_id ?></span></td>
                         <td><?= $row_producto->referencia ?></td>
                         <td>
-                            <?= anchor("productos/ver/{$row_detalle->producto_id}", $row_detalle->nombre_producto, 'class="" title=""') ?>
+                            <?= anchor("productos/info/{$row_detalle->producto_id}", $row_detalle->nombre_producto, 'class="" title=""') ?>
                         </td>
                         <td><?= $row_detalle->cantidad ?></td>
                         <td class="text-right"><?= $this->Pcrn->moneda($row_detalle->precio) ?></td>

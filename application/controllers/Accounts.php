@@ -465,7 +465,7 @@ class Accounts extends CI_Controller {
 
     /**
      * Registro rápido de usuarios que están realizando una compra
-     * 2020-04-30
+     * 2021-10-01
      */
     function fast_register()
     {
@@ -476,8 +476,16 @@ class Accounts extends CI_Controller {
         if ( $res_validation['status'] && $recaptcha->score > 0.5 )
         {
             //Construir registro del nuevo user
+                $arr_row['nombre'] = $this->input->post('nombre');
+                $arr_row['apellidos'] = $this->input->post('apellidos');
+                $arr_row['display_name'] = $this->input->post('nombre') . ' ' . $this->input->post('apellidos');
                 $arr_row['email'] = $this->input->post('email');
-                $arr_row['password'] = $this->Account_model->crypt_pw($this->input->post('password'));
+                $arr_row['fecha_nacimiento'] = $this->input->post('fecha_nacimiento');
+                $arr_row['fecha_nacimiento'] = substr($this->input->post('year'),-4) . '-' . substr($this->input->post('month'),-2) . '-' .  substr($this->input->post('day'),-2);
+                $arr_row['sexo'] = $this->input->post('sexo');
+                if ( strlen($this->input->post('password')) > 0 ) {
+                    $arr_row['password'] = $this->Account_model->crypt_pw($this->input->post('password'));
+                }
                 $arr_row['username'] = $arr_row['email'];
                 $arr_row['estado'] = 1;
 
@@ -491,10 +499,12 @@ class Accounts extends CI_Controller {
         }
 
         //Si hay un pedido en curso asignar el usuario creado
-        if ( ! is_null($this->session->userdata('pedido_id'))  )
+        if ( ! is_null($this->session->userdata('order_code'))  )
         {
             $this->load->model('Pedido_model');
-            $this->Pedido_model->set_user($data['saved_id']);
+            $order_code = $this->session->userdata('order_code');
+            $row_order = $this->Pedido_model->row_by_code($order_code);
+            $this->Pedido_model->set_user($row_order, $data['saved_id']);
         }
 
         //Salida JSON

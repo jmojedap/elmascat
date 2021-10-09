@@ -8,7 +8,7 @@
             <td class="text-right">
                 <strong>
                     <span class="money money_total">
-                        <?= $this->Pcrn->moneda($row->valor_total) ?>
+                        {{ order.valor_total | currency }}
                     </span>
                 </strong>
             </td>
@@ -21,22 +21,21 @@
             </td>
             <td class="text-right">
                 <span class="money">
-                    <?= $this->Pcrn->moneda($row->total_productos) ?>
+                    {{ order.total_productos | currency }}
                 </span>
             </td>
         </tr>
 
-        <?php if ( $arr_extras['gastos_envio'] ) { ?>
-            <tr>
-                <td class="a-left">
-                    Valor de envío (<?= $row->peso_total ?> kg)
-                </td>
-                <td class="text-right">
-                    <span class="money">
-                        <?= $this->Pcrn->moneda($arr_extras['gastos_envio']);  ?>
-                    </span>
-                </td>
-            </tr>
-        <?php } ?>
+        <tr v-for="(extra, ek) in extras">
+            <td class="a-left">
+                {{ extra.producto_id | name_extra_pedido }}
+                <span v-if="extra.producto_id == 1">({{ order.peso_total }} kg)</span>
+            </td>
+            <td class="text-right">
+                <span class="money">
+                    {{ extra.precio | currency }}
+                </span>
+            </td>
+        </tr>
     </tbody>
 </table>

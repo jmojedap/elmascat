@@ -46,6 +46,7 @@ var app_explore = new Vue({
         filters: <?= json_encode($filters) ?>,
         display_filters: false,
         loading: false,
+        options_order_by: <?= json_encode($options_order_by) ?>,
         options_estado: <?= json_encode($options_estado) ?>,
         options_categoria: <?= json_encode($options_categoria) ?>,
         options_tag: <?= json_encode($options_tag) ?>,

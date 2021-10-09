@@ -160,6 +160,7 @@ class Producto_Model extends CI_Model{
         if ( $filters['dcto'] != '' ) { $condition .= "promocion_id = {$filters['dcto']} AND "; }   //Descuento o promoción
         if ( $filters['promo'] != '' ) { $condition .= "promocion_id > 0 AND "; }   //Tiene algúna oferta o descuento
         if ( $filters['fe1'] != '' ) { $condition .= "peso <= {$filters['fe1']} AND "; }   //Peso máximo
+        if ( $filters['d1'] != '' ) { $condition .= "creado >= '{$filters['d1']} 00:00:00' AND "; }   //Fecha de creación
         if ( $filters['tag'] != '' ) {
             $condition .= "producto.id IN (SELECT elemento_id FROM meta WHERE tabla_id = 3100 AND dato_id = 21 AND relacionado_id IN ({$filters['tag']}) ) AND ";
         }
@@ -210,10 +211,10 @@ class Producto_Model extends CI_Model{
     function role_filter()
     {
         $role = $this->session->userdata('role');
-        $condition = 'producto.id = 0';  //Valor por defecto, ningún user, se obtendrían cero registros.
+        $condition = 'producto.estado = 1';  //Productos activos
         
         if ( $role <= 10 ) 
-        {   //Desarrollador, todos los registros
+        {   //Usuarios internos todos los productos
             $condition = 'producto.id > 0';
         }
         
@@ -221,20 +222,22 @@ class Producto_Model extends CI_Model{
     }
     
     /**
-     * Array con options para ordenar el listado de user en la vista de
-     * exploración
-     * 
+     * Array con options para ordenar el listado de productos en la vista de exploración
+     * 2021-07-07
      */
-    function order_options()
+    function options_order_by()
     {
-        $order_options = array(
+        $options_order_by = array(
             '' => '[ Ordenar por ]',
-            'id' => 'ID Producto',
-            'name' => 'Nombre',
-            'price' => 'Precio',
+            'nombre_producto' => 'Nombre',
+            'precio' => 'Precio',
+            'cant_disponibles' => 'Cant. disponibles',
+            'peso' => 'Peso',
+            'editado' => 'Fecha de edición',
+            'creado' => 'Fecha de creación',
         );
         
-        return $order_options;
+        return $options_order_by;
     }
 
 // DATOS
@@ -1222,15 +1225,17 @@ class Producto_Model extends CI_Model{
      * Array con el precio que se le aplica a un producto en el momento de cargarlo 
      * a un pedido, se escoge entre los diferentes precios que puede tener un 
      * producto según sus ofertas o promociones aplicables.
+     * 2021-10-08
      */
-    function arr_precio($producto_id)
+    function arr_precio($producto_id, $cantidad = NULL)
     {
         $arr_precios = $this->arr_precios($producto_id);
         
-        //Si no es distribuidor, se elimina la opción de precio para distribuidor
-            if ( $this->session->userdata('rol_id') != 22 ) 
+        // Si no es una cantidad (3) para distribuidor o mayorista, se quita la 
+        // opción de distribuidor, del array de precios
+            if ( $cantidad < 3 || is_null($cantidad) ) 
             {
-                unset($arr_precios[2]);
+                unset($arr_precios[3]);
             }
         
         //Se aplica el primer precio en el array, al estar ordenado ASC por precio
@@ -1243,7 +1248,7 @@ class Producto_Model extends CI_Model{
     
     /**
      * Array con los diferentes precios que se le pueden aplicar a un producto
-     * 
+     * 2021-10-08
      */
     function arr_precios($producto_id)
     {
@@ -1251,7 +1256,7 @@ class Producto_Model extends CI_Model{
         
         //Precios normal
             $arr_precios[1] = $row_producto->precio;                        //Precio normal
-            $arr_precios[2] = $this->precio_distribuidor($row_producto);    //Precio para distribuidor o mayorista
+            $arr_precios[3] = $this->precio_por_mayor($row_producto);       //Precio al comprar por mayor
             
         //Precio promoción del producto, el índice es el ID de la promoción
             if ( $row_producto->promocion_id > 0 ) //Si tiene alguna promoción aplicada
@@ -1266,19 +1271,19 @@ class Producto_Model extends CI_Model{
     }
     
     /**
-     * Devuelve el precio de un producto que se le aplica a un distribuidor,
+     * Devuelve el precio de un producto que se le aplica al comprar 3 o más unidades,
      * se hace un descuento dependiendo del fabricante del producto.
      * 
      * @param type $row_producto
-     * @return type
+     * @return int precio por mayor
      */
-    function precio_distribuidor($row_producto)
+    function precio_por_mayor($row_producto)
     {
         $pct_fabricante = $this->pct_fabricante($row_producto->fabricante_id);
-        $precio_distribuidor_pre = $row_producto->precio * ( 100 - $pct_fabricante)/100;
-        $precio_distribuidor = $this->App_model->redondear($precio_distribuidor_pre);
+        $precio_por_mayor_pre = $row_producto->precio * ( 100 - $pct_fabricante)/100;
+        $precio_por_mayor = $this->App_model->redondear($precio_por_mayor_pre);
         
-        return $precio_distribuidor;
+        return $precio_por_mayor;
     }
     
     /**
@@ -1307,20 +1312,18 @@ class Producto_Model extends CI_Model{
         return $precio_promocion;
     }
     
-    
     /**
      * Array con Id y nombre de tipos de precio, corresponde a precio normal,
      * descuentos del sistema y promociones creadas.
      * 
-     * y promociones creadas.
-     * @return type}
      */
     function arr_tipos_precio() 
     {
         //Tipos base, del sistema
             $arr_descuentos = array(
                 1 =>    'Precio normal',
-                2 =>    'Precio para distribuidor',
+                2 =>    'Precio para distribuidor', //Desactivado desde 2021-10-08
+                3 =>    'Precio por mayor',
             );
         
         //Agregar promociones creadas en la tabla post, tipo 31001

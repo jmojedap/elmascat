@@ -1,4 +1,8 @@
-<div class="table-responsive">
+<div class="text-center mb-2" v-show="loading">
+    <i class="fa fa-spin fa-spinner fa-3x text-muted"></i>
+</div>
+
+<div class="table-responsive" v-show="!loading">
     <table class="table bg-white">
         <thead>
             <?php if ( $this->session->userdata('role') <= 2 ) : ?>

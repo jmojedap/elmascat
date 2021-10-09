@@ -29,42 +29,41 @@
 ?>
 
 <script>
-    new Vue({
-        el: '#app_digitales',
-        created: function(){
-            this.set_current(0);
+var app_digitales = new Vue({
+    el: '#app_digitales',
+    created: function(){
+        this.set_current(0);
+    },
+    data: {
+        order_code: '<?= $this->session->userdata('order_code') ?>',
+        producto_key: 1,
+        producto_id: 0,
+        producto_actual: {},
+        productos: <?= json_encode($arr_productos) ?>
+    },
+    methods: {
+        set_current: function(key){
+            this.producto_key = key
+            this.producto_id = this.productos[this.producto_key].id
+            this.producto_actual = this.productos[this.producto_key]
         },
-        data: {
-            producto_key: 1,
-            producto_id: 0,
-            producto_actual: {},
-            productos: <?= json_encode($arr_productos) ?>
+        unset_current: function(){
+            this.producto_id = 0
+            this.producto_actual = {};
         },
-        methods: {
-            set_current: function(key){
-                this.producto_key = key;
-                this.producto_id = this.productos[this.producto_key].id;
-                this.producto_actual = this.productos[this.producto_key];
-            },
-            unset_current: function(){
-                this.producto_id = 0;
-                this.producto_actual = {}; 
-            },
-            agregar_producto: function(){
-                var params = new FormData();
-                params.append('producto_id', this.producto_id);
-                params.append('cantidad', 1);
-                
-                axios.post(url_app + 'pedidos/guardar_detalle/', params)
-                .then(response => {
-                    if ( response.data.status == 1 ) {
-                        window.location = url_app + 'pedidos/usuario/';
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-        }
-    });
+        agregar_producto: function(){
+            var params = new FormData()
+            params.append('producto_id', this.producto_id)
+            params.append('cantidad', 1)
+            
+            axios.get(url_app + 'pedidos/add_product/' + this.producto_id + '/1/' + this.order_code)
+            .then(response => {
+                if ( response.data.status == 1 ) {
+                    window.location = url_app + 'pedidos/carrito/';
+                }
+            })
+            .catch(function (error) { console.log(error) })
+        },
+    }
+});
 </script>

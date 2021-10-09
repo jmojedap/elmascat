@@ -54,7 +54,7 @@ class Search_model extends CI_Model{
             'fe2',      //Filtro especial 2
             'fe3',       //Filtro especial 3
             'tag',      //Etiqueta
-            'o',        //Order by
+            'o',       //Order by
             'ot',       //Order type
             'clt',      //Cliente
             'fab',      //Fabricante o marca

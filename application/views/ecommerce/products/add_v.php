@@ -102,10 +102,10 @@ var add_app = new Vue({
                     if ( response.data.saved_id > 0 ) {
                         toastr['success']('Guardado')
                         this.row_id = response.data.saved_id
+                        $('#modal_created').modal()
                     }
                     this.loading = false
                     this.clean_form()
-                    $('#modal_created').modal()
                 })
                 .catch( function(error) {console.log(error)} )
             } else {

@@ -128,7 +128,8 @@ class Catalogo extends CI_Controller{
         $this->db->order_by('precio', 'ASC');
         $data['productos'] = $this->db->get('producto',4);
 
-        $this->load->view('templates/libreria/main', $data);
+        //$this->load->view('templates/libreria/main', $data);
+        $this->load->view('templates/polo/main_v', $data);
     }
 
 }

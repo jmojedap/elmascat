@@ -8,7 +8,16 @@
     $(document).ready(function(){
         $('.summernote').summernote({
             lang: 'es-ES',
-            height: 400
+            height: 400,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'italic','clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture']],
+                ['view', ['fullscreen', 'codeview', 'help']],
+            ],
         });
     });
 </script>

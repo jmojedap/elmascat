@@ -22,8 +22,12 @@
             if ( $row_producto->price > $arr_precio['precio'] ) { $en_promocion = 1; }
             
             $es_nuevo = 0;
-            $segundos_creado = $this->Pcrn->segundos_lapso($row_producto->creado, $fecha_nuevo);
-            if ( $segundos_creado < (2629800) ) { $es_nuevo = 1; }
+            $segundos_creado = $this->Pcrn->segundos_lapso($row_producto->created_at, $fecha_nuevo);
+            if ( $segundos_creado < (60*60*24*30*4) ) { $es_nuevo = 1; }
+
+            //Agotado ?
+            $agotado = ( $row_producto->stock == 0 ) ? 1 : 0 ;
+            //$agotado = 1;
         ?>
         <div class="">
             <div class="col-item">
@@ -34,6 +38,10 @@
                     
                 <?php if ( $es_nuevo ) { ?>
                     <div class="new-label new-top-right">Nuevo</div>
+                <?php } ?>
+
+                <?php if ( $agotado ) { ?>
+                    <div class="sold-out-label sold-out-top-right">Agotado</div>
                 <?php } ?>
                 
                 <div class="product-image-area">

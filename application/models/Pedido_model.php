@@ -300,7 +300,10 @@ class Pedido_Model extends CI_Model{
      */
     function detalle($pedido_id)
     {
-        $this->db->select('pedido_detalle.*, producto.nombre_producto, producto.peso, producto.fabricante_id, producto.url_thumbnail');
+        $select = 'pedido_detalle.cantidad, pedido_detalle.precio, pedido_detalle.precio_nominal, producto.cant_disponibles, pedido_detalle.promocion_id';
+        $select .= ', producto_id, producto.nombre_producto, producto.peso, producto.fabricante_id, producto.url_thumbnail, producto.slug';
+
+        $this->db->select($select);
         $this->db->where('pedido_id', $pedido_id);
         $this->db->where('pedido_detalle.tipo_id', 1); //Productos
         $this->db->join('producto', 'producto.id = pedido_detalle.producto_id');
@@ -350,8 +353,8 @@ class Pedido_Model extends CI_Model{
      */
     function cant_productos($pedido_id)
     {
-        $condicion = "pedido_id = {$pedido_id} AND tipo_id = 1";
-        $cant_productos = $this->Pcrn->num_registros('pedido_detalle', $condicion);
+        $condition = "pedido_id = {$pedido_id} AND tipo_id = 1";
+        $cant_productos = $this->Db_model->num_rows('pedido_detalle', $condition);
         
         return $cant_productos;
     }
@@ -372,64 +375,98 @@ class Pedido_Model extends CI_Model{
     /**
      * Guarda un registro en la tabla pedido_detalle (pd)
      */
-    function guardar_detalle($registro)
+    function add_product($product_id, $quantity, $pedido_id)
     {
         //ID inicial, por defecto
-            $pd_id = 0;
+            $data = array('status' => 0, 'pd_id' => 0, 'qty_items' => NULL);
             
         //Identificar producto
             $this->load->model('Producto_model');
-            $row_producto = $this->Pcrn->registro_id('producto', $registro['producto_id']);
+            $row_producto = $this->Db_model->row_id('producto', $product_id);
             
-        //Array de precio, tipo de precio aplicable y valor
-            $arr_precio = $this->Producto_model->arr_precio($row_producto->id);
-        
-        //Construir registro
-            $registro['pedido_id'] = $this->session->userdata('pedido_id');
-            $registro['precio'] = $arr_precio['precio'];
-            $registro['promocion_id'] = $arr_precio['promocion_id'];
-            $registro['precio_nominal'] = $row_producto->precio;
-            $registro['costo'] = $row_producto->costo;
-            $registro['iva'] = $arr_precio['precio'] - ( $arr_precio['precio'] / ((100+$row_producto->iva_porcentaje)/100) );
             
         //Limitar cantidad
-            $registro['cantidad'] = $this->Pcrn->limitar_entre($registro['cantidad'], 1, $row_producto->cant_disponibles);
+            $arr_row['cantidad'] = $this->Pcrn->limitar_entre($quantity, 1, $row_producto->cant_disponibles);
+
+        //Array de precio, tipo de precio aplicable y valor
+            $arr_precio = $this->Producto_model->arr_precio($row_producto->id, $arr_row['cantidad']);
+        
+        //Construir registro
+            $arr_row['pedido_id'] = $pedido_id;
+            $arr_row['producto_id'] = $product_id;
+            $arr_row['tipo_id'] = 1;    //Producto
+            $arr_row['precio'] = $arr_precio['precio'];
+            $arr_row['promocion_id'] = $arr_precio['promocion_id'];
+            $arr_row['precio_nominal'] = $row_producto->precio;
+            $arr_row['costo'] = $row_producto->costo;
+            $arr_row['iva'] = $arr_precio['precio'] - ( $arr_precio['precio'] / ((100+$row_producto->iva_porcentaje)/100) );
         
         //Condición
-            $condicion = "pedido_id = {$registro['pedido_id']} AND producto_id = {$registro['producto_id']}";
+            $condicion = "pedido_id = {$arr_row['pedido_id']} AND producto_id = {$arr_row['producto_id']}";
             
-            if ( $registro['cantidad'] > 0 ) 
+            if ( $arr_row['cantidad'] > 0 ) 
             {
-                $pd_id = $this->Pcrn->guardar('pedido_detalle', $condicion, $registro);
+                $data['pd_id'] = $this->Db_model->save('pedido_detalle', $condicion, $arr_row);
             }
         
         //Actualizar totales
-            $this->act_totales($registro['pedido_id']);
+            $this->act_totales($pedido_id);
             
         //Actualizar variable de sesión, para info carrito de compras
-            $cant_productos = $this->cant_productos($registro['pedido_id']);
-            $this->session->set_userdata('cant_productos', $cant_productos);
+            $data['qty_items'] = $this->cant_productos($pedido_id);
+            $this->session->set_userdata('order_qty_items', $data['qty_items']);
             
-        return $pd_id;
+        //Actualizar resultado respuesta
+        $data['status'] = ($data['pd_id'] > 0 ) ? 1 : 0 ;
+
+        return $data;
     }
     
     /**
      * Elimina un registro de la tabla pedido_detalle
-     * @param type $pd_id
+     * 2021-09-24
      */
-    function eliminar_detalle($pd_id)
+    function remove_product($product_id, $row_order)
     {
-        //Eliminar
-            $this->db->where('pedido_id', $this->session->userdata('pedido_id'));  //Medida de seguridad, debe tenerse los dos datos
-            $this->db->where('id', $pd_id);
-            $this->db->delete('pedido_detalle');
-            
-        //
+        $data = array('status' => 0, 'message' => 'El producto no fue retirado de la compra');
         
-        //Actualizar variable de sesión
-            $pedido_id = $this->session->userdata('pedido_id');
-            $cant_productos = $cant_productos = $this->cant_productos($pedido_id);
-            $this->session->set_userdata('cant_productos', $cant_productos);
+        $this->db->where('producto_id', $product_id);
+        $this->db->where('pedido_id', $row_order->id);
+        $this->db->where('tipo_id', 1);     //Es un producto
+        $this->db->delete('pedido_detalle');
+        
+        $data['qty_deleted'] = $this->db->affected_rows();
+
+        
+        //Verificar resultado
+        if ( $data['qty_deleted'] > 0 ) 
+        {
+            //Actualizar totales de la compra
+            $this->act_totales($row_order->id);
+
+            $data['status'] = ( $data['qty_deleted'] > 0 ) ? 1 : 0 ;
+            $data['message'] = 'Producto retirado del pedido';
+
+            //Actualizar variable de sesión
+                $order_qty_items = $cant_productos = $this->cant_productos($row_order->id);
+                $this->session->set_userdata('order_qty_items', $cant_productos);
+        }
+        
+        return $data;
+    }
+
+    /**
+     * Elimina las variables de sesión asociadas a una compra
+     * 2021-05-06
+     */
+    function unset_session()
+    {
+        $this->session->unset_userdata('order_code');
+        $this->session->unset_userdata('order_qty_items');
+
+        $data = array('status' => 1, 'message' => 'Compra desactivada');
+    
+        return $data;
     }
     
     /**
@@ -593,13 +630,37 @@ class Pedido_Model extends CI_Model{
 //---------------------------------------------------------------------------------------------------
     
     /**
-     * Row, de un pedido dado el calor pedido.cod_pedido
-     * 2021-02-10
+     * Devuelve un elemento row, de una compra dado el código de la compra
+     * 2021-09-22
      */
-    function row_cod_pedido($cod_pedido) 
+    function row_by_code($order_code) 
     {
-        $row = $this->Db_model->row('pedido', "cod_pedido = '{$cod_pedido}'");
+        $row = null;
+
+        $code_parts = explode('-', $order_code);
+        if ( count($code_parts) == 2 )
+        {
+            $row = $this->Db_model->row('pedido', "id = '{$code_parts[1]}' AND cod_pedido = '{$order_code}'");
+        }
+
         return $row;
+    }
+
+    /**
+     * Determina sin una compra puede ser modificada o no, según su estado o rol de usuario
+     * 2021-05-06
+     */
+    function editable($row_order)
+    {
+        $editable = false;   //Valor por defecto
+
+        //La compra tiene estado iniciado
+        if ( $row_order->estado_pedido == 1 ) $editable = true;
+
+        //Es administrador
+        if ( $this->session->userdata('logged') && $this->session->userdata('role') <= 1 ) $editable = true;
+
+        return $editable;
     }
     
     function rol_comprador($pedido_id)
@@ -615,6 +676,23 @@ class Pedido_Model extends CI_Model{
         
         return $rol_id;
     }
+
+    /**
+     * int
+     * Cantidad de productos digitales, para acceso con usuario y contraseña
+     * 2021-09-27
+     */
+    function qty_digital_products($order_id)
+    {
+        $qty_digital_products = 0;
+        
+        $products = $this->detalle($order_id);
+        foreach ($products->result() as $product) {
+            if ( $product->peso == 0 ) $qty_digital_products += 1;
+        }
+
+        return $qty_digital_products;
+    }
     
 //PROCESOS
 //---------------------------------------------------------------------------------------------------
@@ -625,28 +703,33 @@ class Pedido_Model extends CI_Model{
      */
     function crear()
     {    
+        $data = array('order_id' => 0, 'order_code' => NULL);
+
         //Construir registro
-            $registro['pais_id'] = 51; //Colombia, por defecto, ver lugar.id
-            $registro['region_id'] = 267; //Bogotá D.C., por defecto, ver lugar.id
-            $registro['estado_pedido'] = 1; //Iniciado
-            $registro['creado'] = date('Y-m-d H:i:s');
-            $registro['editado'] = date('Y-m-d H:i:s');
-            $registro['session_id'] = session_id();
+            $arr_row['pais_id'] = 51;          //Colombia, por defecto, ver lugar.id
+            $arr_row['region_id'] = 267;       //Bogotá D.C., por defecto, ver lugar.id
+            $arr_row['estado_pedido'] = 1;     //Iniciado
+            $arr_row['creado'] = date('Y-m-d H:i:s');
+            $arr_row['editado'] = date('Y-m-d H:i:s');
+            $arr_row['session_id'] = session_id();
         
         //Crear registro
-            $this->db->insert('pedido', $registro);
+            $this->db->insert('pedido', $arr_row);
             $pedido_id = $this->db->insert_id();
             
         //Procesos
-            $this->act_cod_pedido($pedido_id);      //Establecer cod_pedido, código identificador de pedido
+        if ( $pedido_id > 0 ) 
+        {
+            $data['pedido_id'] = $pedido_id;
+            $data['order_code'] = $this->act_cod_pedido($pedido_id);      //Establecer cod_pedido, código identificador de pedido;
+            
+            //Actualizar datos complementarios
             $this->set_datos_usuario($pedido_id);   //Establecer datos personales del comprador
             $this->set_direccion($pedido_id);       //Establecer dirección, por defecto
             $this->set_ip_address($pedido_id);      //Metadato, dirección IP desde la que se creó el pedido
-            
-        //Cargar dato de pedido en variable de sesión de usuario    
-            $this->session->set_userdata('pedido_id', $pedido_id);
+        }    
         
-        return $pedido_id;
+        return $data;
     }
     
     /**
@@ -658,19 +741,19 @@ class Pedido_Model extends CI_Model{
     {
         if ( $this->session->userdata('logged') ) 
         {
-            $usuario_id = $this->session->userdata('usuario_id');
-            $row_usuario = $this->Pcrn->registro_id('usuario', $usuario_id);
+            $user_id = $this->session->userdata('user_id');
+            $row_user = $this->Db_model->row_id('usuario', $user_id);
 
-            $registro['nombre'] = $row_usuario->nombre;
-            $registro['apellidos'] = $row_usuario->apellidos;
-            $registro['no_documento'] = $row_usuario->no_documento;
-            $registro['email'] = $row_usuario->email;
-            $registro['telefono'] = $row_usuario->telefono;
-            $registro['celular'] = $row_usuario->celular;
-            $registro['usuario_id'] = $row_usuario->id;
+            $arr_row['nombre'] = $row_user->nombre;
+            $arr_row['apellidos'] = $row_user->apellidos;
+            $arr_row['no_documento'] = $row_user->no_documento;
+            $arr_row['email'] = $row_user->email;
+            $arr_row['telefono'] = $row_user->telefono;
+            $arr_row['celular'] = $row_user->celular;
+            $arr_row['usuario_id'] = $row_user->id;
             
             $this->db->where('id', $pedido_id);
-            $this->db->update('pedido', $registro);
+            $this->db->update('pedido', $arr_row);
         }
     }
     
@@ -682,12 +765,12 @@ class Pedido_Model extends CI_Model{
     {
         $this->load->helper('string');
         
-        $registro['cod_pedido'] = 'DC' . strtoupper(random_string('alpha', 2)) . '-' . $pedido_id;
+        $arr_row['cod_pedido'] = 'DC' . strtoupper(random_string('alpha', 2)) . '-' . $pedido_id;
         
         $this->db->where('id', $pedido_id);
-        $this->db->update('pedido', $registro);
+        $this->db->update('pedido', $arr_row);
 
-        return $this->db->affected_rows();
+        return $arr_row['cod_pedido'];
     }
     
     /**
@@ -728,10 +811,12 @@ class Pedido_Model extends CI_Model{
      * Abandona un pedido actual quitándolo de las variables de sesión
      * No elimina el pedido ni su detalle
      */
-    function abandonar()
+    function cancel()
     {
-        $this->session->unset_userdata('pedido_id');
-        $this->session->unset_userdata('cant_productos');
+        $this->session->unset_userdata('order_code');
+        $this->session->unset_userdata('order_qty_items');
+
+        return array('status' => 1);
     }
     
     /**
@@ -745,13 +830,13 @@ class Pedido_Model extends CI_Model{
     {
         $retomado = 0;
         
-        $row = $this->row_cod_pedido($cod_pedido);
-        $cant_productos = $this->cant_productos($row->id);
+        $order = $this->row_by_code($cod_pedido);
+        $order_qty_items = $this->cant_productos($order->id);
         
-        if ( $row->estado_pedido == 1 ) {
+        if ( $order->estado_pedido == 1 ) {
             //Solo se puede retomar un pedido si está en estado 1 (Iniciado)
-            $this->session->set_userdata('pedido_id', $row->id);
-            $this->session->set_userdata('cant_productos', $cant_productos);
+            $this->session->set_userdata('order_code', $order->cod_pedido);
+            $this->session->set_userdata('order_qty_items', $order_qty_items);
             
             $retomado = 1;
         }
@@ -876,7 +961,8 @@ class Pedido_Model extends CI_Model{
      */
     function guardar_lugar()
     {
-        $row_lugar = $this->Pcrn->registro_id('lugar', $this->input->post('ciudad_id'));
+        $data['status'] = 0;
+        $row_lugar = $this->Db_model->row_id('lugar', $this->input->post('ciudad_id'));
         
         if ( ! is_null($row_lugar) )
         {
@@ -884,11 +970,17 @@ class Pedido_Model extends CI_Model{
             $registro['region_id'] = $row_lugar->region_id;
             $registro['ciudad_id'] = $row_lugar->id;
             $registro['ciudad'] = $row_lugar->nombre_lugar . ' - ' . $row_lugar->region . ' - ' . $row_lugar->pais;
+
+            $order_code = $this->session->userdata('order_code');
+            $order = $this->Pedido_model->row_by_code($order_code);
+
+            $this->db->where('id', $order->id);
+            $this->db->update('pedido', $registro);
+
+            $data['status'] = $this->db->affected_rows();
         }
-        
-        $pedido_id = $this->session->userdata('pedido_id');
-        $this->db->where('id', $pedido_id);
-        $this->db->update('pedido', $registro);
+
+        return $data;
     }
     
     /**
@@ -899,26 +991,26 @@ class Pedido_Model extends CI_Model{
     {
         //Cargue
             $this->load->model('Flete_model');
-            $pedido_id = $this->session->userdata('pedido_id');
-            $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
+            $order_code = $this->session->userdata('order_code');
+            $row_pedido = $this->row_by_code($order_code);
         
         //Se actualiza si la ciudad ya está definida
         if ( ! is_null($row_pedido->ciudad_id) ) 
         {
             //Construir registro
-                $registro['pedido_id'] = $this->session->userdata('pedido_id');
-                $registro['producto_id'] = 1;   //COD 1, corresponde a flete, ver Ajustes > Parámetros > Extras pedidos
-                $registro['tipo_id'] = 2;       //No es un producto (1), es un elemento extra (2)
-                $registro['precio'] = $this->Flete_model->flete(909, $row_pedido->ciudad_id, $row_pedido->peso_total);
-                $registro['cantidad'] = 1;  //Un envío
-                $registro['costo'] = 0;     //No aplica
-                $registro['iva'] = 0;       //No aplica
+                $arr_row['pedido_id'] = $row_pedido->id;
+                $arr_row['producto_id'] = 1;   //COD 1, corresponde a flete, ver Ajustes > Parámetros > Extras pedidos
+                $arr_row['tipo_id'] = 2;       //No es un producto (1), es un elemento extra (2)
+                $arr_row['precio'] = $this->Flete_model->flete(909, $row_pedido->ciudad_id, $row_pedido->peso_total);
+                $arr_row['cantidad'] = 1;  //Un envío
+                $arr_row['costo'] = 0;     //No aplica
+                $arr_row['iva'] = 0;       //No aplica
 
             //Condición
-                $condicion = "pedido_id = {$pedido_id} AND producto_id = 1 AND tipo_id = 2";
+                $condition = "pedido_id = {$row_pedido->id} AND producto_id = 1 AND tipo_id = 2";
 
             //Guardar
-                $this->Pcrn->guardar('pedido_detalle', $condicion, $registro);
+                $this->Db_model->save('pedido_detalle', $condition, $arr_row);
         }
     }
 
@@ -966,7 +1058,7 @@ class Pedido_Model extends CI_Model{
 
     /**
      * Carga los datos del pedido al usuario, si no los tiene.
-     * 2020-04-30
+     * 2021-09-29
      */
     function set_user_data($pedido_id)
     {
@@ -988,8 +1080,6 @@ class Pedido_Model extends CI_Model{
             if ( strlen($row_usuario->ciudad_id) == 0 ) { $user['ciudad_id'] = $this->input->post('ciudad_id'); }
             if ( strlen($row_usuario->address) == 0 ) { $user['address'] = $this->input->post('direccion'); }
             if ( strlen($row_usuario->celular) == 0 ) { $user['celular'] = $this->input->post('celular'); }
-            if ( is_null($row_usuario->sexo) ) { $user['sexo'] = $this->input->post('sexo'); }
-            if ( is_null($row_usuario->fecha_nacimiento) ) { $user['fecha_nacimiento'] = substr($this->input->post('year'),-4) . '-' . substr($this->input->post('month'),-2) . '-' .  substr($this->input->post('day'),-2); }
 
             if ( count($user) > 0 )
             {
@@ -1005,21 +1095,24 @@ class Pedido_Model extends CI_Model{
 
     /**
      * Establecer un usuario y sus datos a un pedido en curso
-     * 2020-04-30
+     * 2021-09-27
      */
-    function set_user($user_id)
+    function set_user($row_order, $user_id)
     {
         $row_user = $this->Db_model->row_id('usuario', $user_id);
 
         $arr_row['usuario_id'] = $user_id;
         $arr_row['email'] = $row_user->email;
 
+        if ( strlen($row_order->nombre) == 0 )  $arr_row['nombre'] = $row_user->nombre;
+        if ( strlen($row_order->apellidos) == 0 )  $arr_row['apellidos'] = $row_user->apellidos;
+
         //Se actualiza pedido.usuario_id
-        $this->db->where('id', $this->session->userdata('pedido_id'));
+        $this->db->where('id', $row_order->id);
         $this->db->update('pedido', $arr_row);
 
-        $data['usuario_id'] = $user_id;
-        $data['pedido'] = $this->session->userdata('pedido_id');
+        $data['user_id'] = $user_id;
+        $data['order_id'] = $row_order->id;
 
         return $data;
     }
@@ -1269,7 +1362,7 @@ class Pedido_Model extends CI_Model{
     {
         //Identificar Pedido
         $meta_id = 0;
-        $row = $this->row_cod_pedido($this->input->post('ref_venta'));    
+        $row = $this->row_by_code($this->input->post('ref_venta'));    
 
         //Si se identificó el pedido
         if ( ! is_null($row) )

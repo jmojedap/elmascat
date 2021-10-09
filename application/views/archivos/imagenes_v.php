@@ -42,7 +42,7 @@
         $clases_col['carpeta'] = 'hidden-xs hiden-sm';
         $clases_col['botones'] = 'hidden-xs hiden-sm';
         
-        if ( $this->session->userdata('rol_id') > 1 ) { $clases_col['selector'] = 'hidden'; }
+        if ( $this->session->userdata('role') > 3 ) { $clases_col['selector'] = 'hidden'; }
 ?>
 
 <script>
@@ -118,7 +118,7 @@
             <?= form_close() ?>
         </div>
         <div class="col-md-3 sep2">
-            <?php if ( $this->session->userdata('usuario_id') <= 1 ) { ?>
+            <?php if ( $this->session->userdata('role') <= 3 ) { ?>
                 <a class="btn btn-warning" title="Eliminar los elementos seleccionados" data-toggle="modal" data-target="#modal_eliminar">
                     <i class="fa fa-trash"></i>
                 </a>

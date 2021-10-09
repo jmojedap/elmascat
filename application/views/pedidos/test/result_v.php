@@ -1,9 +1,9 @@
 <?php
     $payu_data['transactionState'] = 4;
-    $payu_data['referenceCode'] = $row->order_code;
+    $payu_data['ref_venta'] = $row->cod_pedido;
     $payu_data['processingDate'] = date('Y-m-d H:i:s');
     $payu_data['cus'] = rand(100000,999999);
-    $payu_data['TX_VALUE'] = $row->amount;
+    $payu_data['TX_VALUE'] = $row->valor_total;
     $payu_data['currency'] = 'COP';
     $payu_data['pseBank'] = 'Bancolombia';
     $payu_data['lapPaymentMethod'] = 'VISA';
