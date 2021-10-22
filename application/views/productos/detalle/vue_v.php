@@ -70,6 +70,9 @@ var product_details_app = new Vue({
             //Si hay menos de tres unidades
             if ( this.product.cant_disponibles < min_quantity_wholesale ) available = false
 
+            //Si no tiene peso
+            if ( this.product.peso == 0 ) available = false
+
             return available
         },
         set_wholesale_price: function(){

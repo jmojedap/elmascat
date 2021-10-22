@@ -426,11 +426,11 @@ class Productos extends CI_Controller{
         }
 
         $destination = "productos/detalle/{$producto_id}/{$slug}";
-        if ( in_array($producto_id, array(17206, 17205, 17204)) )
+        /*if ( in_array($producto_id, array(17206, 17205, 17204)) )
         {
             $destination = 'catalogo/productos_digitales';
             $destination = 'productos/';
-        }
+        }*/
         
         redirect($destination);
     }

@@ -453,12 +453,14 @@ class Pedidos extends CI_Controller{
         
         //Datos para el formulario que se envía a PagosOnLine
             $data['form_data'] = $this->Pedido_model->form_data_pol($order->id);
-            $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Donde se envían los datos para el pago
+            //$data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';
+            //Donde se envían los datos para el pago
+            $data['destino_form'] = 'https://checkout.payulatam.com/ppp-web-gateway-payu';
             
             if ( $this->input->get('prueba') == 1 )
             {
                 $data['form_data'] = $this->Pedido_model->form_data_pol($order->id, 1);
-                $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Página para transacciones de prueba
+                $data['destino_form'] = 'https://checkout.payulatam.com/ppp-web-gateway-payu';  //Página para transacciones de prueba
             }
         
         //Solicitar vista

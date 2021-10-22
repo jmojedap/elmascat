@@ -147,7 +147,7 @@ class Producto_Model extends CI_Model{
         $condition .= $this->role_filter() . ' AND ';
 
         //q words condition
-        $words_condition = $this->Search_model->words_condition($filters['q'], array('referencia', 'nombre_producto', 'descripcion', 'palabras_clave'));
+        $words_condition = $this->Search_model->words_condition($filters['q'], array('id', 'referencia', 'nombre_producto', 'descripcion', 'palabras_clave'));
         if ( $words_condition )
         {
             $condition .= $words_condition . ' AND ';

@@ -82,39 +82,68 @@ class Books extends CI_Controller{
 // Generación de archivos
 //-----------------------------------------------------------------------------
 
-    /**
-     * 1) Cambiar nombres de archivos originales
-     */
-    function rename_pages($book_code = '202110358337')
+    function files_generator($book_code = '')
     {
+        $data['book_code'] = $book_code;
+        $data['head_title'] = 'Generador de archivos';
+        $data['view_a'] = 'books/files_generator_v';
+
+        $data['books'] = $this->db->select('id, code, nombre_post')
+                        ->where('tipo_id = 8 AND estado = 2')
+                        ->order_by('code', 'ASC')
+                        ->get('post');
+
+        $this->load->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * AJAX JSON
+     * 1) Cambiar nombres de archivos originales
+     * 2021-10-20
+     */
+    function rename_pages()
+    {
+        $book_code = $this->input->post('book_code');
+        $prefix = $this->input->post('prefix');
+
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
         $pages = get_filenames($folder);
         $i = 0;
         $this->load->helper('string');
 
+        $renamed_pages = array();
         foreach ( $pages as $file)
         {
-            $new_name = str_replace('Octubre','',$file);
+            $new_name = str_replace($prefix,'',$file);
             $new_name = str_replace('.jpg','',$new_name);
             $new_name = substr('00' . $new_name,-3) . '_' . random_string('numeric', 6) . '.jpg';
-            echo $file . ' > ' . $new_name;
-            echo '<br>';
-
+            
             rename(PATH_CONTENT . "books/{$book_code}/org/" . $file, PATH_CONTENT . "books/{$book_code}/org/" . $new_name);
+
+            $renamed_pages[] = $file . ' > ' . $new_name;
         }
+
+        $data['status'] = (count($renamed_pages)) ? 1 : 0;
+        $data['renamed_pages'] = $renamed_pages;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
     /**
      * 2) Crear imagenes para lectura
      */
-    function create_read($book_code = '202110358337')
+    function create_read()
     {
+        $book_code = $this->input->post('book_code');
+
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
         $pages = get_filenames($folder);
 
         $this->load->library('image_lib');
+        $created = array();
         foreach ( $pages as $file)
         {
 
@@ -130,18 +159,25 @@ class Books extends CI_Controller{
                 $this->image_lib->resize();
                 $this->image_lib->clear();
             
-                echo $file;
-                echo '<br>';
+                $created[] = $file;
         }
+
+        $data['status'] = (count($created)) ? 1 : 0;
+        $data['created'] = $created;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
-    function create_drive($book_code = '202110358337')
+    function create_drive()
     {
+        $book_code = $this->input->post('book_code');
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/org/";
         $pages = get_filenames($folder);
 
         $this->load->library('image_lib');
+        $created = array();
         foreach ( $pages as $file)
         {
 
@@ -157,13 +193,20 @@ class Books extends CI_Controller{
                 $this->image_lib->resize();
                 $this->image_lib->clear();
             
-                echo $file;
-                echo '<br>';
+                $created[] = $file;
         }
+
+        $data['status'] = (count($created)) ? 1 : 0;
+        $data['created'] = $created;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+
     }
 
-    function create_mini($book_code = '202110358337')
+    function create_mini()
     {
+        $book_code = $this->input->post('book_code');
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$book_code}/read/";
         $pages = get_filenames($folder);
@@ -184,8 +227,13 @@ class Books extends CI_Controller{
                 $this->image_lib->resize();
                 $this->image_lib->clear();
             
-                echo $file;
-                echo '<br>';
+                $created[] = $file;
         }
+
+        $data['status'] = (count($created)) ? 1 : 0;
+        $data['created'] = $created;
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 }

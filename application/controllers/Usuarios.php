@@ -570,7 +570,13 @@ class Usuarios extends CI_Controller{
         $data = $this->Usuario_model->basic($user_id);
 
         $data['books'] = $this->Usuario_model->assigned_posts($user_id);
-        $data['options_book'] = $this->App_model->opciones_post('tipo_id = 8', 'n', 'Libro');
+
+        //Opciones de libro
+        $fecha_publicado_desde = date("Y-m-d H:i:s", strtotime("-1 months"));
+        $fecha_publicado_hasta = date("Y-m-d H:i:s", strtotime("+8 months"));
+
+        $condition = "tipo_id = 8 AND publicado >='{$fecha_publicado_desde}' AND publicado <= '{$fecha_publicado_hasta}'";
+        $data['options_book'] = $this->App_model->opciones_post($condition, 'n', 'Libro');
 
         $data['view_a'] = 'usuarios/books_v';
         if ( $this->session->userdata('role') >= 20 ) { $data['nav_2'] = NULL; }

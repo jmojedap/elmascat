@@ -68,8 +68,8 @@
                 <div class="form-group">
                     <label for="no_documento" class="col-md-4 control-label">No. Documento </label>
                     <div class="col-md-4">
-                        <input type="text" name="no_documento"
-                            required minlength="5"
+                        <input type="number" name="no_documento"
+                            required min="100"
                             class="form-control input-lg"
                             v-model="form_values.no_documento"
                             >

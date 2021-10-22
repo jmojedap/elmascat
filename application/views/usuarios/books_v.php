@@ -74,7 +74,7 @@
                             class="cover_book"
                             alt="Carátula libro"
                             onerror="this.src='<?= URL_IMG ?>app/125px_producto.png'"
-                            v-show="book.estado > 1"
+                            v-show="book.estado != 1"
                         >
                     </td>
                     <td>
@@ -103,37 +103,39 @@
 </div>
 
 <script>
-    new Vue({
-        el: '#user_books',
-        created: function(){
-            //this.get_list();
+var today = '<?= date('Y-m-d H:i:s') ?>';
+
+var user_books = new Vue({
+    el: '#user_books',
+    data: {
+        user_id: <?= $row->id ?>,
+        books: <?= json_encode($arr_books) ?>,
+        book_id: 0
+    },
+    methods: {
+        add_post: function(){
+            axios.get(url_app + 'posts/add_to_user/' + this.book_id + '/' + this.user_id)
+            .then(response => {
+                console.log(response.data)
+                window.location = url_app + 'usuarios/books/' + this.user_id;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         },
-        data: {
-            user_id: <?= $row->id ?>,
-            books: <?= json_encode($arr_books) ?>,
-            book_id: 0
+        remove_post: function(book_id, meta_id){
+            axios.get(url_app + 'posts/remove_to_user/' + book_id + '/' + meta_id)
+            .then(response => {
+                console.log(response.data)
+                window.location = url_app + 'usuarios/books/' + this.user_id;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         },
-        methods: {
-            add_post: function(){
-                axios.get(url_app + 'posts/add_to_user/' + this.book_id + '/' + this.user_id)
-                .then(response => {
-                    console.log(response.data)
-                    window.location = url_app + 'usuarios/books/' + this.user_id;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            remove_post: function(book_id, meta_id){
-                axios.get(url_app + 'posts/remove_to_user/' + book_id + '/' + meta_id)
-                .then(response => {
-                    console.log(response.data)
-                    window.location = url_app + 'usuarios/books/' + this.user_id;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-        }
-    });
+        is_active: function(book){
+            var published_at = moment(book.publicado, 'YYYY-MM-DD ')
+        },
+    }
+});
 </script>

@@ -20,6 +20,7 @@
     //Cantidad disponibles
     $stock_status = 'Disponible';
     if ( $row->cant_disponibles == 0 ) { $stock_status = 'Agotado'; }
+    if ( $this->session->userdata('role') <= 10 && $this->session->userdata('logged') ) { $stock_status = "{$row->cant_disponibles} disponbiles"; }
     
 ?>
 
@@ -92,9 +93,9 @@
                             
                             <div class="add-to-box">
                                 <div v-if="product.cant_disponibles > 0">
-                                    <div class="add-to-cart" v-if="product.peso > 0">
+                                    <div class="add-to-cart">
                                         <div v-show="!in_shopping_cart">
-                                            <div class="pull-left">
+                                            <div class="pull-left" v-if="product.peso > 0">
                                                 <div class="custom pull-left">
                                                     <button v-on:click="sum_quantity(-1)" class="reduced items-count" type="button"><i class="fa fa-minus">&nbsp;</i></button>
                                                     <input type="number" class="input-text qty" title="Cantidad" v-model="quantity" v-bind:max="product.cant_disponibles" min="0">
