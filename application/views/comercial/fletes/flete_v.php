@@ -23,7 +23,7 @@
         $elementos_rol[1] = array('explorar', 'editar');
         
     //Definiendo menú mostrar
-        $elementos = $elementos_rol[$this->session->userdata('rol_id')];
+        $elementos = $elementos_rol[$this->session->userdata('role')];
         
     //Array data para la vista: app/menu_v
         $data_menu['elementos'] = $elementos;

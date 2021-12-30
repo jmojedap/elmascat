@@ -30,7 +30,7 @@
         $elementos_rol[1] = array('listado', 'explorar');       
         
     //Definiendo menú mostrar, según el rol del visitante
-        $elementos = $elementos_rol[$this->session->userdata('rol_id')];
+        $elementos = $elementos_rol[$this->session->userdata('role')];
         
     //Array data para la vista: comunes/menu_v
         $data_menu['elementos'] = $elementos;

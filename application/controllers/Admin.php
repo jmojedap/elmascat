@@ -207,7 +207,7 @@ class Admin extends CI_Controller {
     {
         $this->load->model('Login_model');
         $username = $this->Db_model->field_id('usuario', $usuario_id, 'username');
-        if ( $this->session->userdata('rol_id') <= 1 ) { $this->Login_model->crear_sesion($username, FALSE); }
+        if ( $this->session->userdata('role') <= 1 ) { $this->Login_model->crear_sesion($username, FALSE); }
         
         redirect('app/logged');
     }

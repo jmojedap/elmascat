@@ -82,7 +82,7 @@ class Eventos extends CI_Controller{
     function info($evento_id)
     {
         //Datos básicos
-        if ( $this->session->userdata('rol_id') > 2 ) { $evento_id = $this->session->userdata('evento_id'); }
+        if ( $this->session->userdata('role') > 2 ) { $evento_id = $this->session->userdata('evento_id'); }
         $data = $this->Evento_model->basico($evento_id);
         
         //Array data espefícicas

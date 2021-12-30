@@ -2,6 +2,14 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Pedidos extends CI_Controller{
+
+// Variables generales
+//-----------------------------------------------------------------------------
+    public $views_folder = 'pedidos/';
+    public $url_controller = URL_ADMIN . 'pedidos/';
+
+// Constructor
+//-----------------------------------------------------------------------------
     
     function __construct() {
         parent::__construct();
@@ -28,9 +36,11 @@ class Pedidos extends CI_Controller{
         //Opciones de filtros de búsqueda
             $data['options_status'] = $this->Item_model->options('categoria_id = 7', 'Todos');
             $data['options_crpol'] = $this->Item_model->options('categoria_id = 10', 'Todos');   //Codigo Respuesta POL
+            $data['options_payment_channel'] = $this->Item_model->options('categoria_id = 106', 'Todos');   //Canales de pago
             
         //Arrays con valores para contenido en lista
             $data['arr_status'] = $this->Item_model->arr_cod('categoria_id = 7');
+            $data['arr_payment_channel'] = $this->Item_model->arr_cod('categoria_id = 106');
             
         //Cargar vista
             $this->App_model->view(TPL_ADMIN, $data);
@@ -88,17 +98,20 @@ class Pedidos extends CI_Controller{
     /**
      * Formulario de edición de los datos de gestión administrativa de un pedido
      * Se envía a pedidos/guardar_admin
+     * 2021-11-22
      */
     function editar($pedido_id)
     {
         $data = $this->Pedido_model->basico($pedido_id);
             
         //Variables
-            $data['destino_form'] = "pedidos/guardar_admin/{$pedido_id}";
-            $data['opciones_estado'] = $this->Item_model->opciones('categoria_id = 7');
+            $data['options_estado_pedido'] = $this->Item_model->opciones('categoria_id = 7');
+            $data['options_payment_channel'] = $this->Item_model->opciones('categoria_id = 106');
+            $data['options_shipping_method'] = $this->Item_model->opciones('categoria_id = 183');
 
         //Variables generales
             $data['view_a'] = 'pedidos/editar_v';
+            $data['back_link'] = $this->url_controller . 'explore/';
 
         $this->load->view(TPL_ADMIN, $data);
     }
@@ -107,9 +120,11 @@ class Pedidos extends CI_Controller{
      * Recibie datos post de pedidos/editar. Guarda los datos de gestión administrativa
      * de un pedido. Si se generan cambios se envía notificación por email al cliente
      */
-    function guardar_admin($pedido_id)
+    function guardar_admin()
     {
-        $data = $this->Pedido_model->guardar_admin($pedido_id);
+        $order_id = $this->input->post('id');
+        $arr_row = $this->input->post();
+        $data = $this->Pedido_model->guardar_admin($order_id, $arr_row);
         
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -151,6 +166,8 @@ class Pedidos extends CI_Controller{
             $data['pedido_id'] = $pedido_id;
             $data['comision_pol'] = $this->Pedido_model->comision_pol($pedido_id);
             $data['arr_meta'] = $this->Pedido_model->arr_meta($data['row']);
+            $data['options_payment_channels'] = $this->Item_model->options('categoria_id = 106 AND filtro LIKE "%-manual-%"', 'Canal de pago');
+            $data['missing_data'] = $this->Pedido_model->missing_data($data['row']);
             
         //Tipos de precio, promociones
             $this->load->model('Producto_model');
@@ -158,7 +175,8 @@ class Pedidos extends CI_Controller{
         
         //Solicitar vista
             $data['nav_2'] = 'pedidos/menu_v';
-            $data['view_a'] = 'pedidos/info_v';
+            $data['view_a'] = 'pedidos/info/info_v';
+            $data['back_link'] = $this->url_controller . 'explore/';
             $this->load->view(TPL_ADMIN, $data);
     }
     
@@ -219,7 +237,7 @@ class Pedidos extends CI_Controller{
         $data = $this->Pedido_model->basico($pedido_id);    
         
         //Listado de confirmaciones realizadas por payu
-            $confirmations = $this->db->query("SELECT * FROM meta WHERE tabla_id = 3000 AND elemento_id = {$pedido_id} AND dato_id = 3005 ORDER BY id DESC");
+            $confirmations = $this->Pedido_model->confirmations($pedido_id);
 
         //Datos de confirmación (3005) en tabla meta
             if ( $confirmations->num_rows() > 0 )
@@ -250,7 +268,50 @@ class Pedidos extends CI_Controller{
         //Solicitar vista
             $data['nav_2'] = 'pedidos/menu_v';
             $data['view_a'] = 'pedidos/payu_v';
+            $data['back_link'] = $this->url_controller . 'explore/';
             $this->load->view(TPL_ADMIN, $data);
+    }
+
+// PAGO MANUAL
+//-----------------------------------------------------------------------------
+
+    /**
+     * Formulario de datos de pago del pedido
+     * 2021-11-22
+     */
+    function payment($pedido_id)
+    {
+        $data = $this->Pedido_model->basico($pedido_id);
+
+        $data['confirmations'] = $this->Pedido_model->confirmations($pedido_id);
+
+        $data['options_payment_channel'] = $this->Item_model->options('categoria_id = 106 AND filtro LIKE "%-manual-%"');
+        $data['missing_data'] = $this->Pedido_model->missing_data($data['row']);
+
+        $data['active_form'] = TRUE;
+        if ( $data['row']->payment_channel > 0 AND $data['row']->payment_channel < 20 ) $data['active_form'] = FALSE;
+
+        $data['view_a'] = 'pedidos/payment/payment_v';
+        $data['back_link'] = $this->url_controller . 'explore/';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * AJAX JSON
+     * Actualizar datos de pago de un pedido
+     * 2021-11-18
+     */
+    function update_payment()
+    {
+        $pedido_id = $this->input->post('id');
+        $payed = $this->input->post('payed');
+        if ( $payed == '01' ) {
+            $data = $this->Pedido_model->update_payment($pedido_id);
+        } else {
+            $data = $this->Pedido_model->remove_payment($pedido_id);
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
 // GESTIÓN DE EXTRAS PEDIDO
@@ -273,6 +334,7 @@ class Pedidos extends CI_Controller{
         $data['head_subtitle'] = 'Extras';
         $data['view_a'] = 'pedidos/extras/extras_v';
         $data['nav_2'] = 'pedidos/menu_v';
+        $data['back_link'] = $this->url_controller . 'explore/';
         $this->load->view(TPL_ADMIN, $data);
     }
 
@@ -506,7 +568,7 @@ class Pedidos extends CI_Controller{
             $prueba = FALSE;
             if ( $this->input->get('prueba') == 1 ) { $prueba = TRUE; }
             $data['form_data'] = $this->Pedido_model->form_data_pol_usd($pedido_id, $prueba);
-            $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Donde se envían los datos para el pago
+            $data['destino_form'] = 'https://checkout.payulatam.com/ppp-web-gateway-payu';  //Donde se envían los datos para el pago
         
         //Solicitar vista
             $data['head_title'] = 'Districatólicas';
@@ -530,16 +592,11 @@ class Pedidos extends CI_Controller{
         $data['extras'] = $this->Pedido_model->extras($order->id);
         $data['arr_extras_pedidos'] = $this->Item_model->arr_item(6, 'id_interno_num');
         $data['row_ciudad'] = $this->Db_model->row_id('lugar', $data['row']->ciudad_id);
+        $data['missing_data'] = $this->Pedido_model->missing_data($order);
         
         //Datos para el formulario que se envía a PagosOnLine
             $data['form_data'] = $this->Pedido_model->form_data_pol($order->id);
-            $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Donde se envían los datos para el pago
-            
-            if ( $this->input->get('prueba') == 1 )
-            {
-                $data['form_data'] = $this->Pedido_model->form_data_pol($order->id, 1);
-                $data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';  //Página para transacciones de prueba
-            }
+            $data['destino_form'] = 'https://checkout.payulatam.com/ppp-web-gateway-payu';  //Donde se envían los datos para el pago
         
         //Solicitar vista
             $data['head_title'] = 'Pagar pedido: ' . $order->cod_pedido;
@@ -556,7 +613,7 @@ class Pedidos extends CI_Controller{
     function reiniciar($cod_pedido)
     {
         $row = $this->Pedido_model->row_by_code($cod_pedido);
-        $data['qty_affected'] = $this->Pedido_model->act_cod_pedido($row->id);
+        $data['cod_pedido'] = $this->Pedido_model->act_cod_pedido($row->id);
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -818,6 +875,7 @@ class Pedidos extends CI_Controller{
         
         $data['view_a'] = "pedidos/test/{$type}_v";        
         $data['nav_3'] = "pedidos/test/menu_v";
+        $data['back_link'] = $this->url_controller . 'explore/';
         $this->App_model->view(TPL_ADMIN, $data);
     }
     
@@ -975,33 +1033,43 @@ class Pedidos extends CI_Controller{
 //ADMINISTRACIÓN DEL PEDIDO
 //---------------------------------------------------------------------------------------------------
     
+    /**
+     * Actualiza masivamente el estado de los pedidos con respuesta de PayU,
+     * que tienen respuesta POL en tabla post, pero cod_estado_pol está vacío
+     * 2021-10-23
+     */
     function act_estado_pendientes()
     {
         $cant_pedidos = $this->Pedido_model->act_estado_pendientes();
         
         //Resultado
-            $data['mensaje'] = "Se actualizaron {$cant_pedidos} pedidos.";
-            $data['clase_alert'] = 'success';
-            $data['titulo_pagina'] = 'Procesos';
-            $data['vista_a'] = 'sistema/develop/procesos_v';
+            $data['message'] = "Se actualizaron {$cant_pedidos} pedidos.";
+            $data['status'] = 1;
         
-        $this->load->view(PTL_ADMIN, $data);
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
-    
-// INFO
-//-----------------------------------------------------------------------------
-    
-    function soy_distribuidor()
+
+    /**
+     * Ejecuta procesos masivos sobre pedidos
+     * 2021-10-23
+     */
+    function run_process($cod_process)
     {
-        //Variables específicas
-            $this->db->order_by('entero_1', 'desc');
-            $this->db->where('categoria_id', 5);
-            $data['fabricantes'] = $this->db->get('item');
-
-        //Variables generales
-            $data['head_title'] = 'Distribuidores';
-            $data['view_a'] = 'pedidos/info/soy_distribuidor_v';
-
-        $this->load->view(TPL_FRONT, $data);
+        //Ampliar tiempo de ejecución
+        set_time_limit(360);   //  6 minutos
+        
+        $data['status'] = 0;
+        $data['message'] = 'Proceso no ejecutado';
+        
+        if ( $cod_process == 1 ) {
+            $data = $this->Pedido_model->act_estado_pendientes();
+        } elseif ( $cod_process == 2 ) {
+            $data = $this->Pedido_model->update_payed();
+        } elseif ( $cod_process == 3 ) {
+            $data = $this->Pedido_model->update_payment_channel_payu();
+        }
+        
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 }

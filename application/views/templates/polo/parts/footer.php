@@ -90,7 +90,7 @@
                     <address>
                         <i class="add-icon fas fa-map-marker-alt">&nbsp;</i>Av Calle 72 No. 83-96 <br> Bogotá D.C. Colombia
                     </address>
-                    <div class="phone-footer"><i class="phone-icon fas fa-phone">&nbsp;</i> +57 1 745 6922</div>
+                    <div class="phone-footer"><i class="phone-icon fas fa-phone">&nbsp;</i>601 745 6922</div>
                     <div class="email-footer"><i class="email-icon">&nbsp;</i> <a href="#">info@districatolicas.com</a> </div>
                 </div>
             </div>

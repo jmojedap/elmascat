@@ -21,10 +21,15 @@
     <span class="text-muted"> &middot; </span>
     
     <span class="text-muted">
-        Estado Pago 
+        Estado Pago
     </span>
-    <span class="text-primary">
-        <?= $this->App_model->nombre_item($row->codigo_respuesta_pol, 1, 10); ?>
-    </span>
-    <span class="text-muted"> &middot; </span>
+    <?php if ( $row->payed ) : ?>
+        <span class="text-primary">
+            <i class="fa fa-check-circle text-success"></i>
+            Pagado
+        </span>
+    <?php else: ?>
+        <i class="fa fa-info-circle text-warning"></i>
+        <span class="text-info">No pagado</span>
+    <?php endif; ?>
 </p>

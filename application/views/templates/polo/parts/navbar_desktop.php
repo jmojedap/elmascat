@@ -8,22 +8,14 @@
     $fi_novedades = date('Y-m-d', $mktime);    //Creados hace menos de tres meses
     if ( strlen($this->input->get('d1')) > 0 ) { $clases_menu['novedades'] = 'active'; }
 
+    //Temporada
+    $clases_menu['navidad'] = 'link_green ';
+    if ( strlen($this->input->get('tag')) == 677 ) { $clases_menu['navidad'] = 'active'; }
+
     if ( $this->uri->segment(4) == 'pagos-pse' ) { $clases_menu['pagos_pse'] = 'active'; }
     if ( $this->uri->segment(4) == 'sobre-nosotros' ) { $clases_menu['sobre_nosotros'] = 'active'; }
     if ( $this->uri->segment(2) == 'estado' ) { $clases_menu['pedidos_estado'] = 'active'; }
 ?>
-
-<style>
-    #nav .link_especial{
-        background-color: #f44336;
-        color: #FFF;
-    }
-
-    #nav .link_yellow{
-        background-color: #fdd922;
-        color: #333;
-    }
-</style>
 
 <ul id="nav" class="hidden-xs">
     <li class="level0 parent drop-menu"><a href="<?= base_url() ?>">inicio</a></li>
@@ -34,15 +26,15 @@
         </a>
     </li>
     
-    <li class="level0 parent drop-menu" title="Nuevos productos">
+    <!-- <li class="level0 parent drop-menu" title="Nuevos productos">
         <a href="<?= base_url("productos/catalogo/?d1={$fi_novedades}") ?>" class="<?= $clases_menu['novedades'] ?>">
             Novedades
         </a>
-    </li>
-    
-    <li class="level0 parent drop-menu hidden" title="¿Quieres ser distribuidor de Districatólicas?">
-        <a href="<?= base_url("pedidos/soy_distribuidor") ?>" class="<?= $clases_menu['soy_distribuidor'] ?>">
-            soy distribuidor
+    </li> -->
+    <li class="level0 parent drop-menu" title="Productos temporada navidad">
+        <a href="<?= base_url("productos/catalogo/productos-navidad/?tag=677") ?>" class="<?= $clases_menu['navidad'] ?>">
+            <i class="far fa-star"></i>
+            Navidad
         </a>
     </li>
 

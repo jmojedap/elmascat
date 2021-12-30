@@ -1,13 +1,20 @@
 <?php
     //Resumen
         $peso_total = 0;
+        $unidades_total = 0;
         
         foreach ($detalle->result() as $row_detalle) {
             $peso_total += $row_detalle->cantidad * $row_detalle->peso;
+            $unidades_total += $row_detalle->cantidad;
         }    
 ?>
 
-<h1><?= $row->cod_pedido ?><small class="ml-3 text-muted"><?= $head_subtitle ?></small></h1>
+<div class="d-flex justify-content-between">
+    <div><h1><?= $row->cod_pedido ?></h1></div>
+    <div><h2><?= $head_subtitle ?></h2></div>
+</div>
+
+
 
 <table class="table table-condensed">
     <tbody>
@@ -17,36 +24,30 @@
             <td>
                     <small><?= $this->Item_model->nombre(53, $row->tipo_documento_id) ?></small>
                     <strong><?= $row->no_documento ?></strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>E-mail</small>
                     <strong><?= $row->email ?></strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Ciudad</small>
                     <strong><?= $row->ciudad ?></strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Dirección</small>
                     <strong><?= $row->direccion ?></strong>
-                    <span> | </span>
-
-
-
-                    <small>Teléfono</small>
-                    <strong><?= $row->telefono ?></strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Celular</small>
                     <strong><?= $row->celular ?></strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Creado</small>
                     <strong>
-                        <?= $this->Pcrn->fecha_formato($row->creado, 'Y-M-d h:i') ?>
+                        <?= $this->Pcrn->fecha_formato($row->creado, 'd/M/Y h:i') ?>
                         - Hace <?= $this->Pcrn->tiempo_hace($row->creado) ?>
                     </strong>
-                    <span> | </span>
+                    <span> &middot; </span>
             </td>
         </tr>
         
@@ -57,11 +58,9 @@
             </td>
         </tr>
         
-        
-        
         <tr>
             <td>
-                <?= $this->App_model->nombre_item($row->estado_pedido, 1, 7) ?>        
+                <?= $this->App_model->nombre_item($row->estado_pedido, 1, 7) ?>
                 <br/>
                 <?= $this->App_model->nombre_item($row->codigo_respuesta_pol, 2, 10) ?>
             </td>
@@ -77,33 +76,37 @@
                     <strong>
                         <?= $this->Pcrn->moneda($row->total_productos) ?>
                     </strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Subtotal otros</small>
                     <strong>
                         <?= $this->Pcrn->moneda($row->total_extras) ?>
                     </strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Peso</small>
                     <strong><?= $row->peso_total ?> kg</strong>        
                 </p>
                 
-                <?php if ( count($arr_respuesta_pol) > 0 ) { ?>
-                    <p>
+                <p>
+                    <small>Canal de pago:</small>
+                    <strong><?= $this->Item_model->name(106, $row->payment_channel) ?></strong>
+                    &middot;
+                    <?php if ( count($arr_respuesta_pol) > 0 ) : ?>
+                        
                         <small>Tipo medio de pago</small>
                         <strong>
                             <?= $this->App_model->nombre_item($arr_respuesta_pol['tipo_medio_pago'], 1, 11) ?>
                         </strong>
-                        <span> | </span>
+                        <span> &middot; </span>
 
                         <small>Medio de pago</small>
                         <strong>
                             <?= $this->App_model->nombre_item($arr_respuesta_pol['medio_pago'], 1, 12) ?>
                         </strong>
-                        <span> | </span>
-                    </p>
-                <?php } ?>
+                        <span> &middot; </span>
+                    <?php endif; ?>
+                </p>
                 
                     
                 <p>
@@ -111,32 +114,32 @@
                     <strong>
                         <?= $row->factura ?>
                     </strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Guía</small>
                     <strong>
                         <?= $row->no_guia ?>
                     </strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Anotaciones</small>
                     <strong>
                         <?= $row->notas_admin ?>
                     </strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Editado por</small>
                     <strong>
                         <?= $this->App_model->nombre_usuario($row->editado_usuario_id, 2) ?>
                     </strong>
-                    <span> | </span>
+                    <span> &middot; </span>
 
                     <small>Editado</small>
                     <strong>
-                        <?= $this->Pcrn->fecha_formato($row->editado, 'Y-M-d h:i') ?>
+                        <?= $this->Pcrn->fecha_formato($row->editado, 'd/M/Y h:i') ?>
                         - Hace <?= $this->Pcrn->tiempo_hace($row->editado) ?>
                     </strong>
-                    <span> | </span>
+                    <span> &middot; </span>
                 </p>
             </td>    
         </tr>
@@ -153,7 +156,7 @@
                         <strong>
                             <?= $this->Pcrn->moneda($row_extra->precio) ?>
                         </strong>
-                        <span> | </span>
+                        <span> &middot; </span>
                     <?php endforeach ?>
 
                 </p>
@@ -200,10 +203,11 @@
 
     <tbody>    
         <tr class="success">
-            
             <td></td>
-            <td>Total</td>
-            <td></td>
+            <td class="text-right">Total</td>
+            <td class="text-center">
+                <strong> <?= $unidades_total ?> </strong>
+            </td>
             <td></td>
             <td>
                 <b>
@@ -240,7 +244,7 @@
                         <?= $arr_tipos_precio[$row_detalle->promocion_id] ?>
                     <?php } ?>
                 </td>
-                <td><?= $row_detalle->cantidad ?></td>
+                <td class="text-center"><?= $row_detalle->cantidad ?></td>
                 <td class="text-right"><?= $this->Pcrn->moneda($row_detalle->precio) ?></td>
                 <td class="text-right"><?= $this->Pcrn->moneda($sum_precio) ?></td>
                 <td class="warning">

@@ -80,7 +80,7 @@ class Evento_Model extends CI_Model{
         }
         
         //El usuario es aministrador
-        if ( $this->session->userdata('rol_id') <= 1 ) { $eliminable = TRUE; }
+        if ( $this->session->userdata('role') <= 1 ) { $eliminable = TRUE; }
             
         return $eliminable;
     }

@@ -17,9 +17,7 @@
                 .then(response => {
                     this.list = response.data.list;
                 })
-                .catch(function (error) {
-                    console.log(error);
-                });   
+                .catch(function (error) { console.log(error) })
             },
             set_current: function(key){
                 this.key = key;
@@ -59,13 +57,11 @@
                 axios.get(url_app + 'datos/delete_tag/' + this.element_id)
                 .then(response => {
                     if ( response.data.status == 1 ) {
-                        this.list.splice(this.key, 1);
-                        toastr['info']('Etiqueta eliminada');
+                        this.list.splice(this.key, 1)
+                        toastr['info']('Etiqueta eliminada')
                     }
                 })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                .catch(function (error) { console.log(error) })
             }
         }
     });

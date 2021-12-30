@@ -1,4 +1,4 @@
-<div class="input-group float-right" style="width: 120px;">
+<div class="input-group" style="width: 120px;">
     <div class="input-group-prepend">
         <button class="btn btn-light" v-on:click="sum_page(-1)" title="Página anterior">
             <i class="fa fa-caret-left"></i>

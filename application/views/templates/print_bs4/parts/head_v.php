@@ -10,6 +10,10 @@
     h1, h2, h3{
         font-family: "Trebuchet MS"
     }
+
+    p{
+        margin-bottom: 0.5em;
+    }
 </style>
 
 <script>

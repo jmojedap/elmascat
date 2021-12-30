@@ -1,22 +1,9 @@
 
-<?php
-    $options_peso = array(
-        '' => 'Todos',
-        '01' => 'Con peso',
-        '02' => 'Sin peso',
-    );
-
-    $options_crpol = array(
-        '' => '[ Todos ]',
-        '01' => 'Transacción aprobada',
-        '02' => 'Otra',
-    );
-?>
-
 <script>
 // Variables
 //-----------------------------------------------------------------------------
-    var arr_status = <?= json_encode($arr_status) ?>
+var arr_status = <?= json_encode($arr_status) ?>;
+var arr_payment_channel = <?= json_encode($arr_payment_channel) ?>;
 
 // Filtros
 //-----------------------------------------------------------------------------
@@ -32,6 +19,12 @@ Vue.filter('status_name', function (value) {
     return value;
 });
 
+Vue.filter('payment_channel_name', function (value) {
+    if (!value) return '';
+    value = arr_payment_channel[value];
+    return value;
+});
+
 Vue.filter('ago', function (date) {
     if (!date) return ''
     return moment(date, "YYYY-MM-DD HH:mm:ss").fromNow(true);
@@ -41,9 +34,6 @@ Vue.filter('ago', function (date) {
 //-----------------------------------------------------------------------------
 var app_explore = new Vue({
     el: '#app_explore',
-    created: function(){
-        //this.get_list();
-    },
     data: {
         cf: '<?= $cf; ?>',
         controller: '<?= $controller; ?>',
@@ -60,8 +50,9 @@ var app_explore = new Vue({
         loading: false,
         active_filters: false,
         options_status: <?= json_encode($options_status) ?>,
-        options_crpol: <?= json_encode($options_crpol) ?>,
-        options_peso: <?= json_encode($options_peso) ?>,
+        options_payment_channel: <?= json_encode($options_payment_channel) ?>,
+        options_payed_status: {'':'[ Todos ]','01':'Pagado','02':'No pagado'},
+        options_peso: {'':'[ Todos ]','01':'Sin peso','02':'Con peso'},
     },
     methods: {
         get_list: function(){
@@ -132,7 +123,9 @@ var app_explore = new Vue({
             this.filters.status = ''
             this.filters.fe2 = ''
             this.filters.fe1 = ''
+            this.filters.fe3 = ''
             this.filters.d1 = ''
+            this.filters.d2 = ''
             this.display_filters = false
             //$('#adv_filters').hide()
             setTimeout(() => { this.get_list() }, 100)
@@ -143,7 +136,9 @@ var app_explore = new Vue({
             if ( this.filters.status ) calculated_active_filters = true
             if ( this.filters.fe2 ) calculated_active_filters = true
             if ( this.filters.fe1 ) calculated_active_filters = true
+            if ( this.filters.fe3 ) calculated_active_filters = true
             if ( this.filters.d1 ) calculated_active_filters = true
+            if ( this.filters.d2 ) calculated_active_filters = true
 
             this.active_filters = calculated_active_filters
         },

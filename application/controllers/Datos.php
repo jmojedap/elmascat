@@ -36,11 +36,12 @@ class Datos extends CI_Controller{
     function tags()
     {
         //Array data vista
-        $data['titulo_pagina'] = 'Etiquetas de productos';
-        $data['vista_a'] = 'datos/tags/tags_v';
+        $data['head_title'] = 'Etiquetas de productos';
+        $data['view_a'] = 'datos/tags/tags_v';
+        $data['nav_2'] = 'ecommerce/products/explore/menu_v';
         
     //Cargar vista
-        $this->load->view(PTL_ADMIN, $data);
+        $this->App_model->view(TPL_ADMIN, $data);
     }
 
     function get_tags()

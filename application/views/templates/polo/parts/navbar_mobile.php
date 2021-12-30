@@ -21,8 +21,11 @@
                         <li class="level0 parent drop-menu menu-ofertas">
                             <a href="<?= URL_APP .  "productos/catalogo/?promo=1" ?>" class="text-white"> Ofertas</a>
                         </li>
-                        <li class="level0 parent drop-menu menu-novedades">
+                        <!-- <li class="level0 parent drop-menu menu-novedades">
                             <a href="<?= URL_APP .  "productos/catalogo/?d1={$fecha_novedades}" ?>"> Novedades</a>
+                        </li> -->
+                        <li class="level0 parent drop-menu menu-navidad">
+                            <a href="<?= URL_APP .  "productos/catalogo/productos-navidad/?tag=677" ?>"> Navidad</a>
                         </li>
 
                         <?php if ( $this->session->userdata('logged') ){ ?>

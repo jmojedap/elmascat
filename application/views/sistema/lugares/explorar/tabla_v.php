@@ -23,7 +23,7 @@
         $clases_col['tipo_id'] = 'hidden-sm hidden-xs';
         $clases_col['poblacion'] = 'hidden-sm hidden-xs';
         
-        if ( $this->session->userdata('rol_id') >= 3 )
+        if ( $this->session->userdata('role') >= 3 )
         {
             $clases_col['selector'] = 'hidden';
             $clases_col['botones'] = 'hidden';

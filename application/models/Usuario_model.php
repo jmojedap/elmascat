@@ -871,7 +871,7 @@ class Usuario_model extends CI_Model{
         $editable = FALSE;  //Valor inicial
         if ( ! is_null($row_direccion) )
         {
-            if ( $this->session->userdata('rol_id') <= 2 ) { $editable = TRUE; }    //Usuarios internos
+            if ( $this->session->userdata('role') <= 2 ) { $editable = TRUE; }    //Usuarios internos
             if ( $row_direccion->usuario_id == $this->session->userdata('usuario_id') ) { $editable = TRUE; }    
         }
         

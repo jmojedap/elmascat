@@ -16,7 +16,7 @@
         $clases_col['selector'] = '';
         $clases_col['botones'] = 'hidden-sm hidden-xs';
         
-        if ( $this->session->userdata('rol_id') > 1 )
+        if ( $this->session->userdata('role') > 1 )
         {
             $clases_col['selector'] = 'hidden';
             $clases_col['botones'] = 'hidden';

@@ -4,10 +4,10 @@
 <?php    
     //Clases botones acción
         $clases_btn['eliminar_seleccionados'] = 'hidden';
-        if ( $this->session->userdata('rol_id') <= 1 ) { $clases_btn['eliminar_seleccionados'] = ''; }
+        if ( $this->session->userdata('role') <= 1 ) { $clases_btn['eliminar_seleccionados'] = ''; }
         
         $clases_btn['exportar'] = 'hidden';
-        if ( $this->session->userdata('rol_id') <= 1 ) { $clases_btn['exportar'] = ''; }
+        if ( $this->session->userdata('role') <= 1 ) { $clases_btn['exportar'] = ''; }
 ?>
 
 <?php $this->load->view("{$carpeta_vistas}explorar/script_js"); ?>

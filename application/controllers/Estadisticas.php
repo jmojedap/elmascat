@@ -33,7 +33,8 @@ class Estadisticas extends CI_Controller{
     function resumen_mes()
     {
         $this->load->model('Estadistica_model');
-        for ($year=2018; $year <= date('Y'); $year++)
+        $start_year = date('Y') - 2;
+        for ($year=$start_year; $year <= date('Y'); $year++)
         { 
             $resumen_mes[$year] = $this->Estadistica_model->ventas_mes($year);
         }
@@ -42,8 +43,7 @@ class Estadisticas extends CI_Controller{
             $data['resumen_mes'] = $resumen_mes;
         
         //Solicitar vista
-            $data['head_title'] = 'Pedidos';
-            $data['head_subtitle'] = 'Resumen por mes';
+            $data['head_title'] = 'Resumen por mes';
             $data['view_a'] = 'estadisticas/pedidos/resumen_mes_v';
             $data['nav_2'] = 'estadisticas/pedidos/menu_v';
             $this->load->view(TPL_ADMIN, $data);
@@ -162,5 +162,33 @@ class Estadisticas extends CI_Controller{
             $data['view_a'] = 'estadisticas/pedidos/ventas_categoria_v';
             $data['nav_2'] = 'estadisticas/pedidos/menu_v';
             $this->load->view(TPL_ADMIN, $data);
+    }
+
+// Procesos masivos
+//-----------------------------------------------------------------------------
+
+    function ventas_lugar_poblacion()
+    {
+        $data['lugares'] = $this->Estadistica_model->ventas_lugar_poblacion();
+        $data['head_title'] = 'Ventas por población';
+        $data['view_a'] = 'estadisticas/pedidos/ventas_lugar_poblacion_v';
+        $data['nav_2'] = 'estadisticas/pedidos/menu_v';
+
+        $this->load->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Actualiza el campo lugar.score_1, ventas en el último año por cada 100
+     * mil habitantes
+     * 2021-11-24
+     */
+    function update_lugar_score_1($tipo_id = 4)
+    {
+        if ( $tipo_id == 3 ) {
+            $data = $this->Estadistica_model->update_region_score_1();
+        } else if ( $tipo_id == 4 ) {
+            $data = $this->Estadistica_model->update_ciudad_score_1();
+        }
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 }

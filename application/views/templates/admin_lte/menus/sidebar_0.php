@@ -175,7 +175,7 @@
                         <?= anchor('admin/options', '<i class="fa fa-sliders-h"></i> Parámetros') ?>
                     </li>
                     <li class="<?= $clases_m1['ajustes-lugares'] ?>">
-                        <?= anchor("lugares/sublugares/51", '<i class="fa fa-map-marker"></i> Ciudades y lugares') ?>
+                        <?= anchor("lugares/explore/", '<i class="fa fa-map-marker"></i> Ciudades y lugares') ?>
                     </li>
                     <li class="<?= $clases_m1['ajustes-items'] ?>">
                         <?= anchor("items/listado/", '<i class="fa fa-bars"></i> Ítems') ?>

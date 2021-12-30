@@ -5,6 +5,7 @@
     
     $cl_nav_2['pedidos_explore'] = '';
     $cl_nav_2['pedidos_info'] = '';
+    $cl_nav_2['pedidos_payment'] = '';
     $cl_nav_2['pedidos_payu'] = '';
     $cl_nav_2['pedidos_test'] = '';
     $cl_nav_2['pedidos_edit'] = '';
@@ -20,20 +21,20 @@
     var nav_2 = [];
     var sections_rol = [];
     var element_id = '<?= $row->id ?>';
-    
-    sections.explore = {
-        icon: 'fa fa-arrow-left',
-        text: 'Explorar',
-        class: '<?= $cl_nav_2['pedidos_explore'] ?>',
-        cf: 'pedidos/explore/',
-        anchor: true
-    };
 
     sections.info = {
         icon: 'fa fa-info-circle',
         text: 'Información',
         class: '<?= $cl_nav_2['pedidos_info'] ?>',
         cf: 'pedidos/info/' + element_id,
+        anchor: true
+    };
+
+    sections.payment = {
+        icon: 'fa fa-info-circle',
+        text: 'Pago',
+        class: '<?= $cl_nav_2['pedidos_payment'] ?>',
+        cf: 'pedidos/payment/' + element_id,
         anchor: true
     };
 
@@ -70,11 +71,11 @@
     };
     
     //Secciones para cada rol
-    sections_rol[0] = ['explore', 'info', 'payu', 'extras', 'test', 'edit'];
-    sections_rol[1] = ['explore', 'info', 'payu', 'extras', 'edit'];
-    sections_rol[2] = ['explore', 'info', 'payu', 'edit'];
-    sections_rol[6] = ['explore', 'info', 'payu', 'edit'];
-    sections_rol.clbd = ['explore', 'info', 'payu', 'edit'];
+    sections_rol[0] = ['info', 'payment', 'payu', 'extras', 'test', 'edit'];
+    sections_rol[1] = ['info', 'payment', 'payu', 'extras', 'edit'];
+    sections_rol[2] = ['info', 'payment', 'payu', 'edit'];
+    sections_rol[6] = ['info', 'payu', 'edit'];
+    sections_rol.clbd = ['info', 'payu', 'edit'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
     for ( key_section in sections_rol[app_rid]) 

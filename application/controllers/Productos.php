@@ -453,6 +453,11 @@ class Productos extends CI_Controller{
         $data['arr_tipos_precio'] = $this->Producto_model->arr_tipos_precio();
         $data['tags'] = $this->Producto_model->tags($producto_id);
         $data['view_a'] = 'productos/detalle/producto_v';
+
+        //Cantidad mínima para precio mayorista
+            $min_quantity_wholesale = 3;
+            if ( $data['row']->precio < 50000  ) $min_quantity_wholesale = 6;
+            $data['min_quantity_wholesale'] = $min_quantity_wholesale;
         
         //Datos
             $data['palabras_clave'] = $this->Producto_model->palabras_clave($producto_id);

@@ -2,8 +2,17 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Lugares extends CI_Controller{
+
+// Variables generales
+//-----------------------------------------------------------------------------
+    public $views_folder = 'admin/lugares/';
+    public $url_controller = URL_ADMIN . 'lugares/';
+
+// Constructor
+//-----------------------------------------------------------------------------
     
-    function __construct() {
+    function __construct() 
+    {
         parent::__construct();
 
         $this->load->model('Lugar_model');
@@ -12,171 +21,172 @@ class Lugares extends CI_Controller{
         date_default_timezone_set("America/Bogota");
     }
     
-//LUGARES - TABLE PLACE
-//---------------------------------------------------------------------------------------------------
-    
-    /**
-     * Exploración y búsqueda de lugares
-     */
-    function explorar($num_pagina = 0)
+    function index($place_id = null)
     {
+        if ( is_null($place_id) ) {
+            redirect('lugares/explore');
+        } else {
+            redirect("lugares/details/{$place_id}");
+        }
+    }
+    
+//EXPLORE
+//---------------------------------------------------------------------------------------------------
+            
+    /**
+     * Exploración y búsqueda de usuarios
+     * 2020-08-01
+     */
+    function explore($num_page = 1)
+    {        
+        //Identificar filtros de búsqueda
+            $this->load->model('Search_model');
+            $filters = $this->Search_model->filters();
+
         //Datos básicos de la exploración
-            $data = $this->Lugar_model->data_explorar($num_pagina);
+            $data = $this->Lugar_model->explore_data($filters, $num_page);
         
         //Opciones de filtros de búsqueda
-            $data['arr_filtros'] = array('tp');
-            $data['opciones_tipo'] = $this->Item_model->opciones('categoria_id = 70', 'Todos');
+            $data['options_type'] = $this->Item_model->options('categoria_id = 70', 'Todos');
+            $data['options_status'] = array('' => '[ Todos los status ]', '00' => 'Inactivo', '01' => 'Activo');
             
         //Arrays con valores para contenido en lista
-            $data['arr_tipos'] = $this->Item_model->arr_interno('categoria_id = 70');
-        
+            $data['arr_types'] = $this->Item_model->arr_cod('categoria_id = 70');
+            
         //Cargar vista
-            $this->load->view(PTL_ADMIN, $data);
-    }    
-    
-    /**
-     * AJAX
-     * 
-     * Devuelve JSON, que incluye string HTML de la tabla de exploración para la
-     * página $num_pagina, y los filtros enviados por post
-     * 
-     * @param type $num_pagina
-     */
-    function tabla_explorar($num_pagina = 0)
-    {
-        //Datos básicos de la exploración
-            $data = $this->Lugar_model->data_tabla_explorar($num_pagina);
-        
-        //Arrays con valores para contenido en lista
-            $data['arr_roles'] = $this->Item_model->arr_interno('categoria_id = 58');
-            
-        //Arrays con valores para contenido en lista
-            $data['arr_tipos'] = $this->Item_model->arr_interno('categoria_id = 70');
-        
-        //Preparar respuesta
-            $respuesta['html'] = $this->load->view('sistema/lugares/explorar/tabla_v', $data, TRUE);
-            $respuesta['seleccionados_todos'] = $data['seleccionados_todos'];
-            $respuesta['num_pagina'] = $num_pagina;
-        
-        //Salida
-            $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode($respuesta));
+            $this->App_model->view(TPL_ADMIN, $data);
     }
-    
-    /**
-     * Exporta el resultado de la búsqueda a un archivo de Excel
-     */
-    function exportar()
-    {
-        
-        //Cargando
-            $this->load->model('Busqueda_model');
-            $this->load->model('Pcrn_excel');
-        
-        //Datos de consulta, construyendo array de búsqueda
-            $busqueda = $this->Busqueda_model->busqueda_array();
-            $resultados_total = $this->Lugar_model->buscar($busqueda); //Para calcular el total de resultados
-        
-        //Preparar datos
-            $datos['nombre_hoja'] = 'Lugares';
-            $datos['query'] = $resultados_total;
-            
-        //Preparar archivo
-            $objWriter = $this->Pcrn_excel->archivo_query($datos);
-        
-        $data['objWriter'] = $objWriter;
-        $data['nombre_archivo'] = date('Ymd_His'). '_lugares'; //save our workbook as this file name
-        
-        $this->load->view('comunes/descargar_phpexcel_v', $data);
-    }
-    
-    function editar()
-    {
-        $lugar_id = $this->uri->segment(4);
-        $data = $this->Lugar_model->basico($lugar_id);
-        
-        $gc_output = $this->Lugar_model->crud_basico();
 
-        //Array data espefícicas
-            $data['subtitulo_pagina'] = 'Editar';
-            $data['vista_b'] = 'comunes/gc_v';    
-        
-        $output = array_merge($data,(array)$gc_output);
-        $this->load->view(PTL_ADMIN, $output);
-    }
-    
     /**
-     * Eliminar un grupo de registros seleccionados
+     * JSON
+     * Listado de lugares, según filtros de búsqueda
      */
-    function eliminar_seleccionados()
+    function get($num_page = 1, $per_page = 15)
     {
-        $str_seleccionados = $this->input->post('seleccionados');
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $data = $this->Lugar_model->get($filters, $num_page, $per_page);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * AJAX JSON
+     * Eliminar un conjunto de lugares seleccionados
+     * 2021-02-20
+     */
+    function delete_selected()
+    {
+        $selected = explode(',', $this->input->post('selected'));
+        $data['qty_deleted'] = 0;
         
-        $seleccionados = explode('-', $str_seleccionados);
+        foreach ( $selected as $row_id ) $data['qty_deleted'] += $this->Lugar_model->delete($row_id);
         
-        foreach ( $seleccionados as $elemento_id ) 
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+// INFORMACIÓN
+//-----------------------------------------------------------------------------
+
+    function info($place_id)
+    {
+        $data = $this->Lugar_model->basic($place_id);
+        $data['view_a'] = $this->views_folder . 'info_v';
+        $data['nav_2'] = $this->views_folder . 'menu_v';
+        $data['back_link'] = $this->url_controller . 'explore';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    function details($place_id)
+    {
+        $data = $this->Lugar_model->basic($place_id);
+        $data['view_a'] = 'common/row_details_v';
+        $data['nav_2'] = $this->views_folder . 'menu_v';
+        $data['back_link'] = $this->url_controller . 'explore';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+// CREACIÓN Y EDICIÓN
+//-----------------------------------------------------------------------------
+
+    function add()
+    {
+        //Formulario
+        $data['options_type'] = $this->Item_model->options('categoria_id = 70');
+        $data['options_country'] = $this->App_model->opciones_lugar('tipo_id = 2');
+        $data['options_region'] = $this->App_model->opciones_lugar('tipo_id = 3 AND pais_id = 51', 'nombre_lugar');
+        $data['options_status'] = array('00' => 'Inactivo', '01' => 'Activo');
+
+        //Vista
+        $data['view_a'] = $this->views_folder . 'add_v';
+        $data['nav_2'] = $this->views_folder . 'explore/menu_v';
+        $data['head_title'] = 'Nuevo lugar';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    function edit($place_id)
+    {
+        //Formulario
+        $data = $this->Lugar_model->basic($place_id);
+
+        $data['options_type'] = $this->Item_model->options('categoria_id = 70');
+        $data['options_country'] = $this->App_model->opciones_lugar('tipo_id = 2');
+        $data['options_region'] = $this->App_model->opciones_lugar('tipo_id = 3 AND pais_id = 51', 'nombre_lugar');
+        $data['options_status'] = array('00' => 'Inactivo', '01' => 'Activo');
+
+        //Vista
+        $data['view_a'] = $this->views_folder . 'edit_v';
+        $data['nav_2'] = $this->views_folder . 'menu_v';
+        $data['back_link'] = $this->url_controller . 'explore';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Crear o actualizar registro de lugar, tabla lugares
+     * 2021-03-17
+     */
+    function save($place_id = 0)
+    {
+        $arr_row = $this->input->post();
+        $data['saved_id'] = $this->Lugar_model->save($arr_row, $place_id);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Cambiar el estado de un lugar, campo lugares.status
+     * 2021-05-18
+     */
+    function set_status()
+    {
+        $arr_row = $this->input->post();
+        $data['saved_id'] = $this->Db_model->save_id('lugar', $arr_row);
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+// Servicios
+//-----------------------------------------------------------------------------
+
+    /**
+     * Array con opciones de lugar, formato para elemento Select de un form HTML
+     * Utiliza los mismos filtros de la sección de exploración
+     * 2021-03-16
+     */
+    function get_options($field_name = 'place_name')
+    {
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $data = $this->Lugar_model->get($filters, 1, 500);
+
+        $options = array('' => '[ Seleccione ]');
+        foreach ($data['list'] as $place)
         {
-            $this->Lugar_model->eliminar($elemento_id);
+            $options['0' . $place->id] = $place->$field_name;
         }
-        
-        $this->output
-            ->set_content_type('application/json')
-            ->set_output(json_encode($seleccionados));
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($options));
     }
-    
-    function sublugares($lugar_id)
-    {
-        
-        //Cargando
-            $this->load->model('Busqueda_model');
-            $this->load->helper('text');
-            
-        //Data básico
-            $data = $this->Lugar_model->basico($lugar_id);
-            $titulo_sublugares = $this->Lugar_model->titulo_sublugares($data['row']->tipo_id);
-        
-        //Variables para vista
-            $data['sublugares'] = $this->Lugar_model->sublugares($lugar_id);;
-            $data['titulo_sublugares'] = $titulo_sublugares;
-        
-        //Solicitar vista
-            $data['subtitulo_pagina'] = $titulo_sublugares;
-            $data['vista_b'] = 'sistema/lugares/sublugares_v';
-            $this->load->view(PTL_ADMIN, $data);
-        
-    }
-    
-    function pedidos($lugar_id)
-    {
-        $data = $this->Lugar_model->basico($lugar_id);
-        
-        //Solicitar vista
-            $data['subtitulo_pagina'] = 'En construcción';
-            $data['vista_b'] = 'app/en_construccion_v';
-            $this->load->view(PTL_ADMIN, $data);
-    }
-    
-    function fletes($lugar_id)
-    {
-            
-        //Data básico
-            $data = $this->Lugar_model->basico($lugar_id);
-        
-        //Variables para vista
-            $data['fletes'] = $this->Lugar_model->fletes($lugar_id);
-        
-        //Solicitar vista
-            $data['subtitulo_pagina'] = 'Fletes';
-            $data['vista_b'] = 'sistema/lugares/fletes_v';
-            $this->load->view(PTL_ADMIN, $data);
-        
-    }
-    
-    function guardar($lugar_id)
-    {
-        $this->Lugar_model->guardar($lugar_id);
-        redirect("lugares/sublugares/{$lugar_id}");
-    }
-    
 }

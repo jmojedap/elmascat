@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 const arr_tipos_precio = <?= json_encode($arr_tipos_precio) ?>;
 const current_arr_precio = <?= json_encode($arr_precio) ?>;
-const min_quantity_wholesale = 3;   //Cantidad mínima para tener precio por mayor
+const min_quantity_wholesale = <?= $min_quantity_wholesale ?>;   //Cantidad mínima para tener precio por mayor
 
 // Filtros
 //-----------------------------------------------------------------------------

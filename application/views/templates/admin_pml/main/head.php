@@ -31,14 +31,14 @@
         <link href="<?= URL_RESOURCES ?>templates/admin_pml/css/admin-pml.css" rel="stylesheet" type="text/css" />
         <link href="<?= URL_RESOURCES ?>templates/admin_pml/css/mobile.css" rel="stylesheet" type="text/css" />
         <link href="<?= URL_RESOURCES ?>templates/admin_pml/css/skins/skin-blue.css" rel="stylesheet" type="text/css" />
+        <link href="<?= URL_RESOURCES ?>css/districatolicas_admin.css" rel="stylesheet" type="text/css" />
         <script src="<?= URL_RESOURCES ?>templates/admin_pml/js/app.js"></script>
 
         <!-- Recursos PML -->
         <link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES ?>css/pacarina.css">
         <script src="<?= URL_RESOURCES . 'js/pcrn.js' ?>"></script>
         <script>
-            const url_app = '<?= URL_APP ?>';
-            const url_api = '<?= URL_API ?>';
+            const url_app = '<?= URL_APP ?>'; const url_api = '<?= URL_API ?>'; const url_admin = '<?= URL_ADMIN ?>';
             var app_cf = '<?= $this->uri->segment(1) . '/' . $this->uri->segment(2); ?>';
         </script>
 

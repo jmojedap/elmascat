@@ -73,7 +73,7 @@ class App extends CI_Controller{
             23 => 'usuarios/books'
         );
             
-        $destino = $arr_destinos[$this->session->userdata('rol_id')];
+        $destino = $arr_destinos[$this->session->userdata('role')];
         
         redirect($destino);
     }

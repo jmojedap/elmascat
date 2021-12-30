@@ -1,12 +1,3 @@
-<?php
-    //Verificar si puede ir a pagar
-        $datos_faltantes = array();
-        if ( strlen($row->no_documento) == 0 ) { $datos_faltantes[] = 'Número de documento'; }
-        if ( strlen($row->email) == 0 ) { $datos_faltantes[] = 'Correo electrónico'; }
-        if ( strlen($row->direccion) == 0 ) { $datos_faltantes[] = 'Dirección de entrega'; }
-        if ( strlen($row->celular) == 0 ) { $datos_faltantes[] = 'Número de celular'; }
-?>
-
 <div style="margin-bottom: 20px;" id="link_pago_app">
     <div class="row wow bounceInUp animated">
         <div class="col col-md-4">
@@ -160,7 +151,7 @@
                     <?php endforeach ?>
 
                     <li>
-                        <?php if ( count($datos_faltantes) == 0 ) { ?>
+                        <?php if ( count($missing_data) == 0 ) { ?>
                             <button class="btn-polo-lg" type="submit">
                                 IR A PAGAR
                             </button>
@@ -170,7 +161,7 @@
                                     <i class="fa fa-info-circle fa-2x"></i>
                                 </p>
                                 <p>
-                                    <?= count($datos_faltantes) ?> datos faltantes: <?= implode(', ', $datos_faltantes); ?>.
+                                    <?= count($missing_data) ?> datos faltantes: <?= implode(', ', $missing_data); ?>.
                                 </p>
                             </div>
                         <?php } ?>

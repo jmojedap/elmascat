@@ -71,7 +71,7 @@ class Meta_model extends CI_Model{
             if ( $this->session->userdata('logged') ) { $cant_condiciones++; }
 
             //Rol de usuario con capacidad
-            if ( in_array($this->session->userdata('rol_id'), array(0,1,2)) ) { $cant_condiciones++; }
+            if ( in_array($this->session->userdata('role'), array(0,1,2)) ) { $cant_condiciones++; }
 
             //Fue el creador del meta dato
             if ( $row->usuario_id == $this->session->userdata('usuario_id') ) { $cant_condiciones++; }

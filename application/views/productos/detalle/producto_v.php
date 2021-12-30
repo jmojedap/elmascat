@@ -83,7 +83,7 @@
                                 </div>
                                 <p v-if="wholesale_price_available()">
                                     <span class="wholesale_price">$ {{ arr_precios[3] | currency }}</span>
-                                    al comprar 3 o más
+                                    al comprar <?= $min_quantity_wholesale ?> o más
                                 </p>
                             </div>
                             

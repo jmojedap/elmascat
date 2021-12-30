@@ -229,7 +229,7 @@ class Develop_model extends CI_Model{
     function limpiar_tabla($tabla)
     {
         //Debe ser desarrollador
-        if ( $this->session->userdata('rol_id') == 0 ) 
+        if ( $this->session->userdata('role') == 0 ) 
         {
             $sql = "TRUNCATE TABLE {$tabla}";
             $this->db->query($sql);

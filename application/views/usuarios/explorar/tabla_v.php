@@ -24,13 +24,13 @@
         $clases_col['telefono'] = 'hidden-xs hidden-sm';
         $clases_col['sexo'] = 'sexo';
         
-        if ( $this->session->userdata('rol_id') >= 2 )
+        if ( $this->session->userdata('role') >= 2 )
         {
             $clases_col['selector'] = 'hidden';
             $clases_col['botones'] = 'hidden';
         }
         
-        if ( $this->session->userdata('rol_id') <= 1 )
+        if ( $this->session->userdata('role') <= 1 )
         {
             $clases_col['ml'] = '';
         }

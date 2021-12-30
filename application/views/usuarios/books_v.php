@@ -61,7 +61,7 @@
             <tbody>
                 <tr v-for="(book, key) in books">
                     <td>
-                        <a v-bind:href="`<?= base_url("books/read/") ?>` + `/` + book.code + `/` + book.meta_id + `/` + book.slug + `/` + book.format" v-show="book.estado == 1">
+                        <a v-bind:href="`<?= base_url("books/read/") ?>` + `/` + book.code + `/` + book.meta_id + `/` + book.slug + `/` + book.format" v-show="is_active(book)">
                             <img
                                 v-bind:src="book.img_src"
                                 class="cover_book"
@@ -74,16 +74,16 @@
                             class="cover_book"
                             alt="Carátula libro"
                             onerror="this.src='<?= URL_IMG ?>app/125px_producto.png'"
-                            v-show="book.estado != 1"
+                            v-show="!is_active(book)"
                         >
                     </td>
                     <td>
                         <h4>{{ book.title }}</h4>
                         <p>{{ book.resumen }}</p>
-                        <p v-show="book.estado > 1">
+                        <p v-show="!is_active(book)">
                             <span class="text-muted">Disponible: </span>
-                            <span v-html="book.disponible"></span>
-                            (<span class="text-muted">{{ book.publicado_nice }}</span>)
+                            <span class="text-primary">{{ book.publicado | ago }}</span> &middot;
+                            <span class="text-muted">{{ book.publicado | date_format }}</span>
                         </p>
                     </td>
                     <?php if ( $this->session->userdata('role') <= 10 ) { ?>
@@ -103,14 +103,28 @@
 </div>
 
 <script>
-var today = '<?= date('Y-m-d H:i:s') ?>';
+var str_today = '<?= date('Y-m-d') ?>';
 
+// Filters
+//-----------------------------------------------------------------------------
+Vue.filter('ago', function (date) {
+    if (!date) return ''
+    return moment(date, 'YYYY-MM-DD HH:mm:ss').fromNow()
+});
+
+Vue.filter('date_format', function (date) {
+    if (!date) return ''
+    return moment(date).format('dddd, D [de] MMMM')
+});
+
+// VueApp
+//-----------------------------------------------------------------------------
 var user_books = new Vue({
     el: '#user_books',
     data: {
         user_id: <?= $row->id ?>,
         books: <?= json_encode($arr_books) ?>,
-        book_id: 0
+        book_id: 0,
     },
     methods: {
         add_post: function(){
@@ -134,7 +148,13 @@ var user_books = new Vue({
             });
         },
         is_active: function(book){
+            var is_active = true
+            var today = moment(str_today, 'YYYY-MM-DD')
             var published_at = moment(book.publicado, 'YYYY-MM-DD ')
+
+            if (today.diff(published_at, 'days') < 0) is_active = false
+
+            return is_active
         },
     }
 });

@@ -62,6 +62,22 @@ class Pedido_Model extends CI_Model{
     }
 
     /**
+     * Segmento Select SQL, con diferentes formatos, consulta de pedidos
+     * 2021-11-17
+     */
+    function select($format = 'general')
+    {
+        $arr_select['general'] = 'pedido.id, cod_pedido, pedido.usuario_id, pedido.nombre, pedido.apellidos, pedido.email';
+        $arr_select['general'] .= ', estado_pedido, valor_total, pedido.direccion, pedido.ciudad, pedido.celular, pedido.peso_total';
+        $arr_select['general'] .= ', pedido.editado, editado_usuario_id, factura, no_guia, codigo_respuesta_pol';
+        $arr_select['general'] .= ', usuario.username AS updater_username, pedido.payed, pedido.payment_channel, is_gift';
+
+        //$arr_select['export'] = 'users.id, username, document_number AS no_documento, document_type AS tipo_documento, display_name AS nombre, email, role AS rol, status, created_at AS creado, updated_at AS actualizado, expiration_at AS suscripcion_hasta';
+
+        return $arr_select[$format];
+    }
+
+    /**
      * Array Listado elemento resultado de la búsqueda (filtros).
      * 2020-01-21
      */
@@ -95,14 +111,13 @@ class Pedido_Model extends CI_Model{
     }
     
     /**
-     * Query con resultados de posts filtrados, por página y offset
-     * 2020-07-15
+     * Query con resultados de pedidos filtrados, por página y offset
+     * 2020-11-17
      */
     function search($filters, $per_page = NULL, $offset = NULL)
     {
         //Construir consulta
-            $this->db->select('pedido.id, cod_pedido, pedido.usuario_id, pedido.nombre, pedido.apellidos, pedido.email, estado_pedido, valor_total, pedido.direccion, pedido.ciudad, pedido.celular, pedido.peso_total, pedido.editado, editado_usuario_id, factura, no_guia, codigo_respuesta_pol, usuario.username AS updater_username, is_gift');
-            //$this->db->join('lugar', 'pedido.lugar_id = lugar.id', 'left');
+            $this->db->select($this->select());
             $this->db->join('usuario', 'pedido.editado_usuario_id = usuario.id', 'left');
         
         //Orden
@@ -147,16 +162,19 @@ class Pedido_Model extends CI_Model{
         //Filtro por peso
         if ( $filters['fe1'] != '' )
         {
-            if ( $filters['fe1'] == 0 ) { $condition .= "peso_total = 0 AND "; }                                    //Sin peso
-            if ( $filters['fe1'] == 1 ) { $condition .= "peso_total > 0 AND "; }                                    //Con peso
+            if ( $filters['fe1'] == '01' ) { $condition .= "peso_total = 0 AND "; }    //Sin peso
+            if ( $filters['fe1'] == '02' ) { $condition .= "peso_total > 0 AND "; }    //Con peso
         }
-        //Filtro por Código de Respuesta POL
+        //Filtro por Estado de Pago
         if ( $filters['fe2'] != '' )
         {
-            if ( $filters['fe2'] == 1 ) { $condition .= "codigo_respuesta_pol = 1 AND "; }                                    
-            if ( $filters['fe2'] == 2 ) { $condition .= "codigo_respuesta_pol > 1 AND "; }                                    
+            if ( $filters['fe2'] == 1 ) { $condition .= "payed = 1 AND "; }                                    
+            if ( $filters['fe2'] == 2 ) { $condition .= "payed = 0 AND "; }                                    
         }
+        
+        if ( $filters['fe3'] != '' ) { $condition .= "pedido.payment_channel = {$filters['fe3']} AND "; }              // Canal de pago            
         if ( $filters['d1'] != '' ) { $condition .= "pedido.creado >= '{$filters['d1']} 00:00:00' AND "; }             //Creado a partir de
+        if ( $filters['d2'] != '' ) { $condition .= "pedido.creado <= '{$filters['d2']} 23:59:59' AND "; }             //Creado antes de
         if ( $filters['u'] != '' ) { $condition .= "pedido.usuario_id = {$filters['u']} AND "; }                       //Cliente User ID
         
         
@@ -241,24 +259,23 @@ class Pedido_Model extends CI_Model{
      * Actualizar registro de pedido, datos de administración.
      * 2020-04-28
      */
-    function guardar_admin($pedido_id)
+    function guardar_admin($pedido_id, $arr_row)
     {   
         //Resultado del proceso, valor por defecto
-            $data = array('status' => 0, 'message' => 'El pedido NO se modificó');
+            $data = array('saved_id' => 0, 'message' => 'El pedido NO se modificó');
         
         //Actualizar registro
-            $arr_row = $this->input->post();
             $arr_row['editado_usuario_id'] = $this->session->userdata('usuario_id');
             $this->db->where('id', $pedido_id);
             $this->db->update('pedido', $arr_row);
             
-        if ( $this->db->affected_rows() > 0 ) 
+        if ( $this->db->affected_rows() >= 0 ) 
         {
-            $data['status'] = 1;
-            $data['message'] = 'Pedido Actualizado';
+            $data['saved_id'] = $pedido_id;
+            $data['message'] = 'Pedido actualizado';
 
             //Enviar email, si corresponde a un estado de interés comercial
-            if ( in_array($arr_row['estado_pedido'], array(4,6)) )
+            if ( in_array($arr_row['estado_pedido'], array(4,6)) && ENV == 'production' )
             {
                 $this->Pedido_model->email_actualizacion($pedido_id);    
                 $data['message'] .= '. E-mail enviado al cliente.';
@@ -846,9 +863,7 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Actualiza los datos de un pedido, tabla pedido
-     * 
-     * @param type $pedido_id
-     * @param array $registro
+     * 2021-11-18
      */
     function act_pedido($pedido_id, $registro)
     {
@@ -1116,6 +1131,21 @@ class Pedido_Model extends CI_Model{
 
         return $data;
     }
+
+    /**
+     * Verificar si puede ir a pagar
+     * 2021-11-18
+     */
+    function missing_data($order)
+    {
+        $missing_data = array();
+        if ( strlen($order->no_documento) == 0 ) { $missing_data[] = 'Número de documento'; }
+        if ( strlen($order->email) == 0 ) { $missing_data[] = 'Correo electrónico'; }
+        if ( strlen($order->direccion) == 0 ) { $missing_data[] = 'Dirección de entrega'; }
+        if ( strlen($order->celular) == 0 ) { $missing_data[] = 'Número de celular'; }
+
+        return $missing_data;
+    }
     
 //DESCUENTO PARA DISTRIBUIDOR
 //---------------------------------------------------------------------------------------------------
@@ -1361,7 +1391,7 @@ class Pedido_Model extends CI_Model{
     function confirmacion_pol()
     {
         //Identificar Pedido
-        $meta_id = 0;
+        $meta_id = 0;   //ID Registro confirmación, por defecto
         $row = $this->row_by_code($this->input->post('ref_venta'));    
 
         //Si se identificó el pedido
@@ -1370,29 +1400,40 @@ class Pedido_Model extends CI_Model{
             //Guardar array completo de confirmación en la tabla "meta"
                 $meta_id = $this->json_confirmacion($row->id);
 
-            //Si el pedido tiene estado iniciado (1) o pago pendiente (2)
+            //Se modifica si el pedido tiene estado_pedido es iniciado (1) o pago pendiente (2)
             if ( $row->estado_pedido <= 2 )
             {
                 //Actualizar registro de pedido
-                $codigo_respuesta_pol = $this->act_estado($row->id, 110);    //Usuario id=110, PayU Automático
-    
-                //Descontar cantidades de producto.cant_disponibles, si codigo_respuesta_pol = 1: Trasnsacción aprobada
-                if ( $codigo_respuesta_pol == 1 )
-                {
-                    $this->descontar_disponibles($row->id);     //Restar vendidos de cantidades disponibles
-                    $this->assign_posts($row->id);              //Asignar contenidos digitales asociados a los productos comprados
-                }
-    
-                //Enviar e-mails a administradores de tienda y al cliente
-                if ( ENV == 'production' )
-                {
-                    $this->email_cliente($row->id);
-                    $this->email_admon($row->id);
-                }
+                $payed = $this->act_estado($row->id, 110);    //Usuario id=110, PayU Automático
+
+                //Procesos tras actualización de pago
+                $this->payment_updated($row->id, $payed);
             }
         }
 
         return $meta_id;
+    }
+
+    /**
+     * Procesos que se ejecutan después de actualizar el estado de pago de un
+     * pedido
+     * 2021-11-23
+     */
+    function payment_updated($pedido_id, $payed)
+    {
+        //Descontar cantidades de producto.cant_disponibles, si el pedido fue pagado = 1: Pagado
+        if ( $payed == 1 )
+        {
+            $this->descontar_disponibles($pedido_id);     //Restar vendidos de cantidades disponibles
+            $this->assign_posts($pedido_id);              //Asignar contenidos digitales asociados a los productos comprados
+        }
+
+        //Enviar e-mails a administradores de tienda y al cliente
+        if ( ENV == 'production' )
+        {
+            $this->email_cliente($pedido_id);
+            $this->email_admon($pedido_id);
+        }
     }
 
     /**
@@ -1407,10 +1448,10 @@ class Pedido_Model extends CI_Model{
             $json_confirmacion_pol = json_encode($arr_confirmacion_pol);
         
         //Construir registro
-            $registro['tabla_id'] = 3000;  //Pedido
+            $registro['tabla_id'] = 3000;   //Pedido
             $registro['elemento_id'] = $pedido_id;
             $registro['relacionado_id'] = 0;
-            $registro['dato_id'] = 3005;  //Ver: parámetros > metadatos
+            $registro['dato_id'] = 3005;    //Ver: parámetros > metadatos
             $registro['editado'] = date('Y-m-d H:i:s');
             $registro['valor'] = $json_confirmacion_pol;
         
@@ -1432,6 +1473,8 @@ class Pedido_Model extends CI_Model{
             $estado_pedido = $this->estado_pedido_pol($codigo_respuesta_pol);
             
         //Registro
+            $arr_row['payed'] = ($codigo_respuesta_pol == 1) ? 1 : 0 ;
+            $arr_row['payment_channel'] = 10;
             $arr_row['codigo_respuesta_pol'] = $codigo_respuesta_pol;
             $arr_row['estado_pedido'] = $estado_pedido;
             $arr_row['editado_usuario_id'] = $usuario_id;
@@ -1440,24 +1483,26 @@ class Pedido_Model extends CI_Model{
         //Actualizar
             $this->act_pedido($pedido_id, $arr_row);
             
-        return $codigo_respuesta_pol;
+        return $arr_row['payed'];
     }
 
     /**
-     * Devuelve el código de respuesta de Pagos On Line tomado de los datos de POL guardados en la 
-     * tabla meta tras la confirmación del resultado de la transacción de pago.
+     * Devuelve el código de respuesta de Pagos On Line tomado de los datos de 
+     * POL guardados en la tabla meta tras la confirmación del resultado de la 
+     * transacción de pago.
      * 2020-08-12
      */
     function codigo_respuesta_pol($pedido_id)
     {
-        $codigo_respuesta_pol = 0; //Valor inicial
+        $codigo_respuesta_pol = 0; //Valor inicial por defecto
         
         $condicion = "tabla_id = 3000 AND dato_id = 3005 AND elemento_id = {$pedido_id} ORDER BY id DESC";
         $json = $this->Pcrn->campo('meta', $condicion, 'valor');
         
+        //Array respuesta de PayU
         if ( strlen($json) > 0 ) 
         {
-            $arr_confirmacion = json_decode($json, TRUE);
+            $arr_confirmacion = json_decode($json, TRUE);   //Decofificar respuesta
             $codigo_respuesta_pol = $arr_confirmacion['codigo_respuesta_pol']; 
         }
         
@@ -1471,10 +1516,76 @@ class Pedido_Model extends CI_Model{
      */
     function estado_pedido_pol($codigo_respuesta_pol)
     {
-        $estado_pedido = 2; //Valor inicial
+        $estado_pedido = 2; //2 => Pago pendiente (Valor inicial por defecto)
         if ( $codigo_respuesta_pol == 1 ) { $estado_pedido = 3; }     //Pago confirmado
         
         return $estado_pedido;
+    }
+
+    /**
+     * Listado de confirmaciones realizadas por payu
+     * 2021-12-13
+     */
+    function confirmations($pedido_id)
+    {
+        $confirmations = $this->db->query("SELECT * FROM meta WHERE tabla_id = 3000 AND elemento_id = {$pedido_id} AND dato_id = 3005 ORDER BY id DESC");
+
+        return $confirmations;
+    }
+
+// REGISTRO DE PAGOS NO AUTOMÁTICOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Actualizar estado de pago de un pedido
+     * 2021-11-18
+     */
+    function update_payment($pedido_id)
+    {
+        $data = array('saved_id' => 0, 'message' => 'Pedido no actualizado');
+
+        if ( $this->input->post('payed') == 1 ) {
+            $arr_row = $this->input->post();
+            $arr_row['payed'] = 1;
+            $arr_row['editado_usuario_id'] = $this->session->userdata('user_id');
+            $arr_row['estado_pedido'] = 3;  //Pago confirmado
+            $arr_row['confirmado'] = date('Y-m-d H:i:s');
+
+            $affected_rows = $this->act_pedido($pedido_id, $arr_row);
+
+            if ( $affected_rows > 0 ) {
+                //Ejecutar actualizaciones tras confirmación de pago
+                $this->payment_updated($pedido_id, $arr_row['payed']);
+
+                $data = array('saved_id' => $pedido_id, 'message' => 'Pedido actualizado: Pagado');
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Actualizar los pago de un pedido, como No Pagado
+     * 2021-11-22
+     */
+    function remove_payment($pedido_id)
+    {
+        $data = array('saved_id' => 0, 'message' => 'La información de pago del pedido no se actualizó');
+
+        $arr_row['payment_channel'] = 0;
+        $arr_row['payed'] = 0;
+        $arr_row['editado_usuario_id'] = $this->session->userdata('user_id');
+        $arr_row['estado_pedido'] = 1;  //Iniciado
+        $arr_row['factura'] = '';
+        $arr_row['confirmado'] = NULL;
+
+        $affected_rows = $this->act_pedido($pedido_id, $arr_row);
+
+        if ( $affected_rows > 0 ) {
+            $data = array('saved_id' => $pedido_id, 'message' => 'El pedido se actualizó como NO PAGADO');
+        }
+
+        return $data;
     }
 
 // GESTIÓN DE ASIGNACIÓN DE PRODUCTOS DIGITALES
@@ -1624,6 +1735,10 @@ class Pedido_Model extends CI_Model{
 // 
 //-----------------------------------------------------------------------------
     
+    /**
+     * Actualiza campos de estado de pedido
+     * 2021-10-23
+     */
     function act_estado_pendientes()
     {
         //Seleccionar los pedidos pendientes
@@ -1634,7 +1749,6 @@ class Pedido_Model extends CI_Model{
         //Procesar
             foreach ( $pedidos->result() as $row_pedido )
             {
-                //echo $row_pedido->id . '<br/>';
                 $this->Pedido_model->act_estado($row_pedido->id, $this->session->userdata('usuario_id'));
             }
             
@@ -1665,13 +1779,12 @@ class Pedido_Model extends CI_Model{
             $config['mailtype'] = 'html';
 
             $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'Districatólicas Unidas S.A.S.');
+            $this->email->from('info@districatolicas.com', 'DistriCatolicas.com');
             $this->email->to($str_destinatarios);
             $this->email->message($this->mensaje_admon($row_pedido));
             $this->email->subject($subject);
             
             $this->email->send();   //Enviar
-            
     }
     
     /**
@@ -1715,7 +1828,7 @@ class Pedido_Model extends CI_Model{
             $config['mailtype'] = 'html';
 
             $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'Districatólicas Unidas S.A.S.');
+            $this->email->from('info@districatolicas.com', 'DistriCatolicas.com');
             $this->email->to($row_pedido->email);
             $this->email->subject($subject);
             $this->email->message($this->mensaje_admon($row_pedido));
@@ -1738,7 +1851,7 @@ class Pedido_Model extends CI_Model{
             $config['mailtype'] = 'html';
 
             $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'Districatólicas Unidas S.A.S.');
+            $this->email->from('info@districatolicas.com', 'DistriCatolicas.com');
             $this->email->to($row_pedido->email);
             $this->email->bcc($this->App_model->valor_opcion(25));
             $this->email->subject($subject);
@@ -1830,4 +1943,38 @@ class Pedido_Model extends CI_Model{
 
         return $data;
     }
+
+// TEMPORALES
+//-----------------------------------------------------------------------------
+
+    /**
+     * Actualizar el cmapo pedido.payed dependiendo del campo 
+     * pedido.codigo_respuesta_pol
+     * 2021-10-23
+     */
+    function update_payed()
+    {
+        $this->db->query('UPDATE pedido SET payed = 1 WHERE codigo_respuesta_pol = 1');
+
+        $data['message'] = "Pedidos actualizados: " . $this->db->affected_rows();
+        $data['status'] = 1;
+    
+        return $data;
+    }
+
+    /**
+     * Actualizar el cmapo pedido.payed dependiendo del campo 
+     * pedido.codigo_respuesta_pol
+     * 2021-10-23
+     */
+    function update_payment_channel_payu()
+    {
+        $this->db->query('UPDATE pedido SET payment_channel = 1 WHERE codigo_respuesta_pol > 0');
+
+        $data['message'] = "Pedidos actualizados: " . $this->db->affected_rows();
+        $data['status'] = 1;
+    
+        return $data;
+    }
+
 }

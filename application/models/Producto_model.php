@@ -1225,18 +1225,26 @@ class Producto_Model extends CI_Model{
      * Array con el precio que se le aplica a un producto en el momento de cargarlo 
      * a un pedido, se escoge entre los diferentes precios que puede tener un 
      * producto según sus ofertas o promociones aplicables.
-     * 2021-10-08
+     * 2021-12-28
      */
     function arr_precio($producto_id, $cantidad = NULL)
     {
+        $producto = $this->Db_model->row_id('producto', $producto_id);
         $arr_precios = $this->arr_precios($producto_id);
         
-        // Si no es una cantidad (3) para distribuidor o mayorista, se quita la 
-        // opción de distribuidor, del array de precios
-            if ( $cantidad < 3 || is_null($cantidad) ) 
-            {
-                unset($arr_precios[3]);
+        //Si la cantidad no está definida, se quita precio por mayor
+        if ( is_null($cantidad) ) {
+            unset($arr_precios[3]);
+        } else {
+            //Hay cantidad, verificar precio y cantidad
+            if ( $producto->precio < 50000 ) {
+                //Menos de 50K: precio mayorista a partir de 6 unidades
+                if ( $cantidad < 6 ) unset($arr_precios[3]);
+            } else {
+                //50K o más: precio mayorista a partir de 3 unidades
+                if ( $cantidad < 3 ) unset($arr_precios[3]);
             }
+        }
         
         //Se aplica el primer precio en el array, al estar ordenado ASC por precio
             $key_first = array_key_first($arr_precios);

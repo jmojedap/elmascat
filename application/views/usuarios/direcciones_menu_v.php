@@ -38,7 +38,7 @@
         $elementos_rol[23] = array('direcciones', 'direcciones_add');
         
     //Definiendo menú mostrar, según el rol del visitante
-        $elementos = $elementos_rol[$this->session->userdata('rol_id')];
+        $elementos = $elementos_rol[$this->session->userdata('role')];
         
         if ( $this->uri->segment(4) == 'edit' ) { $elementos[] = 'direcciones_volver'; }
         

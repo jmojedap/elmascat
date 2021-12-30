@@ -1,10 +1,10 @@
 <div id="app_explore">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5">
             <?php $this->load->view($views_folder . 'search_form_v'); ?>
         </div>
 
-        <div class="col">
+        <div class="col-md-3">
             <a v-bind:href="`<?= base_url("{$controller}/exportar/?") ?>` + str_filters" class="btn btn-light only-lg" title="Exportar registros encontrados a Excel">
                 <i class="fa fa-download"></i>
             </a>
@@ -18,11 +18,14 @@
             </button>
         </div>
         
-        <div class="col mb-2">
+        <div class="col-md-4 d-flex justify-content-between">
             <a class="btn text-muted">
-                {{ search_num_rows }} resultados &middot; Pág {{ num_page }} / {{ max_page }}
+                <strong class="text-primary">{{ search_num_rows }}</strong> resultados. &middot;
+                <strong class="text-primary">Pág. {{ num_page }}</strong>/{{ max_page }}
             </a>
-            <?php $this->load->view('common/vue_pagination_v'); ?>
+            <div>
+                <?php $this->load->view('common/vue_pagination_v'); ?>
+            </div>
         </div>
     </div>
 

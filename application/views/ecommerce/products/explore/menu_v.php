@@ -5,6 +5,7 @@
     $cl_nav_2['productos_actualizar_datos'] = '';
     $cl_nav_2['productos_promociones'] = '';
     $cl_nav_2['productos_add'] = '';
+    $cl_nav_2['datos_tags'] = '';
     
     $cl_nav_2[$app_cf_index] = 'active';
     if ( $app_cf_index == 'productos_actualizar_datos_e' ) { $cl_nav_2['productos_actualizar_datos'] = 'active'; }
@@ -42,10 +43,17 @@
         class: '<?= $cl_nav_2['productos_add'] ?>',
         cf: 'productos/add'
     };
+
+    sections.tags = {
+        icon: '',
+        text: 'Etiquetas',
+        class: '<?= $cl_nav_2['datos_tags'] ?>',
+        cf: 'datos/tags'
+    };
     
     //Secciones para cada rol
-    sections_role[0] = ['explore', 'add', 'promociones', 'actualizar_datos'];
-    sections_role[1] = ['explore', 'add', 'promociones', 'actualizar_datos'];
+    sections_role[0] = ['explore', 'add', 'promociones', 'actualizar_datos', 'tags'];
+    sections_role[1] = ['explore', 'add', 'promociones', 'actualizar_datos', 'tags'];
     sections_role[2] = ['explore', 'add', 'actualizar_datos'];
     sections_role[6] = ['explore', 'add'];
     sections_role[7] = ['explore', 'add'];

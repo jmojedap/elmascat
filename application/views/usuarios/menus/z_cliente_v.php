@@ -67,7 +67,7 @@
         $elementos_rol[23] = array('info', 'editarme');
         
     //Definiendo menú mostrar, según el rol del visitante
-        $elementos = $elementos_rol[$this->session->userdata('rol_id')];
+        $elementos = $elementos_rol[$this->session->userdata('role')];
         
         if ( $row->id == $this->session->userdata('usuario_id') )
         {

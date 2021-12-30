@@ -6,15 +6,17 @@
     <table class="table bg-white">
         <thead>
             <?php if ( $this->session->userdata('role') <= 2 ) : ?>
-                <th width="10px">
+                <th width="10px" class="d-none">
                     <input type="checkbox" id="checkbox_all_selected" @change="select_all" v-model="all_selected">
                 </th>
             <?php endif; ?>
             
-            <th>Ref. venta</th>
+            <th width="120px">Ref. venta</th>
             <th>Cliente</th>
-            <th>Estado</th>
+            <th>Pagado</th>
+            <th>Canal</th>
             <th>Valor</th>
+            <th>Estado</th>
             <th>PayU</th>
             <th>Peso (kg)</th>
             <th>Imprimir</th>
@@ -24,10 +26,10 @@
             <th width="50px"></th>
         </thead>
         <tbody>
-            <tr v-for="(element, key) in list" v-bind:id="`row_` + element.id">
+            <tr v-for="(element, key) in list" v-bind:id="`row_` + element.id" v-bind:class="{'table-info': selected.includes(element.id) }">
                 
                 <?php if ( $this->session->userdata('role') <= 2 ) : ?>
-                    <td>
+                    <td class="d-none">
                         <input type="checkbox" v-bind:id="`check_` + element.id" v-model="selected" v-bind:value="element.id">
                     </td>
                 <?php endif; ?>
@@ -40,18 +42,35 @@
                     
                 </td>
                 <td>
-                    <a v-bind:href="`<?= base_url("usuarios/profile") ?>/` + element.usuario_id">
+                    <a v-bind:href="`<?= URL_ADMIN . "usuarios/pedidos" ?>/` + element.usuario_id">
                         {{ element.nombre }} {{ element.apellidos }}
                     </a>
                     <br>
                     {{ element.email }}
                 </td>
 
+                <td class="text-center">
+                    <i class="fa fa-check-circle text-success" v-if="element.payed == 1"></i>
+                </td>
+
+                <td>
+                    <div v-if="element.payment_channel > 0">
+                        <i class="fa fa-circle" v-bind:class="`channel_` + element.payment_channel"></i>
+                        {{ element.payment_channel | payment_channel_name }}
+                    </div>
+                </td>
+
+                <td class="text-right">
+                    <span class="text-muted" v-if="element.payed == 0">
+                        {{ element.valor_total | currency }}
+                    </span>
+                    <strong v-if="element.payed == 1">
+                        {{ element.valor_total | currency }}
+                    </strong>
+                </td>
+
                 <td v-bind:class="{'table-danger': element.estado_pedido == 6, 'table-warning': element.estado_pedido == 3 }">
                     {{ element.estado_pedido | status_name }}
-                </td>
-                <td class="text-right">
-                    {{ element.valor_total | currency }}
                 </td>
 
                 <td>

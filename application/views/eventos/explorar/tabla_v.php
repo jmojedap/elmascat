@@ -17,7 +17,7 @@
         
         $clases_col['tipo'] = '';
         
-        if ( $this->session->userdata('rol_id') >= 2 )
+        if ( $this->session->userdata('role') >= 2 )
         {
             $clases_col['selector'] = 'hidden';
         }

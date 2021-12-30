@@ -105,7 +105,7 @@ class Usuarios extends CI_Controller{
     function procesos($usuario_id)
     {
         //Datos básicos
-        if ( $this->session->userdata('rol_id') > 2 ) { $usuario_id = $this->session->userdata('usuario_id'); }
+        if ( $this->session->userdata('role') > 2 ) { $usuario_id = $this->session->userdata('usuario_id'); }
         $data = $this->Usuario_model->basic($usuario_id);
         
         //Array data espefícicas

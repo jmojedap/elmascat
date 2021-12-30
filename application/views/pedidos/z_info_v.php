@@ -62,14 +62,14 @@
             type: 'POST',
             url: base_url + 'pedidos/reiniciar/' + cod_pedido,
             success: function(response){
-                if (response.qty_affected > 0) {
-                    toastr['success']('Pedido reiniciado');
+                if (response.cod_pedido.length > 0) {
+                    toastr['success']('Pedido reiniciado, cargando...');
                     $('#btn_reiniciar_pedido').removeClass('btn-light');
                     $('#btn_reiniciar_pedido').addClass('btn-success');
-                    $('#btn_reiniciar_pedido').html('<i class="fa fa-check"></i> Reiniciado');
+                    $('#btn_reiniciar_pedido').html('<i class="fa fa-check"></i> Reiniciado...');
                     setTimeout(function(){ 
                         window.location = base_url + 'pedidos/ver/' + pedido_id;
-                    }, 3000);
+                    }, 1500);
                 } else {
                     toastr['error']('No se pudo reiniciar el pedido');
                 }
@@ -85,19 +85,19 @@
     <a href="<?= base_url("pedidos/reporte/{$row->id}/label") ?>" class="btn btn-light w120p" target="_blank" title="Imprimir label envío">
         <i class="fa fa-print"></i> Label
     </a>
-    <?php if ( $row->estado_pedido == 1 ) { ?>
+    <?php if ( $row->codigo_respuesta_pol != 1 ) { ?>
         <a href="<?= base_url("pedidos/link_pago/{$row->cod_pedido}") ?>" class="btn btn-success" target="_blank" title="Link para iniciar proceso de pago">
             <i class="fa fa-link"></i>
             Link de pago
         </a>
     <?php } ?>
-    <?php if ( $row->estado_pedido < 3 && $this->session->userdata('rol_id') <= 1 ) { ?>
+    <?php if ( $row->estado_pedido < 3 && $this->session->userdata('role') <= 1 ) { ?>
         <button class="btn btn-light w120p" title="Reiniciar el pedido para intentar nuevamente el pago" id="btn_reiniciar_pedido">
             <i class="fa fa-sync-alt"></i>
             Reiniciar
         </button>
     <?php } ?>
-    <?php if ( $this->session->userdata('rol_id') == 0 ) { ?>
+    <?php if ( $this->session->userdata('role') == 0 ) { ?>
         <a href="<?= base_url("admin/tablas/pedido/edit/{$row->id}") ?>" class="btn btn-light w120p" title="Edición del registro en la base de datos" target="_blank">
             <i class="fa fa-edit"></i>
             Editar Row
@@ -260,6 +260,14 @@
 
             <table class="table table-condensed">
                 <tbody>
+                    <tr class="info">
+                        <td>Pagado</td>
+                        <td>
+                            <b>
+                                <?= $this->Item_model->nombre(7, $row->estado_pedido) ?>
+                            </b>
+                        </td>
+                    </tr>
                     <tr class="info">
                         <td>Estado</td>
                         <td>
