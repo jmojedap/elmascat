@@ -520,11 +520,13 @@ class Pedido_Model extends CI_Model{
         $validacion['existencias'] = $this->validar_existencias($row_pedido->id);
         $validacion['datos_completos'] = $this->validar_datos_completos($row_pedido);
         $validacion['flete'] = $this->validar_flete($row_pedido);
+        $validacion['expiracion'] = $this->validar_expiracion($row_pedido);
 
         //Validación general
         if ( $validacion['existencias']['status'] == 0 ) $validacion['status'] = 0;
         if ( $validacion['datos_completos']['status'] == 0 ) $validacion['status'] = 0;
         if ( $validacion['flete']['status'] == 0 ) $validacion['status'] = 0;
+        if ( $validacion['expiracion']['status'] == 0 ) $validacion['status'] = 0;
 
         return $validacion;
     }
@@ -587,6 +589,30 @@ class Pedido_Model extends CI_Model{
             $data = array('status' => 0, 'error' => 'Los gastos de envío no se han calculado.');
         }
 
+        return $data;
+    }
+
+    /**
+     * Verificar que el pedido no haya sido creado hace más de 10 días
+     * 2021-02-14
+     */
+    function validar_expiracion($row)
+    {
+        $data = array('status' => 1, 'error' => '');
+
+        $seconds = $this->pml->seconds($row->creado, date('Y-m-d'));
+        $days = $seconds / (60*60*24);
+
+        // El máximo número de días en el que es válido un pedido es 10
+        if ( $days > 10 ) {
+            $data['status'] = 0;
+            $data['error'] = '
+                El pedido fue creado hace más de 10 días (' . intval($days) . ' días)
+                y el pago ya no puede ser procesado.
+                por favor inicie una nueva compra.
+            ';
+        }
+        
         return $data;
     }
 
@@ -1060,10 +1086,10 @@ class Pedido_Model extends CI_Model{
                 $arr_row['usuario_id'] = $this->Usuario_model->guardar($user);
 
                 $this->Usuario_model->email_activacion($arr_row['usuario_id']);  //Envía mensaje email para activar cuenta de usuario
-            }
 
-            //Cargar usuario en variables de sesión
-            $this->session->set_userdata('user_id', $arr_row['usuario_id']);
+                //Cargar usuario en variables de sesión
+                $this->session->set_userdata('user_id', $arr_row['usuario_id']);
+            }
 
             //Se actualiza pedido.usuario_id
             $this->db->where('id', $row->id);
@@ -1073,7 +1099,7 @@ class Pedido_Model extends CI_Model{
 
     /**
      * Carga los datos del pedido al usuario, si no los tiene.
-     * 2021-09-29
+     * 2022-02-14
      */
     function set_user_data($pedido_id)
     {
@@ -1099,10 +1125,11 @@ class Pedido_Model extends CI_Model{
             if ( count($user) > 0 )
             {
                 $data['saved_id'] = $this->Db_model->save('usuario', "id = {$row_usuario->id}", $user);
+
+                //Cargar usuario en variables de sesión
+                $this->session->set_userdata('user_id', $data['saved_id']);
             }
 
-            //Cargar usuario en variables de sesión
-            $this->session->set_userdata('user_id', $data['saved_id']);
         }
 
         return $data;

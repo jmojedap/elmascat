@@ -102,7 +102,7 @@ class Producto_Model extends CI_Model{
             palabras_clave AS keywords, precio AS price, cant_disponibles AS stock, imagen_id AS image_id, url_image, url_thumbnail, 
             estado AS status, producto.tipo_id AS type_id, creado AS created_at, editado AS updated_at';
 
-        //$arr_select['export'] = 'usuario.id, username, usuario.email, nombre, apellidos, sexo, rol_id, estado, no_documento, tipo_documento_id, institucion_id, grupo_id';
+        $arr_select['export'] = '*';
 
         return $arr_select[$format];
     }
@@ -160,6 +160,7 @@ class Producto_Model extends CI_Model{
         if ( $filters['dcto'] != '' ) { $condition .= "promocion_id = {$filters['dcto']} AND "; }   //Descuento o promoción
         if ( $filters['promo'] != '' ) { $condition .= "promocion_id > 0 AND "; }   //Tiene algúna oferta o descuento
         if ( $filters['fe1'] != '' ) { $condition .= "peso <= {$filters['fe1']} AND "; }   //Peso máximo
+        if ( $filters['fe2'] != '' ) { $condition .= "url_image = '' AND "; }   //Peso máximo
         if ( $filters['d1'] != '' ) { $condition .= "creado >= '{$filters['d1']} 00:00:00' AND "; }   //Fecha de creación
         if ( $filters['tag'] != '' ) {
             $condition .= "producto.id IN (SELECT elemento_id FROM meta WHERE tabla_id = 3100 AND dato_id = 21 AND relacionado_id IN ({$filters['tag']}) ) AND ";
@@ -238,6 +239,20 @@ class Producto_Model extends CI_Model{
         );
         
         return $options_order_by;
+    }
+
+    /**
+     * Query para exportar
+     * 2021-09-27
+     */
+    function query_export($filters)
+    {
+        $this->db->select($this->select('export'));
+        $search_condition = $this->search_condition($filters);
+        if ( $search_condition ) { $this->db->where($search_condition);}
+        $query = $this->db->get('producto', 10000);  //Hasta 10.000 registros
+
+        return $query;
     }
 
 // DATOS
@@ -499,6 +514,22 @@ class Producto_Model extends CI_Model{
         $query = $this->db->get('post');
         
         return $query;
+    }
+
+    /**
+     * Pedidos en los que está incluido un producto
+     * 2022-02-19
+     */
+    function orders($producto_id)
+    {
+        $this->db->select('pedido.*, pedido_detalle.cantidad, pedido_detalle.precio');
+        $this->db->join('pedido_detalle', 'pedido.id = pedido_detalle.pedido_id');
+        $this->db->where('payed', 1);
+        $this->db->order_by('id', 'DESC');
+        $this->db->where('producto_id', $producto_id);
+        $orders = $this->db->get('pedido');
+
+        return $orders;
     }
 
 //METADATOS

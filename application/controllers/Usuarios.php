@@ -573,7 +573,7 @@ class Usuarios extends CI_Controller{
 
         //Opciones de libro
         $fecha_publicado_desde = date("Y-m-d H:i:s", strtotime("-1 months"));
-        $fecha_publicado_hasta = date("Y-m-d H:i:s", strtotime("+8 months"));
+        $fecha_publicado_hasta = date("Y-m-d H:i:s", strtotime("+13 months"));
 
         $condition = "tipo_id = 8 AND publicado >='{$fecha_publicado_desde}' AND publicado <= '{$fecha_publicado_hasta}'";
         $data['options_book'] = $this->App_model->opciones_post($condition, 'n', 'Libro');

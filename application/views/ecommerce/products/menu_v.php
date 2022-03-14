@@ -5,6 +5,7 @@
     $cl_nav_2['productos_details'] = '';
     $cl_nav_2['productos_edit'] = '';
     $cl_nav_2['productos_tags'] = '';
+    $cl_nav_2['productos_orders'] = '';
     $cl_nav_2['productos_books'] = '';
     $cl_nav_2['productos_images'] = '';
     //$cl_nav_2['productos_import'] = '';
@@ -47,6 +48,13 @@
         cf: 'productos/tags/' + element_id
     };
 
+    sections.orders = {
+        icon: '',
+        text: 'Pedidos',
+        class: '<?= $cl_nav_2['productos_orders'] ?>',
+        cf: 'productos/orders/' + element_id
+    };
+
     sections.variaciones = {
         icon: '',
         text: 'Variaciones',
@@ -78,9 +86,9 @@
     };
     
     //Secciones para cada rol
-    sections_rol[0] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books', 'detalle'];
-    sections_rol[1] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books', 'detalle'];
-    sections_rol[2] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'books', 'detalle'];
+    sections_rol[0] = ['info', 'details', 'images', 'edit', 'tags', 'orders', 'variaciones', 'books', 'detalle'];
+    sections_rol[1] = ['info', 'details', 'images', 'edit', 'tags', 'orders', 'variaciones', 'books', 'detalle'];
+    sections_rol[2] = ['info', 'details', 'images', 'edit', 'tags', 'orders', 'variaciones', 'books', 'detalle'];
     sections_rol[6] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'detalle'];
     sections_rol[7] = ['info', 'details', 'images', 'edit', 'tags', 'variaciones', 'detalle'];
     

@@ -26,17 +26,17 @@
         </a>
     </li>
     
-    <!-- <li class="level0 parent drop-menu" title="Nuevos productos">
+    <li class="level0 parent drop-menu" title="Nuevos productos">
         <a href="<?= base_url("productos/catalogo/?d1={$fi_novedades}") ?>" class="<?= $clases_menu['novedades'] ?>">
             Novedades
         </a>
-    </li> -->
-    <li class="level0 parent drop-menu" title="Productos temporada navidad">
+    </li>
+    <!-- <li class="level0 parent drop-menu" title="Productos temporada navidad">
         <a href="<?= base_url("productos/catalogo/productos-navidad/?tag=677") ?>" class="<?= $clases_menu['navidad'] ?>">
             <i class="far fa-star"></i>
             Navidad
         </a>
-    </li>
+    </li> -->
 
     <li class="level0 parent drop-menu">
         <a href="#"><span>Minutos de Amor</span></a>

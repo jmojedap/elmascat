@@ -52,6 +52,7 @@ class Tienda extends CI_Controller{
             $data['arr_status'] = $this->Item_model->arr_cod('categoria_id = 8');
             $data['arr_categories'] = $this->Item_model->arr_cod('categoria_id = 25');
             //$data['arr_id_number_types'] = $this->Item_model->arr_item('category_id = 53', 'cod_abr');
+            $data['view_a'] = 'templates/libreria/example';
             
         //Cargar vista
             $this->App_model->view('templates/libreria/main', $data);

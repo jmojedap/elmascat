@@ -178,7 +178,6 @@
             
             <?php $this->load->view('pedidos/compra/totales_v'); ?>
 
-
             <ul class="checkout">
                 <form accept-charset="utf-8" method="POST" action="<?= $destino_form ?>">
 
@@ -212,6 +211,16 @@
                                 <a href="<?= base_url("pedidos/compra_a") ?>">Volver</a>
                             </div>
                         <?php endif; ?>
+                        <?php if ( $validacion['expiracion']['status'] == 0 ) : ?>
+                            <div class="alert alert-warning">
+                                <?= $validacion['expiracion']['error'] ?>
+                            </div>
+                            <div class="mb-2">
+                                <button class="btn btn-light btn-sm" data-toggle="modal" data-target="#cancel_modal" type="button">
+                                    <i class="fa fa-trash"></i> &nbsp; Reinciar
+                                </button>
+                            </div>
+                        <?php endif; ?>
                     <?php endif; ?>
 
                 </form>
@@ -219,8 +228,10 @@
 
             <div class="alert alert-info text-center">
                 <p>
-                    <i class="fa fa-info-circle"></i> <strong>Recuerda</strong>
+                    La entrega de su compra pueden tomar entre <strong>1 y 2 días hábiles</strong> para Bogotá y hasta <strong>3 días hábiles</strong> para el resto del país.
                 </p>
+            </div>
+            <div class="alert alert-info text-center">
                 <p>
                     Para pagos en Efectivo con Códigos de pago: 
                     Algunos productos de tu pedido podrían dejar de estar disponibles si pasa mucho tiempo entre la creación de tu pedido y el momento del pago.
@@ -234,6 +245,7 @@
             <?php } ?>
         </div>
     </div>
+    <?php $this->load->view('pedidos/compra/carrito/modal_cancel_v') ?>
 </div>
 
 <script>
@@ -264,7 +276,17 @@ var compra_b_app = new Vue({
         extras: <?= json_encode($extras->result()) ?>,
         loading: false,
     },
-    methods: {}
+    methods: {
+        cancel_order: function(){
+            axios.get(url_api + 'pedidos/cancel/')
+            .then(response => {
+                if ( response.data.status == 1 ) {
+                    window.location = url_app + 'productos/catalogo'
+                }
+            })
+            .catch(function (error) { console.log(error) })
+        },
+    }
 });
 </script>
 

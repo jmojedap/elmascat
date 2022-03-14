@@ -78,6 +78,15 @@
             <label for="fe1" class="col-md-3 col-form-label">Peso máximo (g)</label>
         </div>
 
+        <div class="form-group row">
+            <div class="col-md-9">
+                <select name="fe2" v-model="filters.fe2" class="form-control">
+                    <option v-for="(option_fe2, key_fe2) in options_image_status" v-bind:value="key_fe2">{{ option_fe2 }}</option>
+                </select>
+            </div>
+            <label for="fe1" class="col-md-3 col-form-label">Estado imagen</label>
+        </div>
+
         <!-- Variables de ordenamiento de registros -->
         <div class="form-group row">
             <div class="col-md-3">

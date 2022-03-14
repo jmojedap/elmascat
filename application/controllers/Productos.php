@@ -132,6 +132,41 @@ class Productos extends CI_Controller{
     }
 
     /**
+     * Exportar resultados de búsqueda
+     * 2021-09-27
+     */
+    function export()
+    {
+        set_time_limit(120);    //120 segundos, 2 minutos para el proceso
+
+        //Identificar filtros y búsqueda
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        $data['query'] = $this->Producto_model->query_export($filters);
+
+        if ( $data['query']->num_rows() > 0 ) {
+            //Preparar datos
+                $data['sheet_name'] = 'productos';
+
+            //Objeto para generar archivo excel
+                $this->load->library('Excel');
+                $file_data['obj_writer'] = $this->excel->file_query($data);
+
+            //Nombre de archivo
+                $file_data['file_name'] = date('Ymd_His') . '_' . $data['sheet_name'];
+
+            $this->load->view('common/download_excel_file_v', $file_data);
+            //Salida JSON
+            //$this->output->set_content_type('application/json')->set_output(json_encode($file_data['obj_writer']));
+        } else {
+            $data = array('message' => 'No se encontraron registros para exportar');
+            //Salida JSON
+            $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        }
+    }
+
+    /**
      * Vista información general del producto
      * 2021-06-23
      */
@@ -149,6 +184,18 @@ class Productos extends CI_Controller{
     {
         $data = $this->Producto_model->basico($producto_id);
         $data['view_a'] = 'common/row_details_v';
+        $data['nav_2'] = $this->views_folder . 'menu_v';
+        $this->App_model->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Pedidos en los que está incluido un producto
+     */
+    function orders($producto_id)
+    {
+        $data = $this->Producto_model->basico($producto_id);
+        $data['orders'] = $this->Producto_model->orders($producto_id);
+        $data['view_a'] = $this->views_folder . 'orders_v';
         $data['nav_2'] = $this->views_folder . 'menu_v';
         $this->App_model->view(TPL_ADMIN, $data);
     }
