@@ -238,7 +238,7 @@ var compra_a_app = new Vue({
             axios.post(url_app + 'pedidos/guardar_pedido/', form_data)
             .then(response => {
                 console.log(response.data)
-                var destination = url_app + 'pedidos/compra_b'
+                var destination = url_app + 'pedidos/verificar'
                 if ( this.form_values.is_gift == 1 ) destination = url_app + 'pedidos/datos_regalo'
                 if ( response.data.status == 1) window.location = destination
             })

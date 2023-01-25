@@ -481,10 +481,11 @@ class Pedidos extends CI_Controller{
     }
     
     /**
-     * Resumen del pedido, productos y datos de entrega, para revisión antes de ir a plataforma de pagos
+     * Resumen del pedido, productos y datos de entrega, para revisión antes
+     * de ir a plataforma de pagos
      * 2020-02-27
      */
-    function compra_b()
+    function verificar()
     {
         $this->load->model('Producto_model');
 
@@ -501,22 +502,39 @@ class Pedidos extends CI_Controller{
         
         //Datos para el formulario que se envía a PagosOnLine
             $data['form_data'] = $this->Pedido_model->form_data_pol($order->id);
-            //$data['destino_form'] = 'https://gateway.pagosonline.net/apps/gateway/index.html';
             //Donde se envían los datos para el pago
             $data['destino_form'] = 'https://checkout.payulatam.com/ppp-web-gateway-payu';
             
-            if ( $this->input->get('prueba') == 1 )
+            if ( $this->input->get('testing') == 1 )
             {
                 $data['form_data'] = $this->Pedido_model->form_data_pol($order->id, 1);
-                $data['destino_form'] = 'https://checkout.payulatam.com/ppp-web-gateway-payu';  //Página para transacciones de prueba
             }
         
         //Solicitar vista
             $data['head_title'] = 'Verificar datos';
             $data['view_a'] = 'pedidos/compra/compra_v';
-            $data['view_b'] = 'pedidos/compra/compra_b_v';
+            $data['view_b'] = 'pedidos/compra/verificar_v';
             $data['section_id'] = 'cart_items';
             $this->load->view(TPL_FRONT, $data);
+    }
+
+    /**
+     * Al presionar el botón [IR A PAGAR] de la sección pedidos/verificar, se marca
+     * el pedido en estado 2, para evitar que posteriormente edite.
+     * 2023-01-25
+     */
+    function iniciar_pago()
+    {
+        $order_code = $this->session->userdata('order_code');
+        $order = $this->Pedido_model->row_by_code($order_code);
+
+        $data['status'] = 0;
+        if ( ! is_null($order) ) {
+            $data['status'] = $this->Pedido_model->iniciar_pago($order);
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
     /**
@@ -533,10 +551,10 @@ class Pedidos extends CI_Controller{
     }
     
     /**
-     * Igual a la parte B de la compra (compra_b), pero convierte los valores de
+     * Igual a la parte B de la compra (verificar), pero convierte los valores de
      * pago en dólares de Estados Unidos (USD)
      */
-    function compra_b_usd()
+    function verificar_usd()
     {
         $this->load->model('Producto_model');
         $pedido_id = $this->session->userdata('pedido_id');
@@ -559,7 +577,7 @@ class Pedidos extends CI_Controller{
         //Solicitar vista
             $data['head_title'] = 'Districatólicas';
             $data['view_a'] = 'pedidos/compra/compra_v';
-            $data['view_b'] = 'pedidos/compra/compra_b_usd_v';
+            $data['view_b'] = 'pedidos/compra/verificar_usd_v';
             $data['section_id'] = 'cart_items';
             $this->load->view(TPL_FRONT, $data);
     }

@@ -10,14 +10,14 @@
     if ( $step == 'usuario' ) { $cl_steps['datos'] = 'active'; }
     if ( $step == 'compra_a' ) { $cl_steps['datos'] = 'active'; }
     if ( $step == 'datos_regalo' ) { $cl_steps['datos'] = 'active'; }
-    if ( $step == 'compra_b' ) { $cl_steps['verificacion'] = 'active'; }
+    if ( $step == 'verificar' ) { $cl_steps['verificacion'] = 'active'; }
     if ( $step == 'link_pago' ) { $cl_steps['verificacion'] = 'active'; }
     if ( $step == 'respuesta' ) { $cl_steps['resultado'] = 'active'; }
 
     $arr_pct = array(
         'carrito' => '25',
         'compra_a' => '50',
-        'compra_b' => '75',
+        'verificar' => '75',
         'respuesta' => '100'
     );
 ?>

@@ -83,7 +83,7 @@ var datos_regalo_app = new Vue({
             axios.post(url_app + 'pedidos/guardar_datos_regalo/', form_data)
             .then(response => {
                 if ( response.data.status == 1) {
-                    window.location = url_app + 'pedidos/compra_b'
+                    window.location = url_app + 'pedidos/verificar'
                 }
             })
             .catch(function (error) { console.log(error) })
@@ -132,7 +132,7 @@ var datos_regalo_app = new Vue({
             axios.post(url_app + 'pedidos/guardar_pedido/', form_data)
             .then(response => {
                 console.log(response.data)
-                var destination = url_app + 'pedidos/compra_b'
+                var destination = url_app + 'pedidos/verificar'
                 if ( response.data.status == 1) window.location = destination
             })
             .catch(function (error) { console.log(error) })

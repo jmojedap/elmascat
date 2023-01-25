@@ -233,7 +233,7 @@
                 axios.post(url_app + 'pedidos/guardar_pedido/', $('#compra_a_form').serialize())
                 .then(response => {
                     if ( response.data.qty_affected >= 0) {
-                        window.location = url_app + 'pedidos/compra_b'
+                        window.location = url_app + 'pedidos/verificar'
                     }
                 })
                 .catch(function (error) {

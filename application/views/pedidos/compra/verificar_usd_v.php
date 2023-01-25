@@ -187,7 +187,7 @@
             <?= form_close('') ?>
         </ul>
         
-        <a class="btn btn-block btn-default" href="<?= base_url("pedidos/compra_b/{$row->cod_pedido}") ?>">
+        <a class="btn btn-block btn-default" href="<?= base_url("pedidos/verificar/{$row->cod_pedido}") ?>">
             Pagar en Pesos Colombianos (COP)
         </a>
         

@@ -520,12 +520,15 @@ class Pedido_Model extends CI_Model{
     function validar($row_pedido)
     {
         $validacion['status'] = 1;
+        
+        $validacion['estado_pedido'] = $row_pedido->estado_pedido;
         $validacion['existencias'] = $this->validar_existencias($row_pedido->id);
         $validacion['datos_completos'] = $this->validar_datos_completos($row_pedido);
         $validacion['flete'] = $this->validar_flete($row_pedido);
         $validacion['expiracion'] = $this->validar_expiracion($row_pedido);
 
         //Validación general
+        if ( $validacion['estado_pedido'] != 1 ) $validacion['status'] = 0;
         if ( $validacion['existencias']['status'] == 0 ) $validacion['status'] = 0;
         if ( $validacion['datos_completos']['status'] == 0 ) $validacion['status'] = 0;
         if ( $validacion['flete']['status'] == 0 ) $validacion['status'] = 0;
@@ -617,6 +620,23 @@ class Pedido_Model extends CI_Model{
         }
         
         return $data;
+    }
+
+    /**
+     * Al presionar el botón [IR A PAGAR] de la sección pedidos/verificar, se marca
+     * el pedido en estado 2, para evitar que posteriormente edite.
+     * 2023-01-25
+     */
+    function iniciar_pago($order)
+    {
+        $aRow['estado_pedido'] = 2; //Pago pendiente
+        $aRow['editado'] = date('Y-m-d H:i:s');
+
+        $this->db->where('id', $order->id);
+        $this->db->where('estado_pedido', 1);   //Solo si está iniciado
+        $this->db->update('pedido', $aRow);
+        
+        return $this->db->affected_rows();
     }
 
 //FORMATO

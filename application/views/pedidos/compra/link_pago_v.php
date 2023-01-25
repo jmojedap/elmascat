@@ -170,7 +170,7 @@
             </ul>
             
             <?php if ( $row->pais_id != 51 ) { ?>
-                <a class="btn btn-info btn-block" href="<?= base_url("pedidos/compra_b_usd/{$row->cod_pedido}") ?>">
+                <a class="btn btn-info btn-block" href="<?= base_url("pedidos/verificar_usd/{$row->cod_pedido}") ?>">
                     Pagar en Dólares (USD)
                 </a>
             <?php } ?>

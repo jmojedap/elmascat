@@ -1,4 +1,4 @@
-<div id="compra_b_app">
+<div id="verificarApp">
     <div class="row">
         <div class="col col-md-4">
             <div class="cart ">
@@ -183,15 +183,24 @@
             <?php $this->load->view('pedidos/compra/totales_v'); ?>
 
             <ul class="checkout">
-                <form accept-charset="utf-8" method="POST" action="<?= $destino_form ?>">
+                <form accept-charset="utf-8" method="POST" action="<?= $destino_form ?>" id="paymentForm">
 
                     <?php foreach ($form_data as $key => $valor) : ?>
                         <?= form_hidden($key, $valor) ?>
                     <?php endforeach ?>
 
                     <?php if ( $validacion['status'] == 1 ) : ?>
-                        <button class="btn-polo-lg" type="submit">IR A PAGAR</button>
+                        <!-- <button class="btn-polo-lg" type="submit">IR A PAGAR</button> -->
+                        <button class="btn-polo-lg" type="button" v-on:click="iniciarPago">IR A PAGAR</button>
                     <?php else : ?>
+                        <?php if ( $validacion['estado_pedido'] != 1 ) : ?>
+                            <div class="alert alert-warning">
+                                El pago de este pedido ya se inició. Vacíe su carrito o comuníquese con uno de nuestros asesores.
+                                <br>
+                                <a href="<?= base_url("pedidos/carrito") ?>">Volver al carrito</a>
+                            </div>
+                        <?php endif; ?>
+
                         <?php if ( $validacion['existencias']['status'] == 0 ) : ?>
                             <div class="alert alert-warning">
                                 <?= $validacion['existencias']['error'] ?>
@@ -247,7 +256,7 @@
             </div>
             
             <?php if ( $row->pais_id != 51 ) { ?>
-                <a class="btn btn-info btn-block" href="<?= base_url("pedidos/compra_b_usd/{$row->cod_pedido}") ?>">
+                <a class="btn btn-info btn-block" href="<?= base_url("pedidos/verificar_usd/{$row->cod_pedido}") ?>">
                     Pagar en Dólares (USD)
                 </a>
             <?php } ?>
@@ -277,8 +286,8 @@ Vue.filter('name_extra_pedido', function (value) {
 
 // VueApp
 //-----------------------------------------------------------------------------
-var compra_b_app = new Vue({
-    el: '#compra_b_app',
+var verificarApp = new Vue({
+    el: '#verificarApp',
     data: {
         order: <?= json_encode($row) ?>,
         extras: <?= json_encode($extras->result()) ?>,
@@ -293,6 +302,18 @@ var compra_b_app = new Vue({
                 }
             })
             .catch(function (error) { console.log(error) })
+        },
+        iniciarPago: function(){
+            axios.get(url_api + 'pedidos/iniciar_pago/')
+            .then(response => {
+                if ( response.data.status > 0 ) {
+                    document.getElementById("paymentForm").submit();
+                    toastr['info']('Redirigiendo a PayU...')
+                } else {
+                    toastr['error']('Ocurrió un error al iniciar el pago')
+                }
+            })
+            .catch(function(error) { console.log(error) })
         },
     }
 });
