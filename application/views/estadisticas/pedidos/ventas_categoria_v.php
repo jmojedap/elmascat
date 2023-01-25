@@ -12,9 +12,7 @@
     foreach ( $ventas_categoria->result() as $row_categoria ) { $sum_ventas += $row_categoria->valor; }
 ?>
 
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<?php $this->load->view('assets/highcharts') ?>
 
 <div class="row">
     <div class="col-md-6">
@@ -29,20 +27,20 @@
             </thead>
             <tbody>
                 <?php foreach ( $ventas_categoria->result() as $row_categoria ) { ?>
-                    <?php
+                <?php
                         $pct_ventas = $this->Pcrn->int_percent($row_categoria->valor, $sum_ventas);
                         $valor_inventario = $arr_inventario[$row_categoria->categoria_id];
                         $pct_inventario = $this->Pcrn->int_percent($valor_inventario, $sum_inventario);
                         $balance = $this->Pcrn->dividir($pct_ventas, $pct_inventario);
                     ?>
-                    <tr>
-                        <td><?= $row_categoria->nombre_categoria ?></td>
-                        <td class="text-right"><?= $this->pacarina->moneda($row_categoria->valor, 'M') ?></td>
-                        <td class="text-center"><?= $pct_ventas ?></td>
-                        <td class="text-right"><?= $this->pacarina->moneda($valor_inventario, 'M') ?></td>
-                        <td><?= $pct_inventario ?></td>
-                        <td><?= number_format($balance, 2) ?></td>
-                    </tr>
+                <tr>
+                    <td><?= $row_categoria->nombre_categoria ?></td>
+                    <td class="text-right"><?= $this->pacarina->moneda($row_categoria->valor, 'M') ?></td>
+                    <td class="text-center"><?= $pct_ventas ?></td>
+                    <td class="text-right"><?= $this->pacarina->moneda($valor_inventario, 'M') ?></td>
+                    <td><?= $pct_inventario ?></td>
+                    <td><?= number_format($balance, 2) ?></td>
+                </tr>
                 <?php } ?>
                 <tr class="info text-bold">
                     <td>Total</td>
@@ -62,7 +60,10 @@
 
 
 <script>
-    Highcharts.chart('chart', {
+Highcharts.theme = hc_districatolicas_theme;
+Highcharts.setOptions(Highcharts.theme);
+
+let chart = new Highcharts.chart('chart', {
     chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -92,13 +93,15 @@
         name: 'Brands',
         colorByPoint: true,
         data: [
-            <?php foreach ( $ventas_categoria->result() as $row_categoria ) { ?>
-            {
+            <?php foreach ( $ventas_categoria->result() as $row_categoria ) { ?> {
                 name: '<?= $row_categoria->nombre_categoria ?>',
                 y: <?= $row_categoria->valor ?>
             },
-        <?php } ?>
+            <?php } ?>
         ]
-    }]
+    }],
+    credits: {
+        enabled: false
+    },
 });
 </script>

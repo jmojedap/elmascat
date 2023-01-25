@@ -151,14 +151,11 @@ class Account_model extends CI_Model{
                 'user_id'    =>  $row_user->id,
                 'role'    => $row_user->rol_id,
                 'role_abbr'    => $this->Db_model->field('item', "categoria_id = 58 AND id_interno = {$row_user->rol_id}", 'abreviatura'),
-                /*'last_login'    => $row_user->last_login,*/
-                /*'src_img'    => $this->App_model->src_img_user($row_user, 'sm_'),*/
-                /*'acl' => $this->acl($row_user)   //Listado de permisos*/
             );
                 
         //Datos específicos para la aplicación
-            $app_session_data = $this->App_model->app_session_data($row_user);
-            $data = array_merge($data, $app_session_data);
+            /*$app_session_data = $this->App_model->app_session_data($row_user);
+            $data = array_merge($data, $app_session_data);*/
         
         //Devolver array
             return $data;
@@ -247,13 +244,14 @@ class Account_model extends CI_Model{
 
     /**
      * Set an activation key for user account recovery
+     * 2023-01-16
      * 
-     * @param type $user_id
+     * @param int $user_id
      */
     function activation_key($user_id)
     {
         $this->load->helper('string');
-        $arr_row['cod_activacion'] = strtolower(random_string('alpha', 12));
+        $arr_row['cod_activacion'] = strtolower(random_string('alpha', 32));
         
         $this->db->where('id', $user_id);
         $this->db->update('usuario', $arr_row);
@@ -261,19 +259,26 @@ class Account_model extends CI_Model{
         return $arr_row['cod_activacion'];
     }
 
-    function activate($activation_key)
+    /**
+     * Activa la cuenta de un usuario y le asigna la contraseña recibida en el
+     * formulario
+     * 2023-01-16 desactivada
+     */
+    function z_activate($user_id)
     {
-        $row_user = $this->Db_model->row('usuario', "activation_key = '{$activation_key}'");
-        
-        //Row user
-            $arr_row['status'] = 1;
-            $arr_row['password'] = $this->crypt_pw($this->input->post('password'));
+        $user = $this->Db_model->row('usuario', "cod_activacion = '{$activation_key}'");
 
-        //Update
-            $this->db->where('id', $row_user->id);
-            $this->db->update('usuario', $arr_row);
+        if ( ! is_null($user) ) {
+            //Row user
+                $arr_row['estado'] = 1; //Activo
+                $arr_row['password'] = $this->crypt_pw($this->input->post('password'));
+    
+            //Update
+                $this->db->where('id', $user_id);
+                $this->db->update('usuario', $arr_row);
+        }
             
-        return $row_user;
+        return $user;
     }
 
 // PASSWORDS
@@ -283,6 +288,8 @@ class Account_model extends CI_Model{
     function change_password($user_id, $password)
     {
         $arr_row = array(
+            'estado' => 1,           //Activar usuario
+            'cod_activacion' => '',  //Quitar clave de activación reciente
             'password'  => $this->crypt_pw($password)
         );
         
@@ -403,7 +410,7 @@ class Account_model extends CI_Model{
      * @param type $user_id
      * @param type $activation_type
      */
-    function email_activation($user_id, $activation_type = 'activation')
+    function z_email_activation($user_id, $activation_type = 'activation')
     {
         $row_user = $this->Db_model->row_id('usuario', $user_id);
         
@@ -424,23 +431,20 @@ class Account_model extends CI_Model{
             $this->email->from('accounts@' . APP_DOMAIN, APP_NAME);
             $this->email->to($row_user->email);
             $this->email->bcc('jmojedap@gmail.com');
-            $this->email->message($this->activation_message($user_id, $activation_type));
+            $this->email->message($this->activation_message($row_user, $activation_type));
             $this->email->subject($subject);
             
             $this->email->send();   //Enviar
     }
 
     /**
-     * Devuelve texto de la vista que se envía por email a un usuario para activación o restauración de su cuenta
+     * Devuelve texto de la vista que se envía por email a un usuario para activación 
+     * o restauración de su cuenta
      * 
-     * @param type $user_id
-     * @param type $activation_type
-     * @return type
      */
-    function activation_message($user_id, $activation_type)
+    function z_activation_message($user, $activation_type)
     {
-        $row_user = $this->Db_model->row_id('usuario', $user_id);
-        $data['row_user'] = $row_user ;
+        $data['user'] = $user ;
         $data['activation_type'] = $activation_type;
         
         $message = $this->load->view('accounts/email_activation_v', $data, TRUE);

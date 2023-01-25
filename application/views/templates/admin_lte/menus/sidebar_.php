@@ -83,7 +83,7 @@
                         <?= anchor("usuarios/nuevo/add", '<i class="fa fa-plus"></i> Nuevo') ?>
                     </li>
                     <li class="<?= $clases_m1['usuarios-mi_perfil'] ?>">
-                        <?= anchor("usuarios/mi_perfil", '<i class="fa fa-user"></i> Mi perfil') ?>
+                        <?= anchor("accounts/profile", '<i class="fa fa-user"></i> Mi perfil') ?>
                     </li>
                 </ul>
             </li>

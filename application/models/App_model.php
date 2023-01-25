@@ -70,7 +70,7 @@ class App_model extends CI_Model{
         
         //Usuarios
             $menus['usuarios/explorar'] = array('usuarios', 'usuarios-explorar');
-            $menus['usuarios/mi_perfil'] = array('usuarios', 'usuarios-mi_perfil');
+            $menus['accounts/profile'] = array('usuarios', 'usuarios-mi_perfil');
             $menus['usuarios/info'] = array('usuarios', 'usuarios');
             $menus['usuarios/contrasena'] = array('usuarios', 'usuarios-mi_perfil');
             $menus['usuarios/editar_mi_perfil'] = array('usuarios', 'usuarios-mi_perfil');
@@ -140,7 +140,7 @@ class App_model extends CI_Model{
         $ubicacion = $this->uri->segment(1) . '/' . $this->uri->segment(2);
         
         //Usuarios
-            $menus['usuarios/mi_perfil'] = array('usuarios', 'usuarios-mi_perfil');
+            $menus['accounts/profile'] = array('usuarios', 'usuarios-mi_perfil');
             $menus['usuarios/contrasena'] = array('usuarios', 'usuarios-mi_perfil');
             $menus['usuarios/editar_mi_perfil'] = array('usuarios', 'usuarios-mi_perfil');
             

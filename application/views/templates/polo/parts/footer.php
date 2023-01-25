@@ -87,16 +87,25 @@
             <div class="col-md-3 col-sm-4">
                 <h4>Contáctenos</h4>
                 <div class="contacts-info">
-                    <address>
-                        <i class="add-icon fas fa-map-marker-alt">&nbsp;</i>Av Calle 72 No. 83-96 <br> Bogotá D.C. Colombia
-                    </address>
-                    <div class="phone-footer"><i class="phone-icon fas fa-phone">&nbsp;</i>601 745 6922</div>
+                    <div class="row">
+                        <div class="col col-sm-2">
+                            <i class="add-icon fas fa-map-marker-alt">&nbsp;</i>
+                        </div>
+                        <div class="col col-sm-10">
+                            <address style="margin-top: 0px;">
+                                Av Ciudad de Cali No. 72A-41
+                                <br>
+                                Bogotá D.C. - Colombia
+                            </address>
+                        </div>
+                    </div>
+                    <div class="phone-footer"><i class="phone-icon fas fa-phone">&nbsp;</i>301 305 4053</div>
                     <div class="email-footer"><i class="email-icon">&nbsp;</i> <a href="#">info@districatolicas.com</a> </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="footer-bottom text-center">
-        <div class="coppyright"> &copy; 2021 &middot; Desarrollado por <a href="http://www.pacarina.com" target="_blank">Pacarina Media Lab</a> </div>
+        <div class="coppyright"> &copy; 2022 &middot; Desarrollado por <a href="http://www.pacarina.com" target="_blank">Pacarina Media Lab</a> </div>
     </div>
 </footer>

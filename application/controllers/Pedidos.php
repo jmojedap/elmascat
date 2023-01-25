@@ -129,19 +129,6 @@ class Pedidos extends CI_Controller{
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
-    
-    /**
-     * Vista previa del mensaje de e-mail que se envía a un cliente cuando los
-     * datos de su pedido son modificados.
-     * 
-     * @param type $pedido_id
-     */
-    function test_email_act($pedido_id)
-    {
-        $data['row_pedido'] = $this->Pcrn->registro_id('pedido', $pedido_id);
-        $data['style'] = $this->App_model->email_style();
-        $this->load->view('usuarios/emails/act_pedido_v', $data);
-    }
 
     function ver($pedido_id)
     {
@@ -491,7 +478,6 @@ class Pedidos extends CI_Controller{
             $data['view_a'] = 'pedidos/compra/compra_v';
             $data['section_id'] = 'cart_items';
             $this->load->view(TPL_FRONT, $data);
-            //$this->output->enable_profiler(TRUE);
     }
     
     /**
@@ -835,12 +821,18 @@ class Pedidos extends CI_Controller{
 // EMPACAR COMO REGALO
 //-----------------------------------------------------------------------------
 
+    /**
+     * Formulario donde se requieren al comprador los datos de empaque y tarjeta
+     * del regalo
+     * 2022-06-02
+     */
     function datos_regalo()
     {
         $order_code = $this->session->userdata('order_code');
         $order = $this->Pedido_model->row_by_code($order_code);
         
         $data = $this->Pedido_model->basico($order->id);
+        $data['products'] = $this->Pedido_model->detalle($order->id);
         $data['arr_meta'] = $this->Pedido_model->arr_meta($data['row']);
         $data['extras'] = $this->Pedido_model->extras($order->id);
         $data['arr_extras_pedidos'] = $this->Item_model->arr_item(6, 'id_interno_num');
@@ -848,7 +840,7 @@ class Pedidos extends CI_Controller{
         //Solicitar vista
             $data['head_title'] = 'Datos para regalo';
             $data['view_a'] = 'pedidos/compra/compra_v';
-            $data['view_b'] = 'pedidos/compra/datos_regalo_v';
+            $data['view_b'] = 'pedidos/compra/datos_regalo/datos_regalo_v';
             $data['section_id'] = 'cart_items';
             $this->load->view(TPL_FRONT, $data);
     }
@@ -1052,7 +1044,7 @@ class Pedidos extends CI_Controller{
 
     /**
      * Ejecuta procesos masivos sobre pedidos
-     * 2021-10-23
+     * 2022-08-12
      */
     function run_process($cod_process)
     {
@@ -1068,6 +1060,8 @@ class Pedidos extends CI_Controller{
             $data = $this->Pedido_model->update_payed();
         } elseif ( $cod_process == 3 ) {
             $data = $this->Pedido_model->update_payment_channel_payu();
+        } elseif ( $cod_process == 4 ) {
+            $data = $this->Pedido_model->update_gender_age();
         }
         
         $this->output->set_content_type('application/json')->set_output(json_encode($data));

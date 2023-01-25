@@ -16,7 +16,7 @@
                     <ul class="topnav">
 
                         <li class="level0 parent drop-menu">
-                            <a href="<?= base_url() ?>"><i class="fa fa-home"></i> Inicio</a>
+                            <a href="<?= base_url() ?>index.php"><i class="fa fa-home"></i> Inicio</a>
                         </li>
                         <li class="level0 parent drop-menu menu-ofertas">
                             <a href="<?= URL_APP .  "productos/catalogo/?promo=1" ?>" class="text-white"> Ofertas</a>
@@ -30,7 +30,7 @@
 
                         <?php if ( $this->session->userdata('logged') ){ ?>
                             <li class="level0 parent drop-menu" title="Información de mi cuenta de usuario">
-                                <a href="<?= base_url("usuarios/mi_perfil") ?>">
+                                <a href="<?= base_url("accounts/profile") ?>">
                                     Mi cuenta
                                 </a>
                             </li>
@@ -58,15 +58,10 @@
 
                         <li class="level0 parent drop-menu">
                             <a href="<?= base_url("posts/leer/333/como-comprar-en-districatolicas") ?>"> ¿Como comprar?</a>
-                        </li>                        
-
-                        <!-- <li class="level0 nav-6 level-top first parent"> <a class="level-top" href="#"> <span>Catalogo</span> </a>
-                            <ul class="level0">
-                                <li class="level1 first"><a href="<?= base_url() ?>"><span>Inicio</span></a></li>
-                                <li class="level1 nav-6-2"> <a href="<?= base_url("productos/catalogo/?ofrt=1") ?>"> <span>Ofertas</span> </a> </li>
-                                <li class="level1 nav-6-3"> <a href="<?= base_url("productos/catalogo/?fi={$fecha_novedades}") ?>"> <span>Novedades</span> </a> </li>
-                            </ul>
-                        </li> -->
+                        </li>
+                        <li class="level0 parent drop-menu">
+                            <a href="<?= base_url("info/distribuidores_minutos_de_amor") ?>">Distribuidores Minutos de Amor</a>
+                        </li>
                         <li class="level0 nav-7 level-top first parent"> <a class="level-top" href="#"> <span>Información</span> </a>
                             <ul class="level0">
                                 <li class="level1 firts"><a href="<?= base_url("pedidos/estado") ?>"> <span>ESTADO COMPRA</span> </a> </li>

@@ -3,7 +3,7 @@
 //Clases menú
     //Usuarios
         $menus['usuarios/explorar'] = array('usuarios', 'usuarios-explorar');
-        $menus['usuarios/mi_perfil'] = array('usuarios', 'usuarios-mi_perfil');
+        $menus['accounts/profile'] = array('usuarios', 'usuarios-mi_perfil');
         $menus['usuarios/info'] = array('usuarios', 'usuarios');
         $menus['usuarios/contrasena'] = array('usuarios', 'usuarios-mi_perfil');
         $menus['usuarios/editar_mi_perfil'] = array('usuarios', 'usuarios-mi_perfil');

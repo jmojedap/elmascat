@@ -49,6 +49,7 @@ class Productos extends CI_Controller{
             $data['options_promocion'] = $this->App_model->opciones_post('tipo_id = 31001 AND estado = 1', 'n', 'Todas');
             $data['options_categoria'] = $this->Item_model->options('categoria_id = 25', 'Todas las categorías');
             $data['options_order_by'] = $this->Producto_model->options_order_by();
+            $data['arrRangoPrecio'] = $this->Producto_model->rangos_precio();
             
         //Arrays con valores para contenido en lista
             $data['arr_estados'] = $this->Item_model->arr_cod('categoria_id = 8');
@@ -408,9 +409,8 @@ class Productos extends CI_Controller{
     /**
      * Catálogo de productos, responde a búsquedas y filtros
      */
-    function catalogo()
+    function catalogo_ant()
     {
-        
         //Cargue inicial
             $this->load->helper('text');
             $this->load->model('Archivo_model');
@@ -445,6 +445,7 @@ class Productos extends CI_Controller{
             $data['resultados'] = $resultados;
             $data['tags'] = $this->App_model->tags();
             $data['fabricantes'] = $this->Producto_model->fabricantes();
+            $data['arrRangoPrecio'] = $this->Producto_model->rangos_precio();
         
         //Solicitar vista
             $data['view_a'] = 'productos/catalogo/catalogo_v';
@@ -453,6 +454,59 @@ class Productos extends CI_Controller{
 
             //$this->output->enable_profiler(TRUE);
     }
+
+    function catalogo($num_page = 1)
+    {
+        //Identificar filtros de búsqueda
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+    //Datos básicos de la exploración
+        $perPage = 12;
+        $data = $this->Producto_model->explore_data($filters, $num_page, $perPage);
+        $data['perPage'] = $perPage;
+        $data['view_a'] = 'productos/catalogo/catalogo_v';
+        $data['views_folder'] = 'productos/catalogo/';
+    
+    //Opciones de filtros de búsqueda
+        $data['options_tag'] = $this->Item_model->opciones_id('categoria_id = 21', 'Todas');
+        $data['options_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5', 'Fabricante/Editorial');
+        $data['options_categoria'] = $this->Item_model->options('categoria_id = 25', 'Todas las categorías');
+        $data['options_order_by'] = $this->Producto_model->options_order_by();
+        $data['arrRangoPrecio'] = $this->Producto_model->rangos_precio();
+        
+    //Arrays con valores para contenido en lista
+        $data['arr_estados'] = $this->Item_model->arr_cod('categoria_id = 8');
+        $data['arr_tags'] = $this->Item_model->arr_cod('categoria_id = 25');
+        
+    //Cargar vista
+        $this->App_model->view(TPL_FRONT, $data);
+    }
+
+    /**
+     * AJAX JSON
+     * Listado de productos que cumplen con unos filtros
+     * 2022-06-02
+     */
+    function get_catalogo($num_page = 1, $per_page = 10)
+    {
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+
+        //Consultas previas, tags
+        /*if ( $filters['tag'] != '' ) {
+            $this->load->model('Datos_model');
+            $tag_id = (int) $filters['tag'];
+            $filters['fe2'] = $this->Datos_model->descendencia($tag_id, 'string');
+        }*/
+
+        $filters['status'] = 1;   //Solo productos activos
+        $data = $this->Producto_model->get($filters, $num_page, $per_page);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
     
     /**
      * REDIRECT
@@ -847,7 +901,7 @@ class Productos extends CI_Controller{
 //-----------------------------------------------------------------------------
     
     /**
-     * Mostrar formulario de importación de existencais de productos mediante 
+     * Mostrar formulario de importación de existencias de productos mediante 
      * archivo MS Excel. El resultado del formulario se envía a 
      * 'productos/importar_existencias_e'
      * 
@@ -887,29 +941,31 @@ class Productos extends CI_Controller{
     
     /**
      * Importar programas, (e) ejecutar.
+     * 2022-03-15
      */
     function actualizar_datos_e()
     {
         //Proceso
-            $this->load->model('Pcrn_excel');
+            $this->load->library('Excel');
             $no_importados = array();
             $letra_columna = 'D';   //Última columna con datos
             
-            $resultado = $this->Pcrn_excel->array_hoja_default($letra_columna);
+            $sheet_name = $this->input->post('nombre_hoja');
+            $resultado = $this->excel->arr_sheet_default($sheet_name);
 
-            if ( $resultado['valido'] )
+            if ( $resultado['status'] == 1 )
             {
-                $no_importados = $this->Producto_model->actualizar_datos($resultado['array_hoja']);
+                $no_importados = $this->Producto_model->actualizar_datos($resultado['arr_sheet']);
                 $this->guardar_ev_actualizar_datos(1);
             }
         
         //Cargue de variables
-            $data['valido'] = $resultado['valido'];
-            $data['mensaje'] = $resultado['mensaje'];
-            $data['array_hoja'] = $resultado['array_hoja'];
+            $data['valido'] = $resultado['status'];
+            $data['mensaje'] = $resultado['message'];
+            $data['array_hoja'] = $resultado['arr_sheet'];
             $data['nombre_hoja'] = $this->input->post('nombre_hoja');
             $data['no_importados'] = $no_importados;
-            $data['destino_volver'] = "productos/explorar/";
+            $data['destino_volver'] = "productos/explore/";
         
         //Cargar vista
             $data['head_title'] = 'Productos';
@@ -1057,6 +1113,34 @@ class Productos extends CI_Controller{
 
         $data['status'] = 1;
         $data['message'] = "Productos actualizados: {$qty_updated}";
+    
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Actualizar campo producto.slug, donde es nulo o vacío
+     * 2022-10-04
+     */
+    function update_slug()
+    {
+        $this->db->select('id, nombre_producto');
+        $this->db->where('slug IS NULL OR slug = ""');
+        $productos = $this->db->get('producto');
+
+        $qty_updated = 0;
+
+        foreach ( $productos->result() as $producto )
+        {
+            $arr_row['slug'] = $this->Db_model->unique_slug($producto->nombre_producto, 'producto');
+
+            $this->db->where('id', $producto->id)->update('producto', $arr_row);
+            
+            $qty_updated += $this->db->affected_rows();
+        }
+
+        $data['status'] = 1;
+        $data['message'] = "Productos actualizados: {$qty_updated}/{$productos->num_rows()}";
     
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));

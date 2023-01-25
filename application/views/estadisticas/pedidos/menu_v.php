@@ -50,14 +50,6 @@
         anchor: true
     };
 
-    sections.productos_top = {
-        icon: '',
-        text: 'Productos top',
-        class: '<?= $cl_nav_2['estadisticas_productos_top'] ?>',
-        cf: 'estadisticas/productos_top',
-        anchor: true
-    };
-
     sections.efectividad = {
         icon: '',
         text: 'Efectividad',
@@ -75,9 +67,9 @@
     };
     
     //Secciones para cada rol
-    sections_rol[0] = ['resumen_dia', 'resumen_mes', 'ventas_departamento', 'meta_anual', 'productos_top', 'efectividad', 'ventas_categoria'];
-    sections_rol[1] = ['resumen_dia', 'resumen_mes', 'ventas_departamento', 'meta_anual', 'productos_top', 'efectividad', 'ventas_categoria'];
-    sections_rol[2] = ['resumen_dia', 'resumen_mes', 'ventas_departamento', 'meta_anual', 'productos_top', 'efectividad', 'ventas_categoria'];
+    sections_rol[0] = ['resumen_dia', 'resumen_mes', 'ventas_departamento', 'meta_anual', 'efectividad', 'ventas_categoria'];
+    sections_rol[1] = ['resumen_dia', 'resumen_mes', 'ventas_departamento', 'meta_anual', 'efectividad', 'ventas_categoria'];
+    sections_rol[2] = ['resumen_dia', 'resumen_mes', 'ventas_departamento', 'meta_anual', 'efectividad', 'ventas_categoria'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú
     for ( key_section in sections_rol[app_rid]) 

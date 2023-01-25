@@ -19,8 +19,8 @@
     <?php $this->load->view($vista_menu); ?>
 <?php } ?>
 
-<div class="panel panel-default">
-    <div class="panel-body">
+<div class="card mb-2">
+    <div class="card-body">
         <table class="table table-hover">
             <tbody>
                 <tr class="<?= $clase_resultado ?>">
@@ -62,7 +62,7 @@
 </div>
 
 <?php if ( isset($destino_volver) ) { ?>
-    <?= anchor($destino_volver, '<i class="fa fa-arrow-circle-left"></i> Volver', 'class="btn btn-default"') ?>
+    <?= anchor($destino_volver, '<i class="fa fa-arrow-circle-left"></i> Volver', 'class="btn btn-secondary"') ?>
 <?php } ?>
 
 

@@ -36,7 +36,7 @@
         );
             
         $arr_menus['contrasena'] = array(
-            'icono' => '<i class="fa fa-lock"></i>',
+            'icono' => '',
             'texto' => 'Contraseña',
             'link' => "usuarios/contrasena/",
             'atributos' => 'title="Cambiar contraseña"'

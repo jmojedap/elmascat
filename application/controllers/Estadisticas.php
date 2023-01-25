@@ -119,22 +119,6 @@ class Estadisticas extends CI_Controller{
             $this->load->view(TPL_ADMIN, $data);
     }
 
-    function productos_top()
-    {
-        //Cargue
-            $this->load->model('Estadistica_model');
-        
-        //Cargando variables
-            $data['productos'] = $this->Estadistica_model->productos_top();
-        
-        //Solicitar vista
-            $data['head_title'] = 'Pedidos';
-            $data['head_subtitle'] = 'Productos más vendidos';
-            $data['view_a'] = 'estadisticas/pedidos/productos_top_v';
-            $data['nav_2'] = 'estadisticas/pedidos/menu_v';
-            $this->load->view(TPL_ADMIN, $data);
-    }
-
     function efectividad()
     {
         $this->load->model('Estadistica_model');
@@ -162,6 +146,50 @@ class Estadisticas extends CI_Controller{
             $data['view_a'] = 'estadisticas/pedidos/ventas_categoria_v';
             $data['nav_2'] = 'estadisticas/pedidos/menu_v';
             $this->load->view(TPL_ADMIN, $data);
+    }
+
+// Productos
+//-----------------------------------------------------------------------------
+
+    function productos_top()
+    {
+        //Cargue
+            $this->load->model('Estadistica_model');
+        
+        //Cargando variables
+            $data['productos'] = $this->Estadistica_model->productos_top();
+        
+        //Solicitar vista
+            $data['head_title'] = 'Pedidos';
+            $data['head_subtitle'] = 'Productos más vendidos';
+            $data['view_a'] = 'estadisticas/productos/productos_top_v';
+            $data['nav_2'] = 'estadisticas/productos/menu_v';
+            $this->load->view(TPL_ADMIN, $data);
+    }
+
+    /**
+     * Cantidad de suscriptores por edición en línea de la revista Minutos
+     * de Amor
+     * 2023-01-25
+     */
+    function minutos_en_linea($minYear = 2021)
+    {
+        $this->load->model('Estadistica_model');
+
+        $ediciones_usuarios = $this->Estadistica_model->ediciones_usuarios($minYear);
+
+        //Cargando variables
+        $data['ediciones_usuarios'] = $ediciones_usuarios;
+
+        //Solicitar vista
+        $data['head_title'] = 'Suscriptores en Línea';
+        $data['head_subtitle'] = 'por edición';
+        $data['view_a'] = 'estadisticas/productos/minutos_en_linea_v';
+        $data['nav_2'] = 'estadisticas/productos/menu_v';
+        $this->load->view(TPL_ADMIN, $data);
+
+        //Salida JSON
+        //$this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
 // Procesos masivos

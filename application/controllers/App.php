@@ -68,9 +68,9 @@ class App extends CI_Controller{
             2 => 'pedidos/explore',
             6 => 'productos/explore',
             7 => 'productos/explore',
-            21 => 'usuarios/books',
-            22 => 'usuarios/books',
-            23 => 'usuarios/books'
+            21 => 'usuarios/mis_pedidos',
+            22 => 'usuarios/mis_pedidos',
+            23 => 'usuarios/mis_pedidos'
         );
             
         $destino = $arr_destinos[$this->session->userdata('role')];
@@ -137,6 +137,27 @@ class App extends CI_Controller{
         $data['head_title'] = "Districatólicas";
         
         $this->load->view('app/mantenimiento_v');*/
+    }
+
+    /**
+     * Vista previa del mensaje de e-mail que se envía a un cliente cuando los
+     * datos de su pedido son modificados.
+     * 2023-01-13
+     */
+    function preview_email_message($type = 'order_updated', $param_1 = 0, $param_2 = 0)
+    {
+        $this->load->model('Notification_model');
+
+        if ( $type == 'order_updated' ) {
+            $order = $this->Db_model->row_id('pedido', $param_1);
+            echo $this->Notification_model->orders_updated_message($order);
+        } elseif( $type == 'payment_updated' ) {
+            $order = $this->Db_model->row_id('pedido', $param_1);
+            echo $this->Notification_model->orders_payment_updated_buyer_message($order);
+        } elseif( $type == 'accounts_activation' ) {
+            $user = $this->Db_model->row_id('usuario', $param_1);
+            echo $this->Notification_model->activation_message($user, $param_2);
+        }
     }
     
 // BÚSQUEDAS Y REDIRECCIONAMIENTO

@@ -20,7 +20,7 @@
     //Cantidad disponibles
     $stock_status = 'Disponible';
     if ( $row->cant_disponibles == 0 ) { $stock_status = 'Agotado'; }
-    if ( $this->session->userdata('role') <= 10 && $this->session->userdata('logged') ) { $stock_status = "{$row->cant_disponibles} disponbiles"; }
+    if ( $this->session->userdata('role') <= 10 && $this->session->userdata('logged') ) { $stock_status = "{$row->cant_disponibles} disponibles"; }
     
 ?>
 

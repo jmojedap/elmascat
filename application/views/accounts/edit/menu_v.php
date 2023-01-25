@@ -24,7 +24,7 @@
     };
     
     sections.password = {
-        icon: 'fa fa-lock',
+        icon: '',
         text: 'Contraseña',
         class: '<?= $cl_nav_3['password'] ?>',
         cf: 'accounts/edit/password'

@@ -75,7 +75,7 @@
                     <div class="buttons-set">
                         <button id="send2" name="send" type="submit" class="button login"><span>Ingresar</span></button>
 
-                        <?= anchor("usuarios/recuperar", 'Olvidé mi contraseña', 'class="pull-right" title=""') ?> 
+                        <?= anchor("accounts/recovery", 'Olvidé mi contraseña', 'class="pull-right" title=""') ?> 
                     </div>
                 <?= form_close('') ?>
             </div>

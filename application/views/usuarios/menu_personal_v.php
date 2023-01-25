@@ -8,7 +8,7 @@
         $arr_menus['mi_perfil'] = array(
             'icono' => '<i class="fa fa-user"></i>',
             'texto' => 'Información',
-            'link' => "usuarios/mi_perfil/",
+            'link' => "accounts/profile/",
             'atributos' => 'title="Mi cuenta"'
         );
             
@@ -20,7 +20,7 @@
         );
             
         $arr_menus['contrasena'] = array(
-            'icono' => '<i class="fa fa-lock"></i>',
+            'icono' => '',
             'texto' => 'Contraseña',
             'link' => "usuarios/contrasena/",
             'atributos' => 'title="Cambiar contraseña"'

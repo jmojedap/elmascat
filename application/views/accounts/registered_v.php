@@ -6,12 +6,12 @@
       <ul style="font-size: 1.5em;">
         <li>
             <i class="fa fa-caret-right text-success"></i>
-            Su cuenta de usuario fue creada. Solo hace falta <b class="text-success">activarla</b>.
+            Tu cuenta de usuario fue creada. Solo hace falta <b class="text-success">activarla</b>.
         </li>
         <li>
             <i class="fa fa-caret-right text-success"></i>
-            Enviamos un mensaje a su <b>correo electrónico</b>
-            con un Link o Enlace para activar su cuenta.
+            Enviamos un mensaje a tu <b>correo electrónico</b>
+            con un link (enlace) para establecer tu contraseña y activar tu cuenta.
         </li>
         <li>
             <i class="fa fa-caret-right text-success"></i>

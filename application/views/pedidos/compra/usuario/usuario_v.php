@@ -5,14 +5,8 @@
         <div class="form-group">
             <label for="email" class="">Correo electrónico</label>
             <input
-                type="email"
-                id="field-email"
-                name="email"
-                autofocus
-                required
-                class="form-control input-lg"
-                placeholder="Correo electrónico"
-                title="Correo electrónico"
+                type="email" name="email" required class="form-control input-lg"
+                placeholder="Correo electrónico" title="Correo electrónico"
                 v-model="email"
                 >
         </div>
@@ -23,7 +17,7 @@
         </div>
     </form>
 
-    <form accept-charset="utf-8" method="POST" id="register_form" @submit.prevent="check_pw" v-show="show_register_form">
+    <form accept-charset="utf-8" method="POST" id="signUpForm" @submit.prevent="check_pw" v-show="show_register_form">
         <!-- Campo para validación Google ReCaptcha V3 -->
         <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
         <input type="hidden" v-model="email" name="email">
@@ -33,11 +27,11 @@
 
         <div class="form-group">
             <label for="nombre" class="control-label">Nombres</label>
-            <input type="text" name="nombre" required class="form-control input-lg" placeholder="Nombres" title="Nombres">
+            <input type="text" name="nombre" required class="form-control input-lg" placeholder="Nombres" title="Nombres" v-model="user.nombre">
         </div>
         <div class="form-group">
             <label for="apellidos" class="control-label">Apellidos</label>
-            <input type="text" name="apellidos" required class="form-control input-lg" placeholder="Apellidos" title="Apellidos">
+            <input type="text" name="apellidos" required class="form-control input-lg" placeholder="Apellidos" title="Apellidos" v-model="user.apellidos">
         </div>
 
         

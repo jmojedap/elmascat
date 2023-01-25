@@ -2,13 +2,13 @@
     $textos['titulo'] = 'Bienvenido a Districatólicas Unidas S.A.S.';
     $textos['parrafo'] = 'Para activar su cuenta haga clic en el siguiente link';
     $textos['boton'] = 'Activar mi cuenta';
-    $textos['link'] = "usuarios/activar/{$row_usuario->cod_activacion}";
+    $textos['link'] = "accounts/activation/{$row_usuario->cod_activacion}";
     
     if ( $tipo_activacion == 'restaurar' ) {
         $textos['titulo'] = 'Districatólicas Unidas S.A.S.';
         $textos['parrafo'] = 'Para restaurar su contraseña haga clic en el siguiente link';
         $textos['boton'] = 'Restaurar mi contraseña';
-        $textos['link'] = "usuarios/activar/{$row_usuario->cod_activacion}/restaurar";
+        $textos['link'] = "accounts/activation/{$row_usuario->cod_activacion}/restaurar";
     }
 
 ?>

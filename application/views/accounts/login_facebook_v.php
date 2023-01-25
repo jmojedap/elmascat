@@ -51,7 +51,7 @@
         </div>
         
         <div class="form-group clearfix">
-            <a href="<?= base_url('usuarios/recuperar') ?>">¿Olvidaste los datos de tu cuenta?</a>
+            <a href="<?= base_url('accounts/recovery') ?>">¿Olvidaste los datos de tu cuenta?</a>
         </div>
     </form>
 

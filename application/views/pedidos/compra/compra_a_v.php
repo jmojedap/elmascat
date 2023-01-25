@@ -30,132 +30,141 @@
     </div>
     <hr>
 
+    
+    
     <form method="post" accept-charset="utf-8" class="form-horizontal" id="compra_a_form" @submit.prevent="send_form" v-show="ciudad_id.length > 1">
-        <input type="hidden" v-model="ciudad_id" name="ciudad_id">
-        <input type="hidden" v-model="screen_width" name="screen_width">
-        <input type="hidden" v-model="screen_height" name="screen_height">
-
-        <div class="row">
-            <div class="col-md-8">
-                <div class="form-group">
-                    <label for="nombre" class="col-sm-4 control-label">Nombres | Apellidos</label>
-                    <div class="col-sm-4">
-                        <input
-                            type="text" name="nombre" class="form-control input-lg" required
-                            placeholder="Nombres" title="Nombres"
-                            v-model="form_values.nombre"
-                            >
-                    </div>
-                    <div class="col-sm-4">
-                        <input
-                            type="text" name="apellidos" required class="form-control input-lg"
-                            placeholder="Apellidos" title="Apellidos"
-                            v-model="form_values.apellidos"
-                            >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="email" class="col-md-4 control-label">Correo electrónico</label>
-                    <div class="col-md-8">
-                        <input type="email" name="email"
-                            required
-                            class="form-control input-lg"
-                            v-model="form_values.email"
-                            >
-                        <span id="helpBlock" class="help-block">Si usa un correo de <b class="text-danger">hotmail.com</b>, los mensajes de confirmación podrían llegar a la carpeta de spam o correo no deseado.</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="no_documento" class="col-md-4 control-label">No. Documento </label>
-                    <div class="col-md-4">
-                        <input type="number" name="no_documento"
-                            required min="100"
-                            class="form-control input-lg"
-                            v-model="form_values.no_documento"
-                            >
-                    </div>
-                    <div class="col-md-4">
-                        <?= form_dropdown('tipo_documento_id', $options_tipo_documento, '', 'class="form-control input-lg" required v-model="`0` + form_values.tipo_documento_id"') ?>
-                    </div>
-                </div>
+        <fieldset v-bind:disabled="loading">
                 
+            
+            <input type="hidden" v-model="ciudad_id" name="ciudad_id">
+            <input type="hidden" v-model="screen_width" name="screen_width">
+            <input type="hidden" v-model="screen_height" name="screen_height">
 
-                <div class="form-group">
-                    <label for="direccion" class="col-md-4 control-label">Dirección entrega</label>
-                    <div class="col-md-8">
-                        <input
-                            type="text" name="direccion" class="form-control input-lg" required
-                            title="Dirección de entrega del pedido"
-                            v-model="form_values.direccion"
-                            >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="celular" class="col-md-4 control-label">Celular</label>
-                    <div class="col-md-8">
-                        <input
-                            type="text" name="celular" required class="form-control input-lg"
-                            placeholder="Número celular" title="Número teléfono celular sin espacios, solo números"
-                            pattern="[0-9]{5,}"
-                            v-model="form_values.celular"
-                            >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="celular" class="col-md-4 control-label">Empacar como regalo</label>
-                    <div class="col-md-8">
-                        <select name="is_gift" v-model="form_values.is_gift" class="form-control input-lg" v-bind:disabled="order.valor_total < 20000">
-                            <option v-for="(option_gift, gift_key) in options_gift" v-bind:value="gift_key">{{ option_gift }}</option>
-                        </select>
-                        <span id="is_gift_help" class="help-block" v-show="order.valor_total < 20000">Aplica para compras mayores a $20.000 COP</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="notas" class="col-md-4 control-label">Notas sobre el pedido</label>
-                    <div class="col-md-8">
-                        <textarea
-                            rows="3" id="field-notas" name="notas"
-                            class="form-control input-lg"
-                            placeholder="Notas sobre su pedido e instrucciones de envío"
-                            title="Notas sobre su pedido e instrucciones de envío"
-                            v-model="form_values.notas"
-                            ></textarea>
-                    </div>
-                </div>
-
-
-                <hr>
-                <?php if ( is_null($row_usuario->fecha_nacimiento) )  { ?>
-                    <div class="form-group row">
-                        <label for="fecha_nacimiento" class="col-xs-12 col-md-4 control-label">Fecha de nacimiento</label>
-                        <div class="col-xs-4 col-md-2">
-                            <?= form_dropdown('day', $options_day, '', 'class="form-control input-lg" required v-model="day"') ?>
-                        </div>
-                        <div class="col-xs-4 col-md-4">
-                            <?= form_dropdown('month', $options_month, '', 'class="form-control input-lg" required v-model="month"') ?>
-                        </div>
-                        <div class="col-xs-4 col-md-2">
-                            <?= form_dropdown('year', $options_year, '', 'class="form-control input-lg" required v-model="year"') ?>
-                        </div>
-                    </div>
-                <?php } ?>
-                <?php if ( is_null($row_usuario->sexo) )  { ?>
+            <div class="row">
+                <div class="col-md-8">
                     <div class="form-group">
-                        <div class="col-md-8 col-md-offset-4">
-                            <input type="radio" name="sexo" value="1" required> Mujer
-                            <input type="radio" name="sexo" value="2"> Hombre
+                        <label for="nombre" class="col-sm-4 control-label">Nombres | Apellidos</label>
+                        <div class="col-sm-4">
+                            <input
+                                type="text" name="nombre" class="form-control input-lg" required
+                                placeholder="Nombres" title="Nombres"
+                                v-model="form_values.nombre"
+                                >
+                        </div>
+                        <div class="col-sm-4">
+                            <input
+                                type="text" name="apellidos" required class="form-control input-lg"
+                                placeholder="Apellidos" title="Apellidos"
+                                v-model="form_values.apellidos"
+                                >
+                        </div>
+                        <div class="col-sm-8 col-md-offset-4">
+                            <span id="" class="help-block">Por favor escriba sus nombres y apellidos completos</span>
                         </div>
                     </div>
-                <?php } ?>
+                    <div class="form-group">
+                        <label for="email" class="col-md-4 control-label">Correo electrónico</label>
+                        <div class="col-md-8">
+                            <input type="email" name="email"
+                                required
+                                class="form-control input-lg"
+                                v-model="form_values.email"
+                                >
+                            <span id="helpBlock" class="help-block">Si usa un correo de <b class="text-danger">hotmail.com</b>, los mensajes de confirmación podrían llegar a la carpeta de spam o correo no deseado.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="no_documento" class="col-md-4 control-label">No. Documento </label>
+                        <div class="col-md-4">
+                            <input type="number" name="no_documento"
+                                required min="100"
+                                class="form-control input-lg"
+                                v-model="form_values.no_documento"
+                                >
+                        </div>
+                        <div class="col-md-4">
+                            <?= form_dropdown('tipo_documento_id', $options_tipo_documento, '', 'class="form-control input-lg" required v-model="`0` + form_values.tipo_documento_id"') ?>
+                        </div>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label for="direccion" class="col-md-4 control-label">Dirección entrega</label>
+                        <div class="col-md-8">
+                            <input
+                                type="text" name="direccion" class="form-control input-lg" required
+                                title="Dirección de entrega del pedido"
+                                v-model="form_values.direccion"
+                                >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="celular" class="col-md-4 control-label">Celular</label>
+                        <div class="col-md-8">
+                            <input
+                                type="text" name="celular" required class="form-control input-lg" minlength="10"
+                                placeholder="Número celular" title="Número teléfono celular sin espacios, solo números"
+                                pattern="[0-9]{5,}"
+                                v-model="form_values.celular"
+                                >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="celular" class="col-md-4 control-label">Empacar como regalo</label>
+                        <div class="col-md-8">
+                            <select name="is_gift" v-model="form_values.is_gift" class="form-control input-lg" v-bind:disabled="order.valor_total < 20000">
+                                <option v-for="(option_gift, gift_key) in options_gift" v-bind:value="gift_key">{{ option_gift }}</option>
+                            </select>
+                            <span id="is_gift_help" class="help-block" v-show="order.valor_total < 20000">Aplica para compras mayores a $20.000 COP</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notas" class="col-md-4 control-label">Notas sobre el pedido</label>
+                        <div class="col-md-8">
+                            <textarea
+                                rows="3" id="field-notas" name="notas"
+                                class="form-control input-lg"
+                                placeholder="Notas sobre su pedido e instrucciones de envío"
+                                title="Notas sobre su pedido e instrucciones de envío"
+                                v-model="form_values.notas"
+                                ></textarea>
+                        </div>
+                    </div>
+
+
+                    <hr>
+                    <?php if ( is_null($row_usuario->fecha_nacimiento) )  { ?>
+                        <div class="form-group row">
+                            <label for="fecha_nacimiento" class="col-xs-12 col-md-4 control-label">Fecha de nacimiento</label>
+                            <div class="col-xs-4 col-md-2">
+                                <?= form_dropdown('day', $options_day, '', 'class="form-control input-lg" required v-model="day"') ?>
+                            </div>
+                            <div class="col-xs-4 col-md-4">
+                                <?= form_dropdown('month', $options_month, '', 'class="form-control input-lg" required v-model="month"') ?>
+                            </div>
+                            <div class="col-xs-4 col-md-2">
+                                <?= form_dropdown('year', $options_year, '', 'class="form-control input-lg" required v-model="year"') ?>
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <?php if ( is_null($row_usuario->sexo) )  { ?>
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-4">
+                                <input type="radio" name="sexo" value="1" required> Mujer
+                                <input type="radio" name="sexo" value="2"> Hombre
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-polo-lg btn-block" type="submit">
+                        <i class="fa fa-check"></i> Continuar
+                    </button>
+                    <?php $this->load->view('pedidos/compra/totales_v'); ?>
+                </div>
             </div>
-            <div class="col-md-4">
-                <button class="btn btn-polo-lg btn-block" type="submit">
-                    <i class="fa fa-check"></i> Continuar
-                </button>
-                <?php $this->load->view('pedidos/compra/totales_v'); ?>
-            </div>
-        </div>
+        <fieldset>
     </form>
 
 </div>
@@ -223,7 +232,10 @@ var compra_a_app = new Vue({
             .catch(function (error) { console.log(error) })
         },
         send_form: function(){
-            axios.post(url_app + 'pedidos/guardar_pedido/', $('#compra_a_form').serialize())
+            this.loading = true
+            var form_data = new FormData(document.getElementById('compra_a_form'))
+            
+            axios.post(url_app + 'pedidos/guardar_pedido/', form_data)
             .then(response => {
                 console.log(response.data)
                 var destination = url_app + 'pedidos/compra_b'

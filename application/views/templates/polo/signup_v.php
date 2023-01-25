@@ -1,51 +1,38 @@
 <?php $this->load->view('assets/recaptcha') ?>
 <?php $this->load->view('assets/bootstrap_datepicker'); ?>
-<?php $this->load->view('assets/icheck'); ?>
 
 <div class="page-title">
     <h2>Registro de usuarios</h2>
 </div>
 
-<div class="row mb-2" id="signup_app">
+<div class="row mb-2" id="SignUpApp">
     
     <div class="col-md-5">
         <div class="box_1 mb-2">
-            <form accept-charset="utf-8" method="POST" id="signup_form" @submit.prevent="register">
+            <form accept-charset="utf-8" method="POST" id="SignUpForm" @submit.prevent="handleSubmit">
                 <!-- Campo para validación Google ReCaptcha V3 -->
                 <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">        
                 
                 <div class="form-group">
                     <input
-                        type="text"
-                        id="field-nombre"
-                        name="nombre"
-                        required
-                        class="form-control"
-                        placeholder="nombre"
+                        type="text" name="nombre" v-model="user.nombre"
+                        required class="form-control"
+                        placeholder="Nombre"
                         title="nombre"
                         >
                 </div>
                 <div class="form-group">
                     <input
-                        type="text"
-                        id="field-apellidos"
-                        name="apellidos"
-                        required
-                        class="form-control"
-                        placeholder="apellidos"
-                        title="apellidos"
+                        type="text" name="apellidos" required class="form-control"
+                        v-model="user.apellidos"
+                        placeholder="Apellidos" title="apellidos"
                         >
                 </div>
 
                 <div class="form-group" v-bind:class="{'has-error': ! validation.email_unique }">
                     <input
-                        type="email"
-                        id="field-email"
-                        name="email"
-                        required
-                        class="form-control"
-                        placeholder="correo electrónico"
-                        title="correo electrónico"
+                        type="email" name="email" required class="form-control" v-model="user.email"
+                        placeholder="Correo electrónico" title="correo electrónico"
                         v-on:change="validate_form"
                         >
                     <span class="help-block" v-show="! validation.email_unique">
@@ -55,24 +42,21 @@
             
                 <div class="form-group">
                     <input
-                        type="text"
-                        id="field-fecha_nacimiento"
-                        name="fecha_nacimiento"
-                        required
+                        type="text" name="fecha_nacimiento" required v-model="user.fecha_nacimiento"
                         class="form-control bs_datepicker"
-                        placeholder="fecha de nacimiento (AAAA-MM-DD)"
+                        placeholder="Fecha de nacimiento (AAAA-MM-DD)"
                         title="fecha de nacimiento (AAAA-MM-DD)"
                         >
                 </div>
             
                 <div class="form-group">
-                    <input type="radio" name="sexo" value="1" required> Mujer
-                    <input type="radio" name="sexo" value="2"> Hombre
+                    <input type="radio" name="sexo" value="1" required v-model="user.sexo"> Mujer
+                    <input type="radio" name="sexo" value="2" v-model="user.sexo"> Hombre
                 </div>
 
                 <div class="form-group">
                     <p>
-                        <input type="checkbox" name="condiciones" value="1" required style="display: inline; height: 25px; width: 15px;"/>
+                        <input type="checkbox" name="condiciones" value="1" required>
                         Acepto los 
                         
                         <a href="<?= base_url("posts/leer/17/terminos-de-uso") ?>" target="_blank">
@@ -82,16 +66,14 @@
                     </p>
                 </div>
 
-                <button type="submit" class="button w120p"><span>Registrarme</span></button>
+                <button type="submit" class="btn btn-polo-lg"><span>Registrarme</span></button>
 
-                <hr>
-
-                <p class="text-center">
-                    Ya tengo una cuenta
-                </p>
                 <div class="text-center">
-                    <a class="btn btn-polo w120p" href="<?= base_url("accounts/login") ?>">
-                        Iniciar sesión
+                    <a class="btn btn-polo" href="<?= base_url("accounts/login") ?>">
+                        Ya tengo una cuenta
+                    </a>
+                    <a class="btn btn-polo" href="<?= base_url("accounts/recovery") ?>">
+                        Olvidé mis datos
                     </a>
                 </div>
             </form>
@@ -161,44 +143,59 @@
 
 <script>
     new Vue({
-        el: '#signup_app',
+        el: '#SignUpApp',
         data: {
+            user: {
+                nombre: '',
+                apellidos: '',
+                email: '',
+                fecha_nacimiento: '',
+                sexo: -1,
+            },
             validation: {
                 email_valid: true,
                 email_unique: true,
                 username_unique: true
             },
-            validated: 0
+            validated: 0,
+            loading: false,
         },
         methods: {
-            register: function(){
+            handleSubmit: function(){
                 if ( this.validated ) {
+                    this.loading = true
                     
-                    axios.post(url_api + 'accounts/register/', $('#signup_form').serialize())
+                    var formValues = new FormData(document.getElementById('SignUpForm'))
+                    axios.post(url_api + 'accounts/create/', formValues)
                     .then(response => {
-                        console.log(response.data.message);
-                        if ( response.data.status == 1 ) {
+                        if ( response.data.saved_id > 0 ) {
                             window.location = url_app + 'accounts/registered/' + response.data.saved_id;
                         } else {
-                            this.recaptcha_message = response.data.recaptcha_message;
+                            toastr['error']('No se creó la cuenta de usuario')
+                        }
+
+                        if ( response.data.recaptcha = -1 ) {
+                            //ReCaptcha vencido, se reinicia
+                            setTimeout(() => {
+                                toastr['info']('Reiniciando formulario')
+                                window.location = url_app + 'accounts/signup'
+                            }, 3000);
                         }
                     })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+                    .catch(function (error) { console.log(error) })
+                } else {
+                    toastr['warning']('Hay datos que no han sido validados')
                 }
             },
             validate_form: function(){
-                var form_data = $('#signup_form').serialize();
+                var form_data = $('#SignUpForm').serialize();
                 
                 axios.post(url_api + 'accounts/validate_signup', form_data)
                 .then(response => {
                     this.validated = response.data.status;
                     this.validation = response.data.validation;
                 })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                .catch(function (error) { console.log(error) })
             }
         }
     });

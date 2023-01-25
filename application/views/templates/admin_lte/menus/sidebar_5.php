@@ -47,7 +47,7 @@
             </li>
             
             <li class="<?= $clases_m0['usuarios'] ?>">
-                <a href="<?= base_url() ?>usuarios/mi_perfil">
+                <a href="<?= base_url() ?>accounts/profile">
                     <i class="fa fa-user"></i> <span>Mi cuenta</span>
                 </a>
             </li>

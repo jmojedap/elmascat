@@ -87,7 +87,7 @@ class Accounts extends CI_Controller {
         redirect('app/logged');
     }
     
-//USERS REGISTRATION
+// REGISTRO DE USUARIOS
 //---------------------------------------------------------------------------------------------------
     
     /**
@@ -101,6 +101,56 @@ class Accounts extends CI_Controller {
         $data['recaptcha_sitekey'] = K_RCSK;    //config/constants.php
         $this->load->view('templates/polo/main_v', $data);
     }
+
+    /**
+     * AJAX JSON
+     * 
+     * Recibe los datos POST del form en accounts/signup. Si se validan los 
+     * datos, se registra el user. Se devuelve $data, con resultados de registro
+     * o de validación (si falló).
+     * 2023-01-16
+     */
+    function create()
+    {
+        //Validar Recaptcha
+        $this->load->model('Validation_model');
+        $recaptcha = $this->Validation_model->recaptcha(); //Validación Google ReCaptcha V3
+
+        //Validar Formulario
+        $res_validation = $this->Account_model->validate();
+
+        //Resultado inicial por defecto
+        $data = [
+            'saved_id' => 0,
+            'recaptcha' => $recaptcha,
+            'validation' => $res_validation['validation']
+        ];
+        
+        //Comprobar 2 validaciones
+        if ( $res_validation['status'] && $recaptcha == 1 )
+        {
+            //Construir registro del nuevo user
+                $arr_row['nombre'] = $this->input->post('nombre');
+                $arr_row['apellidos'] = $this->input->post('apellidos');
+                $arr_row['email'] = $this->input->post('email');
+                $arr_row['fecha_nacimiento'] = $this->input->post('fecha_nacimiento');
+                $arr_row['sexo'] = $this->input->post('sexo');
+
+            //Crear usuario, tabla usuario
+                $this->load->model('Usuario_model');
+                $data['saved_id'] = $this->Usuario_model->insert($arr_row);
+                if ( $data['saved_id'] > 0 ) {
+                    //Enviar email con código de activación
+                    $this->Account_model->activation_key($data['saved_id']);
+                    if ( ENV == 'production' ) {
+                        $this->load->model('Notification_model');
+                        $this->Notification_model->email_activation($data['saved_id']);
+                    }
+                }
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
     /**
      * AJAX JSON
@@ -108,29 +158,26 @@ class Accounts extends CI_Controller {
      * Recibe los datos POST del form en accounts/signup. Si se validan los 
      * datos, se registra el user. Se devuelve $data, con resultados de registro
      * o de validación (si falló).
-     * 2020-02-12
+     * 2023-01-16
      */
-    function register()
+    function z_register()
     {
         $data = array('status' => 0);  //Initial result values
         $res_validation = $this->Account_model->validate();
         $recaptcha = $this->App_model->recaptcha();
             
-        if ( $res_validation['status'] && $recaptcha->score > 0.5 )
+        if ( $res_validation['status'] && $recaptcha == 1 )
         {
             //Construir registro del nuevo user
                 $arr_row['nombre'] = $this->input->post('nombre');
                 $arr_row['apellidos'] = $this->input->post('apellidos');
-                $arr_row['display_name'] = $this->input->post('nombre') . ' ' . $this->input->post('apellidos');
                 $arr_row['email'] = $this->input->post('email');
                 $arr_row['fecha_nacimiento'] = $this->input->post('fecha_nacimiento');
                 $arr_row['sexo'] = $this->input->post('sexo');
-                $arr_row['username'] = $arr_row['email'];
-                $arr_row['rol_id'] = 21;  //21: Cliente
 
             //Crear
                 $this->load->model('Usuario_model');
-                $data['saved_id'] = $this->Usuario_model->crear_usuario($arr_row);
+                $data = $this->Usuario_model->insert($arr_row);
 
                 if ( $data['saved_id'] > 0 ) { $data['status'] = 1; }
             
@@ -169,47 +216,60 @@ class Accounts extends CI_Controller {
 // ACTIVATION
 //-----------------------------------------------------------------------------
 
+    /**
+     * Formulario para asignar contraseña y activar la cuenta de usuario
+     * 2023-01-16
+     */
     function activation($activation_key, $activation_type = 'activation')
     {
-        $row_user = $this->Db_model->row('usuario', "activation_key = '{$activation_key}'");        
+        $user = $this->Db_model->row('usuario', "cod_activacion = '{$activation_key}'");        
         
         //Variables
             $data['activation_key'] = $activation_key;
             $data['activation_type'] = $activation_type;
-            $data['row'] = $row_user;
+            $data['user'] = $user;
             $data['view_a'] = 'accounts/activation_v';
             
         //Evaluar condiciones
             $conditions = 0;
-            if ( ! is_null($row_user) ) { $conditions++; }
+            if ( ! is_null($user) ) { $conditions++; }
             if ( $this->session->userdata('logged') != TRUE ) { $conditions++; }
         
         if ( $conditions == 2 ) 
         {
-            $data['head_title'] = "Cuenta de {$row_user->display_name}";
-            $this->load->view('templates/bootstrap/start_v', $data);
+            $data['head_title'] = "Activar cuenta de {$user->display_name}";
+            $this->load->view(TPL_FRONT, $data);
         } else {
-            redirect('app/denied');
+            redirect('app/no_permitido');
         }
     }
 
-    function activate($activation_key)
+    /**
+     * Ejecuta la activación de una cuenta de usuario ($activation_key)
+     * 2022-08-08
+     */
+    function activate($activation_key = '')
     {
-        $data = array('status' => 0, 'message' => 'Ocurrió un error en la activación');
-        $conditions = 0;
-        if ( $this->input->post('password') == $this->input->post('passconf') ) { $conditions++; }
-        if ( strlen($this->input->post('password')) > 0 ) { $conditions++; }
-        
-        if ( $conditions == 2 ) 
-        {
-            $row_user = $this->Account_model->activate($activation_key);
+        $data = array('status' => 0, 'errors' => '');   //Resultado por defecto
+        $user = $this->Db_model->row('usuario', "cod_activacion = '{$activation_key}'");
 
-            $this->load->model('Account_model');
-            $this->Account_model->create_session($row_user->username, 1);
-            
-            $data = array('status' => 1, 'message' => 'Usuario activado');
-        }
+        //Validar condiciones
+        if ( $this->input->post('password') <> $this->input->post('passconf') ) $data['errors'] .= 'Las contraseñas no coinciden. ';
+        if ( is_null($user) ) $data['errors'] .= 'Usuario no identificado. ';
         
+        if ( strlen($data['errors']) == 0 ) 
+        {
+            $data['status'] = 1;
+
+            //Establecer contraseña y activar
+            $this->Account_model->change_password($user->id, $this->input->post('password'));
+
+            //Iniciar sesión
+            $this->load->model('Login_model');
+            $this->Login_model->crear_sesion($user->email, TRUE);
+        }
+
+        //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
@@ -309,8 +369,38 @@ class Accounts extends CI_Controller {
         } else {
             $data['head_title'] = 'Restauración de contraseña';
             $data['view_a'] = 'accounts/recovery_v';
-            $this->load->view('templates/remark/start_v', $data);
+            $this->load->view(TPL_FRONT, $data);
         }
+    }
+
+    /**
+     * Recibe email por post desde app/accounts/recovery, y si encuentra 
+     * usuario, envía link para establecer nueva contraseña
+     * 2023-01-16
+     */
+    function recovery_email()
+    {
+        $data = ['status' => 0];
+
+        $this->load->model('Validation_model');
+        $data['recaptcha'] = $this->Validation_model->recaptcha(); //Validación Google ReCaptcha V3
+
+        //Identificar usuario
+        $user = $this->Db_model->row('usuario', "email = '{$this->input->post('email')}'");
+
+        if ( ! is_null($user) && $data['recaptcha'] == 1 ) 
+        {
+            //Usuario existe, se envía email para restaurar constraseña
+            $this->Account_model->activation_key($user->id);
+            if ( ENV == 'production') {
+                $this->load->model('Notification_model');
+                $this->Notification_model->email_activation($user->id, 'recovery');
+            }
+            $data['status'] = 1;
+        }
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
 // ADMINISTRACIÓN DE CUENTA
@@ -452,54 +542,51 @@ class Accounts extends CI_Controller {
         redirect('accounts/login');
     }
 
-// FACEBOOK LOGIN
-//-----------------------------------------------------------------------------
-
-    function fb_login()
-    {
-        $this->load->view('accounts/fb_login_v');
-    }
-
 // CHECKEO DE USUARIOS PARA REGISTRO
 //-----------------------------------------------------------------------------
 
     /**
-     * Registro rápido de usuarios que están realizando una compra
+     * Registro rápido de usuario que está realizando una compra
      * 2021-10-01
      */
-    function fast_register()
+    function create_fast()
     {
-        $data = array('status' => 0);  //Initial result values
+        $data = ['saved_id' => 0];  //Initial result values
         $res_validation = $this->Account_model->validate();
-        $recaptcha = $this->App_model->recaptcha();
+
+        $this->load->model('Validation_model');
+        $data['recaptcha'] = $this->Validation_model->recaptcha();
             
-        if ( $res_validation['status'] && $recaptcha->score > 0.5 )
+        if ( $res_validation['status'] && $data['recaptcha'] == 1 )
         {
             //Construir registro del nuevo user
                 $arr_row['nombre'] = $this->input->post('nombre');
                 $arr_row['apellidos'] = $this->input->post('apellidos');
                 $arr_row['display_name'] = $this->input->post('nombre') . ' ' . $this->input->post('apellidos');
                 $arr_row['email'] = $this->input->post('email');
-                $arr_row['fecha_nacimiento'] = $this->input->post('fecha_nacimiento');
                 $arr_row['fecha_nacimiento'] = substr($this->input->post('year'),-4) . '-' . substr($this->input->post('month'),-2) . '-' .  substr($this->input->post('day'),-2);
                 $arr_row['sexo'] = $this->input->post('sexo');
-                if ( strlen($this->input->post('password')) > 0 ) {
-                    $arr_row['password'] = $this->Account_model->crypt_pw($this->input->post('password'));
-                }
                 $arr_row['username'] = $arr_row['email'];
-                $arr_row['estado'] = 1;
+                $arr_row['estado'] = 2; //Registrado, sin activar por email
 
             //Crear
                 $this->load->model('Usuario_model');
-                $data['saved_id'] = $this->Usuario_model->crear_usuario($arr_row);
+                $data['saved_id'] = $this->Usuario_model->insert($arr_row);
 
-                if ( $data['saved_id'] > 0 ) { $data['status'] = 1; }
+                if ( $data['saved_id'] > 0 ) {
+                    //Enviar email con código de activación
+                    $this->Account_model->activation_key($data['saved_id']);
+                    if ( ENV == 'production' ) {
+                        $this->load->model('Notification_model');
+                        $this->Notification_model->email_activation($data['saved_id']);
+                    }
+                }
         } else {
             $data['validation'] = $res_validation['validation'];
         }
 
         //Si hay un pedido en curso asignar el usuario creado
-        if ( ! is_null($this->session->userdata('order_code'))  )
+        if ( ! is_null($this->session->userdata('order_code')) && $data['saved_id'] > 0 )
         {
             $this->load->model('Pedido_model');
             $order_code = $this->session->userdata('order_code');
@@ -514,39 +601,6 @@ class Accounts extends CI_Controller {
     function check_email()
     {
         $data = $this->Account_model->check_email();
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
-// LOGIN CON CUENTA DE FACEBOOK
-//-----------------------------------------------------------------------------
-
-    function facebook_login()
-    {
-        if ( $this->session->userdata('user_id') ) {
-            redirect('app/logged');
-        } else {
-            $this->load->view('accounts/page_facebook_login_v');
-        }
-    }
-
-    /**
-     * Recibe por POST Access Token de usuario de facebook, se valida.
-     * También recibe por POST datos del usuario de facebook para crear usuario en la base de datos
-     * o iniciar sesión si ya existe.
-     * 2020-08-14
-     */
-    function validate_facebook_login()
-    {
-        $data = array('status' => 0, 'message' => 'Authentication failed');
-        $token_validation = $this->Account_model->facebook_validate_token($this->input->post('input_token'));
-
-        if ( $token_validation->is_valid )
-        {
-            //$data = array('status' => 1, 'message' => 'Authentication was successful');
-            $data = $this->Account_model->facebook_set_login();
-        }
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));

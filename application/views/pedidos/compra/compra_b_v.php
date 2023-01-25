@@ -3,7 +3,7 @@
         <div class="col col-md-4">
             <div class="cart ">
                 <div class="page-title">
-                    <h2>Productos</h2>
+                    <h2>Productos (<?= $products->num_rows() ?>)</h2>
                 </div>
                 <div class="table-responsive">
                     <!--<form method="post">-->
@@ -13,19 +13,14 @@
                                 <thead>
                                     <tr class="first last">
                                         <th rowspan="1">
-                                            <span class="nobr">Productos y precios</span>
+                                            <span class="nobr">Productos y cantidades</span>
+                                            <a href="<?= base_url("pedidos/carrito/") ?>" class="text-primary pull-right">
+                                                <i class="fa fa-pencil"></i> Editar
+                                            </a>
                                         </th>
                                         
                                     </tr>
                                 </thead>
-                                
-                                <tfoot>
-                                    <tr class="first last">
-                                        <td class="a-right last">
-                                            <?= anchor("pedidos/carrito/", '<i class="fa fa-shopping-cart"></i><span><span> Editar</span></span>', 'class="btn btn-polo w3" title="Editar productos"') ?>
-                                        </td>
-                                    </tr>
-                                </tfoot>
                                 
                                 <tbody>
                                     <?php foreach ($products->result() as $row_detalle) : ?>
@@ -74,9 +69,6 @@
                         </fieldset>
                     <!--</form>-->
                 </div>
-                
-                
-
             </div>
         </div>
         
@@ -92,17 +84,12 @@
                             <span class="nobr">
                                 Contacto y Dirección
                             </span>
+                            <a href="<?= base_url("pedidos/compra_a/{$row->cod_pedido}") ?>" class="text-primary pull-right">
+                                <i class="fa fa-pencil"></i> Editar
+                            </a>
                         </th>
                     </tr>
                 </thead>
-                
-                <tfoot>
-                    <tr class="first last">
-                        <td class="a-right last" colspan="2">
-                            <?= anchor("pedidos/compra_a/{$row->cod_pedido}", '<i class="fa fa-edit"></i><span><span> Editar</span></span>', 'class="btn btn-polo w3" title="Editar datos de compra"') ?>
-                        </td>
-                    </tr>
-                </tfoot>
 
                 <tbody>
                     <tr>
@@ -141,34 +128,51 @@
                             </td>
                         </tr>
                     <?php endif; ?>
-                    <?php if ( $row->is_gift ) : ?>
-                        <tr>
-                            <td width="25px">
-                                <i class="fa fa-gift fa-2x text-primary"></i>
-                            </td>
-                            <td>
-                                <span class="resaltar">Datos para regalo</span>
-                                
-                                <p>
-                                    <strong class="text-primary">De:</strong>
-                                    <?= $arr_meta['regalo']['de'] ?>
-                                    &middot;
-                                    <strong class="text-primary">Para:</strong>
-                                    <?= $arr_meta['regalo']['para'] ?>
-                                    &middot;
-                                    <strong class="text-primary">Mensaje:</strong>
-                                    <?= $arr_meta['regalo']['mensaje'] ?>
-                                </p>
-                                <p>
-                                    <a href="<?= base_url("pedidos/datos_regalo") ?>" class="btn btn-xs btn-primary">
-                                        Editar
-                                    </a>
-                                </p>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
                 </tbody>
             </table>
+
+            <?php if ( $row->is_gift ) : ?>
+
+            <div class="page-title">
+                <h2>Datos del regalo</h2>
+            </div>
+
+            <table class="data-table cart-table mb-2">
+                <thead>
+                    <tr class="first last">
+                        <th colspan="2">
+                            <span class="nobr">
+                                Empaque y dedicatoria
+                            </span>
+                            <a href="<?= base_url("pedidos/datos_regalo/") ?>" class="text-primary pull-right">
+                                <i class="fa fa-pencil"></i> Editar
+                            </a>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td width="25px">
+                            <i class="fa fa-gift fa-2x text-primary"></i>
+                        </td>
+                        <td>
+                            <p>
+                                <strong class="text-primary">De:</strong>
+                                <?= $arr_meta['regalo']['de'] ?>
+                                &middot;
+                                <strong class="text-primary">Para:</strong>
+                                <?= $arr_meta['regalo']['para'] ?>
+                                &middot;
+                                <strong class="text-primary">Mensaje:</strong>
+                                <?= $arr_meta['regalo']['mensaje'] ?>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <?php endif; ?>
         </div>
         
         <div class="col col-md-4">
@@ -228,13 +232,17 @@
 
             <div class="alert alert-info text-center">
                 <p>
-                    La entrega de su compra pueden tomar entre <strong>1 y 2 días hábiles</strong> para Bogotá y hasta <strong>3 días hábiles</strong> para el resto del país.
+                    La entrega de tu compra pueden tomar entre <strong>1 y 2 días
+                    hábiles</strong> para Bogotá y hasta <strong>3 días hábiles</strong>
+                    para el resto del país.
                 </p>
             </div>
             <div class="alert alert-info text-center">
                 <p>
                     Para pagos en Efectivo con Códigos de pago: 
-                    Algunos productos de tu pedido podrían dejar de estar disponibles si pasa mucho tiempo entre la creación de tu pedido y el momento del pago.
+                    Algunos productos de tu pedido podrían dejar de estar 
+                    disponibles si pasa mucho tiempo entre la creación de 
+                    tu pedido y el momento del pago.
                 </p>
             </div>
             

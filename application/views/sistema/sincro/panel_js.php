@@ -1,5 +1,3 @@
-<script src="<?= URL_RESOUCES ?>js/Math.uuid.js"></script>
-
 <script>
 //Variables 
 //-----------------------------------------------------------------------------

@@ -289,7 +289,7 @@ class Login_model extends CI_Model{
             $resultado['ejecutado'] = 0;
             $resultado['mensajes'] = array(
                 'recaptcha' => 'Para registrarse debe activar la casilla de verificación "No soy un robot"',
-                'cant_emails' => 'La dirección de correo electrónico ya está registrada. Si ya se registró, recupere su contraseña >> <a href="' . base_url('usuarios/recuperar') . '">aquí</a> <<'
+                'cant_emails' => 'La dirección de correo electrónico ya está registrada. Si ya se registró, recupere su contraseña >> <a href="' . base_url('accounts/recovery') . '">aquí</a> <<'
             );
             $cant_condiciones = 0;
         

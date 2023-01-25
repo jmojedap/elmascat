@@ -15,12 +15,8 @@
             </div>
             <div class="form-group col-md-8">
                 <input
-                    type="text"
-                    id="field-cod_pedido"
-                    name="cod_pedido"
-                    required
-                    class="form-control"
-                    placeholder="Escribe el código de tu pedido"
+                    type="text" id="field-cod_pedido"
+                    name="cod_pedido" required class="form-control" placeholder="Escribe el código de tu pedido" 
                     title="Escriba el código de su pedido"
                     value="<?= $cod_pedido ?>"
                     >
@@ -159,10 +155,11 @@
         <table class="table table-bordered">
             <thead>
                 <tr class="cart_menu">
-                    <td class="description">Producto</td>
-                    <td class="">Precio</td>
-                    <td class="quantity">Cantidad</td>
-                    <td class="total">Subtotal</td>
+                    <td class="w75p text-center"></td>
+                    <td class="description text-center">Producto</td>
+                    <td class=" text-center">Precio</td>
+                    <td class="quantity text-center">Cantidad</td>
+                    <td class="total text-center">Subtotal</td>
                 </tr>
             </thead>
             <tbody>
@@ -176,12 +173,13 @@
                         $row_producto = $this->Pcrn->registro_id('producto', $row_detalle->producto_id);
 
                         $pct_descuento = 100 - $this->Pcrn->int_percent($row_detalle->precio, $row_detalle->precio_nominal);
-
-                        $att_img = $this->Producto_model->att_img($row_detalle->producto_id, 500);
-                        $att_img['width'] = 75;
-                        $att_imt['alt'] = $row_detalle->nombre_producto;
                     ?>
                     <tr>
+                        <td>
+                            <a href="<?= URL_APP . "productos/detalle/{$row_detalle->producto_id}/{$row_detalle->slug}" ?>">
+                                <img class="w75p" src="<?= $row_detalle->url_thumbnail ?>" alt="<?= $row_detalle->nombre_producto ?>">
+                            </a>
+                        </td>
                         <td class="">
                             <?= anchor("productos/detalle/{$row_detalle->producto_id}", $row_detalle->nombre_producto) ?>
                             <p>

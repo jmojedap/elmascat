@@ -85,7 +85,6 @@
     </div>
 
     <div class="section" v-show="mode == 'page'">
-        <!-- <img class="page" v-bind:src="page.src" alt="Página libro" onerror="this.src='<?= URL_IMG ?>books/no_cargada.png'">         -->
         <img class="page" v-bind:src="page.src" alt="Página libro" onerror="reload_book();">
     </div>
 </div>

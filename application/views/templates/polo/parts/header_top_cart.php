@@ -34,7 +34,7 @@
                             <?php if ( $i <= 3 ){ ?>
                                 <li class="item even">
                                     <a href="<?= URL_APP . "productos/detalle/{$row_detalle->producto_id}" ?>" class="product-image" title="<?= $row_detalle->nombre_producto ?>">
-                                        <img src="<?= $row_detalle->url_thumbnail ?>" alt="Imagen producto" style="width: 80px;">
+                                        <img src="<?= $row_detalle->url_thumbnail ?>" alt="Imagen producto" style="width: 80px;" onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'">
                                     </a>
                                     <div class="detail-item">
                                         <div class="product-details">

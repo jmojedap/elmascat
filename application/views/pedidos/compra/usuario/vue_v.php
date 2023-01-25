@@ -1,10 +1,17 @@
+<?php
+    $randomNumber = rand(100,999);
+?>
+
 <script>
 var pedido_usuario_app = new Vue({
     el: '#pedido_usuario_app',
     data: {
+        loading: false,
         order: <?= json_encode($row) ?>,
         qty_digital_products: <?= $qty_digital_products ?>,
-        user: {},
+        user: {
+            nombre: '', apellidos:''
+        },
         email: '',
         year: '01985',
         month: '006',
@@ -23,8 +30,8 @@ var pedido_usuario_app = new Vue({
     },
     methods: {
         check_email: function(){
-            var params = new FormData();
-            params.append('email', this.email);
+            var params = new FormData()
+            params.append('email', this.email)
             
             axios.post(url_app + 'accounts/check_email/', params)
             .then(response => {
@@ -37,9 +44,6 @@ var pedido_usuario_app = new Vue({
                 } else {
                     console.log('No registrado');
                     this.show_register_form = true;
-                    /*if ( this.qty_digital_products > 0 ) {
-                        console.log('Hay productos digitales, solicitar password');
-                    }*/
                 }
             })
             .catch(function (error) { console.log(error) })
@@ -58,7 +62,7 @@ var pedido_usuario_app = new Vue({
             console.log(this.pw + '-' + this.pc);
             if ( this.pw == this.pc )
             {
-                this.fast_register();
+                this.createUser()
             } else {
                 this.pw_match = false;
             }
@@ -66,14 +70,22 @@ var pedido_usuario_app = new Vue({
         set_sexo: function(sexo){
             this.sexo = sexo
         },
-        fast_register: function(){                
-            axios.post(url_app + 'accounts/fast_register/', $('#register_form').serialize())
+        createUser: function(){                
+            this.loading = true
+            var formValues = new FormData(document.getElementById('signUpForm'))
+            axios.post(url_app + 'accounts/create_fast/', formValues)
             .then(response => {
                 if ( response.data.saved_id > 0 )
                 {
                     this.show_success_register = true
                     this.show_register_form = false
                     window.scrollTo(0,0);
+                }
+                if ( response.data.recaptcha == -1 ) {
+                    toastr['info']('El recaptcha de validación expiró, se recargará la página')
+                    setTimeout(() => {
+                        window.location = url_app + 'pedidos/usuario'
+                    }, 3000);
                 }
                 console.log(response.data);
             })

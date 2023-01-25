@@ -53,6 +53,7 @@ var app_explore = new Vue({
         options_fabricante: <?= json_encode($options_fabricante) ?>,
         options_promocion: <?= json_encode($options_promocion) ?>,
         options_image_status: {'':'[ Todas ]', '01':'Sin imagen'},
+        arrRangoPrecio: <?= json_encode($arrRangoPrecio) ?>,
         active_filters: false
     },
     methods: {

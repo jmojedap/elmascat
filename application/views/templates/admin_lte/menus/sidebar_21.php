@@ -2,7 +2,7 @@
     
 //Clases menú
     //Usuarios
-        $menus['usuarios/mi_perfil'] = array('usuarios', '');
+        $menus['accounts/profile'] = array('usuarios', '');
         $menus['usuarios/direcciones'] = array('usuarios', '');
         $menus['usuarios/contrasena'] = array('usuarios', '');
         $menus['usuarios/editarme'] = array('usuarios', '');
@@ -50,7 +50,7 @@
             </li>
             
             <li class="<?= $clases_m0['usuarios'] ?>">
-                <a href="<?= base_url() ?>usuarios/mi_perfil">
+                <a href="<?= base_url() ?>accounts/profile">
                     <i class="fa fa-user"></i> <span>Mi cuenta</span>
                 </a>
             </li>

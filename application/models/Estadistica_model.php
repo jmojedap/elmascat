@@ -135,6 +135,24 @@ class Estadistica_Model extends CI_Model{
         return $lugares;
     }
 
+    /**
+     * Consulta cantidad de usuarios asignados a cada edición de la revista
+     * Minutos de Amor en su edición En Línea
+     * 2023-01-24
+     */
+    function ediciones_usuarios($minYear = 2021)
+    {
+        $this->db->select('relacionado_id, post.referente_1_id, periods.period_name AS edicion, COUNT(elemento_id) AS cant_usuarios');
+        $this->db->where('dato_id', 100012);
+        $this->db->where('periods.year >=', $minYear);
+        $this->db->join('post', 'meta.relacionado_id = post.id');
+        $this->db->join('periods', 'post.referente_1_id = periods.id');
+        $this->db->group_by('relacionado_id');
+        $ediciones = $this->db->get('meta');
+
+        return $ediciones;
+    }
+
 // Procesos masivos de actualizacion
 //-----------------------------------------------------------------------------
 

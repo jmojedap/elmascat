@@ -510,6 +510,28 @@ class Item_model extends CI_Model{
     }
 
     /**
+     * Array con items, especificando código y nombre. Filtrados por condición
+     * 2022-10-04
+     * 
+     * @param string $condition
+     * @return array $options
+     */
+    function arr_options($condition)
+    {
+        $select = 'CONCAT("0", (id_interno)) AS str_cod, id_interno AS cod, item AS name, 
+            nombre_corto AS short_name, abreviatura AS abbreviation, slug, padre_id AS parent_id';
+
+        $query = $this->db->select($select)
+            ->where($condition)
+            ->order_by('id_interno', 'ASC')
+            ->get('item');
+        
+        $options = $query->result_array();
+        
+        return $options;
+    }
+
+    /**
      * Array con options de item, para elementos select de formularios.
      * La variable $condition es una condición WHERE de SQL para filtrar los items.
      * En el array el índice corresponde al cod y el value del array al

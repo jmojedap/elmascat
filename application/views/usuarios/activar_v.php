@@ -35,11 +35,11 @@
     function activar_usuario(){
         $.ajax({        
             type: 'POST',
-            url: url_app + 'usuarios/activar_e/' + cod_activacion,
+            url: url_app + 'accounts/activation_e/' + cod_activacion,
             data: $('#activar_form').serialize(),
             success: function(response){
                 if (response.user_id > 0) {
-                    //window.location = url_app + 'usuarios/mi_perfil/';
+                    //window.location = url_app + 'accounts/profile/';
                     $('#card_form').hide();
                     $('#success_activation').show('fast');
                 } else {

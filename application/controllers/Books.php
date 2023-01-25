@@ -18,6 +18,10 @@ class Books extends CI_Controller{
 // Lectura
 //-----------------------------------------------------------------------------
 
+    /**
+     * Vista de lectura de un libro en línea
+     * 2022-09-04
+     */
     function read($book_code, $meta_id = 0, $slug = '', $format = 'mix')
     {
         //$this->output->enable_profiler(TRUE);
@@ -25,26 +29,27 @@ class Books extends CI_Controller{
 
         $this->load->helper('file');
 
-        $folder = PATH_CONTENT . "books/{$book_code}/read/";
-        $pages = get_filenames($folder);
+        $year = substr($book_code,0,4);
+        $folder = PATH_CONTENT . "books/{$year}/{$book_code}/";
+        $pages = get_filenames($folder . 'read/');
         sort($pages);
 
         $data['pages'] = $pages;
-        $data['url_folder'] = URL_CONTENT . "books/{$book_code}/";
+        $data['url_folder'] = URL_CONTENT . "books/{$year}/{$book_code}/";
         $data['format'] = $format;
         $data['book_code'] = $book_code;
         $data['meta_id'] = $meta_id;
         $data['slug'] = $slug;
 
         //Guardar evento de apertura
-        //$this->Post_model->save_open_event($data['book_id']);
+        $this->Post_model->save_open_event($data['book_id']);
 
         //Índice
-        $str_index = file_get_contents(PATH_CONTENT . "books/{$book_code}/index_01.json");
+        $str_index = file_get_contents("{$folder}/index_01.json");
         $data['book_index'] = $str_index;
 
         //Páginas Drive
-        $str_pages = file_get_contents(PATH_CONTENT . "books/{$book_code}/pages_{$format}.json");
+        $str_pages = file_get_contents("{$folder}/pages_{$format}.json");
         $data['drive_pages'] = $str_pages;
 
         $view = 'templates/reader/reader_v'; 
@@ -89,7 +94,7 @@ class Books extends CI_Controller{
         $data['view_a'] = 'books/files_generator_v';
 
         $data['books'] = $this->db->select('id, code, nombre_post')
-                        ->where('tipo_id = 8 AND estado = 2')
+                        ->where('tipo_id = 8 AND estado = 1')
                         ->order_by('code', 'ASC')
                         ->get('post');
 
@@ -104,10 +109,11 @@ class Books extends CI_Controller{
     function rename_pages()
     {
         $book_code = $this->input->post('book_code');
+        $year = substr($book_code,0,4);
         $prefix = $this->input->post('prefix');
 
         $this->load->helper('file');
-        $folder = PATH_CONTENT . "books/{$book_code}/org/";
+        $folder = PATH_CONTENT . "books/{$year}/{$book_code}/org/";
         $pages = get_filenames($folder);
         $i = 0;
         $this->load->helper('string');
@@ -119,7 +125,7 @@ class Books extends CI_Controller{
             $new_name = str_replace('.jpg','',$new_name);
             $new_name = substr('00' . $new_name,-3) . '_' . random_string('numeric', 6) . '.jpg';
             
-            rename(PATH_CONTENT . "books/{$book_code}/org/" . $file, PATH_CONTENT . "books/{$book_code}/org/" . $new_name);
+            rename($folder . $file, $folder . $new_name);
 
             $renamed_pages[] = $file . ' > ' . $new_name;
         }
@@ -137,10 +143,11 @@ class Books extends CI_Controller{
     function create_read()
     {
         $book_code = $this->input->post('book_code');
+        $year = substr($book_code,0,4);
 
         $this->load->helper('file');
-        $folder = PATH_CONTENT . "books/{$book_code}/org/";
-        $pages = get_filenames($folder);
+        $folder = PATH_CONTENT . "books/{$year}/{$book_code}/";
+        $pages = get_filenames($folder . 'org/');
 
         $this->load->library('image_lib');
         $created = array();
@@ -150,8 +157,8 @@ class Books extends CI_Controller{
             //Config
                 $config['image_library'] = 'gd2';
                 $config['maintain_ratio'] = TRUE;
-                $config['source_image'] = PATH_CONTENT . "books/{$book_code}/org/" . $file;
-                $config['new_image'] = PATH_CONTENT . "books/{$book_code}/read/" . $file;
+                $config['source_image'] = "{$folder}org/{$file}";
+                $config['new_image'] = "{$folder}read/{$file}";
                 $config['width'] = 650;
                 $config['quality'] = 95;
 
@@ -172,9 +179,11 @@ class Books extends CI_Controller{
     function create_drive()
     {
         $book_code = $this->input->post('book_code');
+        $year = substr($book_code,0,4);
+
         $this->load->helper('file');
-        $folder = PATH_CONTENT . "books/{$book_code}/org/";
-        $pages = get_filenames($folder);
+        $folder = PATH_CONTENT . "books/{$year}/{$book_code}/";
+        $pages = get_filenames($folder . 'org/');
 
         $this->load->library('image_lib');
         $created = array();
@@ -184,8 +193,8 @@ class Books extends CI_Controller{
             //Config
                 $config['image_library'] = 'gd2';
                 $config['maintain_ratio'] = TRUE;
-                $config['source_image'] = PATH_CONTENT . "books/{$book_code}/org/" . $file;
-                $config['new_image'] = PATH_CONTENT . "books/{$book_code}/drive/" . $file;
+                $config['source_image'] = "{$folder}org/{$file}";
+                $config['new_image'] = "{$folder}drive/{$file}";
                 $config['width'] = 650;
                 $config['quality'] = 100;
 
@@ -207,9 +216,11 @@ class Books extends CI_Controller{
     function create_mini()
     {
         $book_code = $this->input->post('book_code');
+        $year = substr($book_code,0,4);
+
         $this->load->helper('file');
-        $folder = PATH_CONTENT . "books/{$book_code}/read/";
-        $pages = get_filenames($folder);
+        $folder = PATH_CONTENT . "books/{$year}/{$book_code}/";
+        $pages = get_filenames($folder . 'org/');
 
         $this->load->library('image_lib');
         foreach ( $pages as $file)
@@ -218,8 +229,8 @@ class Books extends CI_Controller{
             //Config
                 $config['image_library'] = 'gd2';
                 $config['maintain_ratio'] = TRUE;
-                $config['source_image'] = PATH_CONTENT . "books/{$book_code}/read/" . $file;
-                $config['new_image'] = PATH_CONTENT . "books/{$book_code}/mini/" . $file;
+                $config['source_image'] = "{$folder}org/{$file}";
+                $config['new_image'] = "{$folder}mini/{$file}";
                 $config['width'] = 72;
                 $config['quality'] = 95;
 

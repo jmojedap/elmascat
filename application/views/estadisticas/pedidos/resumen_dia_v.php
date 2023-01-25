@@ -7,29 +7,36 @@
     );
 ?>
 
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/series-label.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<style>
+    #chart_container{
+        height: calc(100vh - 170px);
+    }
+</style>
 
-<div class="btn-group mb-2">
-    <?php foreach ( $arr_lapses as $lapse_days => $lapse_name ) { ?>
+<div class="text-center">
+    <div class="btn-group mb-2">
+        <?php foreach ( $arr_lapses as $lapse_days => $lapse_name ) { ?>
         <?php
-            $cl_link = $this->Pcrn->clase_activa($lapse_days, $qty_days, 'btn-primary', 'btn-default');
-        ?>
+                $cl_link = $this->Pcrn->clase_activa($lapse_days, $qty_days, 'btn-primary', 'btn-default');
+            ?>
         <a href="<?= base_url("estadisticas/resumen_dia/{$lapse_days}") ?>" class="btn <?= $cl_link ?> w2">
             <?= $lapse_name ?>
         </a>
-    <?php } ?>
+        <?php } ?>
+    </div>
 </div>
 
 <div class="card">
-    <div id="chart_container" class="card-body" style="height: 600px;"></div>
+    <div id="chart_container" class="card-body"></div>
 </div>
 
-<script>
-    Highcharts.chart('chart_container', {
 
+<?php $this->load->view('assets/highcharts') ?>
+<script>
+Highcharts.theme = hc_districatolicas_theme;
+Highcharts.setOptions(Highcharts.theme);
+
+let chart = new Highcharts.chart('chart_container', {
     title: {
         text: 'Ventas por día'
     },
@@ -41,8 +48,7 @@
     },
     xAxis: {
         categories: [
-            <?php foreach ( $resumen_dia->result() as $row_dia ) { ?>
-                '<?= $this->pml->date_format($row_dia->dia, 'd/M'); ?>',
+            <?php foreach ( $resumen_dia->result() as $row_dia ) { ?> '<?= $this->pml->date_format($row_dia->dia, 'd/M'); ?>',
             <?php } ?>
         ]
     },
@@ -65,22 +71,19 @@
             enableMouseTracking: false
         }
     },
-
     series: [
         {
             name: 'Ventas',
             data: [
-            <?php foreach ( $resumen_dia->result() as $row_dia ) { ?>
+                <?php foreach ( $resumen_dia->result() as $row_dia ) { ?>
                 <?php
                     $ventas_miles = $this->Pcrn->dividir($row_dia->sum_valor_total, 1000);
                 ?>
                 <?= intval($ventas_miles); ?>,
-            <?php } ?>
+                <?php } ?>
             ]
         },
-        
     ],
-
     responsive: {
         rules: [{
             condition: {
@@ -94,7 +97,9 @@
                 }
             }
         }]
-    }
-
-    });
+    },
+    credits: {
+        enabled: false
+    },
+});
 </script>

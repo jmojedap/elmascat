@@ -223,23 +223,6 @@ class Usuario_model extends CI_Model{
 //---------------------------------------------------------------------------------------------------
     
     /**
-     * Después de validar el formulario de registro de usuario, se lo guarda
-     * en la tabla.
-     * 
-     * @param type $registro
-     * @return type
-     */
-    function crear_usuario($registro)
-    {
-        //Datos complementarios
-            $registro['creado'] = date('Y-m-d h:i:s');
-            $registro['rol_id'] = 21;    //Valor por defecto
-        
-        $this->db->insert('usuario', $registro);
-        return $this->db->insert_id();
-    }
-    
-    /**
      * Actualizar registro tabla usuario
      * 2020-11-13
      */
@@ -257,40 +240,37 @@ class Usuario_model extends CI_Model{
     }
     
     /**
-     * Después de validar el formulario de registro de usuario se guarda en la tabla usuario
-     * 2020-09-26
-     * 
+     * Después de validar el formulario de registro de usuario se guarda en 
+     * la tabla usuario
+     * 2023-01-16
      */
     function insert($arr_row)
     {
         //Encriptar pw
-            $arr_row['password'] = $this->encriptar_pw($arr_row['password']);
+            if ( isset($arr_row['password']) ) {
+                $arr_row['password'] = $this->encriptar_pw($arr_row['password']);
+            }
         
         //Datos complementarios
-            if ( is_null($this->input->post('username')) ) $arr_row['username'] = $arr_row['email'];
+            $arr_row['username'] = $this->email_to_username($arr_row['email']);
             $arr_row['display_name'] = $arr_row['nombre'] . ' ' . $arr_row['apellidos'];
             $arr_row['editado'] = date('Y-m-d h:i:s');
             $arr_row['creado'] = date('Y-m-d h:i:s');
-            $arr_row['updater_id'] = $this->session->userdata('user_id');
-            $arr_row['creator_id'] = $this->session->userdata('user_id');
+
+            if ( $this->session->userdata('logged') ) {
+                $arr_row['updater_id'] = $this->session->userdata('user_id');
+                $arr_row['creator_id'] = $this->session->userdata('user_id');
+            }
         
         $this->db->insert('usuario', $arr_row);
         
-        //Rssultado
-        $data['status'] = 0;
-        $data['saved_id'] = $this->db->insert_id();
-        if ( $data['saved_id'] > 0 ) $data['status'] = 1;
-        
-        return $data;
+        return $this->db->insert_id();
     }
     
     /**
      * Envía e-mail de activación o restauración de cuenta
-     * 
-     * @param int $usuario_id
-     * @param string $tipo_activacion
      */
-    function email_activacion($usuario_id, $tipo_activacion = 'activar')
+    function z_email_activacion($usuario_id, $tipo_activacion = 'activar')
     {
         $row_usuario = $this->Pcrn->registro_id('usuario', $usuario_id);
         
@@ -323,7 +303,7 @@ class Usuario_model extends CI_Model{
      * @param string $tipo_activacion
      * @return string $mensaje
      */
-    function mensaje_activacion($usuario_id, $tipo_activacion)
+    function z_mensaje_activacion($usuario_id, $tipo_activacion)
     {
         $row_usuario = $this->Pcrn->registro_id('usuario', $usuario_id);
         $data['row_usuario'] = $row_usuario ;
@@ -340,7 +320,7 @@ class Usuario_model extends CI_Model{
      * @param type $row_meta
      * @return type
      */
-    function mensaje_autorizacion($row_meta)
+    function z_mensaje_autorizacion($row_meta)
     {
         $row_usuario = $this->Pcrn->registro_id('usuario', $row_meta->elemento_id);
         $data['row_usuario'] = $row_usuario;
@@ -374,7 +354,7 @@ class Usuario_model extends CI_Model{
         return $row_usuario;
     }
     
-    function activar($cod_activacion)
+    function z_activar($cod_activacion)
     {
         $row_activacion = $this->row_activacion($cod_activacion);
         
@@ -395,7 +375,7 @@ class Usuario_model extends CI_Model{
      * @param type $email
      * @return int
      */
-    function recuperar($email)
+    function z_recuperar($email)
     {
         $enviado = 0;
         
@@ -408,115 +388,6 @@ class Usuario_model extends CI_Model{
         
         return $enviado;
         
-    }
-    
-    /**
-     * Envía e-mail solicitando autorización de registro de cliente
-     * 
-     * @param type $meta_id
-     */
-    function email_autorizacion($meta_id)
-    {
-        $row_meta = $this->Pcrn->registro_id('meta', $meta_id);
-        $row_usuario = $this->Pcrn->registro_id('usuario', $row_meta->elemento_id);
-            
-        //Asunto de mensaje
-            $subject = "{$row_usuario->display_name} solicita rol de Distribuidor";
-            $mensaje = $this->Usuario_model->mensaje_autorizacion($row_meta);
-        
-        //Enviar Email
-            $this->load->library('email');
-            $config['mailtype'] = 'html';
-
-            $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'Districatólicas Unidas S.A.S.');
-            $this->email->to($this->App_model->valor_opcion(26));   //Ver Ajustes > Parámetros > General
-            $this->email->subject($subject);
-            $this->email->message($mensaje);
-            
-            $this->email->send();   //Enviar
-    }
-    
-    function aprobar_rol($meta_id)
-    {
-        $row_solicitud = $this->Pcrn->registro_id('meta', $meta_id);
-        $row_usuario = $this->Pcrn->registro_id('usuario', $row_solicitud->elemento_id);
-        
-        //Resultado por defecto
-            $resultado['clase'] = 'alert-danger';
-            $resultado['mensaje'] = 'No se realizó la actualización, ejecute el proceso desde su cuenta de administración';
-        
-        if ( ! is_null($row_usuario) )
-        {
-            //Editar usuario
-                $registro['rol_id'] = $row_solicitud->relacionado_id;
-
-                $this->db->where('id', $row_usuario->id);
-                $this->db->update('usuario', $registro);
-            
-            //Editar solicitud, tabla meta
-                $reg_meta['estado'] = 1;    //Aprobada
-                $reg_meta['usuario_id'] = $this->session->userdata('usuario_id');    //Usuario que aprueba
-                $reg_meta['editado'] = date('Y-m-d H:i:s');    //Fecha de aprobación
-                
-                $this->db->where('id', $meta_id);
-                $this->db->update('meta', $reg_meta);
-                
-            //E-mail informando al usuario
-                $this->email_rta_solicitud($meta_id);
-                
-            //Resultado
-                $resultado['clase'] = 'alert-success';
-                $resultado['mensaje'] = 'El rol del usuario fue actualizado exitosamente.';
-        }
-        
-        return $resultado;
-    }
-    
-    function email_rta_solicitud($meta_id)
-    {
-        $row_meta = $this->Pcrn->registro_id('meta', $meta_id);
-        $row_usuario = $this->Pcrn->registro_id('usuario', $row_meta->elemento_id);
-        
-        $texto_estado = $this->Item_model->nombre(43, $row_meta->estado);
-            
-        //Asunto de mensaje
-            $subject = "Resultado solicitud: {$texto_estado}";
-            $mensaje = $this->Usuario_model->mensaje_rta_solicitud($row_meta, $row_usuario);
-        
-        //Enviar Email
-            $this->load->library('email');
-            $config['mailtype'] = 'html';
-
-            $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'Districatólicas Unidas S.A.S.');
-            $this->email->to($row_usuario->email);   //Ver Ajustes > Parámetros > General
-            $this->email->subject($subject);
-            $this->email->message($mensaje);
-            
-            $this->email->send();   //Enviar
-    }
-    
-    function mensaje_rta_solicitud($row_meta, $row_usuario)
-    {
-        $data['row_meta'] = $row_meta;
-        $data['row_usuario'] = $row_usuario;
-        $data['style'] = $this->App_model->email_style();
-        
-        $mensaje = $this->load->view('usuarios/emails/rta_solicitud_v', $data, TRUE);
-        
-        return $mensaje;
-    }
-    
-    function solicitudes()
-    {
-        $this->db->select('id AS meta_id, elemento_id AS usuario_id, relacionado_id AS rol_id, estado');
-        $this->db->where('tabla_id', 1000); //Tabla usuario
-        $this->db->where('dato_id', 100011); //Solicitud de cambio de rol
-        $this->db->order_by('editado', 'DESC');
-        $query = $this->db->get('meta');
-
-        return $query;
     }
 
 //GESTIÓN DE CONTRASEÑAS
@@ -684,6 +555,21 @@ class Usuario_model extends CI_Model{
         $cant_username = $this->Pcrn->num_registros('usuario', $condicion);
         
         return $cant_username;
+    }
+
+    /**
+     * Genera un username a partir de un email
+     * 2022-05-07
+     */
+    function email_to_username($email)
+    {
+        $username = explode('@', $email)[0];
+        $username = substr($username, 0,25);
+        $username = preg_replace('[A-Za-z0-9_]', '', $username);
+        $username = $this->Db_model->unique_slug($username, 'usuario', 'username');
+        $username = str_replace(array('.', '-'), '', $username);
+
+        return $username;
     }
     
 //PROCESOS

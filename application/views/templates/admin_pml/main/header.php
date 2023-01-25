@@ -1,6 +1,6 @@
 <header class="main-header">
     <!-- Logo -->
-    <a href="<?= base_url() ?>" class="logo fixed-top" style="background-color: <?= BG_DARK ?>">
+    <a href="<?= URL_APP ?>index.php" class="logo fixed-top" style="background-color: <?= BG_DARK ?>">
         <?= APP_NAME ?>
     </a>
     <nav class="navbar fixed-top" role="navigation">

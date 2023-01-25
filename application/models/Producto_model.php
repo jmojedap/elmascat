@@ -98,9 +98,12 @@ class Producto_Model extends CI_Model{
      */
     function select($format = 'general')
     {
-        $arr_select['general'] = 'producto.id, nombre_producto as name, referencia AS code, slug, descripcion AS description, promocion_id, puntaje AS priority, puntaje_auto AS priority_auto, 
-            palabras_clave AS keywords, precio AS price, cant_disponibles AS stock, imagen_id AS image_id, url_image, url_thumbnail, 
-            estado AS status, producto.tipo_id AS type_id, creado AS created_at, editado AS updated_at';
+        $arr_select['general'] = 'producto.id, nombre_producto as name, referencia AS code,
+            slug, descripcion AS description,promocion_id, puntaje AS priority,
+            puntaje_auto AS priority_auto, palabras_clave AS keywords, precio AS price,
+            cant_disponibles AS stock, imagen_id AS image_id, url_image, url_thumbnail, 
+            estado AS status, producto.tipo_id AS type_id, creado AS created_at,
+            editado AS updated_at';
 
         $arr_select['export'] = '*';
 
@@ -142,12 +145,11 @@ class Producto_Model extends CI_Model{
      */
     function search_condition($filters)
     {
-        $condition = NULL;
-
-        $condition .= $this->role_filter() . ' AND ';
+        $condition = $this->role_filter() . ' AND ';
 
         //q words condition
-        $words_condition = $this->Search_model->words_condition($filters['q'], array('id', 'referencia', 'nombre_producto', 'descripcion', 'palabras_clave'));
+        $searchWords = ['id', 'referencia', 'nombre_producto', 'descripcion', 'palabras_clave'];
+        $words_condition = $this->Search_model->words_condition($filters['q'], $searchWords);
         if ( $words_condition )
         {
             $condition .= $words_condition . ' AND ';
@@ -161,6 +163,10 @@ class Producto_Model extends CI_Model{
         if ( $filters['promo'] != '' ) { $condition .= "promocion_id > 0 AND "; }   //Tiene algúna oferta o descuento
         if ( $filters['fe1'] != '' ) { $condition .= "peso <= {$filters['fe1']} AND "; }   //Peso máximo
         if ( $filters['fe2'] != '' ) { $condition .= "url_image = '' AND "; }   //Peso máximo
+        if ( $filters['fe3'] != '' ) {
+            $rango_precio = $this->rango_precio($filters['fe3']);
+            $condition .=  $rango_precio['condition'] . " AND ";
+        }   //Rango de precios
         if ( $filters['d1'] != '' ) { $condition .= "creado >= '{$filters['d1']} 00:00:00' AND "; }   //Fecha de creación
         if ( $filters['tag'] != '' ) {
             $condition .= "producto.id IN (SELECT elemento_id FROM meta WHERE tabla_id = 3100 AND dato_id = 21 AND relacionado_id IN ({$filters['tag']}) ) AND ";
@@ -442,27 +448,32 @@ class Producto_Model extends CI_Model{
 //-----------------------------------------------------------------------------
     
     /**
-     * Array con atributos para describir el estado de publicación producto
+     * Rangos de precio para filtros en búsqueda de productos
+     * 2022-09-28
      * @return array
      */
-    function z_arr_estados()
+    function rangos_precio($cod = null)
     {
-        $arr_estados = array(
-            1 => array(
-                'texto' => 'Activo',
-                'clase' => ''
-            ),
-            2 => array(
-                'texto' => 'Inactivo',
-                'clase' => 'warning'
-            ),
-            3 => array(
-                'texto' => 'Borrador',
-                'clase' => 'info'
-            )
-        );
-        
-        return $arr_estados;
+        $rangos_precio = [
+            ['cod' => '01', 'name' => 'Menor a 5.000', 'condition' => 'precio <= 5000'],
+            ['cod' => '02', 'name' => 'Entre 5.000 y 20.000', 'condition' => 'precio >= 5000 AND precio <= 20000'],
+            ['cod' => '03', 'name' => 'Entre 20.000 y 50.000', 'condition' => 'precio >= 20000 AND precio <= 50000'],
+            ['cod' => '04', 'name' => 'Entre 50.000 y 100.000', 'condition' => 'precio >= 50000 AND precio <= 100000'],
+            ['cod' => '05', 'name' => 'Más de 100.000', 'condition' => 'precio >= 100000'],
+        ];
+
+        return $rangos_precio;
+    }
+
+    /**
+     * Array con valores sobre un rango específico de precio
+     * 2022-09-28
+     */
+    function rango_precio($cod = 1)
+    {
+        $rangos_precio = $this->rangos_precio();
+        $index = $cod - 1;
+        return $rangos_precio[$index];
     }
     
 //DATOS SOBRE UN PRODUCTO
@@ -1534,8 +1545,7 @@ class Producto_Model extends CI_Model{
     
     /**
      * Actualiza masivamente datos de productos.
-     * 
-     * @param type $array_hoja    Array con los datos de los productos
+     * 2022-03-15
      */
     function actualizar_datos($array_hoja)
     {   
@@ -1557,8 +1567,9 @@ class Producto_Model extends CI_Model{
             //Complementar registro
                 $registro['cant_disponibles'] = $array_fila[1];
                 $registro['precio'] = $array_fila[2];
-                $registro['iva_porcentaje'] = $this->Pcrn->si_strlen($array_fila[3], 0);
-                $registro['precio_base'] = $array_fila[2] / ( 1 + ($registro['iva_porcentaje']/100) );
+                $registro['iva_porcentaje'] = $this->Pcrn->si_strlen($array_fila[3], 0) * 100;
+                $registro['precio_base'] = $registro['precio'] / ( 1 + ($registro['iva_porcentaje']/100) );
+                //$registro['precio_base'] = 1 + $registro['iva_porcentaje'];
                 $registro['iva'] = $registro['precio'] - $registro['precio_base'];
                 
             //Campos activos

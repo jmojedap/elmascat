@@ -20,7 +20,7 @@
     </div>
     <div class="box_1">
         <p>Ingresa tu dirección de correo electrónico, enviaremos un mensaje para restaurar la contraseña de tu cuenta de usuario.</p>
-        <?= form_open("usuarios/recuperar_e", $att_form) ?>
+        <?= form_open("accounts/recovery_email", $att_form) ?>
             <div class="form-group">
                 <input name="email" type="text" class="form-control" required="required" placeholder="Correo electrónico" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
             </div>

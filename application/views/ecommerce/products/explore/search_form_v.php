@@ -69,6 +69,16 @@
             <label for="dcto" class="col-md-3 col-form-label">Promoción</label>
         </div>
 
+        <div class="mb-3 row">
+            <div class="col-md-9">
+                <select name="fe3" v-model="filters.fe3" class="form-control">
+                    <option value="">[ Todos ]</option>
+                    <option v-for="optionRangoPrecio in arrRangoPrecio" v-bind:value="optionRangoPrecio.cod">{{ optionRangoPrecio.name }}</option>
+                </select>
+            </div>
+            <label for="fe3" class="col-md-3 col-form-label">Rango de precio</label>
+        </div>
+
         <div class="form-group row">
             <div class="col-md-9">
                 <input name="fe1" type="number" class="form-control" min="0"

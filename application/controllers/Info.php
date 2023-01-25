@@ -13,6 +13,20 @@ class Info extends CI_Controller{
     }
 
     /**
+     * Listado de distribuidores MDA disponibles por ciudad y departamento
+     * 2022-09-23
+     */
+    function distribuidores_minutos_de_amor()
+    {
+        $data['list'] = file_get_contents(PATH_CONTENT . "especial/distribuidores_mda.json");
+
+        $data['head_title'] = 'Distribuidores Minutos de Amor';
+        $data['view_a'] = 'info/general/distribuidores_mda_v';
+
+        $this->load->view(TPL_FRONT, $data);
+    }
+
+    /**
      * Listado de distribuidores MDA disponibles por ciudad y sector durante
      * la cuarentena 2020
      * 2020-04-01

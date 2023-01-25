@@ -63,14 +63,16 @@ class Pedido_Model extends CI_Model{
 
     /**
      * Segmento Select SQL, con diferentes formatos, consulta de pedidos
-     * 2021-11-17
+     * 2022-08-12
      */
     function select($format = 'general')
     {
-        $arr_select['general'] = 'pedido.id, cod_pedido, pedido.usuario_id, pedido.nombre, pedido.apellidos, pedido.email';
-        $arr_select['general'] .= ', estado_pedido, valor_total, pedido.direccion, pedido.ciudad, pedido.celular, pedido.peso_total';
-        $arr_select['general'] .= ', pedido.editado, editado_usuario_id, factura, no_guia, codigo_respuesta_pol';
-        $arr_select['general'] .= ', usuario.username AS updater_username, pedido.payed, pedido.payment_channel, is_gift';
+        $arr_select['general'] = 'pedido.id, cod_pedido, pedido.usuario_id, pedido.nombre, pedido.apellidos, 
+            pedido.email, estado_pedido, valor_total, pedido.direccion, pedido.ciudad, pedido.celular, 
+            pedido.peso_total, pedido.editado, editado_usuario_id, factura, no_guia, codigo_respuesta_pol,
+            usuario.username AS updater_username, pedido.payed, pedido.payment_channel, is_gift,
+            age AS edad, gender AS sexo, screen_width AS ancho_pantalla, shipping_method_id AS sistema_envio,
+            pedido.payment_channel AS canal_pago';
 
         //$arr_select['export'] = 'users.id, username, document_number AS no_documento, document_type AS tipo_documento, display_name AS nombre, email, role AS rol, status, created_at AS creado, updated_at AS actualizado, expiration_at AS suscripcion_hasta';
 
@@ -257,7 +259,7 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Actualizar registro de pedido, datos de administración.
-     * 2020-04-28
+     * 2023-01-12 (Notification model)
      */
     function guardar_admin($pedido_id, $arr_row)
     {   
@@ -277,7 +279,8 @@ class Pedido_Model extends CI_Model{
             //Enviar email, si corresponde a un estado de interés comercial
             if ( in_array($arr_row['estado_pedido'], array(4,6)) && ENV == 'production' )
             {
-                $this->Pedido_model->email_actualizacion($pedido_id);    
+                $this->load->model('Notification_model');
+                $this->Notification_model->orders_updated_email($pedido_id);    
                 $data['message'] .= '. E-mail enviado al cliente.';
             }
         }
@@ -1458,8 +1461,8 @@ class Pedido_Model extends CI_Model{
         //Enviar e-mails a administradores de tienda y al cliente
         if ( ENV == 'production' )
         {
-            $this->email_cliente($pedido_id);
-            $this->email_admon($pedido_id);
+            $this->load->model('Notification_model');
+            $this->Notification_model->orders_payment_updated_buyer_email($pedido_id);
         }
     }
 
@@ -1791,7 +1794,7 @@ class Pedido_Model extends CI_Model{
      * 
      * @param type $pedido_id
      */
-    function email_admon($pedido_id)
+    function z_email_admon($pedido_id)
     {
         $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
             
@@ -1817,7 +1820,7 @@ class Pedido_Model extends CI_Model{
     /**
      * String HTML con mensaje para enviar por email administrador
      */
-    function mensaje_admon($row_pedido)
+    function z_mensaje_admon($row_pedido)
     {
         $data['row_pedido'] = $row_pedido ;
         $data['detalle'] = $this->detalle($row_pedido->id);
@@ -1830,7 +1833,7 @@ class Pedido_Model extends CI_Model{
     /**
      * HTML del mensaje que se envía tras la actualización del estado de un pedido
      */
-    function mensaje_actualizacion($row_pedido)
+    function z_mensaje_actualizacion($row_pedido)
     {
         $data['row_pedido'] = $row_pedido ;
         $data['style'] = $this->App_model->email_style();
@@ -1843,7 +1846,7 @@ class Pedido_Model extends CI_Model{
     /**
      * Envía Email a cliente, estado del pedido Tras la confirmación POL del pedido
      */
-    function email_cliente($pedido_id)
+    function z_email_cliente($pedido_id)
     {
         $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
             
@@ -1864,9 +1867,12 @@ class Pedido_Model extends CI_Model{
     }
     
     /**
-     * Envía e-mail de estado del pedido al cliente Tras edición de los datos logísticos de un pedido
+     * Envía e-mail de estado del pedido al cliente Tras edición de los datos
+     * logísticos de un pedido
+     * Desactivada 2023-01-12
+     * 
      */
-    function email_actualizacion($pedido_id)
+    function z_email_actualizacion($pedido_id)
     {
         $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
             
@@ -2002,6 +2008,36 @@ class Pedido_Model extends CI_Model{
         $data['status'] = 1;
     
         return $data;
+    }
+
+    /**
+     * Acualizar tabla pedido, campos gender y age, según lo relacionado
+     * en la tabla usuario
+     * 2022-08-12
+     */
+    function update_gender_age()
+    {
+        $this->db->select('pedido.id, pedido.cod_pedido, fecha_nacimiento, sexo, pedido.editado');
+        $this->db->where('pedido.age = 0 OR pedido.gender = 0');
+        $this->db->order_by('id', 'DESC');
+        $this->db->join('usuario', 'pedido.usuario_id = usuario.id');
+        $orders = $this->db->get('pedido', 10000);
+
+        $qty_updated = 0;
+        foreach ($orders->result() as $order) {
+            $seconds = $this->pml->seconds($order->fecha_nacimiento,$order->editado);
+            $arr_row['age']= intval($seconds/31557600);
+            $arr_row['gender']= $order->sexo;
+            $this->db->where('id', $order->id);
+            $this->db->update('pedido', $arr_row);
+            $qty_updated += $this->db->affected_rows();
+        }
+
+        $data['status'] = 1;
+        $data['message'] = "Pedidos actualizados: {$qty_updated}";
+
+        return $data;
+
     }
 
 }

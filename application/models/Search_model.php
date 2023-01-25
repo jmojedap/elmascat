@@ -112,7 +112,7 @@ class Search_model extends CI_Model{
      * String con la cadena para URL tipo GET, con los valores de la búsqueda
      * @return type
      */
-    function str_filters()
+    function z_str_filters()
     {
         $filters = $this->filters();
         $search_indexes = $this->search_indexes();
@@ -124,7 +124,35 @@ class Search_model extends CI_Model{
         }
         
         return $str_filters;
-    } 
+    }
+
+    /**
+     * String con la cadena para URL tipo GET, con los valores de filtros de la búsqueda
+     * 2022-07-27
+     */
+    function str_filters($filters = NULL)
+    {
+
+        if ( is_null($filters) ) { $filters = $this->filters(); }   //Si no están definidos
+
+        $search_indexes = $this->search_indexes();
+        $str_filters = '';
+        $hidden_filters = ['condition', 'sf'];
+        
+        foreach ( $search_indexes as $index ) 
+        {
+            if ( ! in_array($index, $hidden_filters)) {
+                $value = $filters[$index];
+                if ( $filters[$index] != '' ) { $str_filters .= "{$index}={$value}&"; }
+            }
+        }
+
+        //Preparar
+        $str_filters = str_replace(' ','+',$str_filters);               //Reemplazar espacios por signo +
+        $str_filters = str_replace(array('<','>','?'),'',$str_filters); //Quitar caractéres especiales*/
+        
+        return $str_filters;
+    }
     
     
     /**

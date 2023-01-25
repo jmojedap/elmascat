@@ -18,7 +18,7 @@
 ?>
 
 <ul id="nav" class="hidden-xs">
-    <li class="level0 parent drop-menu"><a href="<?= base_url() ?>">inicio</a></li>
+    <li class="level0 parent drop-menu"><a href="<?= base_url() ?>index.php">inicio</a></li>
     
     <li class="level0 parent drop-menu" title="Productos en oferta">
         <a href="<?= URL_APP . "productos/catalogo/?promo=1" ?>" class="<?= $clases_menu['promo'] ?>">
@@ -41,6 +41,9 @@
     <li class="level0 parent drop-menu">
         <a href="#"><span>Minutos de Amor</span></a>
         <ul class="level1">
+            <li class="level1">
+                <a href="<?= base_url("info/distribuidores_minutos_de_amor") ?>">Distribuidores</a>
+            </li>
             <li class="level1">
                 <a href="<?= base_url("productos/catalogo/?fab=513") ?>">Impresa</a>
             </li>

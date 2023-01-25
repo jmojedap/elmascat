@@ -1,10 +1,10 @@
-<?php
-    /* Este segmento de código html se inserta en el head de la vista plantilla.
-     * Los archivos .js que se llamente deben ubicarse en la carpeta 'http://www.pacarina.com/ele/js/'
-     * La función base_url() de CodeIgniter escribe en este caso 'http://www.pacarina.com/ele/'
-     */
-?>
-<!-- HighCharts scripts-->
-            <script src="https://code.highcharts.com/highcharts.js"></script>
-            <script src="https://code.highcharts.com/modules/exporting.js"></script>
-        <!-- /HighCharts scripts-->
+<!-- HighCharts -->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<!-- HighCharts Vue And Style -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/highcharts-vue@1.3.5/dist/highcharts-vue.min.js"></script>
+<script src="<?= URL_RESOURCES . 'js/highcharts/themes/districatolicas.js' ?>"></script>

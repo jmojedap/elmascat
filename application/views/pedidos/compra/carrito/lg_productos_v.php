@@ -13,7 +13,7 @@
                     <a v-bind:href="`<?= URL_APP . "productos/detalle/" ?>` + product.producto_id + `/` + product.slug"
                         class="clase">
                         <img class="rounded w50p" alt="Imagen producto"
-                            onerror="this.src='<?= URL_IMG ?>app/sm_md.png'"
+                            onerror="this.src='<?= URL_IMG ?>app/262px_producto.png'"
                             v-bind:src="product.url_thumbnail">
                     </a>
                 </td>

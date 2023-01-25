@@ -55,7 +55,7 @@
                                     <?= anchor("pedidos/carrito", '<span class="hidden-xs">Pagar</span>', 'title="Ir a pagar"') ?>
                                 </div>
                                 <div class="login">
-                                    <?= anchor("accounts/login", '<span class="hidden-xs">Ingresar</span>', 'title="Iniciar sesión"') ?>
+                                    <?= anchor("accounts/login/index.php", '<span class="hidden-xs">Ingresar</span>', 'title="Iniciar sesión"') ?>
                                 </div>
                             <?php } ?>
                         </div>
@@ -70,7 +70,7 @@
         <div class="row">
             <div class="col-lg-2 col-sm-3 col-md-2"> 
                 <!-- Header Logo --> 
-                <a class="logo" title="Inicio" href="<?= base_url() ?>">
+                <a class="logo" title="Inicio" href="<?= base_url() ?>index.php">
                     <img alt="DistriCatólicas" src="<?= URL_IMG ?>app/logo_polo.png">
                 </a> 
                 <!-- End Header Logo --> 

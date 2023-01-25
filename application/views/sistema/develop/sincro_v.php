@@ -33,9 +33,7 @@
     function sincro()
     {
         $.ajax({
-            type: 'POST',
-            //url:  sincro_url + tabla,
-            //url: 'http://www.plataformaenlinea.com/2015/datos/registros_json/',
+            type: 'POST',
             url: 'http://www.plataformaenlinea.com/2015/sincro/registros_json/',
             beforeSend : function(){
                 $('#estado').html('<h4 class="alert_info">Descargando datos, por favor espere...</h4>');
@@ -45,16 +43,16 @@
                 /*json_query = respuesta;
                 cargar_query();   */
             }
-        });
+        });
     }
     
     //Carga datos en la BD Local
     function cargar_query()
     {
         $.ajax({
-            type: 'POST',
-            url: base_url + 'develop/ajax_sincro_tabla/' + tabla,
-            data: {
+            type: 'POST',
+            url: base_url + 'develop/ajax_sincro_tabla/' + tabla,
+            data: {
                 json_query : json_query
             },
             success: function(respuesta){
@@ -124,6 +122,4 @@
     </table>         
 </div>
 
-<div class="div3" id="estado">
-    
-</div>
+<div class="div3" id="estado"></div>

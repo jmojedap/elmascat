@@ -14,7 +14,7 @@
         );
         
         $att_submit = array(
-            'class' => 'btn btn-primary w3',
+            'class' => 'btn btn-primary w120p',
             'value' => 'Importar'
         );
 ?>
@@ -29,8 +29,8 @@
 
 <div class="row">
     <div class="col col-md-7">
-        <div class="panel panel-default">
-            <div class="panel-body">      
+        <div class="card">
+            <div class="card-body">      
                 <?= form_open_multipart($destino_form, $att_form) ?>
                     <div class="form-group">
                         <label for="archivo" class="col-sm-2 control-label">Archivo</label>
@@ -57,11 +57,11 @@
     </div>
     
     <div class="col col-md-5">
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card card-default">
+            <div class="card-header">
                 <?= $titulo_ayuda ?>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <h4>Nota</h4>
                 <p>
                     <?= $nota_ayuda ?>
@@ -80,7 +80,9 @@
                 </ul>
                 
                 <h4>Descargue el formato ejemplo</h4>
-                <?= anchor($url_archivo, '<i class="fa fa-download"></i> ' . $nombre_archivo, 'class="btn btn-default" title="Descargar formato"') ?>
+                <a href="<?= $url_archivo ?>" class="btn btn-success" title="Descargar formato">
+                    <i class="fa fa-download"></i> <?= $nombre_archivo ?>
+                </a>
             </div>
         </div>
     </div>
