@@ -78,12 +78,19 @@
             <div class="col-lg-6 col-sm-6 col-md-8"> 
                 <!-- Search-col -->
                 <div class="search-box">
-                    <?= form_open("productos/catalogo_redirect/") ?>
-                        <input type="text" placeholder="Buscar..." value="<?= $filters['q'] ?>" maxlength="70" class="" name="q" id="search" autofocus>
-                        <button id="submit-button" class="search-btn-bg">
-                            <span>Buscar</span>
-                        </button>
-                    <?= form_close('') ?>
+                    <div class="only-lg">
+                        <?= form_open("productos/catalogo_redirect/") ?>
+                            <input type="text" placeholder="Buscar..." value="<?= $filters['q'] ?>" maxlength="70" class="" name="q" id="search" autofocus>
+                            <button id="submit-button" class="search-btn-bg">
+                                <span>Buscar</span>
+                            </button>
+                        <?= form_close('') ?>
+                    </div>
+                    <div class="only-sm text-right">
+                        <a class="btn btn-warning" href="<?= URL_APP . 'productos/catalogo/' ?>">
+                            <i class="fa fa-search"></i>
+                        </a>
+                    </div>
                 </div>
                 <!-- End Search-col --> 
             </div>

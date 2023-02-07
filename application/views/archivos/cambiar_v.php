@@ -4,7 +4,7 @@
     );
 
     $att_archivo = array(
-        'name' => 'archivo',
+        'name' => 'file_field',
         'required' => TRUE
     );
 

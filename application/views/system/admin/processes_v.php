@@ -95,7 +95,11 @@ var processes_app = new Vue({
                 }
                 this.result.message = response.data.message
                 this.loading = false
-            }).catch(function(error) { console.log(error) })
+            }).catch(function(error) {
+                this.loading = false
+                toastr['error']('Ocurrió un error en el proceso')
+                console.log(error)
+            })
         },
         restart_result: function(){
             this.result = {

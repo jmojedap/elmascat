@@ -699,10 +699,16 @@ class App_model extends CI_Model{
         return $query;
     }
     
+    /**
+     * Query imagenes para el carrusel home
+     * 2023-02-02
+     */
     function imagenes_carrusel()
     {
         $lista_id = $this->Db_model->field_id('sis_option', 104, 'option_value');
-        $select = 'titulo_archivo AS titulo, subtitulo, descripcion, link, CONCAT("' . URL_UPLOADS . '", (carpeta), (nombre_archivo)) AS src';
+        //$select = 'titulo_archivo AS titulo, subtitulo, descripcion, link, CONCAT("' . URL_UPLOADS . '", (carpeta), (nombre_archivo)) AS src';
+        $select = 'id, titulo_archivo AS title, subtitulo AS subtitle, descripcion AS description,
+            link AS external_link, CONCAT("' . URL_UPLOADS . '", (carpeta), (nombre_archivo)) AS url';
         
         $this->db->select($select);
         $this->db->where("id IN (SELECT elemento_id FROM meta WHERE tabla_id = 1020 AND dato_id = 22 AND relacionado_id = {$lista_id})");

@@ -2,23 +2,22 @@
 //VARIABLES
 //---------------------------------------------------------------------------------------------------
 
-    var base_url = '<?= base_url() ?>';
-    var tabla_id = '<?= $tabla_id ?>';
-    var elemento_id = '<?= $row->id ?>';
-    var cant_activadas = <?= $tags_producto->num_rows() ?>;
-    //var fila_id = 0;
+    let base_url = '<?= base_url() ?>';
+    let productId = '<?= $row->id ?>';
+    let tagId = 0;
+    let cant_activadas = <?= $tags_producto->num_rows() ?>;
     
 //DOCUMENT
 //---------------------------------------------------------------------------------------------------
     
     $(document).ready(function(){
-        $('.add_categoria').click(function(){
-            categoria_id = $(this).data('id');
-            add_categoria();
+        $('.add_tag').click(function(){
+            tagId = $(this).data('id');
+            add_tag();
         });
         
         $('.quitar_categoria').click(function(){
-            categoria_id = $(this).data('id');
+            tagId = $(this).data('id');
             quitar_categoria();
         });
     });
@@ -27,48 +26,34 @@
 //---------------------------------------------------------------------------------------------------
     
     //Ajax
-    function add_categoria(){
-        $.ajax({        
-            type: 'POST',
-            url: base_url + 'meta/guardar/relacionado_id',
-            data: {
-                tabla_id : tabla_id,
-                elemento_id : elemento_id,
-                relacionado_id : categoria_id,
-                dato_id : 21
-            },
+    function add_tag(){
+        $.ajax({        
+            type: 'GET',
+            url: base_url + 'productos/add_tag/' + productId + '/' + tagId,
             success: function(){
-                //alert(respuesta);
                 activar();
             }
-        });
+        });
     }
     
     //Ajax
     function quitar_categoria(){
-        $.ajax({        
-            type: 'POST',
-            url: base_url + 'meta/eliminar/',
-            data: {
-                tabla_id : tabla_id,
-                elemento_id : elemento_id,
-                relacionado_id : categoria_id,
-                dato_id : 21
-            },
+        $.ajax({        
+            type: 'POST',
+            url: base_url + 'productos/remove_tag/' + productId + '/' + tagId,
             success: function(respuesta){
-                console.log( respuesta);
                 desactivar();
             }
-        });
+        });
     }
     
     function activar()
     {
         cant_activadas++;
         
-        $('#fila_' + categoria_id).addClass('info');
-        $('#quitar_' + categoria_id).removeClass('d-none');
-        $('#add_' + categoria_id).addClass('d-none');
+        $('#fila_' + tagId).addClass('info');
+        $('#quitar_' + tagId).removeClass('d-none');
+        $('#add_' + tagId).addClass('d-none');
         $('#cant_activadas').html(cant_activadas);
     }
     
@@ -76,9 +61,9 @@
     {
         cant_activadas += -1;
         
-        $('#fila_' + categoria_id).removeClass('info');
-        $('#quitar_' + categoria_id).addClass('d-none');
-        $('#add_' + categoria_id).removeClass('d-none');
+        $('#fila_' + tagId).removeClass('info');
+        $('#quitar_' + tagId).addClass('d-none');
+        $('#add_' + tagId).removeClass('d-none');
         $('#cant_activadas').html(cant_activadas);
     }
     
@@ -91,7 +76,6 @@
     }
 </style>
 
-
 <div class="center_box_750">
     <div class="alert alert-info">
         Este <?= $elemento_s ?> tiene 
@@ -103,9 +87,9 @@
     </div>
     <table class="table table-sm table-hover bg-white">
         <tbody>
-            <?php foreach ($tags->result() as $row_tag) : ?>
+            <?php foreach ($tags->result() as $tag) : ?>
                 <?php
-                    $meta_id = $this->Producto_model->in_tag($row->id, $row_tag->id);
+                    $meta_id = $this->Producto_model->in_tag($row->id, $tag->id);
                     $clase_add = '';
                     $clase_quitar = 'd-none';
                     
@@ -119,29 +103,25 @@
                     if ( $meta_id > 0 ) { $clase_tr = 'info'; }
                     
                     $clase_nivel = '';
-                    if ( $row_tag->nivel == 1 ) {
+                    if ( $tag->nivel == 1 ) {
                         $clase_nivel = 'nivel_1';
                     }
                     
                     $repetir = 0;
-                    if ( $row_tag->nivel > 0 ) $repetir = ($row_tag->nivel - 1) * 5;
-                    $nombre_tag = str_repeat('&nbsp;', $repetir) . ' ' . $row_tag->nombre_tag;
+                    if ( $tag->nivel > 0 ) $repetir = ($tag->nivel - 1) * 5;
+                    $nombre_tag = str_repeat('&nbsp;', $repetir) . ' ' . $tag->nombre_tag;
                 ?>
-                <tr id="fila_<?= $row_tag->id ?>" class="row_tag <?= $clase_tr ?> <?= $clase_nivel ?>">
+                <tr id="fila_<?= $tag->id ?>" class="row_tag <?= $clase_tr ?> <?= $clase_nivel ?>">
                     <td width="40px">
-                        <span id="quitar_<?= $row_tag->id ?>" class="quitar_categoria btn btn-primary btn-sm <?= $clase_quitar ?>" data-id="<?= $row_tag->id ?>">
+                        <button id="quitar_<?= $tag->id ?>" class="quitar_categoria btn btn-primary btn-sm <?= $clase_quitar ?>" data-id="<?= $tag->id ?>">
                             <i class="fa fa-check"></i>
-                        </span>
-                        <span id="add_<?= $row_tag->id ?>" class="add_categoria btn btn-light btn-sm <?= $clase_add ?>" data-id="<?= $row_tag->id ?>">
+                        </button>
+                        <button id="add_<?= $tag->id ?>" class="add_tag btn btn-light btn-sm <?= $clase_add ?>" data-id="<?= $tag->id ?>">
                             <i class="far fa-circle"></i>
-                        </span>
+                        </button>
                     </td>
-                    <td>
-                        
-                        <?= $nombre_tag ?>
-                    </td>
+                    <td><?= $nombre_tag ?></td>
                 </tr>
-
             <?php endforeach ?>
         </tbody>
     </table>

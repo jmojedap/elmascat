@@ -6,6 +6,8 @@
     <div class="products-grid-2">
         <div v-for="(product, key) in list">
             <div class="col-item">
+                <div class="sale-label sale-top-right" v-show="product.price > product.arr_precio.precio">Oferta</div>
+                <div class="new-label new-top-right" v-show="product.is_new == 1">Nuevo</div>
                 <div class="product-image-area">
                     <a class="product-image" v-bind:title="product.name" v-bind:href="url_app + 'productos/visitar/' + product.id + `/` + product.slug">
                         <div class="product-image-container">
@@ -21,7 +23,7 @@
                 </div>
                 <div class="info">
                     <div class="info-inner">
-                        <div class="item-title">
+                        <div class="item-title product-name">
                             <a v-bind:title="product.name" v-bind:href="url_app + 'productos/visitar/' + product.id + `/` + product.slug">
                                 {{ product.name.substring(0,64) }}
                             </a> 
@@ -29,16 +31,16 @@
                         <!--item-title-->
                         <div class="item-content">
                             <div class="price-box">
-                                
-                                    <span class="old-price">
-                                        <span class="price">
-                                            {{ product.price }}
-                                        </span>
+                                <span class="old-price" v-show="product.price > product.arr_precio.precio">
+                                    <span class="price">
+                                        <span class="currency_symbol">$</span>
+                                        {{ product.price | currency }}
                                     </span>
+                                </span>
                                 
                                 <p class="special-price">
                                     <span class="price">
-                                        {{ product.precio }}
+                                        <span class="currency_symbol">$</span>{{ product.arr_precio.precio | currency }}
                                     </span>
                                 </p>
                             </div>

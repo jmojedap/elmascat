@@ -94,7 +94,7 @@ define('NOMBRE_APP', 'DistriCatólicas');            //Nombre de la aplicación
 
 //define('URL_IMG', 'http://localhost/districatolicas/resources/images/');
 define('URL_ASSETS', 'http://localhost/districatolicas/assets/');
-define('URL_RECURSOS', 'http://localhost/districatolicas/resources/20230124/');
+define('URL_RECURSOS', 'http://localhost/districatolicas/resources/20230205/');
 //define('URL_UPLOADS', 'http://www.districatolicas.com/tienda/uploads/');
 
 define('RUTA_IMG', 'recursos/imagenes/');
@@ -120,9 +120,9 @@ define('URL_ADMIN', 'http://localhost/districatolicas/');
 define('URL_API', 'http://localhost/districatolicas/');
 define('URL_UPLOADS', 'http://localhost/districatolicas/uploads/');
 define('URL_CONTENT', 'http://localhost/districatolicas/content/');  //URL de la carpeta de contenido de la aplicación
-define('URL_RESOURCES', 'http://localhost/districatolicas/resources/20230124/');
-define('URL_IMG', 'http://localhost/districatolicas/resources/20230124/images/');
-define('URL_BRAND', 'http://localhost/districatolicas/resources/20230124/brands/districatolicas/');
+define('URL_RESOURCES', 'http://localhost/districatolicas/resources/20230205/');
+define('URL_IMG', 'http://localhost/districatolicas/resources/20230205/images/');
+define('URL_BRAND', 'http://localhost/districatolicas/resources/20230205/brands/districatolicas/');
 
 define('BG_DARK', '#1c95d1');
 
@@ -130,7 +130,7 @@ define('ENV', 'development');
 
 define('PATH_CONTENT', 'content/');                     //Carpeta de contenido de la aplicación
 define('PATH_UPLOADS', 'content/uploads/');
-define('PATH_RESOURCES', 'resources/20230124/');
+define('PATH_RESOURCES', 'resources/20230205/');
 
 define('MAX_REG_EXPORT', 5000);                     //Número máximo de registros para exportar en archivo MS-Excel
 

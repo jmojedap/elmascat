@@ -17,11 +17,14 @@
             </button>
         </div>
         
-        <div class="col-md-4 mb-2 text-right">
+        <div class="col-md-4 d-flex justify-content-between">
             <a class="btn text-muted">
-                {{ search_num_rows }} resultados &middot; Pág {{ num_page }} / {{ max_page }}
+                <strong class="text-primary">{{ search_num_rows }}</strong> res. &middot;
+                <strong class="text-primary">Pg. {{ num_page }}</strong>/{{ max_page }}
             </a>
-            <?php $this->load->view('common/vue_pagination_v'); ?>
+            <div>
+                <?php $this->load->view('common/vue_pagination_v'); ?>
+            </div>
         </div>
     </div>
 

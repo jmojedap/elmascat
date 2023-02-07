@@ -94,20 +94,14 @@
                     <option v-for="(option_fe2, key_fe2) in options_image_status" v-bind:value="key_fe2">{{ option_fe2 }}</option>
                 </select>
             </div>
-            <label for="fe1" class="col-md-3 col-form-label">Estado imagen</label>
+            <label for="fe2" class="col-md-3 col-form-label">Estado imagen</label>
         </div>
 
         <!-- Variables de ordenamiento de registros -->
         <div class="form-group row">
-            <div class="col-md-3">
-                <select name="ot" v-model="filters.ot" class="form-control">
-                    <option value="ASC">Ascendente</option>
-                    <option value="DESC">Descendente</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <select name="o" v-model="filters.o" class="form-control">
-                    <option v-for="(option_order_by, key_order_by) in options_order_by" v-bind:value="key_order_by">{{ option_order_by }}</option>
+            <div class="col-md-9">
+                <select name="ordering" v-model="filters.o" class="form-control">
+                    <option v-for="optionOrdering in arrOrdering" v-bind:value="optionOrdering.value">{{ optionOrdering.name }}</option>
                 </select>
             </div>
             <label for="order_by" class="col-md-3 col-form-label">Ordenar por</label>

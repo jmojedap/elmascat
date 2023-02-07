@@ -88,34 +88,21 @@ class Admin extends CI_Controller {
 // Procesos
 //-----------------------------------------------------------------------------
 
+    /**
+     * Panel para ejecución de procesos del sistema
+     * 2023-01-26
+     */
     function processes()
-    {    
-        //Variables
-            $data['processes'] = $this->App_model->processes();
-        
-            $data['head_title'] = 'Procesos del sistema';
-            $data['view_a'] = "system/admin/processes_v";
-            $data['nav_2'] = 'system/admin/menu_v';        
-            $this->App_model->view(TPL_ADMIN, $data);
+    {
+        $data['processes'] = $this->App_model->processes();
+        $data['head_title'] = 'Procesos del sistema';
+        $data['view_a'] = "system/admin/processes_v";
+        $data['nav_2'] = 'system/admin/menu_v';        
+        $this->App_model->view(TPL_ADMIN, $data);
     }
         
 //---------------------------------------------------------------------------------------------------
 //PANEL DE CONTROL
-    
-    function procesos()
-    {
-        //Procesos
-            $this->db->select('id, nombre_post AS nombre_proceso, contenido, texto_1 AS link_proceso');
-            $this->db->where('tipo_id', 10);
-            $procesos = $this->db->get('post');
-            
-        //Variables
-            $data['procesos'] = $procesos;
-        
-        $data['titulo_pagina'] = 'Procesos del sistema';
-        $data['vista_a'] = "sistema/admin/procesos_v";
-        $this->load->view(PTL_ADMIN, $data);
-    }
     
     function tablas($nombre_tabla)
     {

@@ -55,9 +55,9 @@ class Producto_Model extends CI_Model{
         
         //Elemento de exploración
             $data['controller'] = 'productos';                       //Nombre del controlador
-            $data['cf'] = 'productos/explore/';                      //Nombre del controlador
-            $data['views_folder'] = 'ecommerce/products/explore/'; //Carpeta donde están las vistas de exploración
-            $data['num_page'] = $num_page;                          //Número de la página
+            $data['cf'] = 'productos/explore/';                      //Nombre controlador y función
+            $data['views_folder'] = 'ecommerce/products/explore/';   //Carpeta donde están las vistas de exploración
+            $data['num_page'] = $num_page;                           //Número de la página
             
         //Vistas
             $data['head_title'] = 'Productos';
@@ -120,14 +120,13 @@ class Producto_Model extends CI_Model{
             $this->db->select($this->select());
             
         //Orden
-            if ( $filters['o'] != '' )
+            if ( $filters['ordering'] != '' )
             {
-                $order_type = $this->pml->if_strlen($filters['ot'], 'ASC');
-                $this->db->order_by($filters['o'], $order_type);
+                $this->db->order_by($filters['ordering']);
             }
 
-            $this->db->order_by('puntaje', 'DESC');
-            $this->db->order_by('puntaje_auto', 'DESC');
+            $this->db->order_by('puntaje DESC');
+            $this->db->order_by('puntaje_auto DESC');
             
         //Filtros
             $search_condition = $this->search_condition($filters);
@@ -141,14 +140,14 @@ class Producto_Model extends CI_Model{
 
     /**
      * String con condición WHERE SQL para filtrar products
-     * 2020-08-01
+     * 2023-02-06
      */
     function search_condition($filters)
     {
         $condition = $this->role_filter() . ' AND ';
 
         //q words condition
-        $searchWords = ['id', 'referencia', 'nombre_producto', 'descripcion', 'palabras_clave'];
+        $searchWords = ['id', 'referencia', 'nombre_producto', 'labels', 'palabras_clave'];
         $words_condition = $this->Search_model->words_condition($filters['q'], $searchWords);
         if ( $words_condition )
         {
@@ -162,14 +161,16 @@ class Producto_Model extends CI_Model{
         if ( $filters['dcto'] != '' ) { $condition .= "promocion_id = {$filters['dcto']} AND "; }   //Descuento o promoción
         if ( $filters['promo'] != '' ) { $condition .= "promocion_id > 0 AND "; }   //Tiene algúna oferta o descuento
         if ( $filters['fe1'] != '' ) { $condition .= "peso <= {$filters['fe1']} AND "; }   //Peso máximo
-        if ( $filters['fe2'] != '' ) { $condition .= "url_image = '' AND "; }   //Peso máximo
+        if ( $filters['fe2'] != '' ) { $condition .= "url_image = '' AND "; }   //
+        if ( $filters['condition'] != '' ) { $condition .= "{$filters['condition']} AND "; }   //
         if ( $filters['fe3'] != '' ) {
             $rango_precio = $this->rango_precio($filters['fe3']);
             $condition .=  $rango_precio['condition'] . " AND ";
         }   //Rango de precios
         if ( $filters['d1'] != '' ) { $condition .= "creado >= '{$filters['d1']} 00:00:00' AND "; }   //Fecha de creación
         if ( $filters['tag'] != '' ) {
-            $condition .= "producto.id IN (SELECT elemento_id FROM meta WHERE tabla_id = 3100 AND dato_id = 21 AND relacionado_id IN ({$filters['tag']}) ) AND ";
+            $condition .= "producto.id IN (SELECT elemento_id FROM meta WHERE tabla_id = 3100 
+                AND dato_id = 21 AND relacionado_id IN ({$filters['tag']}) ) AND ";
         }
         
         //Quitar cadena final de ' AND '
@@ -189,8 +190,15 @@ class Producto_Model extends CI_Model{
 
         foreach ($query->result() as $row)
         {
-            $sql_ventas = 'SELECT id FROM pedido WHERE codigo_respuesta_pol = 1';
-            $row->qty_sold = $this->Db_model->num_rows('pedido_detalle', "producto_id = {$row->id} AND pedido_id IN ({$sql_ventas})");  //Cantidad de estudiantes*/
+            $sql_ventas = 'SELECT id FROM pedido WHERE payed = 1';
+            $row->qty_sold = $this->Db_model->num_rows('pedido_detalle', "producto_id = {$row->id} AND pedido_id IN ({$sql_ventas})");
+            $row->arr_precio = $this->arr_precio($row->id);
+
+            $row->is_new = 0;
+            $ago_date = $this->Pcrn->suma_fecha(date('Y-m-d H:i:s'), '-1 month');
+            $created_ago_seconds = $this->Pcrn->segundos_lapso($row->created_at, $ago_date);
+            if ( $created_ago_seconds < (60*60*24*30*4) ) { $row->is_new = 1; }
+
             $list[] = $row;
         }
 
@@ -232,17 +240,16 @@ class Producto_Model extends CI_Model{
      * Array con options para ordenar el listado de productos en la vista de exploración
      * 2021-07-07
      */
-    function options_order_by()
+    function arr_ordering()
     {
-        $options_order_by = array(
-            '' => '[ Ordenar por ]',
-            'nombre_producto' => 'Nombre',
-            'precio' => 'Precio',
-            'cant_disponibles' => 'Cant. disponibles',
-            'peso' => 'Peso',
-            'editado' => 'Fecha de edición',
-            'creado' => 'Fecha de creación',
-        );
+        $options_order_by = [
+            ['value' => 'puntaje_auto DESC', 'name' => 'Más relevantes', 'scope' => 1],
+            ['value' => 'precio ASC', 'name' => 'Menor precio', 'scope' => 1],
+            ['value' => 'precio DESC', 'name' => 'Mayor precio', 'scope' => 1],
+            ['value' => 'nombre_producto ASC', 'name' => 'Nombre', 'scope' => 2],
+            ['value' => 'cant_disponibles DESC', 'name' => 'Mayor disponibilidad', 'scope' => 2],
+            ['value' => 'cant_disponibles ASC', 'name' => 'Menor disponibilidad', 'scope' => 2],
+        ];
         
         return $options_order_by;
     }
@@ -343,14 +350,14 @@ class Producto_Model extends CI_Model{
      */
     function meta_editado($producto_id)
     {
-        $registro['tabla_id'] = 3100;
-        $registro['elemento_id'] = $producto_id;
-        $registro['dato_id'] = 30;  //Edición de elemento
-        $registro['editado'] = date('Y-m-d H:i:s');
-        $registro['fecha'] = date('Y-m-d H:i:s');
-        $registro['usuario_id'] = $this->session->userdata('usuario_id');
+        $aRow['tabla_id'] = 3100;
+        $aRow['elemento_id'] = $producto_id;
+        $aRow['dato_id'] = 30;  //Edición de elemento
+        $aRow['editado'] = date('Y-m-d H:i:s');
+        $aRow['fecha'] = date('Y-m-d H:i:s');
+        $aRow['usuario_id'] = $this->session->userdata('usuario_id');
         
-        $this->db->insert('meta', $registro);
+        $this->db->insert('meta', $aRow);
         $meta_id = $this->db->insert_id();
         
         return $meta_id;
@@ -503,12 +510,12 @@ class Producto_Model extends CI_Model{
         return $query;
     }
     
-    function meta($producto_id, $condicion)
+    function meta($producto_id, $condition)
     {
         
         $this->db->where('tabla_id', 3100);
         $this->db->where('elemento_id', $producto_id);
-        if ( ! is_null($condicion) ) { $this->db->where($condicion); }
+        if ( ! is_null($condition) ) { $this->db->where($condition); }
         $this->db->order_by('fecha', 'DESC');
         $query = $this->db->get('meta');
 
@@ -555,28 +562,28 @@ class Producto_Model extends CI_Model{
         {
             $name = "meta_{$row_campo->meta_id}";
             
-            $registro['valor'] = $this->input->post($name);
-            $registro['dato_id'] = $row_campo->meta_id;
+            $aRow['valor'] = $this->input->post($name);
+            $aRow['dato_id'] = $row_campo->meta_id;
             
-            $this->guardar_meta_valor($producto_id, $registro);
+            $this->guardar_meta_valor($producto_id, $aRow);
         }
     }
     
-    function guardar_meta_valor($producto_id, $registro)
+    function guardar_meta_valor($producto_id, $aRow)
     {
         //Construir registro
-            $registro['tabla_id'] = 3100;  //Tabla producto
-            $registro['elemento_id'] = $producto_id;
-            $registro['editado'] = date('Y-m-d H:i:s');
-            $registro['usuario_id'] = $this->session->userdata('usuario_id');
+            $aRow['tabla_id'] = 3100;  //Tabla producto
+            $aRow['elemento_id'] = $producto_id;
+            $aRow['editado'] = date('Y-m-d H:i:s');
+            $aRow['usuario_id'] = $this->session->userdata('usuario_id');
             
         //Condicion
-            $condicion = "tabla_id = {$registro['tabla_id']} AND ";
-            $condicion .= "elemento_id = {$registro['elemento_id']} AND ";
-            $condicion .= "dato_id = {$registro['dato_id']}";
+            $condition = "tabla_id = {$aRow['tabla_id']} AND ";
+            $condition .= "elemento_id = {$aRow['elemento_id']} AND ";
+            $condition .= "dato_id = {$aRow['dato_id']}";
             
         //Guardando
-            $meta_id = $this->Pcrn->guardar('meta', $condicion, $registro);
+            $meta_id = $this->Pcrn->guardar('meta', $condition, $aRow);
             
         return $meta_id;
     }
@@ -590,8 +597,8 @@ class Producto_Model extends CI_Model{
      */
     function registrar_visita($producto_id)
     {
-        $condicion = "tabla_id = 3100 AND elemento_id = {$producto_id} AND dato_id = 10";
-        $meta_id = $this->Pcrn->existe('meta', $condicion);
+        $condition = "tabla_id = 3100 AND elemento_id = {$producto_id} AND dato_id = 10";
+        $meta_id = $this->Pcrn->existe('meta', $condition);
         if ( $meta_id > 0 ) 
         {
             //Existe
@@ -599,9 +606,9 @@ class Producto_Model extends CI_Model{
             $this->db->query($sql);
         } else {
             //No existe, insertar
-            $registro['valor'] = 1;
-            $registro['dato_id'] = 10;  //Código del metadato, cantidad de visitas
-            $meta_id = $this->guardar_meta_valor($producto_id, $registro);
+            $aRow['valor'] = 1;
+            $aRow['dato_id'] = 10;  //Código del metadato, cantidad de visitas
+            $meta_id = $this->guardar_meta_valor($producto_id, $aRow);
         }
         
         return $meta_id;
@@ -618,8 +625,8 @@ class Producto_Model extends CI_Model{
     {
         $cant_visitas = 0;
         
-        $condicion = "tabla_id = 3100 AND elemento_id = {$producto_id} AND dato_id = 10";
-        $meta_id = $this->Pcrn->existe('meta', $condicion);
+        $condition = "tabla_id = 3100 AND elemento_id = {$producto_id} AND dato_id = 10";
+        $meta_id = $this->Pcrn->existe('meta', $condition);
         if ( $meta_id > 0 ) {
             $cant_visitas = $this->Db_model->field_id('meta', $meta_id, 'valor');
         }
@@ -660,31 +667,31 @@ class Producto_Model extends CI_Model{
             $slug = $this->Pcrn->slug_unico($nombre_producto, 'producto', 'nombre_producto');
         
         //Creando registro
-            $registro['tipo_id'] = 2;
-            $registro['padre_id'] = $producto_id;
+            $aRow['tipo_id'] = 2;
+            $aRow['padre_id'] = $producto_id;
             
-            $registro['nombre_producto'] = $nombre_producto;
-            $registro['slug'] = $slug;
-            $registro['imagen_id'] = $row->imagen_id;
-            $registro['precio_base'] = $row->precio_base;
-            $registro['iva_porcentaje'] = $row->iva_porcentaje;
-            $registro['iva'] = $row->iva;
-            $registro['precio'] = $row->precio;
-            $registro['peso'] = $row->peso;
-            $registro['ancho'] = $row->ancho;
-            $registro['alto'] = $row->alto;
-            $registro['grosor'] = $row->grosor;
+            $aRow['nombre_producto'] = $nombre_producto;
+            $aRow['slug'] = $slug;
+            $aRow['imagen_id'] = $row->imagen_id;
+            $aRow['precio_base'] = $row->precio_base;
+            $aRow['iva_porcentaje'] = $row->iva_porcentaje;
+            $aRow['iva'] = $row->iva;
+            $aRow['precio'] = $row->precio;
+            $aRow['peso'] = $row->peso;
+            $aRow['ancho'] = $row->ancho;
+            $aRow['alto'] = $row->alto;
+            $aRow['grosor'] = $row->grosor;
             
-            $registro['cant_disponibles'] = $this->input->post('cant_disponibles');
-            $registro['referencia'] = $this->input->post('referencia');
-            $registro['talla'] = $this->input->post('talla');
-            $registro['puntaje'] = $this->input->post('puntaje');
+            $aRow['cant_disponibles'] = $this->input->post('cant_disponibles');
+            $aRow['referencia'] = $this->input->post('referencia');
+            $aRow['talla'] = $this->input->post('talla');
+            $aRow['puntaje'] = $this->input->post('puntaje');
             
-            $registro['usuario_id'] = $this->session->userdata('usuario_id');
-            $registro['creado'] = date('Y-m-d H:i:s');
-            $registro['editado'] = date('Y-m-d H:i:s');
+            $aRow['usuario_id'] = $this->session->userdata('usuario_id');
+            $aRow['creado'] = date('Y-m-d H:i:s');
+            $aRow['editado'] = date('Y-m-d H:i:s');
             
-        $this->db->insert('producto', $registro);
+        $this->db->insert('producto', $aRow);
         
         return $this->db->insert_id();
         
@@ -701,25 +708,25 @@ class Producto_Model extends CI_Model{
         $row = $this->Pcrn->registro_id('producto', $producto_id);
         
         //Construyendo registro
-            $registro['imagen_id'] = $row->imagen_id;
-            $registro['precio_base'] = $row->precio_base;
-            $registro['iva_porcentaje'] = $row->iva_porcentaje;
-            $registro['iva'] = $row->iva;
-            $registro['precio'] = $row->precio;
-            $registro['costo'] = $row->costo;
-            $registro['peso'] = $row->peso;
-            $registro['ancho'] = $row->ancho;
-            $registro['alto'] = $row->alto;
-            $registro['grosor'] = $row->grosor;
-            $registro['promocion_id'] = $row->promocion_id;
+            $aRow['imagen_id'] = $row->imagen_id;
+            $aRow['precio_base'] = $row->precio_base;
+            $aRow['iva_porcentaje'] = $row->iva_porcentaje;
+            $aRow['iva'] = $row->iva;
+            $aRow['precio'] = $row->precio;
+            $aRow['costo'] = $row->costo;
+            $aRow['peso'] = $row->peso;
+            $aRow['ancho'] = $row->ancho;
+            $aRow['alto'] = $row->alto;
+            $aRow['grosor'] = $row->grosor;
+            $aRow['promocion_id'] = $row->promocion_id;
 
-            $registro['usuario_id'] = $this->session->userdata('usuario_id');
-            $registro['editado'] = date('Y-m-d H:i:s');
+            $aRow['usuario_id'] = $this->session->userdata('usuario_id');
+            $aRow['editado'] = date('Y-m-d H:i:s');
         
         //Actualizando los registros
             $this->db->where('padre_id', $producto_id); //Que tengan como padre al producto
             $this->db->where('tipo_id', 2);             //Que productos tipo variación
-            $this->db->update('producto', $registro);
+            $this->db->update('producto', $aRow);
             
         return $this->db->affected_rows();
         
@@ -767,6 +774,61 @@ class Producto_Model extends CI_Model{
         
         return $data;
     }
+
+    /**
+     * Actualiza masivamente el campo producto.labels según los valores de tags 
+     * asociados a cada producto.
+     * 2023-02-06
+     */
+    function update_products_labels()
+    {
+        $products = $this->db->get('producto');
+        $data['qty_updated'] = 0;
+        
+        foreach( $products->result() as $product )
+        {
+            $savedId = $this->update_labels($product->id);
+            if ( $savedId > 0 ) { $data['qty_updated'] += 1; }
+        }
+        
+        $data['status'] = 1;
+        $data['message'] = 'Productos actualizados: ' . $data['qty_updated'];
+        
+        return $data;
+    }
+
+    /**
+     * Actualiza el campo producto.labels
+     * 2023-02-03
+     */
+    function update_labels($productId)
+    {
+        $labels = [];
+
+        $product = $this->Db_model->row_id('producto', $productId);
+        
+        if ( ! is_null($product) ) {
+            //Tags
+            $tags = $this->tags($productId);
+            foreach ( $tags->result() as $tag ){
+                $labels[] = $tag->nombre_tag;
+            }
+    
+            //Marca o editorial
+            $brandName = $this->Item_model->nombre_id($product->fabricante_id);
+            if ( $brandName != 'ND' ) $labels[] = $brandName;
+        }
+
+        $aRow['labels'] = implode(' ', $labels);
+        $aRow['editado'] = date('Y-m-d H:i:s');
+        $aRow['editor_id'] = $this->session->userdata('user_id');
+        
+        //Guardar
+        $this->Db_model->save('producto', "id = {$productId}", $aRow);
+        $data['saved_id'] = $productId;
+
+        return $data;
+    }
     
 //PROCESOS
 //---------------------------------------------------------------------------------------------------
@@ -782,10 +844,10 @@ class Producto_Model extends CI_Model{
 
             foreach ($productos->result() as $row_producto) 
             {
-                $registro['costo'] = $this->App_model->redondear($row_producto->costo, 5);
+                $aRow['costo'] = $this->App_model->redondear($row_producto->costo, 5);
 
                 $this->db->where('id', $row_producto->id);
-                $this->db->update('producto', $registro);
+                $this->db->update('producto', $aRow);
             }
         
         //Tabla pedido_detalle
@@ -793,10 +855,10 @@ class Producto_Model extends CI_Model{
 
             foreach ($pedido_detalle->result() as $row_detalle) 
             {
-                $registro['costo'] = $this->App_model->redondear($row_detalle->costo, 5);
+                $aRow['costo'] = $this->App_model->redondear($row_detalle->costo, 5);
 
                 $this->db->where('id', $row_detalle->id);
-                $this->db->update('pedido_detalle', $registro);
+                $this->db->update('pedido_detalle', $aRow);
             }
         
         //Resultado
@@ -830,10 +892,10 @@ class Producto_Model extends CI_Model{
     
     function act_meta($producto_id)
     {
-        $registro['meta'] = $this->str_meta($producto_id);
+        $aRow['meta'] = $this->str_meta($producto_id);
         
         $this->db->where('id', $producto_id);
-        $this->db->update('producto', $registro);
+        $this->db->update('producto', $aRow);
     }
     
     function str_meta($producto_id)
@@ -922,19 +984,19 @@ class Producto_Model extends CI_Model{
     function agregar_palabra($producto_id)
     {
         //Preparar registro
-            $registro['tabla_id'] = 3100;
-            $registro['elemento_id'] = $producto_id;
-            $registro['relacionado_id'] = $this->input->post('relacionado_id');
-            $registro['dato_id'] = 20;  //Palabra clave
+            $aRow['tabla_id'] = 3100;
+            $aRow['elemento_id'] = $producto_id;
+            $aRow['relacionado_id'] = $this->input->post('relacionado_id');
+            $aRow['dato_id'] = 20;  //Palabra clave
             
         //Condicion
-            $condicion = "tabla_id = {$registro['tabla_id']} AND ";
-            $condicion .= "elemento_id = {$registro['elemento_id']} AND ";
-            $condicion .= "relacionado_id = {$registro['relacionado_id']} AND ";
-            $condicion .= "dato_id = {$registro['dato_id']}";
+            $condition = "tabla_id = {$aRow['tabla_id']} AND ";
+            $condition .= "elemento_id = {$aRow['elemento_id']} AND ";
+            $condition .= "relacionado_id = {$aRow['relacionado_id']} AND ";
+            $condition .= "dato_id = {$aRow['dato_id']}";
             
         //Guardando
-            $meta_id = $this->Pcrn->insertar_si('meta', $condicion, $registro);
+            $meta_id = $this->Pcrn->insertar_si('meta', $condition, $aRow);
             
         return $meta_id;
     }
@@ -945,10 +1007,10 @@ class Producto_Model extends CI_Model{
     function tags($producto_id)
     {
         //$select_label = $this->Datos_model->select_tags();   
-        $condicion = "id IN (SELECT relacionado_id FROM meta WHERE tabla_id = 3100 AND elemento_id = {$producto_id} AND dato_id = 21)";
+        $condition = "id IN (SELECT relacionado_id FROM meta WHERE tabla_id = 3100 AND elemento_id = {$producto_id} AND dato_id = 21)";
         
         $this->db->select('id, item AS nombre_tag, descripcion, filtro, padre_id, slug, ascendencia, orden AS nivel');
-        $this->db->where($condicion);
+        $this->db->where($condition);
         $tags = $this->db->get('item');
         
         return $tags;
@@ -958,44 +1020,70 @@ class Producto_Model extends CI_Model{
     {
         $meta_id = 0;
         
-        $condicion = "tabla_id = 3100 AND elemento_id = {$producto_id} AND relacionado_id = {$tag_id} AND dato_id = 21";
-        $row_meta = $this->Pcrn->registro('meta', $condicion);
+        $condition = "tabla_id = 3100 AND elemento_id = {$producto_id} AND relacionado_id = {$tag_id} AND dato_id = 21";
+        $row_meta = $this->Pcrn->registro('meta', $condition);
         
         if ( ! is_null($row_meta) ) { $meta_id = $row_meta->id; } 
         
         return $meta_id;
     }
     
-    function agregar_etiqueta($producto_id, $tag_id)
+    /**
+     * Agregar tag a producto
+     */
+    function add_tag($producto_id, $tag_id)
     {
         //Preparar registro
-            $registro['tabla_id'] = 3100;
-            $registro['elemento_id'] = $producto_id;
-            $registro['relacionado_id'] = $tag_id;
-            $registro['dato_id'] = 21;  //Categoría
-            $registro['fecha'] = date('Y-m-d H:i:s');
-            $registro['usuario_id'] = $this->session->userdata('usuario_id');
-            $registro['editado'] = date('Y-m-d H:i:s');
+            $aRow['tabla_id'] = 3100;
+            $aRow['elemento_id'] = $producto_id;
+            $aRow['relacionado_id'] = $tag_id;
+            $aRow['dato_id'] = 21;  //Tag
+            $aRow['fecha'] = date('Y-m-d H:i:s');
+            $aRow['usuario_id'] = $this->session->userdata('usuario_id');
+            $aRow['editado'] = date('Y-m-d H:i:s');
             
         //Condicion
-            $condicion = "tabla_id = {$registro['tabla_id']} AND ";
-            $condicion .= "elemento_id = {$registro['elemento_id']} AND ";
-            $condicion .= "relacionado_id = {$registro['relacionado_id']} AND ";
-            $condicion .= "dato_id = {$registro['dato_id']}";
+            $condition = "tabla_id = {$aRow['tabla_id']} AND ";
+            $condition .= "elemento_id = {$aRow['elemento_id']} AND ";
+            $condition .= "relacionado_id = {$aRow['relacionado_id']} AND ";
+            $condition .= "dato_id = {$aRow['dato_id']}";
             
         //Guardando
-            $meta_id = $this->Pcrn->insertar_si('meta', $condicion, $registro);
+            $meta_id = $this->Pcrn->insertar_si('meta', $condition, $aRow);
+            if ( $meta_id > 0 ) {
+                $productId = $this->update_labels($producto_id);
+            }
             
         return $meta_id;
+    }
+
+    /**
+     * Elimina tag de un producto
+     * 2023-02-06
+     */
+    function remove_tag($productId, $tagId)
+    {
+        $condition = "tabla_id = 3100 AND elemento_id = {$productId}
+            AND relacionado_id = {$tagId} AND dato_id = 21";
+
+        $this->db->where($condition);
+        $this->db->delete('meta');
+        
+        $qtyDeleted = $this->db->affected_rows();
+        if ( $qtyDeleted > 0 ) {
+            $productId = $this->update_labels($productId);
+        }
+
+        return $qtyDeleted;
     }
     
     /**
      * Actualiza el listado de categorías asignadas a un producto en la tabla meta
      * 
-     * @param type $producto_id
-     * @param type $tags
+     * @param int $producto_id
+     * @param string $tags
      */
-    function act_tags($producto_id, $tags)
+    function update_tags($producto_id, $tags)
     {
         //Eliminar tags actuales
             $this->db->where('tabla_id', 3100);
@@ -1008,7 +1096,7 @@ class Producto_Model extends CI_Model{
             {
                 foreach ( $tags as $tag_id ) 
                 {
-                    $this->agregar_etiqueta($producto_id, $tag_id);
+                    $this->add_tag($producto_id, $tag_id);
                 }
             }
     }
@@ -1017,15 +1105,15 @@ class Producto_Model extends CI_Model{
      * Query con todas categorías de producto,
      * Incluye la columna activo con el meta.id si la categoría está asignada al producto
      * 
-     * @param type $producto_id
-     * @return type
+     * @param int $producto_id
+     * @return object $query
      */
     function tags_activas($producto_id)
     {
         $this->db->select('item.id, item AS nombre_tag, IFNULL(meta.id, (0)) AS activo, item.orden AS nivel');
         $this->db->where('categoria_id', 21);
-        $condicion_join = "item.id = meta.relacionado_id AND tabla_id = 3100 AND dato_id = 21 AND elemento_id = {$producto_id}";
-        $this->db->join('meta', $condicion_join, 'left');
+        $condition_join = "item.id = meta.relacionado_id AND tabla_id = 3100 AND dato_id = 21 AND elemento_id = {$producto_id}";
+        $this->db->join('meta', $condition_join, 'left');
         $this->db->order_by('ascendencia', 'ASC');
         $this->db->order_by('item', 'ASC');
         $query = $this->db->get('item');
@@ -1053,19 +1141,19 @@ class Producto_Model extends CI_Model{
     function agregar_lista($producto_id, $lista_id)
     {
         //Preparar registro
-            $registro['tabla_id'] = 3100;
-            $registro['elemento_id'] = $producto_id;
-            $registro['relacionado_id'] = $lista_id;
-            $registro['dato_id'] = 22;  //Lista
+            $aRow['tabla_id'] = 3100;
+            $aRow['elemento_id'] = $producto_id;
+            $aRow['relacionado_id'] = $lista_id;
+            $aRow['dato_id'] = 22;  //Lista
             
         //Condicion
-            $condicion = "tabla_id = {$registro['tabla_id']} AND ";
-            $condicion .= "elemento_id = {$registro['elemento_id']} AND ";
-            $condicion .= "relacionado_id = {$registro['relacionado_id']} AND ";
-            $condicion .= "dato_id = {$registro['dato_id']}";
+            $condition = "tabla_id = {$aRow['tabla_id']} AND ";
+            $condition .= "elemento_id = {$aRow['elemento_id']} AND ";
+            $condition .= "relacionado_id = {$aRow['relacionado_id']} AND ";
+            $condition .= "dato_id = {$aRow['dato_id']}";
             
         //Guardando
-            $meta_id = $this->Pcrn->insertar_si('meta', $condicion, $registro);
+            $meta_id = $this->Pcrn->insertar_si('meta', $condition, $aRow);
             
         return $meta_id;
     }
@@ -1083,7 +1171,6 @@ class Producto_Model extends CI_Model{
         $recomendados = $this->Busqueda_model->productos($busqueda, $cantidad);
         
         return $recomendados;
-        
     }
     
     function fabricantes()
@@ -1101,17 +1188,21 @@ class Producto_Model extends CI_Model{
     
     function act_estado($producto_id, $estado)
     {
-        $registro['estado'] = $estado;
-        $registro['editado'] = date('Y-m-d H:i:s');
-        $registro['usuario_id'] = $this->session->userdata('usuario_id');
+        $aRow['estado'] = $estado;
+        $aRow['editado'] = date('Y-m-d H:i:s');
+        $aRow['usuario_id'] = $this->session->userdata('usuario_id');
         
         $this->db->where('id', $producto_id);
-        $this->db->update('producto', $registro);
+        $this->db->update('producto', $aRow);
         
         return $this->db->affected_rows();
     }
     
-    function actualizar_slug()
+    /**
+     * Actualizar campo producto.slug
+     * 2023-01-26
+     */
+    function update_slug()
     {
         
         //Seleccionar registros
@@ -1119,15 +1210,14 @@ class Producto_Model extends CI_Model{
         $productos = $this->db->get('producto');
         
         foreach ($productos->result() as $row_producto) {
-            $registro['slug'] = $this->Pcrn->slug_unico($row_producto->nombre_producto, 'producto', 'slug');
+            $aRow['slug'] = $this->Db_model->unique_slug($row_producto->nombre_producto, 'producto', 'slug');
             
             $this->db->where('id', $row_producto->id);
-            $this->db->update('producto', $registro);
+            $this->db->update('producto', $aRow);
         }
         
-        $data['resultado'] = 1;
-        $data['mensaje'] = '<i class="fa fa-check"></i> Se actualizaron ' . $productos->num_rows() . ' registros';
-        $data['clase_alerta'] = 'alert-success';
+        $data['status'] = 1;
+        $data['message'] = 'Se actualizaron ' . $productos->num_rows() . ' registros';
         
         return $data;
     }
@@ -1157,9 +1247,9 @@ class Producto_Model extends CI_Model{
             //Buscar producto
                 $titulo = substr($archivo, 0, -4);      //Sin extensión 4 caracteres '.jpg'
                 
-                $condicion = "{$campo} = '{$titulo}'";  //Condición para asociar, que coincida el nombre del archivo con el campo img_inicial
-                //echo "{$condicion}<br/>";
-                $row_producto = $this->Pcrn->registro('producto', $condicion);
+                $condition = "{$campo} = '{$titulo}'";  //Condición para asociar, que coincida el nombre del archivo con el campo img_inicial
+                //echo "{$condition}<br/>";
+                $row_producto = $this->Pcrn->registro('producto', $condition);
             
             if ( ! is_null($row_producto) ) {
                 $this->asociar_img_inicial($row_producto, $archivo);
@@ -1178,7 +1268,7 @@ class Producto_Model extends CI_Model{
      * Establecer masivamente la imagen principal los productos.
      * Se actualiza el campo producto.imagen_id
      * 
-     * @return string
+     * @return array $data
      */
     function establecer_img_si_masivo()
     {   
@@ -1205,17 +1295,17 @@ class Producto_Model extends CI_Model{
             $productos = $this->db->get('producto');
         
         //Registro para actualizar
-            $registro['imagen_id'] = NULL;
+            $aRow['imagen_id'] = NULL;
         
         //Recorrer productos
             foreach ( $productos->result() as $row_producto ) {
-                $condicion = "id = {$row_producto->imagen_id}";
-                $cant_registros = $this->Pcrn->num_registros('archivo', $condicion);
+                $condition = "id = {$row_producto->imagen_id}";
+                $cant_registros = $this->Pcrn->num_registros('archivo', $condition);
 
                 //Si el archivo no existe, se actualiza imagen_id = NULL
                 if ( $cant_registros == 0 ) {
                     $this->db->where('id', $row_producto->id);
-                    $this->db->update('producto', $registro);
+                    $this->db->update('producto', $aRow);
                     
                     $cantidad++;
                 }
@@ -1351,13 +1441,22 @@ class Producto_Model extends CI_Model{
         return $pct_fabricante;
     }
     
+    /**
+     * Precio de un producto si está incluido en una promoción
+     * 2023-01-26
+     * @return float $precio_promocion
+     */
     function precio_promocion($row_producto)
     {
+        $precio_promocion = $row_producto->precio;
+
         $row_promocion = $this->row_promocion($row_producto->promocion_id);
         
-        $pct_descuento = $row_promocion->pct_descuento;
-        $precio_promocion_pre = $row_producto->precio * ( 100 - $pct_descuento)/100;
-        $precio_promocion = $this->App_model->redondear($precio_promocion_pre);
+        if ( ! is_null($row_promocion) ) {
+            $pct_descuento = $row_promocion->pct_descuento;
+            $precio_promocion_pre = $row_producto->precio * ( 100 - $pct_descuento)/100;
+            $precio_promocion = $this->App_model->redondear($precio_promocion_pre);
+        }
         
         return $precio_promocion;
     }
@@ -1423,14 +1522,14 @@ class Producto_Model extends CI_Model{
      * Query con promociones creadas en la tabla post,
      * post.tipo_id = 31001 corresponde a promociones creadas
      * 
-     * @param type $condicion
+     * @param type $condition
      * @return type
      */
-    function promociones($condicion = 'id > 0')
+    function promociones($condition = 'id > 0')
     {
         $this->db->select($this->select_promocion());
         $this->db->where('tipo_id', 31001); //Post tipo promoción
-        $this->db->where($condicion);
+        $this->db->where($condition);
         $this->db->order_by('nombre_post', 'ASC');
         $query = $this->db->get('post');
         
@@ -1455,12 +1554,12 @@ class Producto_Model extends CI_Model{
             $editado = date('Y-m-d H:i:s');
         
         //Predeterminados registro nuevo
-            $registro['usuario_id'] = $this->session->userdata('usuario_id');
-            $registro['editado'] = $editado;
-            $registro['creado'] = $editado;
+            $aRow['usuario_id'] = $this->session->userdata('usuario_id');
+            $aRow['editado'] = $editado;
+            $aRow['creado'] = $editado;
         
         foreach ( $array_excel as $row_elemento ) {
-            $cant_cargados += $this->cargar_producto($row_elemento, $registro);
+            $cant_cargados += $this->cargar_producto($row_elemento, $aRow);
         }
         
         $res_cargue['cant_cargados'] = $cant_cargados;
@@ -1473,10 +1572,10 @@ class Producto_Model extends CI_Model{
      * Leer fila de array excel para guardar registro de producto
      * 
      * @param type $row_elemento
-     * @param type $registro
+     * @param type $aRow
      * @return int
      */
-    function cargar_producto($row_elemento, $registro)
+    function cargar_producto($row_elemento, $aRow)
     {
         $cargado = 0;
         $producto_id = $this->Pcrn->si_nulo($row_elemento[0], 0);
@@ -1484,27 +1583,27 @@ class Producto_Model extends CI_Model{
         if ( strlen($row_elemento[1]) > 1 ) {
                 
             //Registro
-                $registro['nombre_producto'] = $row_elemento[1];
-                $registro['slug'] = $this->Pcrn->slug_unico($row_elemento[1], 'producto', 'slug');
-                $registro['descripcion'] = $row_elemento[2];
-                $registro['precio_base'] = $row_elemento[3];
-                $registro['iva'] = $row_elemento[4];
-                $registro['precio'] = $row_elemento[5];
-                $registro['peso'] = $row_elemento[6];
-                $registro['ancho'] = $row_elemento[7];
-                $registro['alto'] = $row_elemento[8];
-                $registro['grosor'] = $row_elemento[9];
-                $registro['cant_disponibles'] = $row_elemento[10];
-                $registro['referencia'] = $row_elemento[11];
-                $registro['fabricante_id'] = $row_elemento[12];
-                $registro['img_inicial'] = $row_elemento[13];
+                $aRow['nombre_producto'] = $row_elemento[1];
+                $aRow['slug'] = $this->Pcrn->slug_unico($row_elemento[1], 'producto', 'slug');
+                $aRow['descripcion'] = $row_elemento[2];
+                $aRow['precio_base'] = $row_elemento[3];
+                $aRow['iva'] = $row_elemento[4];
+                $aRow['precio'] = $row_elemento[5];
+                $aRow['peso'] = $row_elemento[6];
+                $aRow['ancho'] = $row_elemento[7];
+                $aRow['alto'] = $row_elemento[8];
+                $aRow['grosor'] = $row_elemento[9];
+                $aRow['cant_disponibles'] = $row_elemento[10];
+                $aRow['referencia'] = $row_elemento[11];
+                $aRow['fabricante_id'] = $row_elemento[12];
+                $aRow['img_inicial'] = $row_elemento[13];
 
             //Guardar
-                $condicion = "id = {$producto_id}";
-                $producto_id = $this->Pcrn->guardar('producto', $condicion, $registro);
+                $condition = "id = {$producto_id}";
+                $producto_id = $this->Pcrn->guardar('producto', $condition, $aRow);
                 
             //Agregar a categoría
-                $this->agregar_etiqueta($producto_id, $row_elemento[14]);  //Columna M
+                $this->add_tag($producto_id, $row_elemento[14]);  //Columna M
                 
             //Agregar metadatos
                 $this->cargar_meta($producto_id, $row_elemento);
@@ -1555,8 +1654,8 @@ class Producto_Model extends CI_Model{
         $fila = 2;  //Inicia en la fila 2 de la hoja de cálculo
 
         //Predeterminados registro editado
-            $registro['usuario_id'] = $this->session->userdata('usuario_id');
-            $registro['editado'] = date('Y-m-d H:i:s');
+            $aRow['usuario_id'] = $this->session->userdata('usuario_id');
+            $aRow['editado'] = date('Y-m-d H:i:s');
         
         foreach ( $array_hoja as $array_fila )
         {
@@ -1565,36 +1664,36 @@ class Producto_Model extends CI_Model{
                 $producto_id = $this->Pcrn->campo('producto', "referencia = '{$referencia}'", 'id');
             
             //Complementar registro
-                $registro['cant_disponibles'] = $array_fila[1];
-                $registro['precio'] = $array_fila[2];
-                $registro['iva_porcentaje'] = $this->Pcrn->si_strlen($array_fila[3], 0) * 100;
-                $registro['precio_base'] = $registro['precio'] / ( 1 + ($registro['iva_porcentaje']/100) );
-                //$registro['precio_base'] = 1 + $registro['iva_porcentaje'];
-                $registro['iva'] = $registro['precio'] - $registro['precio_base'];
+                $aRow['cant_disponibles'] = $array_fila[1];
+                $aRow['precio'] = $array_fila[2];
+                $aRow['iva_porcentaje'] = $this->Pcrn->si_strlen($array_fila[3], 0) * 100;
+                $aRow['precio_base'] = $aRow['precio'] / ( 1 + ($aRow['iva_porcentaje']/100) );
+                //$aRow['precio_base'] = 1 + $aRow['iva_porcentaje'];
+                $aRow['iva'] = $aRow['precio'] - $aRow['precio_base'];
                 
             //Campos activos
                 //Revisar campos de precios
                 $act_precios = TRUE;
-                if ( strlen($registro['precio']) == 0 ) { $act_precios = FALSE; }
-                if ( strlen($registro['iva_porcentaje']) == 0 ) { $act_precios = FALSE; }
+                if ( strlen($aRow['precio']) == 0 ) { $act_precios = FALSE; }
+                if ( strlen($aRow['iva_porcentaje']) == 0 ) { $act_precios = FALSE; }
                 
                 //
                 if ( ! $act_precios ) {
-                    unset($registro['precio']);
-                    unset($registro['iva_porcentaje']);
-                    unset($registro['precio_base']);
-                    unset($registro['precio_base']);
+                    unset($aRow['precio']);
+                    unset($aRow['iva_porcentaje']);
+                    unset($aRow['precio_base']);
+                    unset($aRow['precio_base']);
                 }
                 
             //Validar
-                $condiciones = 0;
-                if ( ! is_null($producto_id) ) { $condiciones++; }   //Tiene producto identificado
-                if ( $array_fila[1] >= 0 ) { $condiciones++; }       //La cantidad disponible es un cero o mayor
+                $conditiones = 0;
+                if ( ! is_null($producto_id) ) { $conditiones++; }   //Tiene producto identificado
+                if ( $array_fila[1] >= 0 ) { $conditiones++; }       //La cantidad disponible es un cero o mayor
                 
             //Si cumple las condiciones
-            if ( $condiciones == 2 )
+            if ( $conditiones == 2 )
             {   
-                $this->Pcrn->guardar('producto', "id = '{$producto_id}'", $registro);
+                $this->Pcrn->guardar('producto', "id = '{$producto_id}'", $aRow);
             } else {
                 $no_importados[] = $fila;
             }

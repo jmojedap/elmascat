@@ -186,10 +186,10 @@
         //Si está vacío
         if ( $('#campo-slug').val().length == 0 )
         {
-            $.ajax({        
-                type: 'POST',
-                url: base_url + 'app/slug_unico' + '/',
-                data: {
+            $.ajax({        
+                type: 'POST',
+                url: base_url + 'app/slug_unico' + '/',
+                data: {
                     texto : nombre_item,
                     tabla : 'item',
                     campo : 'item'
@@ -197,7 +197,7 @@
                 success: function(rta){
                     $('#campo-slug').val(rta);
                 }
-            });
+            });
         }
     }
     
@@ -290,6 +290,14 @@
         <label for="item_corto" class="col-sm-4 control-label">Nombre corto</label>
         <div class="col-sm-8">
             <?= form_input($att_item_corto); ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="entero_1" class="col-sm-4 control-label">Entero 1</label>
+        <div class="col-sm-8">
+            <input type="number" name="entero_1" class="form-control"
+                value="<?= $valores_form['entero_1'] ?>"
+            >
         </div>
     </div>
 

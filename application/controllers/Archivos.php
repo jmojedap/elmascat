@@ -105,12 +105,12 @@ class Archivos extends CI_Controller{
     
     function cambiar_e($archivo_id)
     {
-        $resultado = $this->Archivo_model->cargar($archivo_id);
+        $resultado = $this->Archivo_model->upload($archivo_id);
         $this->session->set_flashdata('resultado', $resultado);
         
-        if ( $resultado['ejecutado'] )
+        if ( $resultado['status'] == 1 )
         {
-            $row = $this->Pcrn->registro_id('archivo', $archivo_id);
+            $row = $this->Db_model->row_id('archivo', $archivo_id);
             
             //Eliminar archivo anterior
                 $this->Archivo_model->unlink($row->carpeta, $row->nombre_archivo);
@@ -120,10 +120,10 @@ class Archivos extends CI_Controller{
                 $this->Archivo_model->crear_miniaturas($archivo_id);   //Crear miniaturas de la imagen
                 $this->Archivo_model->mod_original_id($archivo_id);    //Mofificar imagen original después de crear miniaturas
                 
-            redirect("archivos/editar/{$archivo_id}");
+            redirect("archivos/edit/{$archivo_id}");
         } else {
             //No se cargó
-            redirect("archivos/cambiar_e/{$archivo_id}");
+            redirect("archivos/cambiar/{$archivo_id}");
         }
     }
     

@@ -34,6 +34,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
         <link rel="stylesheet" href="<?= $carpeta_tema ?>css/style_04.css" type="text/css">
+        <link rel="stylesheet" href="<?= $carpeta_tema ?>css/revslider.css" type="text/css">
         <link rel="stylesheet" href="<?= $carpeta_tema ?>css/owl.carousel.css" type="text/css">
         <link rel="stylesheet" href="<?= $carpeta_tema ?>css/owl.theme.css" type="text/css">
 
@@ -52,6 +53,7 @@
         <script type="text/javascript" src="<?= $carpeta_tema ?>js/parallax.js"></script> 
         <script type="text/javascript" src="<?= $carpeta_tema ?>js/common.js"></script> 
         <script type="text/javascript" src="<?= $carpeta_tema ?>js/cloudzoom.js"></script> 
+        <script type="text/javascript" src="<?= $carpeta_tema ?>js/revslider.js"></script>
         <script type="text/javascript" src="<?= $carpeta_tema ?>js/owl.carousel.min.js"></script> 
 
         <!-- Vue.js -->

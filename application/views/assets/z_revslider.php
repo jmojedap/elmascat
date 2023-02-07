@@ -2,7 +2,8 @@
 <script type="text/javascript" src="<?= URL_RESOURCES ?>assets/revslider/revslider.js"></script>
 
 <script type="text/javascript">
-    var revSliderSettings = {
+jQuery(document).ready(function() {
+    jQuery('#rev_slider').show().revolution({
         dottedOverlay: 'none',
         delay: 5000,
         startwidth: 585,
@@ -55,9 +56,6 @@
         hideAllCaptionAtLilmit: 0,
         startWithSlide: 0,
         fullScreenOffsetContainer: ''
-    };
-jQuery(document).ready(function() {
-    //jQuery('#rev_slider_mobile').show().revolution(revSliderSettings);
-    jQuery('#rev_slider_desktop').show().revolution(revSliderSettings);
+    });
 });
 </script> 

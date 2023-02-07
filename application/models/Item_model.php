@@ -160,6 +160,7 @@ class Item_model extends CI_Model{
             'item_largo',
             'item_corto',
             'item_grupo',
+            'entero_1',
         );
         
         return $campos;
@@ -511,19 +512,21 @@ class Item_model extends CI_Model{
 
     /**
      * Array con items, especificando código y nombre. Filtrados por condición
-     * 2022-10-04
+     * 2023-01-31
      * 
      * @param string $condition
+     * @param string $orderBy
      * @return array $options
      */
-    function arr_options($condition)
+    function arr_options($condition, $orderBy = 'id_interno')
     {
         $select = 'CONCAT("0", (id_interno)) AS str_cod, id_interno AS cod, item AS name, 
-            nombre_corto AS short_name, abreviatura AS abbreviation, slug, padre_id AS parent_id';
+            CONCAT("0", (id)) AS str_id,
+            item_corto AS short_name, abreviatura AS abbreviation, slug, padre_id AS parent_id';
 
         $query = $this->db->select($select)
             ->where($condition)
-            ->order_by('id_interno', 'ASC')
+            ->order_by($orderBy, 'ASC')
             ->get('item');
         
         $options = $query->result_array();

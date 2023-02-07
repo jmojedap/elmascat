@@ -68,6 +68,10 @@
                         <td v-html="producto.descripcion"></td>
                     </tr>
                     <tr>
+                        <td class="td-title">Etiquetas</td>
+                        <td v-html="producto.labels"></td>
+                    </tr>
+                    <tr>
                         <td class="td-title">Marca / Fabricante</td>
                         <td>
                             <a href="<?= URL_ADMIN . "productos/explore/?fab={$row->fabricante_id}" ?>">

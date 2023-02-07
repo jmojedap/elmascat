@@ -49,8 +49,8 @@
     {
         $.ajax({
             type: 'POST',
-            url: base_url + 'items/eliminar',
-            data: {
+            url: base_url + 'items/eliminar',
+            data: {
                 item_id : item_id,
                 categoria_id : categoria_id,
             },

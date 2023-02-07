@@ -56,6 +56,7 @@ class Search_model extends CI_Model{
             'tag',      //Etiqueta
             'o',       //Order by
             'ot',       //Order type
+            'ordering', //Order by & order type
             'clt',      //Cliente
             'fab',      //Fabricante o marca
             'dcto',     //Descuento o promoción

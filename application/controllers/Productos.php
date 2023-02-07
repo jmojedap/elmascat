@@ -23,7 +23,6 @@ class Productos extends CI_Controller{
     function index()
     {
         $this->catalogo();
-        //$this->inicio();
     }
 
 //EXPLORE
@@ -48,7 +47,7 @@ class Productos extends CI_Controller{
             $data['options_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5', 'Fabricante/Editorial');
             $data['options_promocion'] = $this->App_model->opciones_post('tipo_id = 31001 AND estado = 1', 'n', 'Todas');
             $data['options_categoria'] = $this->Item_model->options('categoria_id = 25', 'Todas las categorías');
-            $data['options_order_by'] = $this->Producto_model->options_order_by();
+            $data['arrOrdering'] = $this->Producto_model->arr_ordering();
             $data['arrRangoPrecio'] = $this->Producto_model->rangos_precio();
             
         //Arrays con valores para contenido en lista
@@ -322,7 +321,7 @@ class Productos extends CI_Controller{
                     if ( ! is_null($this->input->post('tags')) )
                     {
                         $tags = $this->input->post('tags');
-                        $this->Producto_model->act_tags($producto_id, $tags);
+                        $this->Producto_model->update_tags($producto_id, $tags);
                     }
 
                 //Crear registro de edición en la tabla meta
@@ -390,9 +389,14 @@ class Productos extends CI_Controller{
      */
     function catalogo_redirect()
     {
-        $this->load->model('Busqueda_model');
-        $busqueda_str = $this->Busqueda_model->busqueda_str();
-        redirect("productos/catalogo/?{$busqueda_str}");
+        $this->load->model('Search_model');
+        $filters = $this->Search_model->filters();
+        $str_filters = $this->Search_model->str_filters();
+
+        $this->load->model('Evento_model');
+        $this->Evento_model->guardar_ev_busqueda($filters);    
+
+        redirect("productos/catalogo/?{$str_filters}");
     }
 
     /**
@@ -455,11 +459,16 @@ class Productos extends CI_Controller{
             //$this->output->enable_profiler(TRUE);
     }
 
+    /**
+     * Catálogo de productos
+     */
     function catalogo($num_page = 1)
     {
         //Identificar filtros de búsqueda
         $this->load->model('Search_model');
         $filters = $this->Search_model->filters();
+        $filters['status'] = 1;   //Solo productos activos
+        $filters['condition'] = 'cant_disponibles > 0';   //Solo disponibles
 
     //Datos básicos de la exploración
         $perPage = 12;
@@ -469,11 +478,14 @@ class Productos extends CI_Controller{
         $data['views_folder'] = 'productos/catalogo/';
     
     //Opciones de filtros de búsqueda
-        $data['options_tag'] = $this->Item_model->opciones_id('categoria_id = 21', 'Todas');
-        $data['options_fabricante'] = $this->Item_model->opciones_id('categoria_id = 5', 'Fabricante/Editorial');
-        $data['options_categoria'] = $this->Item_model->options('categoria_id = 25', 'Todas las categorías');
-        $data['options_order_by'] = $this->Producto_model->options_order_by();
+        $data['arrCategorias'] = $this->Item_model->arr_options('categoria_id = 25');
+        $data['arrTags'] = $this->Item_model->arr_options('categoria_id = 21', 'item');
+        $data['arrFabricantes'] = $this->Item_model->arr_options('categoria_id = 5', 'item');
+        $data['arrOrdering'] = $this->Producto_model->arr_ordering();
         $data['arrRangoPrecio'] = $this->Producto_model->rangos_precio();
+
+    //Imagenes carrusel
+        $data['carousel_desktop_images'] = $this->App_model->imagenes_carrusel();
         
     //Arrays con valores para contenido en lista
         $data['arr_estados'] = $this->Item_model->arr_cod('categoria_id = 8');
@@ -481,24 +493,22 @@ class Productos extends CI_Controller{
         
     //Cargar vista
         $this->App_model->view(TPL_FRONT, $data);
+        //Salida JSON
+        //$this->output->set_content_type('application/json')->set_output(json_encode($data['carousel_desktop_images']->result()));
     }
 
     /**
      * AJAX JSON
      * Listado de productos que cumplen con unos filtros
-     * 2022-06-02
+     * 2022-06-07
      */
     function get_catalogo($num_page = 1, $per_page = 10)
     {
         $this->load->model('Search_model');
         $filters = $this->Search_model->filters();
 
-        //Consultas previas, tags
-        /*if ( $filters['tag'] != '' ) {
-            $this->load->model('Datos_model');
-            $tag_id = (int) $filters['tag'];
-            $filters['fe2'] = $this->Datos_model->descendencia($tag_id, 'string');
-        }*/
+        $this->load->model('Evento_model');
+        $this->Evento_model->guardar_ev_busqueda($filters);    
 
         $filters['status'] = 1;   //Solo productos activos
         $data = $this->Producto_model->get($filters, $num_page, $per_page);
@@ -569,18 +579,6 @@ class Productos extends CI_Controller{
     
 //PROCESOS EN EXPLORAR
 //---------------------------------------------------------------------------------------------------
-    
-    function z_f_controlador($producto_id, $estado)
-    {
-        $this->Producto_model->act_estado($producto_id, $estado);
-        
-        $this->load->model('Busqueda_model');
-        $busqueda_str = $this->Busqueda_model->busqueda_str();
-        
-        $destino = "productos/explorar/?{$busqueda_str}";
-        
-        redirect($destino);
-    }
     
     /**
      * AJAX
@@ -709,6 +707,29 @@ class Productos extends CI_Controller{
             $data['view_a'] = $this->views_folder . 'tags_v';
             $this->App_model->view(TPL_ADMIN, $data);
     }
+
+    /**
+     * EN CONSTRUCCIÓN PENDIENTE 
+     */
+    function add_tag($productId, $tagId) {
+
+        $data['saved_id'] = $this->Producto_model->add_tag($productId, $tagId);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Eliminar un tag de un producto
+     * 2023-02-06
+     */
+    function remove_tag($productId, $tagId)
+    {
+        $data['qty_deleted'] = $this->Producto_model->remove_tag($productId, $tagId);
+
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
 //GESTIÓN DE VARIACIONES
 //---------------------------------------------------------------------------------------------------------
@@ -801,18 +822,8 @@ class Productos extends CI_Controller{
 //PROCESOS
 //---------------------------------------------------------------------------------------------------
     
-    function procesos()
-    {
-        //Solicitar vista
-            $data['head_title'] = 'Productos';
-            $data['nav_2'] = $this->views_folder . 'explorar/menu_v';
-            $data['view_a'] = $this->views_folder .  'procesos_v';
-            $this->App_model->view(TPL_ADMIN, $data);
-    }
-    
     function ejecutar_proceso($cod_proceso)
     {
-        
         //Ampliar tiempo de ejecución
             set_time_limit(360);   //  6 minutos
         
@@ -820,7 +831,7 @@ class Productos extends CI_Controller{
         $data['message'] = 'Proceso no ejecutado';
         
         if ( $cod_proceso == 1 ) {
-            $data = $this->Producto_model->actualizar_slug();
+            $data = $this->Producto_model->update_slug();
         } elseif ( $cod_proceso == 2 ) {
             $data = $this->Producto_model->asociar_img_inicial_masivo();
         } elseif ( $cod_proceso == 3 ) {
@@ -833,6 +844,8 @@ class Productos extends CI_Controller{
             $data = $this->Producto_model->redondear_costos();
         } elseif ( $cod_proceso == 7 ) {
             $data = $this->Producto_model->act_meta_masivo();
+        } elseif ( $cod_proceso == 8 ) {
+            $data = $this->Producto_model->update_products_labels();
         }
         
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -1144,6 +1157,14 @@ class Productos extends CI_Controller{
     
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+
+    /**
+     * Actualizar masivamente todos los
+     */
+    function update_products_labels()
+    {
+
     }
 
 }

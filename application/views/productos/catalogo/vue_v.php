@@ -2,9 +2,14 @@
 <script>
 // Variables
 //-----------------------------------------------------------------------------
-var category_names = '';
-var promocion_names = <?= json_encode($arr_promociones) ?>;
-
+let showFiltersPre = false;
+let windowWidth = window.innerWidth;
+let advancedFiltersStyle = 'display: none;';
+if ( windowWidth > 990 ) {
+    console.log(windowWidth);
+    showFiltersPre = true;
+    advancedFiltersStyle = ''
+}
 
 // Filters
 //-----------------------------------------------------------------------------
@@ -27,11 +32,10 @@ Vue.filter('currency', function (value) {
 
 // App
 //-----------------------------------------------------------------------------
-
 var app_explore = new Vue({
-    el: '#app_explore',
+    el: '#appCatalogo',
     created: function(){
-        this.calculate_active_filters()
+        this.calculateFiltered()
     },
     data: {
         url_app: url_app,
@@ -43,22 +47,20 @@ var app_explore = new Vue({
         perPage: <?= $perPage ?>,
         list: <?= json_encode($list) ?>,
         element: [],
-        selected: [],
-        all_selected: false,
         filters: <?= json_encode($filters) ?>,
-        display_filters: false,
+        showFilters: showFiltersPre,
+        filtered: false,
+        advancedFiltersStyle: advancedFiltersStyle,
+        windowWidth: windowWidth,
         loading: false,
-        options_order_by: <?= json_encode($options_order_by) ?>,
-        options_categoria: <?= json_encode($options_categoria) ?>,
-        options_tag: <?= json_encode($options_tag) ?>,
-        options_fabricante: <?= json_encode($options_fabricante) ?>,
-        options_promocion: <?= json_encode($options_promocion) ?>,
-        options_image_status: {'':'[ Todas ]', '01':'Sin imagen'},
+        arrCategorias: <?= json_encode($arrCategorias) ?>,
+        arrTags: <?= json_encode($arrTags) ?>,
+        arrFabricantes: <?= json_encode($arrFabricantes) ?>,
+        arrOrdering: <?= json_encode($arrOrdering) ?>,
         arrRangoPrecio: <?= json_encode($arrRangoPrecio) ?>,
-        active_filters: false
     },
     methods: {
-        get_list: function(e, num_page = 1){
+        getList: function(e, num_page = 1){
             this.loading = true
             var formValues = new FormData(document.getElementById('searchForm'))
             axios.post(url_app + this.controller + '/get_catalogo/' + num_page, formValues)
@@ -67,76 +69,53 @@ var app_explore = new Vue({
                 this.list = response.data.list
                 this.max_page = response.data.max_page
                 this.search_num_rows = response.data.search_num_rows
-                $('#head_subtitle').html(response.data.search_num_rows)
                 history.pushState(null, null, url_app + this.cf + this.num_page +'/?' + response.data.str_filters)
                 this.all_selected = false
                 this.selected = []
                 this.loading = false
 
-                this.calculate_active_filters()
+                this.calculateFiltered()
             })
             .catch(function (error) { console.log(error) })
         },
         sum_page: function(sum){
             var new_num_page = Pcrn.limit_between(this.num_page + sum, 1, this.max_page)
-            this.get_list(null, new_num_page)
-        },
-        delete_selected: function(){
-            var params = new FormData()
-            params.append('selected', this.selected)
-            
-            axios.post(url_app + this.controller + '/delete_selected', params)
-            .then(response => {
-                this.selected = []
-                if ( response.data.qty_deleted > 0 )
-                {
-                    this.hide_deleted()
-                    toastr['info']('Productos eliminados: ' + response.data.qty_deleted)
-                } else {
-                    toastr['warning']('Productos eliminados: ' + response.data.qty_deleted)
-                }
-            })
-            .catch(function (error) { console.log(error) })
-        },
-        hide_deleted: function(){
-            for ( let index = 0; index < this.selected.length; index++ )
-            {
-                const element = this.selected[index]
-                console.log('ocultando: row_' + element)
-                $('#row_' + element).addClass('table-danger')
-                $('#row_' + element).hide('slow')
-            }
+            this.getList(null, new_num_page)
         },
         set_current: function(key){
             this.element = this.list[key]
         },
-        toggle_filters: function(){
-            this.display_filters = !this.display_filters
-            $('#adv_filters').toggle('fast')
+        removeFilter: function(filterName){
+            this.filters[filterName] = null;
+            setTimeout(() => {
+                this.getList();
+            }, 100);
         },
         remove_filters: function(){
-            this.filters.q = ''
-            this.filters.cat = ''
-            this.filters.status = ''
-            this.filters.tag = ''
-            this.filters.fab = ''
-            this.filters.promocion = ''
-            this.filters.fe1 = ''
-            this.display_filters = false
-            //$('#adv_filters').hide()
-            setTimeout(() => { this.get_list() }, 100)
+            this.filters.cat = null
+            this.filters.tag = null
+            this.filters.fab = null
+            this.filters.fe1 = null
+            this.filters.fe3 = null
+            this.showFilters = false
+            setTimeout(() => { this.getList() }, 100)
         },
-        calculate_active_filters: function(){
-            var calculated_active_filters = false
-            if ( this.filters.q ) calculated_active_filters = true
-            if ( this.filters.status ) calculated_active_filters = true
-            if ( this.filters.cat ) calculated_active_filters = true
-            if ( this.filters.tag ) calculated_active_filters = true
-            if ( this.filters.fab ) calculated_active_filters = true
-            if ( this.filters.promocion ) calculated_active_filters = true
-            if ( this.filters.fe1 ) calculated_active_filters = true
+        calculateFiltered: function(){
+            var filtered = false
+            if ( this.filters.q ) filtered = true
+            if ( this.filters.cat ) filtered = true
+            if ( this.filters.tag ) filtered = true
+            if ( this.filters.fab ) filtered = true
+            if ( this.filters.fe1 ) filtered = true
+            if ( this.filters.fe3 ) filtered = true
+            if ( this.filters.promo ) filtered = true
+            if ( this.filters.d1 ) filtered = true
 
-            this.active_filters = calculated_active_filters
+            this.filtered = filtered
+        },
+        toggleShowFilters: function(){
+            this.showFilters = !this.showFilters
+            $('#advanced_filters').toggle('fast');
         },
     }
 })

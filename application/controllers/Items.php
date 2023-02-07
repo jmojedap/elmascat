@@ -115,8 +115,8 @@ class Items extends CI_Controller{
     /**
      * Vista filtra items por categoría, CRUD de items.
      * 
-     * @param type $categoria_id
-     * @param type $item_id
+     * @param string $categoria_id
+     * @param int $item_id
      */
     function listado($categoria_id = '058', $item_id = 0)
     {    
