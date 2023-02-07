@@ -18,11 +18,12 @@ application/logs/*
 /ci_sessions/
 
 #pml
-/content/
 /resources/
 /htaccess/
 /system/
-/system_315/
 /uploads/
 /assets/
 /application/config/
+/application/config_server/
+/content/
+/resources/static/
