@@ -8,6 +8,7 @@
             <div class="col-item">
                 <div class="sale-label sale-top-right" v-show="product.price > product.arr_precio.precio">Oferta</div>
                 <div class="new-label new-top-right" v-show="product.is_new == 1">Nuevo</div>
+                <div class="sold-out-label new-top-right" v-show="product.stock == 0">Agotado</div>
                 <div class="product-image-area">
                     <a class="product-image" v-bind:title="product.name" v-bind:href="url_app + 'productos/visitar/' + product.id + `/` + product.slug">
                         <div class="product-image-container">

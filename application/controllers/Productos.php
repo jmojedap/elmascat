@@ -461,6 +461,7 @@ class Productos extends CI_Controller{
 
     /**
      * Catálogo de productos
+     * 2023-02-08
      */
     function catalogo($num_page = 1)
     {
@@ -468,7 +469,6 @@ class Productos extends CI_Controller{
         $this->load->model('Search_model');
         $filters = $this->Search_model->filters();
         $filters['status'] = 1;   //Solo productos activos
-        $filters['condition'] = 'cant_disponibles > 0';   //Solo disponibles
 
     //Datos básicos de la exploración
         $perPage = 12;
@@ -510,7 +510,7 @@ class Productos extends CI_Controller{
         $this->load->model('Evento_model');
         $this->Evento_model->guardar_ev_busqueda($filters);    
 
-        $filters['status'] = 1;   //Solo productos activos
+        //$filters['status'] = 1;   //Solo productos activos
         $data = $this->Producto_model->get($filters, $num_page, $per_page);
 
         //Salida JSON
