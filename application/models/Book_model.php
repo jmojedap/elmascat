@@ -8,34 +8,10 @@ class Book_model extends CI_Model{
      */
     function book_info($book_code)
     {
-        /*$row = $this->Db_model->row('post', "code = '{$book_code}'");
+        $row = $this->Db_model->row('post', "code = '{$book_code}'");
         $book['head_title'] = $row->nombre_post;
         $book['book_id'] = $row->id;
-        $book['book_code'] = $row->code;*/
-        $book['book_code'] = $book_code;
-        $book['head_title'] = 'Revista Minutos de Amor - Mayo de 2020';
-        $book['book_id'] = 311;
-
-        if ( $book_code == '069243559697' ) {
-            $book['head_title'] = 'Revista Minutos de Amor - Junio de 2020';
-            $book['book_id'] = 312;
-        }
-        if ( $book_code == '075431960245' ) {
-            $book['head_title'] = 'Revista Minutos de Amor - Julio de 2020';
-            $book['book_id'] = 313;
-        }
-        if ( $book_code == '086239668181' ) {
-            $book['head_title'] = 'Revista Minutos de Amor - Agosto de 2020';
-            $book['book_id'] = 314;
-        }
-        if ( $book_code == '095107951418' ) {
-            $book['head_title'] = 'Revista Minutos de Amor - Septiembre de 2020';
-            $book['book_id'] = 315;
-        }
-        if ( $book_code == '109507604357' ) {
-            $book['head_title'] = 'Revista Minutos de Amor - Octubre de 2020';
-            $book['book_id'] = 316;
-        }
+        $book['book_code'] = $row->code;
 
         return $book;
     }

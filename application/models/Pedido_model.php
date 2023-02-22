@@ -63,7 +63,7 @@ class Pedido_Model extends CI_Model{
 
     /**
      * Segmento Select SQL, con diferentes formatos, consulta de pedidos
-     * 2022-08-12
+     * 2023-02-23
      */
     function select($format = 'general')
     {
@@ -73,8 +73,13 @@ class Pedido_Model extends CI_Model{
             usuario.username AS updater_username, pedido.payed, pedido.payment_channel, is_gift,
             age AS edad, gender AS sexo, screen_width AS ancho_pantalla, shipping_method_id AS sistema_envio,
             pedido.payment_channel AS canal_pago';
-
-        //$arr_select['export'] = 'users.id, username, document_number AS no_documento, document_type AS tipo_documento, display_name AS nombre, email, role AS rol, status, created_at AS creado, updated_at AS actualizado, expiration_at AS suscripcion_hasta';
+        $arr_select['export'] = 'pedido.id, cod_pedido, pedido.usuario_id, pedido.nombre, pedido.apellidos, 
+            pedido.email, estado_pedido, valor_total, pedido.direccion,
+            lugar.nombre_lugar AS ciudad, lugar.region AS departamento, pedido.celular,
+            pedido.peso_total, pedido.editado, editado_usuario_id, factura, no_guia, codigo_respuesta_pol,
+            usuario.username AS updater_username, pedido.payed, pedido.payment_channel, is_gift,
+            age AS edad, gender AS sexo, screen_width AS ancho_pantalla, shipping_method_id AS sistema_envio,
+            pedido.payment_channel AS canal_pago';
 
         return $arr_select[$format];
     }
@@ -198,6 +203,29 @@ class Pedido_Model extends CI_Model{
         $query = $this->db->get('pedido'); //Para calcular el total de resultados
 
         return $query->num_rows();
+    }
+
+    /**
+     * Query para exportar
+     * 2023-02-22
+     */
+    function query_export($filters)
+    {
+        //Select
+        $select = $this->select('export');
+        //if ( $filters['sf'] != '' ) { $select = $this->select($filters['sf']); }
+        $this->db->select($select);
+        $this->db->join('usuario', 'pedido.editado_usuario_id = usuario.id', 'left');
+        $this->db->join('lugar', 'pedido.ciudad_id = lugar.id', 'left');
+
+        //Condición Where
+        $search_condition = $this->search_condition($filters);
+        if ( $search_condition ) { $this->db->where($search_condition);}
+
+        //Get
+        $query = $this->db->get('pedido', 100000);  //Hasta 100.000 registros
+
+        return $query;
     }
     
     /**

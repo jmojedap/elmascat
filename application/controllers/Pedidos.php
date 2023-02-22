@@ -78,7 +78,7 @@ class Pedidos extends CI_Controller{
     
     /**
      * Exporta el resultado de la búsqueda a un archivo CSV
-     * 2021-09-15
+     * 2023-02-22: Separar ciudad, departamento, país
      */
     function exportar()
     {
@@ -86,7 +86,7 @@ class Pedidos extends CI_Controller{
             $this->load->model('Search_model');
 
             $filters = $this->Search_model->filters();
-            $query = $this->Pedido_model->search($filters); //Para calcular el total de resultados
+            $query = $this->Pedido_model->query_export($filters); //Para calcular el total de resultados
 
         //Contenido del archivo
         $data['file_name'] = date('Ymd_His'). '_pedidos.csv';
