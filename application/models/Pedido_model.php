@@ -287,7 +287,7 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Actualizar registro de pedido, datos de administración.
-     * 2023-01-12 (Notification model)
+     * 2023-05-28 (Estado 9: Listo para recoger en tienda)
      */
     function guardar_admin($pedido_id, $arr_row)
     {   
@@ -305,7 +305,7 @@ class Pedido_Model extends CI_Model{
             $data['message'] = 'Pedido actualizado';
 
             //Enviar email, si corresponde a un estado de interés comercial
-            if ( in_array($arr_row['estado_pedido'], array(4,6)) && ENV == 'production' )
+            if ( in_array($arr_row['estado_pedido'], [4,6,9]) && ENV == 'production' )
             {
                 $this->load->model('Notification_model');
                 $this->Notification_model->orders_updated_email($pedido_id);    
@@ -611,16 +611,19 @@ class Pedido_Model extends CI_Model{
 
     /**
      * Verificar que si el pedido tiene peso tenga un cobro de flete asignado
-     * 2021-02-27
+     * 2023-05-28
      */
     function validar_flete($row)
     {
         $valor_flete = $this->Pedido_model->valor_extras($row->id, 'producto_id = 1'); //Extras producto 1 corresponde a flete
 
-        $data = array('status' => 1, 'error' => '');
+        $data = ['status' => 1, 'error' => ''];
 
-        if ( $row->peso_total > 0 && $valor_flete == 0) {
-            $data = array('status' => 0, 'error' => 'Los gastos de envío no se han calculado.');
+        if ( $valor_flete == 0 ) {
+            //Si tiene peso y el método de entrega no es 98:Recoger en tienda
+            if ( $row->peso_total > 0 && $row->shipping_method_id != 98 ) {
+                $data = array('status' => 0, 'error' => 'Los gastos de envío no se han calculado.');
+            }
         }
 
         return $data;
@@ -956,7 +959,7 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Calcula valores totales de los pedidos
-     * @param type $pedido_id
+     * @param int $pedido_id
      */
     function act_totales($pedido_id)
     {
@@ -964,9 +967,7 @@ class Pedido_Model extends CI_Model{
         $this->act_totales_1($pedido_id);           //Valor productos y peso
         
         //Extras
-        //$this->act_extras_relacionados($pedido_id); //Desactivado, 2017-07-11
         $this->act_flete($pedido_id);               //Costos de envío del pedido
-        //$this->act_comision_pol($pedido_id);      //Actualizar comisión POL (DESACTIVADA 2020-04-16)
         $this->act_totales_2($pedido_id);           //Valor total extras
         
         //Productos + Extras
@@ -1078,6 +1079,8 @@ class Pedido_Model extends CI_Model{
     /**
      * Actualiza el valor del flete de un pedido
      * Agrega o edita el registro en la tabla pedido_detalle
+     * Si el tipo de entrega es 98:Recoger en tienda, elimina extra de flete
+     * 2023-05-08
      */
     function act_flete()
     {
@@ -1085,24 +1088,34 @@ class Pedido_Model extends CI_Model{
             $this->load->model('Flete_model');
             $order_code = $this->session->userdata('order_code');
             $row_pedido = $this->row_by_code($order_code);
+
         
-        //Se actualiza si la ciudad ya está definida
-        if ( ! is_null($row_pedido->ciudad_id) ) 
-        {
-            //Construir registro
-                $arr_row['pedido_id'] = $row_pedido->id;
-                $arr_row['producto_id'] = 1;   //COD 1, corresponde a flete, ver Ajustes > Parámetros > Extras pedidos
-                $arr_row['tipo_id'] = 2;       //No es un producto (1), es un elemento extra (2)
-                $arr_row['precio'] = $this->Flete_model->flete(909, $row_pedido->ciudad_id, $row_pedido->peso_total);
-                $arr_row['cantidad'] = 1;  //Un envío
-                $arr_row['costo'] = 0;     //No aplica
-                $arr_row['iva'] = 0;       //No aplica
-
-            //Condición
-                $condition = "pedido_id = {$row_pedido->id} AND producto_id = 1 AND tipo_id = 2";
-
-            //Guardar
-                $this->Db_model->save('pedido_detalle', $condition, $arr_row);
+        //Calcular flete si el tipo de entrega es diferente a 98:Recoger en tienda
+        if ( $row_pedido->shipping_method_id != 98 ) {
+            //Se actualiza si la ciudad ya está definida
+            if ( ! is_null($row_pedido->ciudad_id) ) 
+            {
+                //Construir registro
+                    $arr_row['pedido_id'] = $row_pedido->id;
+                    $arr_row['producto_id'] = 1;   //COD 1, corresponde a flete, ver Ajustes > Parámetros > Extras pedidos
+                    $arr_row['tipo_id'] = 2;       //No es un producto (1), es un elemento extra (2)
+                    $arr_row['precio'] = $this->Flete_model->flete(909, $row_pedido->ciudad_id, $row_pedido->peso_total);
+                    $arr_row['cantidad'] = 1;  //Un envío
+                    $arr_row['costo'] = 0;     //No aplica
+                    $arr_row['iva'] = 0;       //No aplica
+    
+                //Condición
+                    $condition = "pedido_id = {$row_pedido->id} AND producto_id = 1 AND tipo_id = 2";
+    
+                //Guardar
+                    $this->Db_model->save('pedido_detalle', $condition, $arr_row);
+            }
+        } else {
+            //Eliminar registro extra asociado a un envío si el tipo de entrega es 98: Recoger en tienda
+            $this->db->where('pedido_id', $row_pedido->id);
+            $this->db->where('producto_id', 1);     //COD 1, corresponde a flete, ver Ajustes > Parámetros > Extras pedidos
+            $this->db->where('tipo_id', 2);         //No es un producto (1), es un elemento extra (2)
+            $this->db->delete('pedido_detalle');
         }
     }
 

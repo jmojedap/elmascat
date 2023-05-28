@@ -36,7 +36,7 @@
 Highcharts.theme = hc_districatolicas_theme;
 Highcharts.setOptions(Highcharts.theme);
 
-let chart = new Highcharts.chart('chart_container', {
+Highcharts.chart('chart_container', {
     title: {
         text: 'Ventas por día'
     },

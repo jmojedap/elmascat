@@ -119,7 +119,6 @@
         'placeholder' => 'Escriba la slug',
         'title' => 'Escriba la slug'
     );
-  
 ?>
 
 <script>

@@ -468,7 +468,7 @@ class Pedidos extends CI_Controller{
             $data['row_usuario'] = $this->Db_model->row_id('usuario', $data['row']->usuario_id);
 
         //Si tiene peso o no, cambian los datos solicitados
-            $data['view_b'] = 'pedidos/compra/compra_a_v';
+            $data['view_b'] = 'pedidos/compra/compra_a/compra_a_v';
             /*if ( $data['row']->peso_total == 0 ) {
                 $data['view_b'] = 'pedidos/compra/compra_a_sin_peso_v';
             }*/
@@ -628,7 +628,7 @@ class Pedidos extends CI_Controller{
      * Valida y actualiza los datos de contacto y entrega de un pedido, proviene de pedidos/compra_a
      * 2020-04-07
      */
-    function guardar_pedido()
+    function guardar_pedido($update_totals = 0)
     {
         $order_code = $this->session->userdata('order_code');
         $order = $this->Pedido_model->row_by_code($order_code);
@@ -641,6 +641,10 @@ class Pedidos extends CI_Controller{
             //Construir registro y guardar
             $arr_row = $this->input->post();
             $data['qty_affected'] =  $this->Pedido_model->act_pedido($order->id, $arr_row);
+
+            if ( $data['qty_affected'] > 0 && $update_totals == 1) {
+                $this->Pedido_model->act_totales($order->id);
+            }
 
             //Validar usuario comprador
             $this->Pedido_model->set_user_data($order->id);
@@ -727,47 +731,6 @@ class Pedidos extends CI_Controller{
             $this->Pedido_model->unset_session();
             $data = array('status' => 2, 'message' => 'La compra no puede modificarse, ya fue procesada');
         }
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
-    /**
-     * AJAX
-     * Crea o edita un registro en la tabla pedido_detalle, corresponde listado de productos de un pedido
-     * 2020-08-12
-     */
-    function z_guardar_detalle()
-    {
-        //Valores iniciales
-            $data = array('status' => 0, 'message' => 'Producto no agregado');
-            $pd_id = 0;
-            $pedido_id = $this->session->userdata('pedido_id');
-
-
-        //Si no existe pedido se crea
-            if ( is_null($pedido_id) ) { $pedido_id = $this->Pedido_model->crear(); }
-            $row = $this->Db_model->row_id('pedido', $pedido_id);
-
-        if ( ! is_null($row) )
-        {
-            //Construir registro
-                $registro['producto_id'] = $this->input->post('producto_id');
-                $registro['cantidad'] = $this->input->post('cantidad');
-                $registro['tipo_id'] = 1;   //Tipo de detalle, producto
-                
-            //Se agrega producto a pedido solo si está en estado iniciado (1)
-                if ( $row->estado_pedido == 1 )
-                {
-                    $pd_id = $this->Pedido_model->guardar_detalle($registro);
-                    $data = array('status' => 1, 'message' => 'Producto agregado en: ' . $pd_id);
-                } else {
-                    $data['message'] = 'El pedido está cerrado, no puede modificarse';
-                }
-        }
-
-        $data['pedido_id'] = $pedido_id;
-        $data['pd_id'] = $pd_id;
 
         //Salida JSON
         $this->output->set_content_type('application/json')->set_output(json_encode($data));

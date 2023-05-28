@@ -116,11 +116,12 @@ class Flete_model extends CI_Model{
     
     /**
      * Calcula el costo del flete según el peso
+     * 2023-05-28
      * 
-     * @param type $origen_id
-     * @param type $destino_id
-     * @param type $peso
-     * @return type
+     * @param int $origen_id ID ciudad de origen del envío
+     * @param int $destino_id ID didad de destino del envío
+     * @param int $peso peso del envío en kilogramos
+     * @return float precio del envío en pesos colombianos COP
      */
     function flete($origen_id, $destino_id, $peso)
     {

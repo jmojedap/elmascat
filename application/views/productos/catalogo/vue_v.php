@@ -97,6 +97,7 @@ var app_explore = new Vue({
             this.filters.fab = null
             this.filters.fe1 = null
             this.filters.fe3 = null
+            this.filters.promo = null
             this.showFilters = false
             setTimeout(() => { this.getList() }, 100)
         },

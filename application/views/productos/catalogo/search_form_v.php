@@ -1,4 +1,6 @@
 <form accept-charset="utf-8" method="POST" id="searchForm" @submit.prevent="getList">
+    <input type="hidden" name="promo" v-model="filters.promo">
+    <input type="hidden" name="d1" v-model="filters.d1">
     <div class="form-group">
         <label for="q">Buscar
             <a @click="removeFilter('q')" class="remove-filter" v-show="filters.q"><i class="fa fa-times"></i></a>

@@ -164,6 +164,8 @@ class Notification_model extends CI_Model{
         $this->load->model('Pedido_model');
         $data['detalle'] = $this->Pedido_model->detalle($order->id);
 
+        $data['store_address'] = $this->App_model->valor_opcion(27);
+
         $data['styles'] = $this->email_styles();
         $data['view_a'] = 'admin/notifications/orders_payment_updated_buyer_message_v';
 

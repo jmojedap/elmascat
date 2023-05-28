@@ -63,7 +63,7 @@
 Highcharts.theme = hc_districatolicas_theme;
 Highcharts.setOptions(Highcharts.theme);
 
-let chart = new Highcharts.chart('chart', {
+Highcharts.chart('chart', {
     chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,

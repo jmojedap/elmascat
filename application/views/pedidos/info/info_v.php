@@ -103,8 +103,8 @@
         <div class="col col-md-4">
             <div class="card card-default mb-2">
                 <div class="card-header">
-                    <i class="fa fa-map-marker"></i>
-                    Envío
+                    <i class="fas fa-truck"></i>
+                    Entrega
                 </div>
 
                 <table class="table table-condensed">
@@ -113,9 +113,21 @@
                             <td>Ciudad</td>
                             <td>{{ order.ciudad }}</td>
                         </tr>
-                        <tr>
+                        <tr v-show="order.shipping_method_id != 98">
                             <td>Dirección</td>
                             <td>{{ order.direccion }}</td>
+                        </tr>
+                        <tr v-show="order.shipping_method_id == 98">
+                            <td>Método de entrega</td>
+                            <td>
+                                <strong class="text-danger">No se envía &middot; Se recoge en tienda</strong>
+                            </td>
+                        </tr>
+                        <tr v-show="order.shipping_method_id == 98">
+                            <td>Dirección facturación</td>
+                            <td>
+                                {{ order.direccion }}
+                            </td>
                         </tr>
                         <tr>
                             <td>Celular</td>
@@ -220,7 +232,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Envío</td>
+                            <td>Método de entrega</td>
                             <td>
                                 <?= $this->Item_model->name(183, $row->shipping_method_id); ?>
                                 &middot;

@@ -74,7 +74,7 @@
         
         <div class="col col-md-4">
             <div class="page-title">
-                <h2>Datos de entrega</h2>
+                <h2>Datos de contacto</h2>
             </div>
             
             <table class="data-table cart-table" id="shopping-cart-table">
@@ -82,7 +82,7 @@
                     <tr class="first last">
                         <th colspan="2">
                             <span class="nobr">
-                                Contacto y Dirección
+                                Cliente y entrega
                             </span>
                         </th>
                     </tr>
@@ -111,24 +111,45 @@
                             </span>
                             CC <?= $row->no_documento ?><br/>
                             <?= $row->email ?>
+                            <br>
+                            <?= $row->celular ?><br/>
                         </td>
                     </tr>
-                    <tr>
+                    <tr v-show="order.shipping_method_id != 98">
                         <td width="25px">
-                            <i class="fa fa-map-marker fa-2x"></i>
+                            <i class="fas fa-truck fa-2x text-primary"></i>
                         </td>
                         <td>
-                            <?= $row->direccion ?><br>
-                            <span class="suave">
-                                Celular
-                            </span>
-                            <?= $row->celular ?><br/>
-                            <?= $row->ciudad ?>
+                            <span>Se entregará en la dirección: </span><br>
+                            <strong>{{ order.direccion }}</strong><br>
+                            {{ order.ciudad }}
                         </td>
                     </tr>
-                    <tr>
+                    <tr v-show="order.shipping_method_id == 98">
                         <td width="25px">
-                            <i class="fa fa-info fa-2x"></i>
+                            <i class="fa fa-info-circle fa-2x text-warning"></i>
+                        </td>
+                        <td>
+                            Método de entrega <br>
+                            <strong class="text-danger">Recoger en tienda</strong>
+                            <br>
+                            <a href="https://www.google.com/maps/place/Cl.+72+%2383-96,+Bogot%C3%A1/@4.6949995,-74.107477,17z/" target="_blank">
+                                Av Calle 72 # 83-96
+                            </a>
+                            <br>
+                            <span class="text-muted">Barrio Almería - Frente ETB Santa Helenita</span>
+                            
+                            <br>
+                            Bogotá D.C. - Colombia
+                            <br>
+                            <span class="text-muted">Horario de entrega</span>
+                            <br>
+                            Lunes a Sábado 10am a 4pm
+                        </td>
+                    </tr>
+                    <tr v-show="order.notas.length > 0">
+                        <td width="25px">
+                            <i class="fa fa-info-circle fa-2x text-primary"></i>
                         </td>
                         <td>
                             <?= $row->notas ?>
@@ -168,6 +189,28 @@
                     </li>
                 <?= form_close('') ?>
             </ul>
+
+            <div class="alert alert-info text-center" v-show="order.shipping_method_id != 98">
+                <p>
+                    El envío y entrega de tu compra pueden tomar entre <strong>1 y 2 días
+                    hábiles</strong> para Bogotá y hasta <strong>4 días hábiles</strong>
+                    para el resto del país.
+                </p>
+            </div>
+            <div class="alert alert-info text-center" v-show="order.shipping_method_id == 98">
+                <p>
+                    La preparación de tu compra puede tomar hasta <strong>1 día habil</strong>. Enviaremos un
+                    mensaje a tu correo electrónico para confirmarte que puedes venir a recogerla.
+                </p>
+            </div>
+            <div class="alert alert-info text-center">
+                <p>
+                    Para pagos en Efectivo con Códigos de pago: 
+                    Algunos productos de tu pedido podrían dejar de estar 
+                    disponibles si pasa mucho tiempo entre la creación de 
+                    tu pedido y el momento del pago.
+                </p>
+            </div>
             
             <?php if ( $row->pais_id != 51 ) { ?>
                 <a class="btn btn-info btn-block" href="<?= base_url("pedidos/verificar_usd/{$row->cod_pedido}") ?>">

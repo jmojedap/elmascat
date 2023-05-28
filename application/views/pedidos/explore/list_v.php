@@ -93,7 +93,7 @@
                 </td>
 
                 <td class="only-lg">
-                    <div v-show="element.payu_codigo_respuesta_pol == 1">
+                    <div v-show="element.payed == 1">
                         <a v-bind:href="`<?= base_url("pedidos/reporte/") ?>` + element.id" class="btn btn-sm btn-light" target="_blank">R</a>
                         <a v-bind:href="`<?= base_url("pedidos/reporte/") ?>` + element.id + `/label`" class="btn btn-sm btn-light" target="_blank">L</a>
                     </div>
