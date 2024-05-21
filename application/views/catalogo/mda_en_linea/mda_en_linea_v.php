@@ -9,7 +9,7 @@
         <div class="col-xs-12">
             <p class="presentation text-center">Selecciona el plan</p>
         </div>
-        <div class="col-xs-4" v-for="(producto, key) in productos">
+        <div class="col-xs-6" v-for="(producto, key) in productos">
             <div class="sm_box" v-bind:class="{'active': producto_key == key }" v-on:click="set_current(key)">
                 <div class="sm_product">
                     {{ producto.nombre_corto }}
@@ -61,7 +61,7 @@
         </div>
         <div class="col-md-8">
             <h2>{{ producto_actual.nombre_producto }}</h2>
-            <p>{{ producto_actual.descripcion }}</p>
+            <p v-html="producto_actual.descripcion"></p>
             <p>
                 <span class="main_price">{{ producto_actual.precio }}</span>
             </p>

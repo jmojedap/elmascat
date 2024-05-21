@@ -127,6 +127,7 @@ class Producto_Model extends CI_Model{
 
             $this->db->order_by('puntaje DESC');
             $this->db->order_by('puntaje_auto DESC');
+            $this->db->order_by('cant_disponibles DESC');
             
         //Filtros
             $search_condition = $this->search_condition($filters);
@@ -738,36 +739,50 @@ class Producto_Model extends CI_Model{
     
     /**
      * Actualiza el campo producto.puntaje_auto
+     * 2024-05-07
      */
-    function act_puntaje_auto($producto_id)
-    {   
-        $cant_visitas = $this->cant_visitas($producto_id);
-        $cant_pedidos = $this->Pcrn->num_registros('pedido_detalle', "producto_id = {$producto_id}");
+    function act_puntaje_auto($producto)
+    {
+        $stock = $producto->cant_disponibles;
+        $cant_visitas = $this->cant_visitas($producto->id);
+        $cant_pedidos = $this->Pcrn->num_registros('pedido_detalle', "producto_id = {$producto->id}");
         
-        $puntaje_auto = $cant_pedidos * 10 + $cant_visitas;
+        $puntaje_auto = $cant_pedidos * 10
+            + $cant_visitas * 1
+            + $producto->precio * 0.1;
+            
+
+        //Para bajar prioridad a productos no disponibles
+        if ( $stock <= 0 ) $puntaje_auto = 0;
                 
         $arr_row['puntaje_auto'] = $puntaje_auto;
         
-        $this->db->where('id', $producto_id);
+        $this->db->where('id', $producto->id);
         $this->db->update('producto', $arr_row);
 
         return $puntaje_auto;
     }
     
+    /**
+     * Actualiza masivamente un conjunto aleatorio de productos en el campo
+     * puntaje_auto
+     * 2024-05-07
+     */
     function act_puntaje_auto_masivo()
     {
-        $this->db->limit(750);
+        $this->db->select('id, cant_disponibles, precio, puntaje');
+        $this->db->limit(1000);
         $this->db->order_by('puntaje', 'RANDOM');
         $productos = $this->db->get('producto');
 
         $sum_puntaje = 0;
         
-        foreach( $productos->result() as $row_producto )
+        foreach( $productos->result() as $producto )
         {
-            $sum_puntaje += $this->act_puntaje_auto($row_producto->id);
+            $sum_puntaje += $this->act_puntaje_auto($producto);
         }
 
-        $avg_puntaje = number_format($sum_puntaje / 750, 0);
+        $avg_puntaje = number_format($sum_puntaje / 1000, 0);
         
         $data['status'] = 1;
         $data['message'] = 'Actualización ejecutada, promedio: ' . $avg_puntaje;

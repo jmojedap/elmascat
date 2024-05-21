@@ -75,6 +75,7 @@ var app_explore = new Vue({
                 this.loading = false
 
                 this.calculateFiltered()
+                this.scrollToTop()
             })
             .catch(function (error) { console.log(error) })
         },
@@ -116,7 +117,26 @@ var app_explore = new Vue({
         },
         toggleShowFilters: function(){
             this.showFilters = !this.showFilters
-            $('#advanced_filters').toggle('fast');
+        },
+        setFabricante: function(nuevoFabricanteId){
+            this.filters.fab = nuevoFabricanteId
+            setTimeout(() => {
+                this.getList();
+            }, 100);
+        },
+        setTag: function(nuevoTagId){
+            this.filters.tag = nuevoTagId
+            setTimeout(() => {
+                this.getList();
+            }, 100);
+        },
+        scrollToTop: function(){
+            console.log('Hacia arriba')
+            // Hace scroll suave hacia la parte superior de la página
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // hace que el scroll sea suave
+            });
         },
     }
 })

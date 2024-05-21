@@ -47,6 +47,26 @@ class App_model extends CI_Model{
             $this->load->view($view, $data);
         }
     }
+
+    /**
+     * Ejecución de procesos automáticos al inició de sesión en un rango de horas
+     * determinado: antes de las 6:59am.
+     * 2020-03-06
+     */
+    function cron_jobs()
+    {
+        $arr_crons = [];
+
+        //Si la hora (G) es menor o igual a las 6 (am)
+        //if ( date('G') <= 15 && VER_LOCAL == FALSE)
+        if ( date('G') <= 15 )
+        {
+            $this->load->model('Develop_model');
+            $arr_crons['act_puntaje_auto_masivo'] = $this->Develop_model->cron('act_puntaje_auto_masivo');
+        }
+
+        return $arr_crons;
+    }
     
     function menu_actual()
     {

@@ -91,6 +91,16 @@
                                     Enviar pedido a dirección
                                 </label>
                             </div>
+                            <div class="radio hidden">
+                                <label>
+                                    <input type="radio" name="shipping_method_id" value="97" v-model="form_values.shipping_method_id"
+                                    v-on:change="setShippingMethodId">
+                                    Pago contra entrega &middot;
+                                    <a href="https://envia.co/" target="_blank">
+                                        Transportadora Envía
+                                    </a>
+                                </label>
+                            </div>
                             <div class="radio">
                                 <label>
                                     <input type="radio" name="shipping_method_id" value="98" v-model="form_values.shipping_method_id"
@@ -101,7 +111,6 @@
                                     </a>
                                 </label>
                             </div>
-
                         </div>
                     </div>
 

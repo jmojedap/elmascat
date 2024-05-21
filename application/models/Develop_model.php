@@ -400,6 +400,83 @@ class Develop_model extends CI_Model{
         return $estado_tabla;
         
     }
+
+// CRON JOBS: PROCESOS AUTOMÁTICOS
+//-----------------------------------------------------------------------------
+
+    /**
+     * Ejecución de un proceso automático de la herramienta.
+     * 2024-05-10
+     * 
+     * @return int $eventId // Id del registro de ejecución en la tabla evento
+     */
+    function cron($cron_name)
+    {
+        //Valores por defecto
+            $eventId = 0;
+            $aRow = NULL;
+
+        //Ejecutar proceso
+            if ( $cron_name == 'act_puntaje_auto_masivo' )
+            {
+                $this->load->model('Producto_model');
+                $aRow = $this->cron_act_puntaje_auto_masivo();
+            }
+
+        //Registro del proceso en la tabla evento
+            if ( ! is_null($aRow) )
+            {
+                $eventId = $this->save_cron_event($aRow);
+            }
+
+        return $eventId;
+    }
+
+    /**
+     * CRON actualizar puntaje auto de productos
+     * 2024-05-10
+     * @return array $aRow registro evento
+     */
+    function cron_act_puntaje_auto_masivo()
+    {
+        $cronCode = 344;
+        $aRowEvento = NULL;
+        $date = date('Y-m-d');  //Hoy ya se ejecutó el cron?
+        $condition = "tipo_id = 210 AND elemento_id = {$cronCode} AND inicio >= '{$date}'";
+        $rowEvent = $this->Db_model->row('evento', $condition);
+
+        if ( is_null($rowEvent) )  //No existe, se ejecuta
+        {
+            $aRowEvento['nombre_evento'] = 'Actualizar puntaje_auto';
+            $aRowEvento['elemento_id'] = $cronCode;
+
+            $this->load->model('Producto_model');
+            $this->Producto_model->act_puntaje_auto_masivo();
+        }
+
+        return $aRowEvento;
+    }
+
+    /**
+     * Guarda registro en la tabla evento, sobre la ejecución de un proceso cron job
+     * 2024-05-10
+     */
+    function save_cron_event($aRow)
+    {
+        $aRow['tipo_id'] = 210;     //Ejecución de cron job
+        $aRow['inicio'] = date('Y-m-d H:i:s');
+        $aRow['fin'] = date('Y-m-d H:i:s');
+        $aRow['usuario_id'] = 0;
+        $aRow['periodo_id'] = intval(date('Ym'));
+        $aRow['editado'] = date('Y-m-d H:i:s');
+        $aRow['editor_id'] = 109;
+        $aRow['creado'] = date('Y-m-d H:i:s');
+        $aRow['creador_id'] = 109;
+        
+        $this->db->insert('evento', $aRow);
+
+        return $this->db->insert_id();
+    }
     
 // CAMPOS
 //-----------------------------------------------------------------------------

@@ -50,6 +50,9 @@ class App extends CI_Controller{
             if ( $validate_login['status'] )
             {
                 $this->Login_model->crear_sesion($username, TRUE);
+
+                // ** EJECUCIÓN DE CRON JOBS 2024-05-10 **
+                $validate_login['arr_crons'] = $this->App_model->cron_jobs();
             }
 
         //Salida JSON

@@ -72,15 +72,14 @@
                    .then(response => {
                         if ( response.data.status == 1 )
                         {
-                           window.location = url_app + 'app/logged';
+                            console.log('Login válido, redirigioendo...')
+                            window.location = url_app + 'app/logged';
                         } else {
                             this.messages = response.data.messages;
                             this.status = response.data.status;
                         }
                    })
-                   .catch(function (error) {
-                        console.log(error);
-                   });
+                   .catch(function (error) { console.log(error)})
             }
         }
     });

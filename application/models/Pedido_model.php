@@ -943,10 +943,16 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Actualiza los datos de un pedido, tabla pedido
-     * 2021-11-18
+     * 2024-05-03
      */
     function act_pedido($pedido_id, $registro)
     {
+        //Eliminar datos que no están en la tabla
+            if ( isset($registro['day']) ) unset($registro['day']);
+            if ( isset($registro['month']) ) unset($registro['month']);
+            if ( isset($registro['year']) ) unset($registro['year']);
+            if ( isset($registro['sexo']) ) unset($registro['sexo']);
+
         //Datos complementarios
             $registro['editado'] = date('Y-m-d H:i:s');
             

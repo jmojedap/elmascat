@@ -12,8 +12,8 @@
             >
     </div>
     
-    <div id="advanced_filters" class="mb-2" v-bind:style="advancedFiltersStyle">
-        <div class="form-group">
+    <div id="advanced_filters" class="mb-2" v-bind:style="advancedFiltersStyle" v-show="showFilters">
+        <div class="form-group hiddengit ">
             <label for="cat">Categoría producto
                 <a @click="removeFilter('cat')" class="remove-filter" v-show="filters.cat"><i class="fa fa-times"></i></a>
             </label>
@@ -72,3 +72,23 @@
         </div>
     </div>
 </form>
+
+<div class="catalogo-opciones">
+    <h3 class="catalogo-seccion">Editorial o Marca</h3>
+    <ul class="catalogo-lista">
+        <li v-on:click="removeFilter('fab')">Todas</li>
+        <li v-for="fabricante in arrFabricantes" v-bind:class="{'active': filters.fab == fabricante.str_id }" v-on:click="setFabricante(fabricante.str_id)">
+            {{ fabricante.name }}
+        </li>
+    </ul>
+</div>
+
+<div class="catalogo-opciones">
+    <h3 class="catalogo-seccion">Temas y Etiquetas</h3>
+    <ul class="catalogo-lista">
+        <li v-on:click="removeFilter('tag')">Todas</li>
+        <li v-for="tag in arrTags" v-bind:class="{'active': filters.tag == tag.str_id }" v-on:click="setTag(tag.str_id)">
+            {{ tag.name }}
+        </li>
+    </ul>
+</div>

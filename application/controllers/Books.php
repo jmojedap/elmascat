@@ -22,7 +22,7 @@ class Books extends CI_Controller{
      * Vista de lectura de un libro en línea
      * 2022-09-04
      */
-    function read($book_code, $meta_id = 0, $slug = '', $format = 'mix')
+    function read($book_code, $meta_id = 0, $slug = '', $format = 'vl')
     {
         //$this->output->enable_profiler(TRUE);
         $data = $this->Book_model->book_info($book_code);

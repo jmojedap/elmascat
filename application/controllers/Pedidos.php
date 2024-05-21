@@ -626,7 +626,7 @@ class Pedidos extends CI_Controller{
     /**
      * AJAX JSON
      * Valida y actualiza los datos de contacto y entrega de un pedido, proviene de pedidos/compra_a
-     * 2020-04-07
+     * 2023-05-28
      */
     function guardar_pedido($update_totals = 0)
     {

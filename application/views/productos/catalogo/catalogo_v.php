@@ -1,5 +1,12 @@
 <?php $this->load->view('assets/revslider') ?>
 
+<style>
+    /* Pantallas pequeñas */
+    @media (max-width: 1020px) {
+        .catalogo-opciones { display: none; }
+    }
+</style>
+
 <div id="appCatalogo">
     <div class="row">
         <div class="col-md-3">

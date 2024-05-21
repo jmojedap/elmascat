@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "districatolicas.com",
+            "port": 3306,
+            "driver": "MariaDB",
+            "name": "DistriCatolicas",
+            "database": "districa_tienda",
+            "username": "districa_dcu",
+            "password": "ND4&^XSAF9tk"
+        }
+    ]
+}

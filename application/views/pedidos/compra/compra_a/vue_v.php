@@ -95,6 +95,7 @@ var compra_a_app = new Vue({
                     console.log(error)
                 })
         },
+        //Evita que se asigne recoger en tienda para ciudades diferenes a Bogotá
         controlShippingMethodId: function(){
             if ( this.ciudad_id != '0909' ) {
                 console.log('Cambiando método de entrega')
@@ -102,6 +103,7 @@ var compra_a_app = new Vue({
             }
             this.setShippingMethodId()
         },
+        //Asigna y guarda el método de envío
         setShippingMethodId: function(){
             this.loading = true
             var formValues = new FormData()

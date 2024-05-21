@@ -34,9 +34,12 @@
                     <strong><?= $row->ciudad ?></strong>
                     <span> &middot; </span>
 
-                    <small>Dirección</small>
-                    <strong><?= $row->direccion ?></strong>
-                    <span> &middot; </span>
+                    <?php if ( $row->shipping_method_id != 98 ) : ?>
+                        <small>Dirección</small>
+                        <strong><?= $row->direccion ?></strong>
+                        <span> &middot; </span>
+                    <?php endif; ?>
+
 
                     <small>Celular</small>
                     <strong><?= $row->celular ?></strong>
@@ -54,6 +57,10 @@
         <tr>
             <td width="25%">Notas</td>
             <td>
+                <?php if ( $row->shipping_method_id == 98 ) : ?>
+                    <strong class="text-danger">NO SE ENVÍA - SE RECOGE EN TIENDA</strong>
+                    <br>
+                <?php endif; ?>
                 <?= $row->notas ?>
             </td>
         </tr>
@@ -261,5 +268,5 @@
 </table>
 
 <div class="text-muted text-center">
-    <p>Creado por Pacarina Media Lab &copy; 2020</p>
+    <p>Creado por Pacarina Media Lab &copy; 2023</p>
 </div>
