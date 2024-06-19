@@ -114,7 +114,9 @@ class Books extends CI_Controller{
 
         $this->load->helper('file');
         $folder = PATH_CONTENT . "books/{$year}/{$book_code}/org/";
+        echo $folder;
         $pages = get_filenames($folder);
+        echo count($pages);
         $i = 0;
         $this->load->helper('string');
 
