@@ -49,7 +49,7 @@ var pedido_usuario_app = new Vue({
             .catch(function (error) { console.log(error) })
         },
         set_user: function(){
-            axios.get(url_app + 'pedidos/set_user/' + this.user.id)
+            axios.get(URL_API2 + 'pedidos/set_user/' + this.user.id)
             .then(response => {
                 if ( response.data.user_id > 0 ) {
                     this.show_existing = true;

@@ -231,43 +231,29 @@ class Pcrn extends CI_Model{
 //FUNCIONES DE FECHA Y TIEMPO
     
     /**
-     * Se recibe en el formato YYYY-MM-DD hh:mm:ss y se devuelve en formato de marca de tiempo
-     * La entrada $fecha_texto debe estar formato de fecha/hora de MySql.
-     * 
-     * @param type $fecha_texto
-     * @return type 
+     * Convierte una fecha en formato 'YYYY-MM-DD hh:mm:ss' a una marca de tiempo (timestamp).
+     *  2025-02-11
+     * @param string $fecha_texto Fecha en formato MySQL.
+     * @return int|false Marca de tiempo en caso de éxito, false en caso de error.
      */
     function texto_a_mktime($fecha_texto)
     {
-        
-        //Extrayendo partes de la fecha
-            $anyo = substr($fecha_texto,0,4);
-            $mes = substr($fecha_texto,5,2);
-            $dia = substr($fecha_texto,8,2);
-            $hora = substr($fecha_texto, 11,2);
-            $min = substr($fecha_texto, 14,2);
-            $seg = substr($fecha_texto, 17,2);
-        
-        $texto_a_mktime = mktime($hora,$min,$seg,$mes,$dia,$anyo);
-        return $texto_a_mktime;
+        $fecha_obj = DateTime::createFromFormat('Y-m-d H:i:s', $fecha_texto);
+        return $fecha_obj ? $fecha_obj->getTimestamp() : false;
     }
-   
+
     /**
-     * Entrada en el formato YYYY-MM-DD hh:mm:ss
-     * Devuelve una cadena con el formato especificado de fecha
-     * 
-     * @param type $fecha
-     * @param type $formato
-     * @return string
+     * Formatea una fecha dada en el formato especificado.
+     * 2025-02-11
+     *
+     * @param string $fecha Fecha en formato 'YYYY-MM-DD hh:mm:ss'.
+     * @param string $formato Formato de salida (por defecto 'Y-m-d H:i').
+     * @return string Fecha formateada o cadena vacía en caso de error.
      */
-    function fecha_formato($fecha, $formato = 'Y-M-d H:i')
+    function fecha_formato($fecha, $formato = 'Y-m-d H:i')
     {
-        $fecha_formato = '';
-        if ( is_null($fecha) == FALSE ) 
-        {
-            $fecha_formato = date($formato, $this->texto_a_mktime($fecha));
-        }
-        return $fecha_formato;
+        $fecha_obj = DateTime::createFromFormat('Y-m-d H:i:s', $fecha);
+        return $fecha_obj ? $fecha_obj->format($formato) : '';
     }
     
     /**

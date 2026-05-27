@@ -88,11 +88,11 @@
                     </tr>
                 </thead>
                 
-                <?php if ( $this->session->userdata('logged') && $this->session->userdata('role') <= 1 ) { ?>
+                <?php if ( $this->session->userdata('logged') && $this->session->userdata('role') <= 2 ) { ?>
                     <tfoot>
                         <tr class="first last">
                             <td class="a-right last" colspan="2">
-                                <a href="<?= base_url("pedidos/editar/edit/{$row->id}") ?>" class="btn btn-polo w3" title="Editar pedido">
+                                <a href="<?= base_url("pedidos/editar/{$row->id}") ?>" class="btn btn-polo w3" title="Editar pedido">
                                     <i class="fa fa-edit"></i><span><span> Editar</span></span>
                                 </a>
                             </td>

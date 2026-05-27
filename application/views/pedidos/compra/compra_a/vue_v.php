@@ -49,7 +49,7 @@ var compra_a_app = new Vue({
             params.append('ciudad_id', this.ciudad_id);
 
 
-            axios.post(url_app + 'pedidos/guardar_lugar/', params)
+            axios.post(URL_API2 + 'pedidos/guardar_lugar/', params)
                 .then(response => {
                     if (response.data.status == 1) {
                         this.controlShippingMethodId()
@@ -59,7 +59,7 @@ var compra_a_app = new Vue({
                 .catch(function(error) { console.log(error) })
         },
         get_order_info: function() {
-            axios.get(url_api + 'pedidos/get_info/' + this.order.cod_pedido)
+            axios.get(URL_API2 + 'pedidos/get_info/' + this.order.cod_pedido)
                 .then(response => {
                     this.order = response.data.order
                     this.extras = response.data.extras
@@ -71,7 +71,7 @@ var compra_a_app = new Vue({
             this.loading = true
             var form_data = new FormData(document.getElementById('compra_a_form'))
 
-            axios.post(url_app + 'pedidos/guardar_pedido/', form_data)
+            axios.post(URL_API2 + 'pedidos/guardar_pedido/', form_data)
                 .then(response => {
                     console.log(response.data)
                     var destination = url_app + 'pedidos/verificar'
@@ -108,7 +108,7 @@ var compra_a_app = new Vue({
             this.loading = true
             var formValues = new FormData()
             formValues.append('shipping_method_id', this.form_values.shipping_method_id)
-            axios.post(url_app + 'pedidos/guardar_pedido/1', formValues)
+            axios.post(URL_API2 + 'pedidos/guardar_pedido/1', formValues)
             .then(response => {
                 this.get_order_info()
                 this.loading = false

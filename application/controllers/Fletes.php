@@ -129,5 +129,13 @@ class Fletes extends CI_Controller{
         
         echo count($seleccionados);
     }
+
+    function incrementar_fletes()
+    {
+        $incremento = 0.12;
+        $data['qtyUpdated'] = $this->Flete_model->incrementar_fletes($incremento);
+        //Salida JSON
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
 }

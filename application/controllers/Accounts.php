@@ -86,6 +86,12 @@ class Accounts extends CI_Controller {
         
         redirect('app/logged');
     }
+
+    function session_data()
+    {
+        $data = $this->session->userdata();
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
     
 // REGISTRO DE USUARIOS
 //---------------------------------------------------------------------------------------------------
@@ -147,44 +153,6 @@ class Accounts extends CI_Controller {
                         $this->Notification_model->email_activation($data['saved_id']);
                     }
                 }
-        }
-
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-    
-    /**
-     * AJAX JSON
-     * 
-     * Recibe los datos POST del form en accounts/signup. Si se validan los 
-     * datos, se registra el user. Se devuelve $data, con resultados de registro
-     * o de validación (si falló).
-     * 2023-01-16
-     */
-    function z_register()
-    {
-        $data = array('status' => 0);  //Initial result values
-        $res_validation = $this->Account_model->validate();
-        $recaptcha = $this->App_model->recaptcha();
-            
-        if ( $res_validation['status'] && $recaptcha == 1 )
-        {
-            //Construir registro del nuevo user
-                $arr_row['nombre'] = $this->input->post('nombre');
-                $arr_row['apellidos'] = $this->input->post('apellidos');
-                $arr_row['email'] = $this->input->post('email');
-                $arr_row['fecha_nacimiento'] = $this->input->post('fecha_nacimiento');
-                $arr_row['sexo'] = $this->input->post('sexo');
-
-            //Crear
-                $this->load->model('Usuario_model');
-                $data = $this->Usuario_model->insert($arr_row);
-
-                if ( $data['saved_id'] > 0 ) { $data['status'] = 1; }
-            
-            //Enviar email con código de activación
-                if ( ENV == 'production' ) $this->Usuario_model->email_activacion($data['saved_id']);
-        } else {
-            $data['validation'] = $res_validation['validation'];
         }
 
         $this->output->set_content_type('application/json')->set_output(json_encode($data));

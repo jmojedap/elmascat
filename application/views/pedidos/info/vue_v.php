@@ -37,7 +37,7 @@ var pedido_info = new Vue({
             $('#btn_reiniciar_pedido').html('<i class="fa fa-info-circle"></i> Reiniciando...');
 
             var order_id = this.order.id
-            axios.get(url_api + 'pedidos/reiniciar/' + this.order.cod_pedido)
+            axios.get(URL_API2 + 'pedidos/reiniciar/' + this.order.cod_pedido)
             .then(response => {
                 if (response.data.cod_pedido.length > 0) {
                     toastr['success']('Pedido reiniciado, cargando...');
@@ -56,7 +56,7 @@ var pedido_info = new Vue({
         send_form: function(){
             this.loading = true
             var form_data = new FormData(document.getElementById('payment_form'))
-            axios.post(url_api + 'pedidos/update_payment/', form_data)
+            axios.post(URL_API2 + 'pedidos/update_payment/', form_data)
             .then(response => {
                 if ( response.data.saved_id > 0 ) {
                     toastr['success'](response.data.message)
@@ -64,6 +64,15 @@ var pedido_info = new Vue({
                 this.loading = false
             })
             .catch( function(error) {console.log(error)} )
+        },
+        loadInSession: function(){
+            axios.get(URL_API2 + 'pedidos/load_in_session/' + this.order.cod_pedido)
+            .then(response => {
+                if ( response.data.status == 1 ) {
+                    window.location = url_app + 'pedidos/cotizador'
+                }
+            })
+            .catch(function(error) { console.log(error) })
         },
     }
 })

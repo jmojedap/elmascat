@@ -28,7 +28,11 @@
         <div>
             <?php if ( ! is_null($this->session->userdata('order_code')) ){ ?>
                 <div class="top-cart-content arrow_box">
-                    <div class="block-subtitle">Item(s) agregados recientemente</div>
+                    <div class="block-subtitle">
+                        Item(s) agregados recientemente
+                    </div>
+                    
+
                     <ul id="cart-sidebar" class="mini-products-list">
                         <?php foreach ($detalle->result() as $row_detalle) : ?>
                             <?php if ( $i <= 3 ){ ?>
@@ -60,6 +64,11 @@
                             <?= $this->Pcrn->moneda($row_pedido->total_productos) ?>
                         </span>
                     </div>
+                    <?php if ( $this->session->userdata('role') <= 6 && $this->session->userdata('logged') ) : ?>
+                    <div class="top-subtotal text-center">
+                            <a class="btn btn-warning w60p" href="<?= base_url('pedidos/cotizador') ?>"><i class="fas fa-calculator"></i> Cotizador</a>
+                        </div>
+                    <?php endif; ?>
                     <div class="actions">
                         <button class="btn-checkout" type="button" onclick="window.location.href='<?= base_url() . 'pedidos/compra_a/' ?>'">
                             <span>Pagar</span>

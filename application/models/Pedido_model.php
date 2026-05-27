@@ -1168,10 +1168,63 @@ class Pedido_Model extends CI_Model{
     }
 
     /**
-     * Carga los datos del pedido al usuario, si no los tiene.
-     * 2022-02-14
+     * Carga los datos del pedido al usuario si no los tiene.
+     * 2025-02-15
+     *
+     * @param int $pedido_id ID del pedido.
+     * @return array Datos guardados con el ID del usuario actualizado.
      */
     function set_user_data($pedido_id)
+    {
+        $data['saved_id'] = 0; // Valor por defecto
+        $row = $this->Db_model->row_id('pedido', $pedido_id);
+        
+        // Verificar si el pedido existe y tiene un usuario asignado
+        if ($row && !empty($row->usuario_id)) {
+            $row_usuario = $this->Db_model->row_id('usuario', $row->usuario_id);
+
+            if ($row_usuario) {
+                // Definir los campos que pueden actualizarse si están vacíos
+                $campos = [
+                    'nombre' => 'nombre',
+                    'apellidos' => 'apellidos',
+                    'no_documento' => 'no_documento',
+                    'tipo_documento_id' => 'tipo_documento_id',
+                    'ciudad_id' => 'ciudad_id',
+                    'address' => 'direccion',
+                    'celular' => 'celular'
+                ];
+
+                // Construir array con los datos a actualizar
+                $user = array_filter($campos, function ($campo) use ($row_usuario) {
+                    return empty($row_usuario->$campo);
+                }, ARRAY_FILTER_USE_KEY);
+
+                // Rellenar con valores del POST
+                foreach ($user as $key => $post_field) {
+                    $user[$key] = $this->input->post($post_field);
+                }
+
+                // Actualizar datos solo si hay cambios
+                if (!empty($user)) {
+                    $data['saved_id'] = $this->Db_model->save('usuario', "id = {$row_usuario->id}", $user);
+
+                    // Actualizar sesión solo si no está establecida
+                    if (!$this->session->userdata('user_id')) {
+                        $this->session->set_userdata('user_id', $data['saved_id']);
+                    }
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Carga los datos del pedido al usuario, si no los tiene.
+     * 2025-02-15
+     */
+    function z_set_user_data($pedido_id)
     {
         $data['saved_id'] = 0;  //Valor por defecto
         $row = $this->Db_model->row_id('pedido', $pedido_id);
@@ -1179,7 +1232,7 @@ class Pedido_Model extends CI_Model{
         //Hay usuario definido
         if ( $row->usuario_id > 0 )
         {
-            //Identificar usuario por el email
+            //Identificar usuario por ID
             $row_usuario = $this->Db_model->row_id('usuario', $row->usuario_id);
 
             $user = array();
@@ -1197,9 +1250,10 @@ class Pedido_Model extends CI_Model{
                 $data['saved_id'] = $this->Db_model->save('usuario', "id = {$row_usuario->id}", $user);
 
                 //Cargar usuario en variables de sesión
-                $this->session->set_userdata('user_id', $data['saved_id']);
+                if ( strlen($this->session->userdata('user_id')) ) {
+                    $this->session->set_userdata('user_id', $data['saved_id']);
+                }
             }
-
         }
 
         return $data;
@@ -1207,21 +1261,31 @@ class Pedido_Model extends CI_Model{
 
     /**
      * Establecer un usuario y sus datos a un pedido en curso
-     * 2021-09-27
+     * 2025-02-10
      */
     function set_user($row_order, $user_id)
     {
         $row_user = $this->Db_model->row_id('usuario', $user_id);
 
-        $arr_row['usuario_id'] = $user_id;
-        $arr_row['email'] = $row_user->email;
+        $aPedido['usuario_id'] = $user_id;
+        $aPedido['email'] = $row_user->email;
+        $aPedido['tipo_documento_id'] = $row_user->tipo_documento_id;
+        $aPedido['no_documento'] = $row_user->no_documento;
+        $aPedido['nombre'] = $row_user->nombre;
+        $aPedido['apellidos'] = $row_user->apellidos;
+        $aPedido['direccion'] = $row_user->address;
+        $aPedido['celular'] = $row_user->celular;
+        
+        
 
+        /* CONDICIONES ANTERIORES A COTIZADOR 2025-02-10
         if ( strlen($row_order->nombre) == 0 )  $arr_row['nombre'] = $row_user->nombre;
         if ( strlen($row_order->apellidos) == 0 )  $arr_row['apellidos'] = $row_user->apellidos;
+        */
 
         //Se actualiza pedido.usuario_id
         $this->db->where('id', $row_order->id);
-        $this->db->update('pedido', $arr_row);
+        $this->db->update('pedido', $aPedido);
 
         $data['user_id'] = $user_id;
         $data['order_id'] = $row_order->id;
@@ -1242,6 +1306,15 @@ class Pedido_Model extends CI_Model{
         if ( strlen($order->celular) == 0 ) { $missing_data[] = 'Número de celular'; }
 
         return $missing_data;
+    }
+
+    function load_in_session($orderCode)
+    {
+        $order = $this->row_by_code($orderCode);
+        $this->session->set_userdata('order_code', $order->cod_pedido);
+        $this->session->set_userdata('order_qty_items', $this->cant_productos($order->id));
+
+        return $order;
     }
     
 //DESCUENTO PARA DISTRIBUIDOR
@@ -1369,7 +1442,7 @@ class Pedido_Model extends CI_Model{
         $form_data['emailComprador'] = $row_pedido->email;
         $form_data['firma'] = $this->firma_pol($form_data);
         $form_data['url_respuesta'] = base_url('pedidos/respuesta/');
-        $form_data['url_confirmacion'] = base_url('pedidos/confirmacion_pol/');
+        $form_data['url_confirmacion'] = base_url('api/pedidos/confirmacion_pol/');
         
         //Adicionales
         $form_data['nombreComprador'] = $row_pedido->nombre . ' ' . $row_pedido->apellidos;
@@ -1400,7 +1473,7 @@ class Pedido_Model extends CI_Model{
         $form_data['emailComprador'] = $row_pedido->email;
         $form_data['firma'] = $this->firma_pol($form_data);
         $form_data['url_respuesta'] = base_url('pedidos/respuesta/');
-        $form_data['url_confirmacion'] = base_url('pedidos/confirmacion_pol/');
+        $form_data['url_confirmacion'] = base_url('api/pedidos/confirmacion_pol/');
         
         //Adicionales
         $form_data['nombreComprador'] = $row_pedido->nombre . ' ' . $row_pedido->apellidos;
@@ -1482,7 +1555,7 @@ class Pedido_Model extends CI_Model{
     
     /**
      * Tomar y procesar los datos POST que envía PagosOnLine a la página de confirmación
-     * url_confirmacion >> 'pedidos/confirmacion_pol'
+     * url_confirmacion >> 'api/pedidos/confirmacion_pol'
      * 2021-02-10
      */
     function confirmacion_pol()
@@ -1854,112 +1927,6 @@ class Pedido_Model extends CI_Model{
 
 // NOTIFICACIÓN EMAIL
 //-----------------------------------------------------------------------------
-    
-    /**
-     * Tras la confirmación POL del pedido, se envía un mensaje de estado del pedido
-     * a los e-mails definidos en la tabla sis_option, ID = 25
-     * 
-     * @param type $pedido_id
-     */
-    function z_email_admon($pedido_id)
-    {
-        $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
-            
-        //Destinatarios
-            $str_destinatarios = $this->Db_model->field_id('sis_option', 25, 'option_value');
-            
-        //Asunto de mensaje
-            $subject = "Pedido {$row_pedido->cod_pedido}: " . $this->Item_model->nombre(10, $row_pedido->codigo_respuesta_pol);
-        
-        //Enviar Email
-            $this->load->library('email');
-            $config['mailtype'] = 'html';
-
-            $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'DistriCatolicas.com');
-            $this->email->to($str_destinatarios);
-            $this->email->message($this->mensaje_admon($row_pedido));
-            $this->email->subject($subject);
-            
-            $this->email->send();   //Enviar
-    }
-    
-    /**
-     * String HTML con mensaje para enviar por email administrador
-     */
-    function z_mensaje_admon($row_pedido)
-    {
-        $data['row_pedido'] = $row_pedido ;
-        $data['detalle'] = $this->detalle($row_pedido->id);
-        
-        $mensaje = $this->load->view('pedidos/mensaje_admon_v', $data, TRUE);
-        
-        return $mensaje;
-    }
-    
-    /**
-     * HTML del mensaje que se envía tras la actualización del estado de un pedido
-     */
-    function z_mensaje_actualizacion($row_pedido)
-    {
-        $data['row_pedido'] = $row_pedido ;
-        $data['style'] = $this->App_model->email_style();
-        
-        $mensaje = $this->load->view('usuarios/emails/act_pedido_v', $data, TRUE);
-        
-        return $mensaje;
-    }
-    
-    /**
-     * Envía Email a cliente, estado del pedido Tras la confirmación POL del pedido
-     */
-    function z_email_cliente($pedido_id)
-    {
-        $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
-            
-        //Asunto de mensaje
-            $subject = "{$row_pedido->nombre}, resumen de su pedido {$row_pedido->cod_pedido}";
-        
-        //Enviar Email
-            $this->load->library('email');
-            $config['mailtype'] = 'html';
-
-            $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'DistriCatolicas.com');
-            $this->email->to($row_pedido->email);
-            $this->email->subject($subject);
-            $this->email->message($this->mensaje_admon($row_pedido));
-            
-            $this->email->send();   //Enviar       
-    }
-    
-    /**
-     * Envía e-mail de estado del pedido al cliente Tras edición de los datos
-     * logísticos de un pedido
-     * Desactivada 2023-01-12
-     * 
-     */
-    function z_email_actualizacion($pedido_id)
-    {
-        $row_pedido = $this->Pcrn->registro_id('pedido', $pedido_id);
-            
-        //Asunto de mensaje
-            $subject = "Compra {$row_pedido->cod_pedido}: " . $this->Item_model->nombre(7, $row_pedido->estado_pedido);
-        
-        //Enviar Email
-            $this->load->library('email');
-            $config['mailtype'] = 'html';
-
-            $this->email->initialize($config);
-            $this->email->from('info@districatolicas.com', 'DistriCatolicas.com');
-            $this->email->to($row_pedido->email);
-            $this->email->bcc($this->App_model->valor_opcion(25));
-            $this->email->subject($subject);
-            $this->email->message($this->mensaje_actualizacion($row_pedido));
-            
-            $this->email->send();   //Enviar
-            
-    }
     
     /**
      * Actualiza el campo producto.cant_disponibles después de que se confirma el pago de un pedido

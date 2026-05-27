@@ -38,7 +38,7 @@
         <link type="text/css" rel="stylesheet" href="<?= URL_RESOURCES ?>css/pacarina.css">
         <script src="<?= URL_RESOURCES . 'js/pcrn.js' ?>"></script>
         <script>
-            const url_app = '<?= URL_APP ?>'; const url_api = '<?= URL_API ?>'; const url_admin = '<?= URL_ADMIN ?>';
+            const url_app = '<?= URL_APP ?>'; const url_api = '<?= URL_API ?>'; const url_admin = '<?= URL_ADMIN ?>'; const URL_API2 = '<?= URL_API2 ?>';
             var app_cf = '<?= $this->uri->segment(1) . '/' . $this->uri->segment(2); ?>';
         </script>
 

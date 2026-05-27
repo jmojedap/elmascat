@@ -230,7 +230,7 @@
                 }
             },
             send_form: function(){
-                axios.post(url_app + 'pedidos/guardar_pedido/', $('#compra_a_form').serialize())
+                axios.post(URL_API2 + 'pedidos/guardar_pedido/', $('#compra_a_form').serialize())
                 .then(response => {
                     if ( response.data.qty_affected >= 0) {
                         window.location = url_app + 'pedidos/verificar'
@@ -244,7 +244,7 @@
                 var params = new FormData();
                 params.append('ciudad_id', this.ciudad_id);
                 
-                axios.post(url_app + 'pedidos/guardar_lugar/', params)
+                axios.post(URL_API2 + 'pedidos/guardar_lugar/', params)
                 .then(response => {
                     if ( response.data.status == 1 ) {
                         window.location = url_app + 'pedidos/compra_a/' + this.cod_pedido;

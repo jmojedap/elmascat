@@ -55,7 +55,6 @@ var app_explore = new Vue({
         loading: false,
         arrCategorias: <?= json_encode($arrCategorias) ?>,
         arrTags: <?= json_encode($arrTags) ?>,
-        arrFabricantes: <?= json_encode($arrFabricantes) ?>,
         arrOrdering: <?= json_encode($arrOrdering) ?>,
         arrRangoPrecio: <?= json_encode($arrRangoPrecio) ?>,
     },

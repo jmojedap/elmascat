@@ -37,7 +37,7 @@ var product_details_app = new Vue({
     methods: {
         add_to_cart: function(){
             this.loading = true
-            axios.get(url_api + 'pedidos/add_product/' + this.product.id + '/' + this.quantity + '/' + this.order_code)
+            axios.get(URL_API2 + 'pedidos/add_product/' + this.product.id + '/' + this.quantity + '/' + this.order_code)
             .then(response => {
                 if ( response.data.qty_items > 0 )
                 {

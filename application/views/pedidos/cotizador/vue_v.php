@@ -26,8 +26,8 @@ Vue.filter('name_extra_pedido', function (value) {
 
 // VueApp
 //-----------------------------------------------------------------------------
-var carrito_app = new Vue({
-    el: '#carrito_app',
+var cotizadorApp = new Vue({
+    el: '#cotizadorApp',
     created: function(){
         //this.get_list()
     },
@@ -38,6 +38,14 @@ var carrito_app = new Vue({
         product: {},
         extras: <?= json_encode($extras->result()) ?>,
         loading: false,
+        region_id: '0<?= $row->region_id ?>',
+        ciudad_id: '0<?= $row->ciudad_id ?>',
+        options_region: <?= json_encode($options_region) ?>,
+        options_ciudad: <?= json_encode($options_ciudad) ?>,
+        fields: {
+            q: '',
+        },
+        users: [],
     },
     methods: {
         set_product: function(product_key){
@@ -123,6 +131,57 @@ var carrito_app = new Vue({
                 discount_percent = Pcrn.round(100 - 100 * (product.precio / product.precio_nominal),0)
             }
             return discount_percent;
+        },
+        get_cities: function() {
+            form_data = new FormData
+            form_data.append('value_field', 'nombre_lugar')
+            form_data.append('empty_text', 'Seleccione la ciudad')
+            form_data.append('type', '4')
+            form_data.append('region_id', this.region_id)
+            axios.post(url_api + 'app/get_places/', form_data)
+                .then(response => {
+                    this.ciudad_id = ''
+                    this.options_ciudad = response.data.list
+                })
+                .catch(function(error) {
+                    console.log(error)
+                })
+        },
+        guardar_lugar: function() {
+            this.loading = true
+            var params = new FormData();
+            params.append('ciudad_id', this.ciudad_id);
+
+            axios.post(URL_API2 + 'pedidos/guardar_lugar/', params)
+                .then(response => {
+                    this.get_order_info()
+                    this.loading = false
+                    toastr['success']('Lugar de entrega actualizado')
+                })
+                .catch(function(error) { console.log(error) })
+        },
+        getUsers: function(){
+            this.loading = true
+            var formValues = new FormData(document.getElementById('usersForm')) 
+            axios.post(url_api + 'usuarios/get/', formValues)
+            .then(response => {
+                this.users = response.data.list
+                this.loading = false
+            })
+            .catch( function(error) {console.log(error)} )
+        },
+        setUser: function(userId){
+            axios.get(URL_API2 + 'pedidos/set_user/' + userId)
+            .then(response => {
+                this.get_order_info()
+                this.loading = false
+                this.users = []
+                this.fields.q = ''
+                toastr['success']('Usuario comprador asignado')
+                scroll(0,0)
+            })
+            .catch(function(error) { console.log(error) })
+
         },
     }
 })

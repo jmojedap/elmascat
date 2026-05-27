@@ -45,18 +45,6 @@ class Pedidos extends CI_Controller{
         //Cargar vista
             $this->App_model->view(TPL_ADMIN, $data);
     }
-
-    /**
-     * Listado de Pedidos, filtrados por búsqueda, JSON
-     */
-    function get($num_page = 1)
-    {
-        $this->load->model('Search_model');
-        $filters = $this->Search_model->filters();
-
-        $data = $this->Pedido_model->get($filters, $num_page);
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
     
     /**
      * AJAX
@@ -114,20 +102,6 @@ class Pedidos extends CI_Controller{
             $data['back_link'] = $this->url_controller . 'explore/';
 
         $this->load->view(TPL_ADMIN, $data);
-    }
-    
-    /**
-     * Recibie datos post de pedidos/editar. Guarda los datos de gestión administrativa
-     * de un pedido. Si se generan cambios se envía notificación por email al cliente
-     */
-    function guardar_admin()
-    {
-        $order_id = $this->input->post('id');
-        $arr_row = $this->input->post();
-        $data = $this->Pedido_model->guardar_admin($order_id, $arr_row);
-        
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
 
     function ver($pedido_id)
@@ -202,7 +176,7 @@ class Pedidos extends CI_Controller{
         
         //Solicitar vista
             $data['head_subtitle'] = $this->Pcrn->moneda($data['row']->valor_total);
-            $data['view_a'] = "pedidos/reporte_{$tipo_reporte}_v";
+            $data['view_a'] = "pedidos/reporte/{$tipo_reporte}_v";
             $this->load->view('templates/print_bs4/blank_v', $data);
     }
 
@@ -283,24 +257,6 @@ class Pedidos extends CI_Controller{
         $this->App_model->view(TPL_ADMIN, $data);
     }
 
-    /**
-     * AJAX JSON
-     * Actualizar datos de pago de un pedido
-     * 2021-11-18
-     */
-    function update_payment()
-    {
-        $pedido_id = $this->input->post('id');
-        $payed = $this->input->post('payed');
-        if ( $payed == '01' ) {
-            $data = $this->Pedido_model->update_payment($pedido_id);
-        } else {
-            $data = $this->Pedido_model->remove_payment($pedido_id);
-        }
-
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
 // GESTIÓN DE EXTRAS PEDIDO
 //-----------------------------------------------------------------------------
 
@@ -325,45 +281,8 @@ class Pedidos extends CI_Controller{
         $this->load->view(TPL_ADMIN, $data);
     }
 
-    function extras_get($pedido_id)
-    {
-        $extras = $this->Pedido_model->extras($pedido_id);
-        $data['list'] = $extras->result();
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
-    function extras_save()
-    {
-        $data = $this->Pedido_model->extras_save();
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
-    function extras_delete($pedido_id, $pd_id)
-    {
-        $data = $this->Pedido_model->extras_delete($pedido_id, $pd_id);
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
 // PROCESO DE PAGO
 //---------------------------------------------------------------------------------------------------
-
-    /**
-     * Información general del pedido
-     * 2021-09-22
-     */
-    function get_info($order_code)
-    {
-        $pedido = $this->Pedido_model->row_by_code($order_code);
-        $data['order'] = $pedido;
-        $data['products'] = $this->Pedido_model->detalle($pedido->id)->result();
-        $data['extras'] = $this->Pedido_model->extras($pedido->id)->result();
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
     
     /**
      * Vista del listado de productos que están en el carrito de compras, listos
@@ -518,37 +437,7 @@ class Pedidos extends CI_Controller{
             $this->load->view(TPL_FRONT, $data);
     }
 
-    /**
-     * Al presionar el botón [IR A PAGAR] de la sección pedidos/verificar, se marca
-     * el pedido en estado 2, para evitar que posteriormente edite.
-     * 2023-01-25
-     */
-    function iniciar_pago()
-    {
-        $order_code = $this->session->userdata('order_code');
-        $order = $this->Pedido_model->row_by_code($order_code);
-
-        $data['status'] = 0;
-        if ( ! is_null($order) ) {
-            $data['status'] = $this->Pedido_model->iniciar_pago($order);
-        }
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
-    /**
-     * Revisa que haya disponibilidad de los productos incluidos en un pedido
-     * 2020-12-26
-     */
-    function validar_existencias()
-    {
-        $pedido_id = $this->session->userdata('pedido_id');
-        $data = $this->Pedido_model->validar_existencias($pedido_id);
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
+    
     
     /**
      * Igual a la parte B de la compra (verificar), pero convierte los valores de
@@ -609,61 +498,6 @@ class Pedidos extends CI_Controller{
             $this->load->view(TPL_FRONT, $data);
     
     }
-
-    /**
-     * Cambia el campo pedido.codigo_pedido, para poder realizar un intento de pago nuevamente
-     * 2020-03-31
-     */
-    function reiniciar($cod_pedido)
-    {
-        $row = $this->Pedido_model->row_by_code($cod_pedido);
-        $data['cod_pedido'] = $this->Pedido_model->act_cod_pedido($row->id);
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-    
-    /**
-     * AJAX JSON
-     * Valida y actualiza los datos de contacto y entrega de un pedido, proviene de pedidos/compra_a
-     * 2023-05-28
-     */
-    function guardar_pedido($update_totals = 0)
-    {
-        $order_code = $this->session->userdata('order_code');
-        $order = $this->Pedido_model->row_by_code($order_code);
-
-        $data['status'] = 1;
-        $data['qty_affected'] = 0;
-        
-        if ( ! is_null($order) ) 
-        {
-            //Construir registro y guardar
-            $arr_row = $this->input->post();
-            $data['qty_affected'] =  $this->Pedido_model->act_pedido($order->id, $arr_row);
-
-            if ( $data['qty_affected'] > 0 && $update_totals == 1) {
-                $this->Pedido_model->act_totales($order->id);
-            }
-
-            //Validar usuario comprador
-            $this->Pedido_model->set_user_data($order->id);
-        }
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));   
-    }
-    
-    /**
-     * Abandona un pedido actual quitándolo de las variables de sesión
-     * No elimina el pedido ni su detalle
-     */
-    function cancel()
-    {
-        $data = $this->Pedido_model->cancel();
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
     
     /**
      * Retoma un pedido, cargándolo a las variables de sesión
@@ -683,58 +517,8 @@ class Pedidos extends CI_Controller{
         redirect("pedidos/compra_a/{$row->cod_pedido}");
     }
 
-    function set_user($user_id)
-    {
-        $data = array('status' => 0, 'message' => 'Usuario no asignado');
-        $order_code = $this->session->userdata('order_code');
-        $row_order = $this->Pedido_model->row_by_code($order_code);
-
-        if ( ! is_null($row_order) ) {
-            $data = $this->Pedido_model->set_user($row_order, $user_id);
-        }
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-
 //GESTIÓN DE DETALLE DE PEDIDO
 //---------------------------------------------------------------------------------------------------
-
-    /**
-     * Agrega un producto a una compra, si la compra no está definida crea una y la agrega 
-     * a variables de sesión
-     * 2021-05-06
-     */
-    function add_product($product_id, $quantity = 1, $order_code = null)
-    { 
-        //Resultado por defecto
-        $data = array('status' => 0, 'message' => 'Compra no identificada');
-
-        //No hay order_code definida
-        if ( is_null($order_code) ) 
-        {
-            //Crear nueva order, y ponerla en variables de sesión
-            $data_order = $this->Pedido_model->crear();
-            $this->session->set_userdata('order_code', $data_order['order_code']);
-            $order_code = $data_order['order_code'];
-        }
-
-        //Registro de compra
-        $row_order = $this->Pedido_model->row_by_code($order_code);
-        $editable = $this->Pedido_model->editable($row_order);
-
-        //Código de compra existe
-        if ( $editable )
-        {
-            $data = $this->Pedido_model->add_product($product_id, $quantity, $row_order->id);
-        } else {
-            $this->Pedido_model->unset_session();
-            $data = array('status' => 2, 'message' => 'La compra no puede modificarse, ya fue procesada');
-        }
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
     
     /**
      * AJAX
@@ -758,46 +542,7 @@ class Pedidos extends CI_Controller{
         echo count($seleccionados);
     }
     
-    /**
-     * Elimina un producto del pedido
-     * 2021-09-24
-     */
-    function remove_product($product_id, $order_code = '')
-    {
-        //Resultado por defecto
-        $data = array('status' => 0, 'message' => 'Compra no identificada');
-
-        $row_order = $this->Pedido_model->row_by_code($order_code);
-        $editable = $this->Pedido_model->editable($row_order);
-
-        if ( $editable )
-        {
-            $data = $this->Pedido_model->remove_product($product_id, $row_order);
-        } else {
-            $this->Pedido_model->unset_session();
-            $data = array('status' => 2, 'message' => 'La compra no puede modificarse, ya fue procesada');
-        }
-
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-    
-    /**
-     * AJAX
-     * Guardar datos de lugar de entrega de un pedido
-     */
-    function guardar_lugar()
-    {
-        $order_code = $this->session->userdata('order_code');
-        $order = $this->Pedido_model->row_by_code($order_code);
-        
-        $data = $this->Pedido_model->guardar_lugar();
-        if ( $data['status'] ) {
-            $this->Pedido_model->act_totales($order->id);
-        }
-        
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
+   
 
 // EMPACAR COMO REGALO
 //-----------------------------------------------------------------------------
@@ -826,14 +571,7 @@ class Pedidos extends CI_Controller{
             $this->load->view(TPL_FRONT, $data);
     }
 
-    function guardar_datos_regalo()
-    {
-        $order = $this->Pedido_model->row_by_code($this->session->userdata('order_code'));
-        $data = $this->Pedido_model->guardar_datos_regalo($order->id);
-
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
+    
     
 //PAGOS ON LINE
 //---------------------------------------------------------------------------------------------------
@@ -917,24 +655,6 @@ class Pedidos extends CI_Controller{
             $this->load->view('pedidos/compra/respuesta_print_v', $data);
     }
     
-    /**
-     * Página de confirmación que ejecuta remotamente PagosOnLine (pol) al 
-     * terminar una transacción. Recibe datos de POL vía post, actualiza 
-     * datos del pago del pedido
-     */
-    function confirmacion_pol()
-    {
-        $confirmacion_pol = $this->Pedido_model->confirmacion_pol();
-        $this->output->set_content_type('application/json')->set_output($confirmacion_pol);
-    }
-
-    function assign_posts($pedido_id)
-    {
-        $data = $this->Pedido_model->assign_posts($pedido_id);
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
-    
 //GESTIÓN ADMINISTRATIVA DE LOS PEDIDOS
 //---------------------------------------------------------------------------------------------------
     
@@ -1002,49 +722,52 @@ class Pedidos extends CI_Controller{
             $data['vista_a'] = 'pedidos/mis_pedidos_v';
             $this->load->view(PTL_ADMIN, $data);
     }
-    
-//ADMINISTRACIÓN DEL PEDIDO
-//---------------------------------------------------------------------------------------------------
-    
-    /**
-     * Actualiza masivamente el estado de los pedidos con respuesta de PayU,
-     * que tienen respuesta POL en tabla post, pero cod_estado_pol está vacío
-     * 2021-10-23
-     */
-    function act_estado_pendientes()
-    {
-        $cant_pedidos = $this->Pedido_model->act_estado_pendientes();
-        
-        //Resultado
-            $data['message'] = "Se actualizaron {$cant_pedidos} pedidos.";
-            $data['status'] = 1;
-        
-        //Salida JSON
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
-    }
+
+// COTIZADOR
+//-----------------------------------------------------------------------------
 
     /**
-     * Ejecuta procesos masivos sobre pedidos
-     * 2022-08-12
+     * Vista del listado de productos para hacer una cotización a un cliente,
+     * simulando descuentos y valores de envío
+     * 2025-02-10
      */
-    function run_process($cod_process)
+    function cotizador()
     {
-        //Ampliar tiempo de ejecución
-        set_time_limit(360);   //  6 minutos
+        $this->load->model('Producto_model');
         
-        $data['status'] = 0;
-        $data['message'] = 'Proceso no ejecutado';
         
-        if ( $cod_process == 1 ) {
-            $data = $this->Pedido_model->act_estado_pendientes();
-        } elseif ( $cod_process == 2 ) {
-            $data = $this->Pedido_model->update_payed();
-        } elseif ( $cod_process == 3 ) {
-            $data = $this->Pedido_model->update_payment_channel_payu();
-        } elseif ( $cod_process == 4 ) {
-            $data = $this->Pedido_model->update_gender_age();
+        if ( ! is_null($this->session->userdata('order_code')) ) 
+        {
+            $pedido = $this->Pedido_model->row_by_code($this->session->userdata('order_code'));
+            $this->Pedido_model->act_totales($pedido->id);
+            
+            $data = $this->Pedido_model->basico($pedido->id);
+            
+            $data['order'] = $pedido;
+            $data['products'] = $this->Pedido_model->detalle($pedido->id);
+            $data['rol_comprador'] = $this->Pedido_model->rol_comprador($pedido->id);
+            $data['extras'] = $this->Pedido_model->extras($pedido->id);
+            $data['pedido_id'] = $pedido->id;
+            $data['arr_tipos_precio'] = $this->Producto_model->arr_tipos_precio();
+            $data['descuentos'] = $this->Pedido_model->descuentos($pedido->id);
+            $data['arr_extras_pedidos'] = $this->Item_model->arr_item(6, 'id_interno_num');
+
+            //Identificar region
+            $region_id = 267; //Bogotá
+            if ( $pedido->region_id > 0 ) $region_id = $pedido->region_id;
+
+            $data['options_region'] = $this->App_model->opciones_lugar("tipo_id = 3 AND pais_id = 51", 'nombre_lugar');
+            $data['options_ciudad'] = $this->App_model->opciones_lugar("(tipo_id = 4 AND activo = 1 AND region_id = {$region_id})", 'nombre_lugar');
+            
+            $data['destino_form'] = "pedidos/compra_a/{$data['row']->cod_pedido}";
+            $data['view_a'] = 'pedidos/cotizador/cotizador_v';
+        } else {
+            $data['view_a'] = 'pedidos/carrito_vacio_v';
         }
         
-        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+        //Solicitar vista
+            $data['head_title'] = 'Cotizador';
+            $this->load->view(TPL_FRONT, $data);
     }
+
 }

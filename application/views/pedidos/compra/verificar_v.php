@@ -209,6 +209,11 @@
                     <?php if ( $validacion['status'] == 1 ) : ?>
                         <!-- <button class="btn-polo-lg" type="submit">IR A PAGAR</button> -->
                         <button class="btn-polo-lg" type="button" v-on:click="iniciarPago">IR A PAGAR</button>
+                        <?php if ( $this->session->userdata('role') <= 6 && $this->session->userdata('logged') ) : ?>
+                            <div class="mb-2">
+                                <a class="" href="<?= URL_APP . "pedidos/link_pago/" . $row->cod_pedido ?>">Link de pago para cliente</a>
+                            </div>
+                        <?php endif; ?>
                     <?php else : ?>
                         <?php if ( $validacion['estado_pedido'] != 1 ) : ?>
                             <div class="alert alert-warning">
@@ -318,7 +323,7 @@ var verificarApp = new Vue({
     },
     methods: {
         cancel_order: function(){
-            axios.get(url_api + 'pedidos/cancel/')
+            axios.get(URL_API2 + 'pedidos/cancel/')
             .then(response => {
                 if ( response.data.status == 1 ) {
                     window.location = url_app + 'productos/catalogo'
@@ -327,7 +332,7 @@ var verificarApp = new Vue({
             .catch(function (error) { console.log(error) })
         },
         iniciarPago: function(){
-            axios.get(url_api + 'pedidos/iniciar_pago/')
+            axios.get(URL_API2 + 'pedidos/iniciar_pago/')
             .then(response => {
                 if ( response.data.status > 0 ) {
                     document.getElementById("paymentForm").submit();

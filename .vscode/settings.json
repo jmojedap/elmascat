@@ -12,6 +12,21 @@
             "database": "districa_tienda",
             "username": "districa_dcu",
             "password": "ND4&^XSAF9tk"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "srv805.hstgr.io",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "DareAndMake",
+            "database": "u848555488_oOsvP",
+            "username": "u848555488_51bqQ",
+            "password": "K8@pZ2!mQ5$wR1xT7"
         }
     ]
 }

@@ -18,6 +18,9 @@
             <button class="btn btn-light" title="Reiniciar el pedido para intentar nuevamente el pago" id="btn_reiniciar_pedido" v-on:click="reiniciar_pedido">
                 <i class="fa fa-sync-alt"></i> Reiniciar
             </button>
+            <button class="btn btn-warning" title="Cargar pedido en sesión de usuario para cotizar" v-on:click="loadInSession">
+                <i class="fa fa-calculator"></i> Cotizador
+            </button>
         <?php } ?>
         <?php if ( $this->session->userdata('role') == 0 && $this->session->userdata('logged') ) { ?>
             <a href="<?= URL_ADMIN . "admin/tablas/pedido/edit/{$row->id}" ?>" class="btn btn-light w120p" title="Edición del registro en la base de datos" target="_blank">

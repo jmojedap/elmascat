@@ -55,7 +55,7 @@
     sections_role[0] = ['explore', 'add', 'promociones', 'actualizar_datos', 'tags'];
     sections_role[1] = ['explore', 'add', 'promociones', 'actualizar_datos', 'tags'];
     sections_role[2] = ['explore', 'add', 'actualizar_datos'];
-    sections_role[6] = ['explore', 'add'];
+    sections_role[6] = ['explore', 'add', 'actualizar_datos'];
     sections_role[7] = ['explore', 'add'];
     
     //Recorrer el sections del rol actual y cargarlos en el menú

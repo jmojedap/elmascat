@@ -1,14 +1,16 @@
 <table class="table table-striped">
     <tbody>
-        <tr>
-            <td width="25%" class="text-right">Marca/Editorial</td>
-            <td>
-                <?= $this->Item_model->nombre_id($row->fabricante_id) ?>
-            </td>
-        </tr>
+        <?php if ( $this->session->userdata('role') <= 10 && $this->session->userdata('logged') ) : ?>
+            <tr>
+                <td width="25%" class="text-right">Marca/Editorial</td>
+                <td>
+                    <?= $this->Item_model->nombre_id($row->fabricante_id) ?>
+                </td>
+            </tr>
+        <?php endif; ?>
         
         <tr>
-            <td class="text-right">Referencia</td>
+            <td width="25%" class="text-right">Referencia</td>
             <td>
                 <?= $row->referencia ?>
             </td>

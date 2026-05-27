@@ -208,5 +208,53 @@ class Flete_model extends CI_Model{
         $origen_id = 909;   //Bogotá > ver campo lugar.id
         return $origen_id;
     }
+
+    /**
+     * 2025-01-08
+     * Actualiza los fletes incrementando el costo fijo y los rangos
+     * @param float $incremento Porcentaje de incremento
+     * @return int Cantidad de registros actualizados
+     */
+    function incrementar_fletes($incremento)
+    {        
+        $fletes = $this->db->get('flete');
+        $qtyUpdated = 0;
+
+        foreach ($fletes->result() as $row_flete) 
+        {
+            $nuevoValor = $row_flete->costo_fijo * (1 + $incremento);
+            $aRow['costo_fijo'] = round($nuevoValor / 50) * 50;
+            $aRow['rangos'] = $this->rangos_incrementados($row_flete->rangos, $incremento);
+
+            $this->db->where('id', $row_flete->id);
+            $this->db->update('flete', $aRow);
+
+            $qtyUpdated += $this->db->affected_rows();
+        }
+
+        return $qtyUpdated;
+    }
+
+    /**
+     * 2025-01-08
+     * Incrementa el segundo valor de un rango en un porcentaje y lo redondea a múltiplos de 50
+     * @param string $rangos JSON con dos valores numéricos
+     * @param float $incremento Porcentaje de incremento
+     * @return string JSON
+     */
+    function rangos_incrementados($rangos, $incremento)
+    {
+        // Decodificar el JSON a un array asociativo
+        $array_rangos = json_decode($rangos, true);
+
+        // Recorre cada valor y lo incrementa
+        foreach ($array_rangos as $key => $value) {
+            $nuevo_valor = $value * (1 + $incremento);
+            $array_rangos[$key] = round($nuevo_valor / 50) * 50;
+        }
+
+        // Codificar el array de nuevo a JSON
+        return json_encode($array_rangos);
+    }
     
 }

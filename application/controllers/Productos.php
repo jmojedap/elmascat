@@ -480,7 +480,7 @@ class Productos extends CI_Controller{
     //Opciones de filtros de búsqueda
         $data['arrCategorias'] = $this->Item_model->arr_options('categoria_id = 25');
         $data['arrTags'] = $this->Item_model->arr_options('categoria_id = 21', 'item');
-        $data['arrFabricantes'] = $this->Item_model->arr_options('categoria_id = 5', 'item');
+        //$data['arrFabricantes'] = $this->Item_model->arr_options('categoria_id = 5', 'item');
         $data['arrOrdering'] = $this->Producto_model->arr_ordering();
         $data['arrRangoPrecio'] = $this->Producto_model->rangos_precio();
 

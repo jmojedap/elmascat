@@ -57,7 +57,7 @@ var app_explore = new Vue({
     methods: {
         get_list: function(){
             this.loading = true
-            axios.post(url_app + this.controller + '/get/' + this.num_page, $('#search_form').serialize())
+            axios.post(URL_API2 + this.controller + '/get/' + this.num_page, $('#search_form').serialize())
             .then(response => {
                 this.list = response.data.list;
                 this.max_page = response.data.max_page;
@@ -88,7 +88,7 @@ var app_explore = new Vue({
             var params = new FormData();
             params.append('selected', this.selected);
             
-            axios.post(url_app + this.controller + '/delete_selected', params)
+            axios.post(URL_API2 + this.controller + '/delete_selected', params)
             .then(response => {
                 this.hide_deleted();
                 this.selected = [];

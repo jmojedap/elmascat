@@ -94,8 +94,9 @@
 
                 <td class="only-lg">
                     <div v-show="element.payed == 1">
-                        <a v-bind:href="`<?= base_url("pedidos/reporte/") ?>` + element.id" class="btn btn-sm btn-light" target="_blank">R</a>
-                        <a v-bind:href="`<?= base_url("pedidos/reporte/") ?>` + element.id + `/label`" class="btn btn-sm btn-light" target="_blank">L</a>
+                        <a v-bind:href="`<?= base_url("pedidos/reporte/") ?>` + element.id" class="btn btn-sm btn-light" target="_blank" title="Imprimir reporte">R</a>
+                        <a v-bind:href="`<?= base_url("pedidos/reporte/") ?>` + element.id + `/label`" class="btn btn-sm btn-light" target="_blank" title="Imprimir Label">L</a>
+                        <a v-bind:href="`<?= base_url("pedidos/reporte/") ?>` + element.id + `/sticker`" class="btn btn-sm btn-light" target="_blank" title="Imprimir Sticker">S</a>
                     </div>
                 </td>
 

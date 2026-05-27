@@ -116,7 +116,7 @@ var payment_app = new Vue({
         send_form: function(){
             this.loading = true
             var form_data = new FormData(document.getElementById('payment_form'))
-            axios.post(url_api + 'pedidos/update_payment/', form_data)
+            axios.post(URL_API2 + 'pedidos/update_payment/', form_data)
             .then(response => {
                 var toastr_type = 'success'
                 if ( order.payed == '00' ) toastr_type = 'warning'

@@ -53,7 +53,7 @@
         $elementos_rol[0] = array('explorar', 'nuevo', 'tags', 'procesos', 'promociones', 'importar');
         $elementos_rol[1] = array('explorar', 'nuevo', 'tags', 'procesos', 'promociones', 'importar');
         $elementos_rol[2] = array('explorar', 'nuevo', 'importar');
-        $elementos_rol[6] = array('explorar', 'nuevo');
+        $elementos_rol[6] = array('explorar', 'nuevo', 'importar');
         $elementos_rol[7] = array('explorar', 'nuevo');
         
     //Definiendo menú mostrar, según el rol del visitante
@@ -66,4 +66,4 @@
         $data_menu['seccion'] = $seccion;
     
     //Cargue vista
-        $this->load->view('comunes/menu_v', $data_menu);
+        $this->load->view('comunes/menu_v', $data_menu_no);

@@ -55,6 +55,11 @@
             <button class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#cancel_modal">
                 <i class="fa fa-trash"></i> &nbsp; Vaciar carrito
             </button>
+            <?php if ( $this->session->userdata('role') <= 6 && $this->session->userdata('logged') ) : ?>
+                <a class="btn btn-warning btn-sm" href="<?= base_url('pedidos/cotizador') ?>">
+                    <i class="fa fa-calculator"></i> &nbsp; Cotizador
+                </a>
+            <?php endif; ?>
         </div>
     </div>
     <?php $this->load->view('pedidos/compra/carrito/modal_single_delete_v') ?>

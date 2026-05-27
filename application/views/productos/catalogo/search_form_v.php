@@ -38,7 +38,7 @@
             </select>
         </div>
 
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="fab">
                 Editorial o Marca
                 <a @click="removeFilter('fab')" class="remove-filter" v-show="filters.fab"><i class="fa fa-times"></i></a>
@@ -49,7 +49,7 @@
                 <option value="">[ Todos ]</option>
                 <option v-for="optionFabricante in arrFabricantes" v-bind:value="optionFabricante.str_id">{{ optionFabricante.name }}</option>
             </select>
-        </div>
+        </div> -->
 
         <div class="form-group">
             <label for="fe3">Precio
@@ -73,7 +73,7 @@
     </div>
 </form>
 
-<div class="catalogo-opciones">
+<!-- <div class="catalogo-opciones">
     <h3 class="catalogo-seccion">Editorial o Marca</h3>
     <ul class="catalogo-lista">
         <li v-on:click="removeFilter('fab')">Todas</li>
@@ -81,7 +81,7 @@
             {{ fabricante.name }}
         </li>
     </ul>
-</div>
+</div> -->
 
 <div class="catalogo-opciones">
     <h3 class="catalogo-seccion">Temas y Etiquetas</h3>

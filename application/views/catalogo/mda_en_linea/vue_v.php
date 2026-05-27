@@ -54,10 +54,10 @@ var app_digitales = new Vue({
             params.append('producto_id', this.producto_id)
             params.append('cantidad', 1)
             
-            axios.get(url_app + 'pedidos/add_product/' + this.producto_id + '/1/' + this.order_code)
+            axios.get(URL_API2 + 'pedidos/add_product/' + this.producto_id + '/1/' + this.order_code)
             .then(response => {
                 if ( response.data.status == 1 ) {
-                    window.location = url_app + 'pedidos/carrito/';
+                    window.location = URL_API2 + 'pedidos/carrito/';
                 }
             })
             .catch(function (error) { console.log(error) })

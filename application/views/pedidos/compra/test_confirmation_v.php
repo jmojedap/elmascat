@@ -8,7 +8,7 @@
     $options_codigo_respuesta_pol = $this->Item_model->options('categoria_id = 10');
 ?>
 
-<form action="<?= base_url('pedidos/confirmacion_pol/') ?>" accept-charset="utf-8" method="POST">
+<form action="<?= base_url('api/pedidos/confirmacion_pol/') ?>" accept-charset="utf-8" method="POST">
     <div class="card">
         <div class="card-body">
             <div class="form-group row">

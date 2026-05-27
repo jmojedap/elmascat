@@ -115,6 +115,7 @@
                     <tr>
                         <td class="text-right"><span class="text-muted">Fecha de nacimiento</span></td>
                         <td>
+                            <?= $row->fecha_nacimiento ?>
                             <?= $this->Pcrn->fecha_formato($row->fecha_nacimiento, 'Y-M-d') ?>
                             &middot;
                             <span class="text-muted">

@@ -125,7 +125,7 @@ var edit_app = new Vue({
     },
     methods: {
         send_form: function(){
-            axios.post(url_api + 'pedidos/guardar_admin/', $('#order_form').serialize())
+            axios.post(URL_API2 + 'pedidos/guardar_admin/', $('#order_form').serialize())
             .then(response => {
                 if ( response.data.saved_id > 0 ) {
                     toastr['success'](response.data.message)

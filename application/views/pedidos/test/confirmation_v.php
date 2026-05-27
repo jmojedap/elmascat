@@ -67,7 +67,7 @@
         },
         methods: {
             send_form: function(){                
-                axios.post(url_api + 'pedidos/confirmacion_pol/', $('#confirmation_form').serialize())
+                axios.post(URL_API2 + 'pedidos/confirmacion_pol/', $('#confirmation_form').serialize())
                 .then(response => {
                     toastr["success"]('confirmation_id: ' + response.data.confirmation_id);
                     //console.log(response.data.message);

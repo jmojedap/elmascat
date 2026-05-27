@@ -58,7 +58,7 @@ var datos_regalo_app = new Vue({
         //Agregar empaque al carrito
         add_product: function(key){
             this.set_product(key)
-            axios.get(url_api + 'pedidos/add_product/' + this.empaque.id + '/1/' + this.order.cod_pedido)
+            axios.get(URL_API2 + 'pedidos/add_product/' + this.empaque.id + '/1/' + this.order.cod_pedido)
             .then(response => {
                 if ( response.data.status == 1 ) {
                     //this.step = 'datos_tarjeta'
@@ -80,7 +80,7 @@ var datos_regalo_app = new Vue({
         send_form: function(){
             this.loading = true
             var form_data = new FormData(document.getElementById('datos_regalo_form'))
-            axios.post(url_app + 'pedidos/guardar_datos_regalo/', form_data)
+            axios.post(URL_API2 + 'pedidos/guardar_datos_regalo/', form_data)
             .then(response => {
                 if ( response.data.status == 1) {
                     window.location = url_app + 'pedidos/verificar'
@@ -91,7 +91,7 @@ var datos_regalo_app = new Vue({
         delete_element: function(empaque_id){
             this.loading = true
             console.log('Eliminando producto');
-            axios.get(url_api + 'pedidos/remove_product/' + empaque_id + '/' + this.order.cod_pedido)
+            axios.get(URL_API2 + 'pedidos/remove_product/' + empaque_id + '/' + this.order.cod_pedido)
             .then(response => {
                 if ( response.data.status == 1 ) {
                     toastr['info']('El empaque fue retirado del carrito')
@@ -106,7 +106,7 @@ var datos_regalo_app = new Vue({
             .catch(function (error) { console.log(error) })
         },
         get_order_info: function(){
-            axios.get(url_api + 'pedidos/get_info/' + this.order.cod_pedido)
+            axios.get(URL_API2 + 'pedidos/get_info/' + this.order.cod_pedido)
             .then(response => {
                 this.order = response.data.order
                 this.products = response.data.products
@@ -129,7 +129,7 @@ var datos_regalo_app = new Vue({
             var form_data = new FormData()
             form_data.append('is_gift',0)
             
-            axios.post(url_app + 'pedidos/guardar_pedido/', form_data)
+            axios.post(URL_API2 + 'pedidos/guardar_pedido/', form_data)
             .then(response => {
                 console.log(response.data)
                 var destination = url_app + 'pedidos/verificar'
